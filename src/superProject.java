@@ -1,5 +1,4 @@
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 public class superProject extends elementFormatting {
     private String projectPurposeString;
@@ -14,11 +13,11 @@ public class superProject extends elementFormatting {
         return projectPurposeString;
     }
 
-    public String getProjectOwnerString(){
+    public String getProjectOwner(){
         return projectOwnerString;
     }
 
-    public String getProjectTargetAudienceString(){
+    public String getProjectTargetAudience(){
         return projectTargetAudienceString;
     }
 
@@ -26,9 +25,14 @@ public class superProject extends elementFormatting {
         return projectBudget;
     }
 
-    public LocalDateTime[] getProjectTimeSpan(){
-        return projectTimespan;
+    public LocalDateTime getProjectTimeSpanFrom(){
+        return projectTimespan[0];
     }
+
+    public LocalDateTime getProjectTimeSpanTo(){
+        return projectTimespan[1];
+    }
+
 
     public String getProjectActivities(){
         return projectActivitiesString;
@@ -52,9 +56,9 @@ public class superProject extends elementFormatting {
 
     public void setTimeSpan(LocalDateTime from, LocalDateTime to) {
         if (from == null && to != null){
-                this.projectTimespan[0] = to.minusDays(1);
+                this.projectTimespan[0] = LocalDateTime.now();
             this.projectTimespan[1]  = to;
-            if (this.projectTimespan[1].isBefore(LocalDateTime.now().minusDays(1))) {
+            if (this.projectTimespan[1].isBefore(this.projectTimespan[1])) {
                 throw new IllegalArgumentException("'to' must be after The current day by a day at least");
             }
             System.out.println("TimeSpan set from " + projectTimespan[0] + " to " + projectTimespan[1] + " (default to +1 day)");
@@ -78,9 +82,13 @@ public class superProject extends elementFormatting {
             }
             this.projectTimespan[0] = from;
             this.projectTimespan[1]  = to;
+            if (this.projectTimespan[1].isBefore(this.projectTimespan[0])) {
+                throw new IllegalArgumentException("'to' must be after 'from'");
+            }
             System.out.println("TimeSpan set from " + from + " to " + to);
         }
     }
+    /*
     //This is an overloaed failover function for timespan, safely setting one if no data present
     public void setTimeSpan() {
         this.projectTimespan[0] = LocalDateTime.now();
@@ -90,6 +98,7 @@ public class superProject extends elementFormatting {
         }
         System.out.println("TimeSpan set from " + projectTimespan[0]+ " to " + projectTimespan[1] + " (default to current time and +1 day)");
     }
+    */
 
     public void setProjectActivities(String newProjectActivities){
         this.projectActivitiesString = newProjectActivities;
@@ -112,15 +121,15 @@ public class superProject extends elementFormatting {
         superProject.setProjectTargetAudience("Techcollege med mere");
         superProject.setProjectActivities("Her er noget vi skal have gjort");
 
-        LocalDateTime timeSpantest[] = superProject.getProjectTimeSpan();
+        LocalDateTime timeSpantest[] = {superProject.getProjectTimeSpanFrom(),superProject.getProjectTimeSpanTo()};
 
         System.out.println("Here is the superProject: " + superProject.getTitle());
         System.out.println("It has the following description: " + superProject.getDescription());
         System.out.println("It was created at: " + superProject.getDateCreated());
         System.out.println("It has the following categoreis: " + superProject.getCategories());
         System.out.println("The main idea is: " + superProject.getProjectPurpose());
-        System.out.println("The Project Owner is: " + superProject.getProjectOwnerString());
-        System.out.println("The main audience is: " + superProject.getProjectTargetAudienceString());
+        System.out.println("The Project Owner is: " + superProject.getProjectOwner());
+        System.out.println("The main audience is: " + superProject.getProjectTargetAudience());
         System.out.println("The span of the project is from: " + timeSpantest[0] + "and to: " + timeSpantest[1]);
         System.out.println("The following should be completed: " + superProject.getProjectActivities());
     }
