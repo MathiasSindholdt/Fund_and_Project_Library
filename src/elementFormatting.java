@@ -24,6 +24,9 @@ public class elementFormatting {
     }
 
     public void setTitle(String newTitle){
+        if (newTitle.length() > 200){
+            throw new IllegalArgumentException("title length exceeds 200 characters.");
+        }
         this.title = newTitle;
     }
 
@@ -32,6 +35,9 @@ public class elementFormatting {
     }
 
     public void setDescription(String newDescription){
+        if (newDescription.length() > 2000){
+            throw new IllegalArgumentException("Description length exceeds 2000 characters.");
+        }
         this.description = newDescription;
     }
 
