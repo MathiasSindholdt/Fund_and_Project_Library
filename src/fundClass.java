@@ -1,4 +1,3 @@
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class fundClass extends elementFormatting{
@@ -70,5 +69,4 @@ public class fundClass extends elementFormatting{
         System.out.println("The fund has a budget of: " + fund.getCommonBudget());
         System.out.println("We have previously collaborated on: " + fund.getCollaborationHistory());
     }
-
 }
