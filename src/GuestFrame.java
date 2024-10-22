@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import javax.swing.*;
 
+
 public class GuestFrame implements ActionListener {
 
     // GUI komponenter
@@ -14,17 +15,21 @@ public class GuestFrame implements ActionListener {
     private JButton backButton;
     private JButton projectPropButton;
     private JButton projectButton;
+    private JButton fundsButton;
+
 
     // Constructor til at opsætte GUI
     public GuestFrame() {
         initializeFrame();  // Initialiserer JFrame
         JPanel panel1 = createTopPanel();  // Opretter top-panel
         JPanel panel2 = createSidePanel();  // Opretter side-panel
+        JPanel panel3 = createRightSidePanel();  // Opretter side-panel
         JPanel panel5 = createCenterPanel();  // Opretter center-panel
 
         // Tilføj paneler til frame
         frame.add(panel1, BorderLayout.NORTH);  
         frame.add(panel2, BorderLayout.WEST);
+        frame.add(panel3, BorderLayout.EAST);
         frame.add(panel5, BorderLayout.CENTER);  
     }
 
@@ -58,6 +63,9 @@ public class GuestFrame implements ActionListener {
         projectButton = createProjectButton("Projekter");
         panel1.add(projectButton);
 
+        fundsButton = createFundsButton("Fonde");
+        panel1.add(fundsButton);
+
         return panel1;
     }
 
@@ -67,6 +75,12 @@ public class GuestFrame implements ActionListener {
         panel2.setBackground(new Color(213, 213, 213, 255));
         panel2.setPreferredSize(new Dimension(100, 100));
         return panel2;
+    }
+    private JPanel createRightSidePanel() {
+        JPanel panel3 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panel3.setBackground(new Color(213, 213, 213, 255));
+        panel3.setPreferredSize(new Dimension(900, 100));
+        return panel3;
     }
 
     // Opretter center-panel med knapper
@@ -95,7 +109,7 @@ public class GuestFrame implements ActionListener {
     // Opretter projekt forslag knap
     private JButton createProjectPropButton(String text) {
         JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(130, 50));  // Du kan justere størrelsen på knappen her
+        button.setPreferredSize(new Dimension(130, 50));  
         button.addActionListener(this);
         return button;
     }
@@ -103,7 +117,14 @@ public class GuestFrame implements ActionListener {
     // Opretter Projekter knap
     private JButton createProjectButton(String text) {
         JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(130, 50));  // Du kan justere størrelsen på knappen her
+        button.setPreferredSize(new Dimension(130, 50)); 
+        button.addActionListener(this);
+        return button;
+    }
+
+        private JButton createFundsButton(String text) {
+        JButton button = new JButton(text);
+        button.setPreferredSize(new Dimension(130, 50));  
         button.addActionListener(this);
         return button;
     }
