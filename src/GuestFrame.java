@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import javax.swing.*;
 
 public class GuestFrame implements ActionListener {
@@ -142,7 +144,7 @@ public class GuestFrame implements ActionListener {
         // Opret et nyt JDialog (popup-vindue)
         JDialog dialog = new JDialog(frame, "Lav Projekt Forslag", true);
         dialog.setSize(700, 700);
-        dialog.setLayout(new GridLayout(8, 2, 10, 10));
+        dialog.setLayout(new GridLayout(11, 2, 10, 10));
 
         JLabel nameLabel = new JLabel("Titel:");
         JTextField nameField = new JTextField();
@@ -176,11 +178,32 @@ public class GuestFrame implements ActionListener {
         dialog.add(targetField);
 
 
-        JLabel budgetLabel = new JLabel("Anslået budget:");
+        JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
         JTextField budgetField = new JTextField();
         dialog.add(budgetLabel);
         dialog.add(budgetField);
         
+        JLabel fromDateLabel = new JLabel("Fra dato:");
+        SpinnerDateModel fromDateModel = new SpinnerDateModel();
+        JSpinner fromDateSpinner = new JSpinner(fromDateModel);
+        JSpinner.DateEditor fromDateEditor = new JSpinner.DateEditor(fromDateSpinner, "MM/dd/yyyy");
+        fromDateSpinner.setEditor(fromDateEditor);
+        dialog.add(fromDateLabel);
+        dialog.add(fromDateSpinner);
+
+        JLabel toDateLabel = new JLabel("Til dato:");
+        SpinnerDateModel toDateModel = new SpinnerDateModel();
+        JSpinner toDateSpinner = new JSpinner(toDateModel);
+        JSpinner.DateEditor toDateEditor = new JSpinner.DateEditor(toDateSpinner, "MM/dd/yyyy");
+        toDateSpinner.setEditor(toDateEditor);
+        dialog.add(toDateLabel);
+        dialog.add(toDateSpinner);
+
+        JLabel categoryLabel = new JLabel("Tilføj ny kategori:");
+        JTextField categoryField = new JTextField();
+        dialog.add(categoryLabel);
+        dialog.add(categoryField);
+
         
 
         // Tilføj submit-knap
@@ -194,14 +217,25 @@ public class GuestFrame implements ActionListener {
                 String responsiblePerson = ideaField.getText();
                 String ideaFrom = ideaFromField.getText();
                 String owner = ownerField.getText();
+                String target = targetField.getText();
+                String budget = budgetField.getText();
+
+                // Get dates from spinners
+                Date fromDate = (Date) fromDateSpinner.getValue();
+                Date toDate = (Date) toDateSpinner.getValue();
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                String formattedFromDate = sdf.format(fromDate);
+                String formattedToDate = sdf.format(toDate);
+
 
                 // Erstattes med vores gemmelogik
                 JOptionPane.showMessageDialog(dialog, 
                     "Projekt navn: " + projectName + 
                     "\nBeskrivelse: " + projectDescription + 
                     "\nAnsvarlig: " + responsiblePerson + 
+                    //"\nDeadline: " + deadline +
                     "\nDeadline: " + ideaFrom);
-
+                    
                 // Luk dialogen
                 dialog.dispose();
             }
