@@ -1,12 +1,13 @@
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class fundClass extends elementFormatting{
-    private ArrayList<String> deadlines = new ArrayList<String>();
+    private ArrayList<LocalDateTime> deadlines = new ArrayList<LocalDateTime>();
     private ArrayList<String> contacts = new ArrayList<String>();
     private long commonBudget = 0; //Handles large numbers
     private ArrayList<String> collaborationHistory= new ArrayList<String>();
 
-    public ArrayList<String> getDeadlines(){
+    public ArrayList<LocalDateTime> getDeadlines(){
         return deadlines;
     }
 
@@ -22,7 +23,7 @@ public class fundClass extends elementFormatting{
         return collaborationHistory;
     }
 
-    public void setDeadlines(String newDeadline){
+    public void setDeadlines(LocalDateTime newDeadline){
         this.deadlines.add(newDeadline);
     }
 
@@ -40,7 +41,7 @@ public class fundClass extends elementFormatting{
 
     public static void main(String[] args) {
         String[] testCatories = {"cat1","cat2","cat3"};
-        String[] testDeadlines = {"2.10.2024","4.12.2024"};
+        LocalDateTime[] testDeadlines = {LocalDateTime.parse("2024-10-02T12:00:00"),LocalDateTime.parse("2024-12-04T12:00:00")};
         String[] testContacts = {"lucas","lundse"};
         String[] testCollaborationHistory = {"P1","P2"};
 

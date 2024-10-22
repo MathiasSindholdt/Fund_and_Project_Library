@@ -41,6 +41,10 @@ public class elementFormatting {
         this.description = newDescription;
     }
 
+    public void setDateCreated(LocalDateTime newDateCreated){
+        this.dateCreated = newDateCreated;
+    }
+
     public static void main(String[] args) {
         String[] testCatories = {"cat1","cat2","cat3"};
         elementFormatting abstractObject = new elementFormatting();
