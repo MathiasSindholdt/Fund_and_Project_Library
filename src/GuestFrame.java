@@ -12,7 +12,6 @@ public class GuestFrame implements ActionListener {
     private JButton backButton;
     private JButton projectPropButton;
     private JButton projectButton;
-    private JButton fundsButton;
 
     // Constructor til at opsætte GUI
     public GuestFrame() {
@@ -31,7 +30,7 @@ public class GuestFrame implements ActionListener {
     private void initializeFrame() {
         frame = new JFrame("Gæst");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 500);
+        frame.setSize(1920, 1080);
         frame.setLayout(new BorderLayout(10, 10));
     }
 
@@ -49,16 +48,13 @@ public class GuestFrame implements ActionListener {
         JLabel label = new JLabel("Gæst", SwingConstants.LEFT);
         panel1.add(label);
 
-        // Kald den korrekt oprettede knap
+        // Opret knap til projekt forslag
         projectPropButton = createProjectPropButton("Projekt forslag");
         panel1.add(projectPropButton);
 
-        // Kald den korrekt oprettede knap
+        // Opret knap til Projekter (ny knap)
         projectButton = createProjectButton("Projekter");
         panel1.add(projectButton);
-
-        fundsButton = createFundsButton("Fonde");
-        panel1.add(fundsButton);
 
         return panel1;
     }
@@ -101,14 +97,9 @@ public class GuestFrame implements ActionListener {
         button.addActionListener(this);
         return button;
     }
-    private JButton createProjectButton(String text) {
-        JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(130, 50));  // Du kan justere størrelsen på knappen her
-        button.addActionListener(this);
-        return button;
-    }
 
-    private JButton createFundsButton(String text) {
+    // Opretter Projekter knap
+    private JButton createProjectButton(String text) {
         JButton button = new JButton(text);
         button.setPreferredSize(new Dimension(130, 50));  // Du kan justere størrelsen på knappen her
         button.addActionListener(this);
@@ -138,21 +129,94 @@ public class GuestFrame implements ActionListener {
         frame.setVisible(true);
     }
 
-    // Håndterer knap klik begivenhed
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == createProbButton) {
-            JOptionPane.showMessageDialog(frame, "Projekt forslag knap klikket!");
-        } else if (e.getSource() == changeProbButton) {
-            JOptionPane.showMessageDialog(frame, "Ændre projekt forslag knap klikket!");
-        } else if (e.getSource() == backButton) {
-            JOptionPane.showMessageDialog(frame, "Tilbage knap klikket!");
-        } else if (e.getSource() == projectPropButton) {
-            JOptionPane.showMessageDialog(frame, "Projekt forslag knap klikket!");
+            openProjectProposalDialog(); // Åbn popup til projekt forslag
         }
     }
+    
 
-    // SKAL FJERNES, Main metode for at køre applikationen 
+    // Metode til at åbne popup-vindue til projekt forslag
+    private void openProjectProposalDialog() {
+        // Opret et nyt JDialog (popup-vindue)
+        JDialog dialog = new JDialog(frame, "Lav Projekt Forslag", true);
+        dialog.setSize(700, 700);
+        dialog.setLayout(new GridLayout(8, 2, 10, 10));
+
+        JLabel nameLabel = new JLabel("Titel:");
+        JTextField nameField = new JTextField();
+        dialog.add(nameLabel);
+        dialog.add(nameField);
+
+        JLabel ideaLabel = new JLabel("Idé/Formlål:");
+        JTextField ideaField = new JTextField();
+        dialog.add(ideaLabel);
+        dialog.add(ideaField);
+
+        JLabel descriptionLabel = new JLabel("Kort beskrivelse af projektet for at danne en mening:");
+        JTextArea descriptionArea = new JTextArea(5, 20);
+        JScrollPane scrollPane = new JScrollPane(descriptionArea);
+        dialog.add(descriptionLabel);
+        dialog.add(scrollPane);
+
+        JLabel ideaFromLabel = new JLabel("Ideens oprindelse:");
+        JTextField ideaFromField = new JTextField();
+        dialog.add(ideaFromLabel);
+        dialog.add(ideaFromField);
+
+        JLabel ownerLabel = new JLabel("Ejer af idé/forslaget:");
+        JTextField ownerField = new JTextField();
+        dialog.add(ownerLabel);
+        dialog.add(ownerField);
+
+        JLabel targetLabel = new JLabel("Målgruppe (hvem gavner dette forslag:");
+        JTextField targetField = new JTextField();
+        dialog.add(targetLabel);
+        dialog.add(targetField);
+
+
+        JLabel budgetLabel = new JLabel("Anslået budget:");
+        JTextField budgetField = new JTextField();
+        dialog.add(budgetLabel);
+        dialog.add(budgetField);
+        
+        
+
+        // Tilføj submit-knap
+        JButton submitButton = new JButton("Submit");
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Her kan du håndtere indtastede data
+                String projectName = nameField.getText();
+                String projectDescription = descriptionArea.getText();
+                String responsiblePerson = ideaField.getText();
+                String ideaFrom = ideaFromField.getText();
+                String owner = ownerField.getText();
+
+                // Erstattes med vores gemmelogik
+                JOptionPane.showMessageDialog(dialog, 
+                    "Projekt navn: " + projectName + 
+                    "\nBeskrivelse: " + projectDescription + 
+                    "\nAnsvarlig: " + responsiblePerson + 
+                    "\nDeadline: " + ideaFrom);
+
+                // Luk dialogen
+                dialog.dispose();
+            }
+        });
+
+        // Tilføj submit-knappen til dialog
+        dialog.add(new JLabel());  // tom label for at holde layoutet
+        dialog.add(submitButton);
+
+        // Vis dialogen
+        dialog.setLocationRelativeTo(frame); // Center dialog over hovedvinduet
+        dialog.setVisible(true);
+    }
+
+    // Main metode for at køre applikationen
     public static void main(String[] args) {
         GuestFrame guestFrame = new GuestFrame();
         guestFrame.show();
