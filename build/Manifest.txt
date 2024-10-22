@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Class-Path: ../libs/mariadb-java-client-3.4.1.jar; 
+Main-Class: Database
