@@ -16,7 +16,7 @@ public class GuestFrame implements ActionListener {
     private JButton projectPropButton;
     private JButton projectButton;
     private JButton fundsButton;
-
+    
 
     // Constructor til at opsætte GUI
     public GuestFrame() {
