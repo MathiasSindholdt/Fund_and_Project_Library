@@ -2,7 +2,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class proposalProject extends superProject {
+public class proposalProject extends projectAbstract {
 
     public proposalProject(
         String projectTitle,

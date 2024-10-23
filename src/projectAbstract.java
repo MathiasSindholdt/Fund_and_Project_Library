@@ -1,24 +1,24 @@
 import java.time.LocalDateTime;
 
-public class superProject extends elementFormatting {
-    private String projectPurposeString;
-    private String projectOwnerString;
-    private String projectTargetAudienceString;
+public class projectAbstract extends elementFormatting {
+    private String projectPurpose;
+    private String projectOwner;
+    private String projectTargetAudience;
     private long projectBudget = 0; //Handles large numbers
     private LocalDateTime[] projectTimespan = new LocalDateTime[2];
-    private String projectActivitiesString;
+    private String projectActivities;
     
 
     public String getProjectPurpose(){
-        return projectPurposeString;
+        return projectPurpose;
     }
 
     public String getProjectOwner(){
-        return projectOwnerString;
+        return projectOwner;
     }
 
     public String getProjectTargetAudience(){
-        return projectTargetAudienceString;
+        return projectTargetAudience;
     }
 
     public long getProjectBudget(){
@@ -35,19 +35,19 @@ public class superProject extends elementFormatting {
 
 
     public String getProjectActivities(){
-        return projectActivitiesString;
+        return projectActivities;
     }
 
-    public void setProjectPurpose(String projectPurpose){
-        this.projectPurposeString = projectPurpose;
+    public void setProjectPurpose(String newProjectPurpose){
+        this.projectPurpose = newProjectPurpose;
     }
 
-    public void setProjectOwner(String projectOwner){
-        this.projectOwnerString = projectOwner;
+    public void setProjectOwner(String newProjectOwner){
+        this.projectOwner = newProjectOwner;
     }
 
-    public void setProjectTargetAudience(String projectTargetAudience){
-        this.projectTargetAudienceString = projectTargetAudience;
+    public void setProjectTargetAudience(String newProjectTargetAudience){
+        this.projectTargetAudience = newProjectTargetAudience;
     }
 
     public void setProjectBudget(long newProjectBudget){
@@ -101,13 +101,13 @@ public class superProject extends elementFormatting {
     */
 
     public void setProjectActivities(String newProjectActivities){
-        this.projectActivitiesString = newProjectActivities;
+        this.projectActivities = newProjectActivities;
     }
     
     public static void main(String[] args) {
         String[] testCatories = {"Byg","Trivsel","cat3"};
   
-        superProject superProject = new superProject();
+        projectAbstract superProject = new projectAbstract();
         superProject.setTitle("testProject");
         superProject.setDescription("Lorem Ipsum");
         superProject.setProjectBudget(80000000);
