@@ -1,81 +1,32 @@
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 
-public class project extends superProject {
+public class project extends projectAbstract {
     ArrayList<fundClass> ClosestDeadlineFunds = new ArrayList<fundClass>();
+
 
     public void sortFundsForCloesestDeadlines(ArrayList<fundClass> fundList){
         ArrayList<fundClass> tempfundList = compareCategoriesWithFund(true, removePassedDeadlines(fundList));
-    }
+            // Sort the funds based on the furthest deadline
 
-    public LocalDateTime getFurthestDeadline(fundClass myFund){
-        // Assume myFund is populated with deadlines
-        LocalDateTime furthestDate = getFurthestDeadline(myFund);
-        System.out.println("The furthest deadline for the fund is: " + furthestDate);
-        
-        return furthestDate;
-    }
-    
+        // Print unsorted funds by furthest deadline
+        System.out.println("Before sorting:");
+        for (fundClass fund : tempfundList) {
+            System.out.println(fund.getDeadlines());
+        }
+        fundQSort sorting = new fundQSort();
+        sorting.fundQuickSort(tempfundList);
 
-    //QSORT ER IKKE IMPLEMENTERET ORDENLIGT
-    public class FundSorter {
-
-        // QuickSort method
-        public static void quickSort(ArrayList<fundClass> funds) {
-            quickSortHelper(funds, 0, funds.size() - 1);
-        }
-    
-        private static void quickSortHelper(ArrayList<fundClass> funds, int low, int high) {
-            if (low < high) {
-                int pivotIndex = partition(funds, low, high);
-                quickSortHelper(funds, low, pivotIndex - 1);
-                quickSortHelper(funds, pivotIndex + 1, high);
-            }
-        }
-    
-        private static int partition(ArrayList<fundClass> funds, int low, int high) {
-            fundClass pivot = funds.get(high); // Choose the last element as the pivot
-            LocalDateTime pivotDeadline = getFurthestDeadline(pivot);
-    
-            int i = low - 1; // Index of the smaller element
-            for (int j = low; j < high; j++) {
-                // If the current fund's furthest deadline is less than or equal to pivot
-                if (getFurthestDeadline(funds.get(j)).isBefore(pivotDeadline) ||
-                    getFurthestDeadline(funds.get(j)).isEqual(pivotDeadline)) {
-                    i++;
-                    // Swap funds[i] and funds[j]
-                    swap(funds, i, j);
-                }
-            }
-            // Swap funds[i + 1] and pivot (funds[high])
-            swap(funds, i + 1, high);
-            return i + 1;
-        }
-    
-        // Helper method to swap elements in the ArrayList
-        private static void swap(ArrayList<fundClass> funds, int i, int j) {
-            fundClass temp = funds.get(i);
-            funds.set(i, funds.get(j));
-            funds.set(j, temp);
-        }
-    
-        // Method to get the furthest deadline from a fund
-        private static LocalDateTime getFurthestDeadline(fundClass fund) {
-            ArrayList<LocalDateTime> deadlines = fund.getDeadlines();
-            LocalDateTime furthest = deadlines.get(0); // Assume there's at least one deadline
-            for (LocalDateTime deadline : deadlines) {
-                if (deadline.isAfter(furthest)) {
-                    furthest = deadline;
-                }
-            }
-            return furthest;
+        // Print sorted funds by furthest deadline
+        System.out.println("\nAfter sorting:");
+        for (fundClass fund : tempfundList) {
+            System.out.println(fund.getDeadlines());
         }
     }
-    
+   
     public ArrayList<fundClass> removePassedDeadlines(ArrayList<fundClass> listOfFunds) {
         ArrayList<fundClass> withinTimespan = new ArrayList<>();
-        LocalDateTime dateChecked = LocalDateTime.now();
+        LocalDateTime dateChecked = LocalDateTime.now().minusDays(60);
         
         for (fundClass fund : listOfFunds) {
             boolean added = false;  // Flag to ensure fund is only added once
@@ -132,7 +83,7 @@ public ArrayList<fundClass> compareCategoriesWithFund(boolean onlyOneIsNeeded, A
     public static void main(String[] args) {
         //test fund1
         String[] fundCatories = {"cat1","cat2","cat3"};
-        LocalDateTime[] fundDeadlines = {LocalDateTime.parse("2024-10-02T12:00:00"),LocalDateTime.parse("2024-12-04T12:00:00")};
+        LocalDateTime[] fundDeadlines = {LocalDateTime.parse("2024-10-02T12:00:00"),LocalDateTime.parse("2024-12-08T12:00:00")};
         String[] fundContacts = {"lucas","lundse"};
         String[] fundCollaborationHistory = {"P1","P2"};
 
@@ -190,10 +141,10 @@ public ArrayList<fundClass> compareCategoriesWithFund(boolean onlyOneIsNeeded, A
             fund3.setCategories(fund3Catories[i]);
         }
         for (int i = 0; i < fund3Deadlines.length ; i++){
-            fund.setDeadlines(fund3Deadlines[i]);
+            fund3.setDeadlines(fund3Deadlines[i]);
         }
         for (int i = 0; i < fund3Contacts.length ; i++){
-            fund.setContacts(fund3Contacts[i]);
+            fund3.setContacts(fund3Contacts[i]);
         }
         for (int i = 0; i < fund3CollaborationHistory.length ; i++){
             fund3.setCollaborationHistory(fund3CollaborationHistory[i]);
@@ -263,17 +214,8 @@ public ArrayList<fundClass> compareCategoriesWithFund(boolean onlyOneIsNeeded, A
     for (fundClass funde : validFunds) {
         System.out.println(funde.getTitle());
     }
-    System.out.println("Before sorting:");
-    for (fundClass funde : listOfFunds) {
-        System.out.println(fund.getTitle() + " - Furthest Deadline: " + getFurthestDeadline(listOfFunds));
-    }
 
-    // Sort the funds based on the furthest deadline
-    funSorter(listOfFunds);
+    myProject.sortFundsForCloesestDeadlines(listOfFunds);
 
-    System.out.println("\nAfter sorting:");
-    for (fundClass funde : listOfFunds) {
-        System.out.println(fund.getTitle() + " - Furthest Deadline: " + getFurthestDeadline(listOfFunds));
-    }
 }
 }
