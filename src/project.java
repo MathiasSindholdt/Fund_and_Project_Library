@@ -101,7 +101,7 @@ public class project extends projectAbstract {
         project.setProjectActivities("Her er noget vi skal have gjort");
 
         LocalDateTime timeSpanproject[] = {project.getProjectTimeSpanFrom(),project.getProjectTimeSpanTo()};
-
+        System.out.println("TYPE: " + project.getClass());
         System.out.println("Here is the project: " + project.getTitle());
         System.out.println("It has the following description: " + project.getDescription());
         System.out.println("It was created at: " + project.getDateCreated());
