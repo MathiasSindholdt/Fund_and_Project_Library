@@ -3,6 +3,38 @@ import java.util.ArrayList;
 
 public class project extends projectAbstract {
     private ArrayList<fundClass> closestDeadlineFunds = new ArrayList<fundClass>();
+    public project(
+        String projectTitle,
+        ArrayList<String> categories,
+        String description,
+        String purpose,
+        String owner,
+        String projectTargetAudience,
+        Long projectBudget,
+        LocalDateTime from,
+        LocalDateTime to,
+        String projectActivities,
+        ArrayList<fundClass> fundList,
+        boolean onlyOneIsNeeded
+    ){
+        this.setTitle(projectTitle);
+        for (String category : categories) {
+            this.setCategories(category);
+        }
+        this.setDescription(description);
+        this.setProjectPurpose(purpose);
+        this.setProjectOwner(owner);
+        this.setProjectTargetAudience(projectTargetAudience);
+        this.setProjectBudget(projectBudget);
+        this.setTimeSpan(from, to);
+        this.setProjectActivities(projectActivities);
+        this.setClosestDeadlineFunds(fundList, onlyOneIsNeeded);
+    }
+
+    //Overloaded constructor This enables the user of pure setters if only parts are needed to be changed
+    //IMPORTANT! THIS REQUIRES MANUAL SETTING OF ALL PARAMETERS!
+    public project(){
+    }
 
     public ArrayList<fundClass> getClosestDeadlineFunds(){
         return closestDeadlineFunds;
