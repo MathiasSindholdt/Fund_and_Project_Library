@@ -88,17 +88,6 @@ public class projectAbstract extends elementFormatting {
             System.out.println("TimeSpan set from " + from + " to " + to);
         }
     }
-    /*
-    //This is an overloaed failover function for timespan, safely setting one if no data present
-    public void setTimeSpan() {
-        this.projectTimespan[0] = LocalDateTime.now();
-        this.projectTimespan[1] = this.projectTimespan[0].plusDays(1);
-        if (this.projectTimespan[1].isBefore(this.projectTimespan[0])) {
-            throw new IllegalArgumentException("'to' must be after 'from'");
-        }
-        System.out.println("TimeSpan set from " + projectTimespan[0]+ " to " + projectTimespan[1] + " (default to current time and +1 day)");
-    }
-    */
 
     public void setProjectActivities(String newProjectActivities){
         this.projectActivities = newProjectActivities;
