@@ -23,6 +23,7 @@ public class GuestFrame implements ActionListener {
     // List to store project proposals
     private List<ProjectProposal> projectProposals;
     private JPanel projectProposalListPanel;
+    private JPanel projectProposalFullPanel;
 
     // Constructor to set up the GUI
     public GuestFrame() {
@@ -124,6 +125,21 @@ public class GuestFrame implements ActionListener {
 
         // Scroll pane to handle multiple proposals
         JScrollPane scrollPane = new JScrollPane(projectProposalListPanel);
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+        return panel;
+    }
+
+    private JPanel createProjectProposalFullPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+      
+        // Panel to display project proposals dynamically
+        projectProposalListPanel = new JPanel();
+        projectProposalListPanel.setLayout(new BoxLayout(projectProposalFullPanel, BoxLayout.Y_AXIS));
+
+        // Scroll pane to handle multiple proposals
+        JScrollPane scrollPane = new JScrollPane(projectProposalFullPanel);
         panel.add(scrollPane, BorderLayout.CENTER);
 
         return panel;
@@ -324,7 +340,6 @@ public class GuestFrame implements ActionListener {
     }
 }
 
-// Class to represent a project proposal
 class ProjectProposal {
     private String title;
     private String idea;
@@ -359,5 +374,4 @@ class ProjectProposal {
         return owner;
     }
 
-    // Add getters for other fields if needed
 }
