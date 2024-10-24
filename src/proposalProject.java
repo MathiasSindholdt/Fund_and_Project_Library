@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class proposalProject extends projectAbstract {
-
+    //Normal parameter based constructor
     public proposalProject(
         String projectTitle,
         ArrayList<String> categories,
@@ -27,6 +27,11 @@ public class proposalProject extends projectAbstract {
         this.setProjectBudget(projectBudget);
         this.setTimeSpan(from, to);
         this.setProjectActivities(projectActivities);
+    }
+
+    //Overloaded constructor This enables the user of pure setters if only parts are needed to be changed
+    //IMPORTANT! THIS REQUIRES MANUAL SETTING OF ALL PARAMETERS!
+    public proposalProject(){
     }
 
     public static void main(String[] args) {
