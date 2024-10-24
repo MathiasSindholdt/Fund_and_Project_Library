@@ -2,7 +2,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Date;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.*;
 
 public class GuestFrame implements ActionListener {
@@ -19,14 +20,20 @@ public class GuestFrame implements ActionListener {
     private JButton projectButton;
     private JButton fundsButton;
 
+    // List to store project proposals
+    private List<ProjectProposal> projectProposals;
+    private JPanel projectProposalListPanel;
+
     // Constructor to set up the GUI
     public GuestFrame() {
         initializeFrame();  // Initialize JFrame
-        
+
+        projectProposals = new ArrayList<>();  // Initialize the project proposals list
+
         JPanel panel1 = createTopPanel();  // Top panel
         JPanel panel2 = createSidePanel();  // Left-side panel
         JPanel panel3 = createRightSidePanel();  // Right-side panel
-        
+
         // Card layout for switching between views
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
@@ -53,7 +60,7 @@ public class GuestFrame implements ActionListener {
 
     private JPanel createTopPanel() {
         JPanel panel1 = new JPanel();
-        panel1.setBackground(new Color(213, 213, 213, 255)); 
+        panel1.setBackground(new Color(213, 213, 213, 255));
         panel1.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
 
         backButton = createBackButton();
@@ -105,10 +112,20 @@ public class GuestFrame implements ActionListener {
 
     // Separate view for "Projekt forslag"
     private JPanel createProjectProposalView() {
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.WHITE); // Just a blank panel for now
-        JLabel label = new JLabel("Projekt Forslag");
-        panel.add(label);
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+
+        JLabel label = new JLabel("Projekt Forslag", SwingConstants.CENTER);
+        panel.add(label, BorderLayout.NORTH);
+
+        // Panel to display project proposals dynamically
+        projectProposalListPanel = new JPanel();
+        projectProposalListPanel.setLayout(new BoxLayout(projectProposalListPanel, BoxLayout.Y_AXIS));
+
+        // Scroll pane to handle multiple proposals
+        JScrollPane scrollPane = new JScrollPane(projectProposalListPanel);
+        panel.add(scrollPane, BorderLayout.CENTER);
+
         return panel;
     }
 
@@ -139,21 +156,21 @@ public class GuestFrame implements ActionListener {
 
     private JButton createProjectPropButton(String text) {
         JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(130, 50));  
+        button.setPreferredSize(new Dimension(130, 50));
         button.addActionListener(this);
         return button;
     }
 
     private JButton createProjectButton(String text) {
         JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(130, 50)); 
+        button.setPreferredSize(new Dimension(130, 50));
         button.addActionListener(this);
         return button;
     }
 
     private JButton createFundsButton(String text) {
         JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(130, 50));  
+        button.setPreferredSize(new Dimension(130, 50));
         button.addActionListener(this);
         return button;
     }
@@ -270,18 +287,12 @@ public class GuestFrame implements ActionListener {
             Date toDate = new Date(((java.util.Date) toDateSpinner.getValue()).getTime());
             String activities = activitiesField.getText();
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+            // Create a new project proposal and add it to the list
+            ProjectProposal proposal = new ProjectProposal(name, idea, description, ideaFrom, owner, target, budget, fromDate, toDate, activities);
+            projectProposals.add(proposal);
 
-            System.out.println("Project Title: " + name);
-            System.out.println("Idea/Purpose: " + idea);
-            System.out.println("Description: " + description);
-            System.out.println("Idea From: " + ideaFrom);
-            System.out.println("Owner: " + owner);
-            System.out.println("Target Audience: " + target);
-            System.out.println("Estimated Budget: " + budget);
-            System.out.println("From Date: " + dateFormat.format(fromDate));
-            System.out.println("To Date: " + dateFormat.format(toDate));
-            System.out.println("Activities: " + activities);
+            // Update the project proposal panel
+            updateProjectProposalList();
 
             dialog.dispose();
         });
@@ -293,8 +304,60 @@ public class GuestFrame implements ActionListener {
         dialog.setVisible(true);
     }
 
+    // Update the project proposal list in the "ProjectProposal" panel
+    private void updateProjectProposalList() {
+        projectProposalListPanel.removeAll(); // Clear the current list
+
+        // Loop through the project proposals and display them
+        for (ProjectProposal proposal : projectProposals) {
+            JLabel proposalLabel = new JLabel(proposal.getTitle() + " - " + proposal.getOwner());
+            projectProposalListPanel.add(proposalLabel);
+        }
+
+        projectProposalListPanel.revalidate(); // Refresh the panel to display new components
+        projectProposalListPanel.repaint();
+    }
+
     public static void main(String[] args) {
         GuestFrame guestFrame = new GuestFrame();
         guestFrame.show();
     }
+}
+
+// Class to represent a project proposal
+class ProjectProposal {
+    private String title;
+    private String idea;
+    private String description;
+    private String ideaFrom;
+    private String owner;
+    private String target;
+    private String budget;
+    private Date fromDate;
+    private Date toDate;
+    private String activities;
+
+    public ProjectProposal(String title, String idea, String description, String ideaFrom, String owner, String target,
+                           String budget, Date fromDate, Date toDate, String activities) {
+        this.title = title;
+        this.idea = idea;
+        this.description = description;
+        this.ideaFrom = ideaFrom;
+        this.owner = owner;
+        this.target = target;
+        this.budget = budget;
+        this.fromDate = fromDate;
+        this.toDate = toDate;
+        this.activities = activities;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    // Add getters for other fields if needed
 }
