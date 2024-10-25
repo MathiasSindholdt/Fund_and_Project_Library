@@ -40,6 +40,7 @@ public class project extends projectAbstract {
         return closestDeadlineFunds;
     }
 
+
     public void setClosestDeadlineFunds(ArrayList<fundClass> fundList, boolean onlyOneIsNeeded){
         sortingFundDeadlines sorter = new sortingFundDeadlines();
         closestDeadlineFunds =  sorter.sortFundsForCloesestDeadlines(fundList, this, onlyOneIsNeeded);
