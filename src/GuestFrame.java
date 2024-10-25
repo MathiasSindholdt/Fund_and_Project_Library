@@ -89,12 +89,7 @@ public class GuestFrame implements ActionListener {
         return panel2;
     }
 
-    private JPanel createRightSidePanel() {
-        JPanel panel3 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        panel3.setBackground(new Color(213, 213, 213, 255));
-        panel3.setPreferredSize(new Dimension(900, 100));
-        return panel3;
-    }
+
 
     // Center panel for the main view (like before)
     private JPanel createCenterPanel() {
@@ -125,21 +120,6 @@ public class GuestFrame implements ActionListener {
 
         // Scroll pane to handle multiple proposals
         JScrollPane scrollPane = new JScrollPane(projectProposalListPanel);
-        panel.add(scrollPane, BorderLayout.CENTER);
-
-        return panel;
-    }
-
-    private JPanel createProjectProposalFullPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(Color.WHITE);
-      
-        // Panel to display project proposals dynamically
-        projectProposalListPanel = new JPanel();
-        projectProposalListPanel.setLayout(new BoxLayout(projectProposalFullPanel, BoxLayout.Y_AXIS));
-
-        // Scroll pane to handle multiple proposals
-        JScrollPane scrollPane = new JScrollPane(projectProposalFullPanel);
         panel.add(scrollPane, BorderLayout.CENTER);
 
         return panel;
@@ -320,58 +300,124 @@ public class GuestFrame implements ActionListener {
         dialog.setVisible(true);
     }
 
-    // Update the project proposal list in the "ProjectProposal" panel
+    private JPanel createRightSidePanel() {
+        JPanel panel3 = new JPanel(new BorderLayout());
+        panel3.setBackground(new Color(213, 213, 213, 255));
+        panel3.setPreferredSize(new Dimension(900, 100));
+    
+        // Panel to show full details of selected proposal
+        projectProposalFullPanel = new JPanel();
+        projectProposalFullPanel.setLayout(new BoxLayout(projectProposalFullPanel, BoxLayout.Y_AXIS));
+    
+        JScrollPane scrollPane = new JScrollPane(projectProposalFullPanel);
+        panel3.add(scrollPane, BorderLayout.CENTER);
+    
+        return panel3;
+    }
+    
+    // Method to update the list and add mouse listeners
     private void updateProjectProposalList() {
-        projectProposalListPanel.removeAll(); // Clear the current list
-
-        // Loop through the project proposals and display them
+        projectProposalListPanel.removeAll();
+    
         for (ProjectProposal proposal : projectProposals) {
             JLabel proposalLabel = new JLabel(proposal.getTitle() + " - " + proposal.getOwner());
+    
+            proposalLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    showProjectDetails(proposal); // Show the selected project's details
+                }
+            });
+    
             projectProposalListPanel.add(proposalLabel);
         }
-
-        projectProposalListPanel.revalidate(); // Refresh the panel to display new components
+    
+        projectProposalListPanel.revalidate();
         projectProposalListPanel.repaint();
     }
+    class ProjectProposal {
+        private String title;
+        private String idea;
+        private String description;
+        private String ideaFrom;
+        private String owner;
+        private String target;
+        private String budget;
+        private Date fromDate;
+        private Date toDate;
+        private String activities;
+    
+        public ProjectProposal(String title, String idea, String description, String ideaFrom, String owner, String target,
+                               String budget, Date fromDate, Date toDate, String activities) {
+            this.title = title;
+            this.idea = idea;
+            this.description = description;
+            this.ideaFrom = ideaFrom;
+            this.owner = owner;
+            this.target = target;
+            this.budget = budget;
+            this.fromDate = fromDate;
+            this.toDate = toDate;
+            this.activities = activities;
+        }
+    
+   public String getTitle() {
+            return title;
+        }
+    public String getOwner() {
+            return owner;
+        }
+    public String getIdea() {
+        return idea;
+    }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public String getIdeaFrom() {
+        return ideaFrom;
+    }
+    public String getTarget() {
+        return target;
+    }
+
+    public String getBudget() {
+        return budget;
+    }
+
+    public Date getFromDate() {
+        return fromDate;
+    }
+
+    public Date getToDate() {
+        return toDate;
+    }
+
+    public String getActivities() {
+        return activities;
+    }
+}  
+    // Method to display the clicked project's details
+    private void showProjectDetails(ProjectProposal proposal) {
+        projectProposalFullPanel.removeAll();
+        
+        projectProposalFullPanel.add(new JLabel("Title: " + proposal.getTitle()));
+        projectProposalFullPanel.add(new JLabel("Owner: " + proposal.getOwner()));
+        projectProposalFullPanel.add(new JLabel("Idea: " + proposal.getIdea()));
+        projectProposalFullPanel.add(new JLabel("Description: " + proposal.getDescription()));
+        projectProposalFullPanel.add(new JLabel("Idea From: " + proposal.getIdeaFrom()));
+        projectProposalFullPanel.add(new JLabel("Target: " + proposal.getTarget()));
+        projectProposalFullPanel.add(new JLabel("Budget: " + proposal.getBudget()));
+        projectProposalFullPanel.add(new JLabel("From Date: " + proposal.getFromDate().toString()));
+        projectProposalFullPanel.add(new JLabel("To Date: " + proposal.getToDate().toString()));
+        projectProposalFullPanel.add(new JLabel("Activities: " + proposal.getActivities()));
+    
+        projectProposalFullPanel.revalidate();
+        projectProposalFullPanel.repaint();
+    }
+    
     public static void main(String[] args) {
         GuestFrame guestFrame = new GuestFrame();
         guestFrame.show();
     }
-}
-
-class ProjectProposal {
-    private String title;
-    private String idea;
-    private String description;
-    private String ideaFrom;
-    private String owner;
-    private String target;
-    private String budget;
-    private Date fromDate;
-    private Date toDate;
-    private String activities;
-
-    public ProjectProposal(String title, String idea, String description, String ideaFrom, String owner, String target,
-                           String budget, Date fromDate, Date toDate, String activities) {
-        this.title = title;
-        this.idea = idea;
-        this.description = description;
-        this.ideaFrom = ideaFrom;
-        this.owner = owner;
-        this.target = target;
-        this.budget = budget;
-        this.fromDate = fromDate;
-        this.toDate = toDate;
-        this.activities = activities;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getOwner() {
-        return owner;
-    }
-
 }
