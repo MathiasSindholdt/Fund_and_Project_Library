@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class compareProjectCatsWithFundCats {
     public ArrayList<fundClass> compareCategoriesWithFund(boolean onlyOneIsNeeded, ArrayList<fundClass> fundList, project project) {
-        ArrayList<fundClass> tempList = fundList;
+        ArrayList<fundClass> tempList = new ArrayList<>();
         for(fundClass fund : fundList){
             boolean flagPresent = false;
             // Iterate through 'this' categories
