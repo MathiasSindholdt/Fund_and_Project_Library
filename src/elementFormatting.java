@@ -34,6 +34,10 @@ public class elementFormatting {
         this.categories.add(newCategory);
     }
 
+    public void setProjectCatagories(ArrayList<String> newCategories){
+        this.categories = newCategories;
+    }
+
     public void setDescription(String newDescription){
         if (newDescription.length() > 2000){
             throw new IllegalArgumentException("Description length exceeds 2000 characters.");
