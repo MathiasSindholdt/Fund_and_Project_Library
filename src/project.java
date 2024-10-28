@@ -56,7 +56,7 @@ public class project extends projectAbstract {
         fundClass fund = new fundClass();
         fund.setTitle("fundTitle");
         fund.setDescription("Lorem Ipsum");
-        fund.setCommonBudget(80000000);
+        fund.setBudget(100000,80000000);
         for (int i = 0; i < fundCatories.length ; i++){
             fund.setCategories(fundCatories[i]);
         }
@@ -79,7 +79,7 @@ public class project extends projectAbstract {
         fundClass fund2 = new fundClass();
         fund2.setTitle("fundTitle2");
         fund2.setDescription("Lorem Ipsum");
-        fund2.setCommonBudget(80000000);
+        fund2.setBudget(100000,80000000);
         for (int i = 0; i < fund2Catories.length ; i++){
             fund2.setCategories(fund2Catories[i]);
         }
@@ -102,7 +102,7 @@ public class project extends projectAbstract {
         fundClass fund3 = new fundClass();
         fund3.setTitle("fundTitle3");
         fund3.setDescription("Lorem Ipsum");
-        fund3.setCommonBudget(80000000);
+        fund3.setBudget(100000,80000000);
         for (int i = 0; i < fund3Catories.length ; i++){
             fund3.setCategories(fund3Catories[i]);
         }

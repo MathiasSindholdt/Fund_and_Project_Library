@@ -4,8 +4,10 @@ import java.time.LocalDateTime;
 public class fundClass extends elementFormatting{
     private ArrayList<LocalDateTime> deadlines = new ArrayList<LocalDateTime>();
     private ArrayList<String> contacts = new ArrayList<String>();
-    private long commonBudget = 0; //Handles large numbers
+    private long budgetMin = 0; //Handles large numbers
+    private long budgetMax = 0; //Handles large numbers
     private ArrayList<String> collaborationHistory= new ArrayList<String>();
+    private boolean running;
 
     public ArrayList<LocalDateTime> getDeadlines(){
         return deadlines;
@@ -15,12 +17,25 @@ public class fundClass extends elementFormatting{
         return contacts;
     }
 
-    public long getCommonBudget(){
-        return commonBudget;
+    public long getBudgetMin(){
+        return budgetMin;
+    }
+
+    public long getBudgetMax(){
+        return budgetMax;
+    }
+
+    public String getBudgetSpan(){
+        String tempString = getBudgetMin() + " - " + getBudgetMax();
+        return tempString;
     }
 
     public ArrayList<String> getCollaborationHistory(){
         return collaborationHistory;
+    }
+
+    public boolean getRunning(){
+        return running;
     }
 
     public void setDeadlines(LocalDateTime newDeadline){
@@ -31,13 +46,61 @@ public class fundClass extends elementFormatting{
         this.contacts.add(newContact);
     }
 
-    public void setCommonBudget(long newBudget){
-        this.commonBudget = newBudget;
+    public void setBudgetMin(long newBudgetMin){
+        this.budgetMin = newBudgetMin;
+    }
+
+    public void setBudgetMax(long newBudgetMax){
+        this.budgetMin = newBudgetMax;
+    }
+
+    public void setBudget(long newBudgetMin,long newBudgetMax){
+        this.budgetMin = newBudgetMin;
+        this.budgetMax = newBudgetMax;
     }
 
     public void setCollaborationHistory(String newCollaboration){
         this.collaborationHistory.add(newCollaboration);
     }
+
+    public void setRunning(boolean setRunning){
+        this.running = setRunning;
+    }
+
+    //Constructor
+    public fundClass(
+        String fundName,
+        String fundDescription, 
+        long fundAmountFrom,
+        long fundAmountTo,
+        LocalDateTime[] fundDeadline,
+        String[] fundCategory,
+        String[] fundCollaborationHistory,
+        String[] fundContacts,
+        boolean Collaborated,
+        boolean running){
+        this.setTitle(fundName);
+        this.setDescription(fundDescription);
+        this.setBudget(fundAmountFrom,fundAmountTo);
+        for(int i = 0; i < fundDeadline.length ; i++){
+            this.setDeadlines(fundDeadline[i]);
+        }
+        for(int i = 0; i < fundCategory.length ; i++){
+            this.setCategories(fundCategory[i]);
+        }
+        for(int i = 0; i < fundContacts.length ; i++){
+            this.setContacts(fundContacts[i]);
+        }
+        if(Collaborated){
+            for(int i = 0; i < fundCollaborationHistory.length ; i++){
+                this.setCollaborationHistory(fundCollaborationHistory[i]);
+            }
+        }
+        this.setRunning(running);
+    }
+
+        //Overloaded
+        public fundClass(){}
 
     public static void main(String[] args) {
         String[] testCatories = {"cat1","cat2","cat3"};
@@ -48,7 +111,7 @@ public class fundClass extends elementFormatting{
         fundClass fund = new fundClass();
         fund.setTitle("testTitle2");
         fund.setDescription("Lorem Ipsum");
-        fund.setCommonBudget(80000000);
+        fund.setBudget(100000,80000000);
         for (int i = 0; i < testCatories.length ; i++){
             fund.setCategories(testCatories[i]);
         }
@@ -67,7 +130,7 @@ public class fundClass extends elementFormatting{
         System.out.println("It has the following categoreis: " + fund.getCategories());
         System.out.println("The deadlines for the fund is: " + fund.getDeadlines());
         System.out.println("Contact persons at the fund are: " + fund.getContacts());
-        System.out.println("The fund has a budget of: " + fund.getCommonBudget());
+        System.out.println("The fund has a budget of: " + fund.getBudgetSpan());
         System.out.println("We have previously collaborated on: " + fund.getCollaborationHistory());
     }
 }
