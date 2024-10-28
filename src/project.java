@@ -41,12 +41,14 @@ public class project extends projectAbstract {
         return closestDeadlineFunds;
     }
 
+
     public void setClosestDeadlineFunds(ArrayList<fundClass> fundList, boolean onlyOneIsNeeded){
         sortingFundDeadlines sorter = new sortingFundDeadlines();
         closestDeadlineFunds =  sorter.sortFundsForCloesestDeadlines(fundList, this, onlyOneIsNeeded);
     }
 
     public static void main(String[] args) {
+
         ArrayList<fundClass> fundList = new ArrayList<fundClass>();
         String[] cat1 = {"Byg", "Trivsel", "Undervisning"};
         String[] cat2 = {"Byg", "Random", "Undervisning"};
@@ -63,6 +65,7 @@ public class project extends projectAbstract {
         fund0.setCommonBudget(100000);
         for (String category : cat1) {
             fund0.setCategories(category);
+
         }
         for (String contact : contact1) {
             fund0.setContacts(contact);
