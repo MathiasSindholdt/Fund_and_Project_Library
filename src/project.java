@@ -93,11 +93,11 @@ public class project extends projectAbstract {
         }
 
         fundClass fund2 = new fundClass();
-        fund2.setTitle("fund2");
-        fund2.setDescription("This is fund2");
-        fund2.setCommonBudget(1000000);
-        for (String category : cat3) {
-            fund2.setCategories(category);
+        fund2.setTitle("fundTitle2");
+        fund2.setDescription("Lorem Ipsum");
+        fund2.setBudget(100000,80000000);
+        for (int i = 0; i < fund2Catories.length ; i++){
+            fund2.setCategories(fund2Catories[i]);
         }
         for (String contact : contact2) {
             fund2.setContacts(contact);
@@ -112,24 +112,27 @@ public class project extends projectAbstract {
         fundList.add(fund1);
         fundList.add(fund2);
 
-        project myProject1 = new project(
-            "ProjectTitle1",
-            new ArrayList<>(Arrays.asList(cat1)),
-            "This is a description",
-            "Purpose1",
-            "Anders",
-            "TargetAudience1",
-            10000L,
-            LocalDateTime.parse("2024-10-11T12:00:00"),
-            LocalDateTime.parse("2024-12-12T12:00:00"),
-            "Activities1",
-            fundList,
-            true
-        );
-        project myProject2 = new project();
-        myProject2.setTitle("ProjectTitle2");
-        for (String category : cat2){
-            myProject2.setCategories(category);
+        //test fund3
+        String[] fund3Catories = {"cat1","cat2","cat3"};
+        LocalDateTime[] fund3Deadlines = {LocalDateTime.parse("2024-10-04T12:00:00")};
+        String[] fund3Contacts = {"lucas","lundse"};
+        String[] fund3CollaborationHistory = {"P1","P2"};
+
+        fundClass fund3 = new fundClass();
+        fund3.setTitle("fundTitle3");
+        fund3.setDescription("Lorem Ipsum");
+        fund3.setBudget(100000,80000000);
+        for (int i = 0; i < fund3Catories.length ; i++){
+            fund3.setCategories(fund3Catories[i]);
+        }
+        for (int i = 0; i < fund3Deadlines.length ; i++){
+            fund3.setDeadlines(fund3Deadlines[i]);
+        }
+        for (int i = 0; i < fund3Contacts.length ; i++){
+            fund3.setContacts(fund3Contacts[i]);
+        }
+        for (int i = 0; i < fund3CollaborationHistory.length ; i++){
+            fund3.setCollaborationHistory(fund3CollaborationHistory[i]);
         }
         myProject2.setDescription("This is a description too");
         myProject2.setProjectPurpose("Purpose2");
@@ -150,18 +153,26 @@ public class project extends projectAbstract {
         System.out.println("The main audience is: " + myProject1.getProjectTargetAudience());
         System.out.println("The following should be completed: " + myProject1.getProjectActivities());
 
-        System.out.println("TYPE: " + myProject2.getClass());
-        System.out.println("Here is the myProject2: " + myProject2.getTitle());
-        System.out.println("It has the following description: " + myProject2.getDescription());
-        System.out.println("It was created at: " + myProject2.getDateCreated());
-        System.out.println("It has the following categories: " + myProject2.getCategories());
-        System.out.println("The main idea is: " + myProject2.getProjectPurpose());
-        System.out.println("The myProject2 Owner is: " + myProject2.getProjectOwner());
-        System.out.println("The main audience is: " + myProject2.getProjectTargetAudience());
-        System.out.println("The following should be completed: " + myProject2.getProjectActivities());
-        System.out.println("The budget allocated is: " + myProject2.getProjectBudget());
-        System.out.println("The time span is from: " + myProject2.getProjectTimeSpanFrom() + " to " + myProject2.getProjectTimeSpanTo());
-        System.out.println("Closest deadline funds for myProject2: " + myProject2.getClosestDeadlineFunds());
+        LocalDateTime timeSpanproject[] = {project.getProjectTimeSpanFrom(),project.getProjectTimeSpanTo()};
+        System.out.println("TYPE: " + project.getClass());
+        System.out.println("Here is the project: " + project.getTitle());
+        System.out.println("It has the following description: " + project.getDescription());
+        System.out.println("It was created at: " + project.getDateCreated());
+        System.out.println("It has the following categoreis: " + project.getCategories());
+        System.out.println("The main idea is: " + project.getProjectPurpose());
+        System.out.println("The Project Owner is: " + project.getProjectOwner());
+        System.out.println("The main audience is: " + project.getProjectTargetAudience());
+        System.out.println("The span of the project is from: " + timeSpanproject[0] + "and to: " + timeSpanproject[1]);
+        System.out.println("The following should be completed: " + project.getProjectActivities());
+
+        // Add funds to list
+    ArrayList<fundClass> listOfFunds = new ArrayList<>();
+    listOfFunds.add(fund);
+    listOfFunds.add(fund2);
+    listOfFunds.add(fund3);
+
+    // Instantiate project and call removePassedDeadlines method
+    project myProject = new project();
 
     // Print initial list of funds
     System.out.println("Initial list of funds:");

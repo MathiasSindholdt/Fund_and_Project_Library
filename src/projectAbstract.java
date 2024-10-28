@@ -1,9 +1,11 @@
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class projectAbstract extends elementFormatting {
     private String projectPurpose;
     private String projectOwner;
     private String projectTargetAudience;
+    private ArrayList<fundClass> fundList = new ArrayList<fundClass>();
     private long projectBudget = 0; //Handles large numbers
     private LocalDateTime[] projectTimespan = new LocalDateTime[2];
     private String projectActivities;
@@ -11,6 +13,15 @@ public class projectAbstract extends elementFormatting {
 
     public String getProjectPurpose(){
         return projectPurpose;
+    }
+
+    public ArrayList<fundClass> setDeadlines(ArrayList<fundClass> fundList){
+        this.fundList = fundList;
+        return fundList;
+    }
+
+    public ArrayList<fundClass> getDeadlines(){
+        return fundList;
     }
 
     public String getProjectOwner(){

@@ -79,7 +79,7 @@ public class fundQSort {
         fund3.setDeadlines(LocalDateTime.of(2024, 9, 5, 12, 0)); // Single deadline
         funds.add(fund3);
 
-        // Print unsorted funds by furthest deadline
+        // Print unsorted funds by closest deadline
         System.out.println("Before sorting:");
         for (fundClass fund : funds) {
             System.out.println(getClosestDeadline(fund));
@@ -88,7 +88,7 @@ public class fundQSort {
         // Apply quickSort on the list of funds
         fundQuickSort(funds);
 
-        // Print sorted funds by furthest deadline
+        // Print sorted funds by closest deadline
         System.out.println("\nAfter sorting:");
         for (fundClass fund : funds) {
             System.out.println(getClosestDeadline(fund));
