@@ -49,7 +49,7 @@ public class project extends projectAbstract {
     public static void main(String[] args) {
         //test fund1
         String[] fundCatories = {"cat1","cat2","cat3"};
-        LocalDateTime[] fundDeadlines = {LocalDateTime.parse("2024-10-02T12:00:00"),LocalDateTime.parse("2024-12-08T12:00:00")};
+        LocalDateTime[] fundDeadlines = {LocalDateTime.parse("2024-12-06T12:00:00"),LocalDateTime.parse("2024-12-08T12:00:00")};
         String[] fundContacts = {"lucas","lundse"};
         String[] fundCollaborationHistory = {"P1","P2"};
 

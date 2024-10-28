@@ -20,11 +20,11 @@ public class fundQSort {
     // Partition method
     private static int partition(ArrayList<fundClass> funds, int low, int high) {
         fundClass pivot = funds.get(high); // Choose the last element as the pivot
-        LocalDateTime pivotDeadline = getFurthestDeadline(pivot);
+        LocalDateTime pivotDeadline = getClosestDeadline(pivot);
 
         int i = low - 1; // Index of the smaller element
         for (int j = low; j < high; j++) {
-            LocalDateTime currentFundDeadline = getFurthestDeadline(funds.get(j));
+            LocalDateTime currentFundDeadline = getClosestDeadline(funds.get(j));
 
             // Compare deadlines and swap if current fund's deadline is before the pivot's
             if (currentFundDeadline.isBefore(pivotDeadline) ||
@@ -46,19 +46,19 @@ public class fundQSort {
     }
 
     // Method to get the furthest deadline from a fund
-    private static LocalDateTime getFurthestDeadline(fundClass fund) {
+    private static LocalDateTime getClosestDeadline(fundClass fund) {
         ArrayList<LocalDateTime> deadlines = fund.getDeadlines();
         if (deadlines.isEmpty()) {
             return LocalDateTime.MIN; // Return the earliest possible date if no deadlines
         }
 
-        LocalDateTime furthest = deadlines.get(0); // Start with the first deadline
+        LocalDateTime closest = deadlines.get(0); // Start with the first deadline
         for (LocalDateTime deadline : deadlines) {
-            if (deadline.isAfter(furthest)) {
-                furthest = deadline;
+            if (deadline.isBefore(closest)) {
+                closest = deadline;
             }
         }
-        return furthest;
+        return closest;
     }
 
     // Test method
@@ -82,7 +82,7 @@ public class fundQSort {
         // Print unsorted funds by furthest deadline
         System.out.println("Before sorting:");
         for (fundClass fund : funds) {
-            System.out.println(getFurthestDeadline(fund));
+            System.out.println(getClosestDeadline(fund));
         }
 
         // Apply quickSort on the list of funds
@@ -91,7 +91,7 @@ public class fundQSort {
         // Print sorted funds by furthest deadline
         System.out.println("\nAfter sorting:");
         for (fundClass fund : funds) {
-            System.out.println(getFurthestDeadline(fund));
+            System.out.println(getClosestDeadline(fund));
         }
     }
 }
