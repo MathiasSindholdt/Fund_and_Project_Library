@@ -145,8 +145,6 @@ public class project extends projectAbstract {
         System.out.println("The span of the project is from: " + timeSpanproject[0] + "and to: " + timeSpanproject[1]);
         System.out.println("The following should be completed: " + project.getProjectActivities());
 
-
-
         // Add funds to list
     ArrayList<fundClass> listOfFunds = new ArrayList<>();
     listOfFunds.add(fund);
