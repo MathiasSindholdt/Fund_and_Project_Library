@@ -47,7 +47,7 @@ public class main {
             FundDeadline = new LocalDateTime[]{LocalDateTime.now().minusDays(randomNum),LocalDateTime.now().plusDays(randomNum+1)};
             FundAmountFrom = i*1000000;
             FundAmountTo = i*10000000;
-            if(i%2 == 0){
+            if(randomNum%2 == 0){
                 FundRunning = true;
             } else {
                 FundRunning = false;
@@ -68,6 +68,16 @@ public class main {
             System.out.println(fund1.getCategories());
             System.out.println(fund1.getContacts());
             System.out.println(fund1.getCollaborationHistory());            
+        }
+        System.out.println("------Running Funds------");
+        for(fundClass fund2 : runningFundList){
+            System.out.println(fund2.getTitle());
+            System.out.println(fund2.getDescription());
+            System.out.println(fund2.getBudgetSpan());
+            System.out.println(fund2.getDeadlines());
+            System.out.println(fund2.getCategories());
+            System.out.println(fund2.getContacts());
+            System.out.println(fund2.getCollaborationHistory());            
         }
         //Test of Proposal to Project constructor
         ProjectDescription = "Lorem Ipsum";
