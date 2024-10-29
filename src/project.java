@@ -1,6 +1,7 @@
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Arrays;
 
 public class project extends projectAbstract {
     private ArrayList<fundClass> closestDeadlineFunds = new ArrayList<fundClass>();
@@ -125,14 +126,14 @@ public class project extends projectAbstract {
         for (int i = 0; i < fund3Catories.length ; i++){
             fund3.setCategories(fund3Catories[i]);
         }
-        for (int i = 0; i < fund3Deadlines.length ; i++){
-            fund3.setDeadlines(fund3Deadlines[i]);
+        for (String contact : contact2) {
+            fund2.setContacts(contact);
         }
-        for (int i = 0; i < fund3Contacts.length ; i++){
-            fund3.setContacts(fund3Contacts[i]);
+        for (String collab : collab2) {
+            fund2.setCollaborationHistory(collab);
         }
-        for (int i = 0; i < fund3CollaborationHistory.length ; i++){
-            fund3.setCollaborationHistory(fund3CollaborationHistory[i]);
+        for (LocalDateTime deadline : fund2Deadline) {
+            fund2.setDeadlines(deadline);
         }
         myProject2.setDescription("This is a description too");
         myProject2.setProjectPurpose("Purpose2");
@@ -177,9 +178,12 @@ public class project extends projectAbstract {
     // Print initial list of funds
     System.out.println("Initial list of funds:");
     for (fundClass funde : fundList) {
+    for (fundClass funde : fundList) {
         System.out.println(funde.getTitle());
     }
     sortingFundDeadlines sorter = new sortingFundDeadlines();
+    sorter.sortFundsForCloesestDeadlines(fundList, myProject2, true);
+        
     sorter.sortFundsForCloesestDeadlines(fundList, myProject2, true);
         
 }
