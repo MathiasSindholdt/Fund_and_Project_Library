@@ -1,15 +1,9 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.*;
-import java.time.ZoneId;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Date;
 import javax.swing.*;
 
 public class UserFrame implements ActionListener {
@@ -32,39 +26,21 @@ public class UserFrame implements ActionListener {
     private JButton projectButton;
     private JButton fundsButton;
     private JButton archiveButton;
-    
+
     // List to store project proposals
     private List<ProjectProposal> projectProposals;
     private JPanel projectProposalListPanel;
     private JPanel projectProposalFullPanel;
-    
+
     private List<Project> projects;
     private JPanel projectListPanel;
     private JPanel projectFullPanel;
-    
-    private JPanel fundListPanel;
-    
-    // tag button
-    private JPanel tagButtonPanel;
-    
-    private boolean isInvalidLenght;
-    String projectTitle;
-    String projectDescription;
-    String projectPurpose; 
-    String projectOwner;
-    String projectTargetAudience;
-    Long projectBudget;
-    LocalDate fromDate;
-    LocalDate toDate;
-    LocalDateTime projectFromDate;
-    LocalDateTime projectToDate;
-    String projectActivities;
-    ArrayList<String> selectedCatagories;
+
 
     // Constructor to set up the GUI
     public UserFrame() {
         initializeFrame();  // Initialize JFrame
-        //UserFrameErrorHandling ErrorHandling = new UserFrameErrorHandling();
+
         projectProposals = new ArrayList<>();  // Initialize the project proposals list
         projects = new ArrayList<>(); 
 
@@ -83,8 +59,6 @@ public class UserFrame implements ActionListener {
         cardPanel.add(createFundsView(), "Funds"); // Funds view
         cardPanel.add(createArchiveView(), "Archive"); // Archive view
 
-
-        projectProposalListPanel = new JPanel();
 
         // Adding panels to the frame
         frame.add(panel1, BorderLayout.NORTH);
@@ -168,11 +142,6 @@ public class UserFrame implements ActionListener {
     private JPanel createProjectProposalView() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
-
-         // Panel for tag buttons
-        tagButtonPanel = new JPanel();
-        tagButtonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        panel.add(tagButtonPanel, BorderLayout.NORTH);
 
         JLabel label = new JLabel("Projekt Forslag", SwingConstants.CENTER);
         panel.add(label, BorderLayout.NORTH);
@@ -269,14 +238,6 @@ public class UserFrame implements ActionListener {
         return button;
     }
 
-    //catagory button
-    private JButton CreateCatagoryButton(String text){
-            JButton button = new JButton(text);
-            button.setPreferredSize(new Dimension(130, 50));
-            button.addActionListener(this);
-            return button;
-    }
-
     // Show the frame
     public void show() {
         frame.setVisible(true);
@@ -297,16 +258,13 @@ public class UserFrame implements ActionListener {
         } else if (e.getSource() == createProbButton) {
             openProjectProposalDialog(); // Opens a popup for creating a project proposal
         } // Switch back to the main view
-        else if (e.getSource() == createProjectButton) {
-            openProjectDialog();
-        }
     }
 
     // Restore the project proposal dialog
     private void openProjectProposalDialog() {
         JDialog dialog = new JDialog(frame, "Lav Projekt Forslag", true);
         dialog.setSize(700, 700);
-        dialog.setLayout(new GridLayout(13, 2, 10, 10));
+        dialog.setLayout(new GridLayout(11, 2, 10, 10));
 
         JLabel nameLabel = new JLabel("Titel:");
         JTextField nameField = new JTextField();
@@ -365,33 +323,6 @@ public class UserFrame implements ActionListener {
         dialog.add(activitiesLabel);
         dialog.add(activitiesField);
 
-        dialog.add(new JLabel("Create Tag:"));
-        JButton createTagButton = new JButton("Create Tag");
-        dialog.add(createTagButton);
-
-        dialog.add(new JLabel("Choose Tags:"));
-        JPanel tagPanel = new JPanel();
-        tagPanel.setLayout(new BoxLayout(tagPanel, BoxLayout.Y_AXIS));
-        JScrollPane tagScrollPane = new JScrollPane(tagPanel);
-        dialog.add(tagScrollPane);
-
-        createTagButton.addActionListener(e -> {
-            String newTag = JOptionPane.showInputDialog(dialog, "Enter new tag:");
-            if (newTag != null && !newTag.trim().isEmpty()) {
-                JCheckBox tagCheckBox = new JCheckBox(newTag);
-                tagPanel.add(tagCheckBox);
-                tagPanel.revalidate();
-                tagPanel.repaint();
-            }
-
-            //tag button for filtering between the different tags
-            JButton tagButton = new JButton(newTag);
-            tagButton.addActionListener(tagEvent -> filterProjectProposalsByTag(newTag));
-            tagButtonPanel.add(tagButton);
-            tagButtonPanel.revalidate();
-            tagButtonPanel.repaint();
-        });
-
         JButton submitButton = new JButton("Tilføj");
         submitButton.addActionListener(event -> {
             String name = nameField.getText();
@@ -401,24 +332,12 @@ public class UserFrame implements ActionListener {
             String owner = ownerField.getText();
             String target = targetField.getText();
             String budget = budgetField.getText();
-            LocalDate fromDate = LocalDate.parse(fromDateSpinner.getValue().toString());
-            LocalDate toDate = LocalDate.parse((toDateSpinner.getValue().toString()));
+            Date fromDate = new Date(((java.util.Date) fromDateSpinner.getValue()).getTime());
+            Date toDate = new Date(((java.util.Date) toDateSpinner.getValue()).getTime());
             String activities = activitiesField.getText();
-            List<String> selectedTags = new ArrayList<>();
- 
-
-            for (Component comp : tagPanel.getComponents()) {
-                if (comp instanceof JCheckBox) {
-                    JCheckBox checkBox = (JCheckBox) comp;
-                    if (checkBox.isSelected()) {
-                        selectedTags.add(checkBox.getText()); // Add the selected tag to the list
-                    }
-                }
-            }
-            
 
             // Create a new project proposal and add it to the list
-            ProjectProposal proposal = new ProjectProposal(name, idea, description, ideaFrom, owner, target, budget, fromDate, toDate, activities, selectedTags);
+            ProjectProposal proposal = new ProjectProposal(name, idea, description, ideaFrom, owner, target, budget, fromDate, toDate, activities);
             projectProposals.add(proposal);
 
             Project project = new Project(name, idea, description, ideaFrom, owner, target, budget, fromDate, toDate, activities);
@@ -438,262 +357,6 @@ public class UserFrame implements ActionListener {
         dialog.setVisible(true);
     }
 
-     
-
-    private void openProjectDialog(){
-        JDialog dialog = new JDialog(frame, "Lav Projekt", true);
-        dialog.setSize(700, 700);
-        dialog.setLayout(new GridLayout(13, 2, 10, 10));
-
-        JLabel nameLabel = new JLabel("Titel:");
-        JTextField nameField = new JTextField();
-        dialog.add(nameLabel);
-        dialog.add(nameField);
-    
-
-        JLabel purposeLabel = new JLabel("Formål:");
-        JTextField purposeField = new JTextField();
-        dialog.add(purposeLabel);
-        dialog.add(purposeField);
-
-        JLabel descriptionLabel = new JLabel("Beskrivelse af projektet:");
-        JTextArea descriptionArea = new JTextArea(5, 20);
-        JScrollPane scrollPane = new JScrollPane(descriptionArea);
-        dialog.add(descriptionLabel);
-        dialog.add(scrollPane);
-
-        JLabel ownerLabel = new JLabel("Ejer af projektet:");
-        JTextField ownerField = new JTextField();
-        dialog.add(ownerLabel);
-        dialog.add(ownerField);
-        
-        
-        JLabel targetLabel = new JLabel("Målgruppe (hvem gavner dette projekt):");
-        JTextField targetField = new JTextField();
-        dialog.add(targetLabel);
-        dialog.add(targetField);
-
-        JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
-        JTextField budgetField = new JTextField();
-        if(!validationUtils.isNumericInput(budgetField.getText()) /*&& !validationUtils.budgetLenght()*/){
-            dialog.add(budgetLabel);
-            dialog.add(budgetField);  
-        }
-
-        JLabel fromDateLabel = new JLabel("Fra dato:");
-        SpinnerDateModel fromDateModel = new SpinnerDateModel();
-        JSpinner fromDateSpinner = new JSpinner(fromDateModel);
-        JSpinner.DateEditor fromDateEditor = new JSpinner.DateEditor(fromDateSpinner, "dd/MM/yyyy");
-        fromDateSpinner.setEditor(fromDateEditor);
-        dialog.add(fromDateLabel);
-        dialog.add(fromDateSpinner);
-
-        JLabel toDateLabel = new JLabel("Til dato:");
-        SpinnerDateModel toDateModel = new SpinnerDateModel();
-        JSpinner toDateSpinner = new JSpinner(toDateModel);
-        JSpinner.DateEditor toDateEditor = new JSpinner.DateEditor(toDateSpinner, "dd/MM/yyyy");
-        toDateSpinner.setEditor(toDateEditor);
-        dialog.add(toDateLabel);
-        dialog.add(toDateSpinner);
-
-        JLabel activitiesLabel = new JLabel("Aktiviteter:");
-        JTextField activitiesField = new JTextField();
-        dialog.add(activitiesLabel);
-        dialog.add(activitiesField);
-
-        //Ved ik om det her skal stå her, skal det ikke være noget som man laver udenfor projektet etc.
-        dialog.add(new JLabel("Create Tag:"));
-        JButton createTagButton = new JButton("Create Tag");
-        dialog.add(createTagButton);
-
-        dialog.add(new JLabel("Vælg relevante katagorier:"));
-        JPanel tagPanel = new JPanel();
-        tagPanel.setLayout(new BoxLayout(tagPanel, BoxLayout.Y_AXIS));
-        JScrollPane tagScrollPane = new JScrollPane(tagPanel);
-        dialog.add(tagScrollPane);
-
-        createTagButton.addActionListener(e -> {
-            String newTag = JOptionPane.showInputDialog(dialog, "Enter new tag:");
-            if (newTag != null && !newTag.trim().isEmpty()) {
-                JCheckBox tagCheckBox = new JCheckBox(newTag);
-                if(main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))){
-                    tagPanel.add(UserFrameErrorHandling.displayTagError());
-                }else{
-                    main.addNewCatagory(newTag);
-                    tagPanel.add(tagCheckBox);
-                    tagPanel.revalidate();
-                    tagPanel.repaint();
-                }
-            }
-
-            //tag button for filtering between the different tags
-            JButton tagButton = new JButton(newTag);
-            tagButton.addActionListener(tagEvent -> filterProjectProposalsByTag(newTag));
-            tagButtonPanel.add(tagButton);
-            tagButtonPanel.revalidate();
-            tagButtonPanel.repaint();
-        });
-
-     
-        JButton submitButton = new JButton("Tilføj");
-        submitButton.addActionListener((ActionEvent ae) -> {
-            try{
-                // Get the values from the input fields
-                if(validationUtils.isWithinLowerCharLimit(nameField.getText()) == false){
-                    isInvalidLenght = true;
-                    dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
-                }else if(validationUtils.isValidInput(nameField.getText()) == false){
-                    isInvalidLenght = false;
-                    dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
-                }else{
-                    projectTitle = nameField.getText();
-                }
-             
-                if(validationUtils.isWithinLowerCharLimit(purposeField.getText()) == false){
-                    isInvalidLenght = true;
-                    dialog.add(UserFrameErrorHandling.displayPurposeError(isInvalidLenght));
-                }else if(validationUtils.isValidInput(purposeField.getText()) == false){
-                    isInvalidLenght = false;
-                    dialog.add(UserFrameErrorHandling.displayPurposeError(isInvalidLenght));
-                }else{
-                    projectPurpose = purposeField.getText();
-                }
-                
-                if(validationUtils.isWithinUpperCharLimit(descriptionArea.getText()) == false){
-                    isInvalidLenght = true;
-                    dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
-                }else if(validationUtils.isValidDescription(descriptionArea.getText()) == false){
-                    isInvalidLenght = false;
-                    dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
-                }else{
-                    projectDescription = descriptionArea.getText();
-                }
-
-                if(validationUtils.isWithinLowerCharLimit(ownerField.getText()) == false){
-                    isInvalidLenght = true;
-                    dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
-                }else if(validationUtils.isValidInput(ownerField.getText()) == false){
-                    isInvalidLenght = false;
-                    dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
-                }else{
-                    projectOwner = ownerField.getText();
-                }
-
-                if(validationUtils.isWithinLowerCharLimit(targetField.getText()) == false){
-                    isInvalidLenght = true;
-                    dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
-                }else if(validationUtils.isValidInput(targetField.getText()) == false){
-                    isInvalidLenght = false;
-                    dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
-                }else{
-                    projectTargetAudience = targetField.getText();
-                }
-
-                if(validationUtils.isNumericInput(budgetField.getText()) == false){
-                    dialog.add(UserFrameErrorHandling.displayBudgetError());
-                }else{
-                    projectBudget = Long.parseLong(budgetField.getText());
-                }
-
-                //ERRORHANDLING FOR DATE TYPE SHIT
-                /*
-                 * if(validDateFormat == false){
-                 * invalidDate = true
-                 * display invalid format error
-                 * }else if(invalid character){
-                 * invalidDate = false
-                 * display invalid date character error
-                 * } else{
-                 *  LocalDate fromDate = ((Date) ((fromDateSpinner.getValue()))).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                    LocalDate toDate = ((Date) (toDateSpinner.getValue())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                    LocalDateTime projectFromDate = fromDate.atStartOfDay();
-                    LocalDateTime projectToDate = toDate.atStartOfDay();
-                 * }
-
-                 */
-
-        
-                LocalDate fromDate = ((Date) ((fromDateSpinner.getValue()))).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                LocalDate toDate = ((Date) (toDateSpinner.getValue())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                LocalDateTime projectFromDate = fromDate.atStartOfDay();
-                LocalDateTime projectToDate = toDate.atStartOfDay();
-               
-                if(validationUtils.isWithinLowerCharLimit(activitiesField.getText()) == false){
-                    isInvalidLenght = true;
-                    dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
-                } else if(validationUtils.isValidInput(activitiesField.getText()) == false){
-                    isInvalidLenght = false; 
-                    dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
-                }else{
-                    projectActivities = activitiesField.getText();
-                }
-
-                ArrayList<String> selectedCatagories = new ArrayList<>();
-                for(Component comp : tagPanel.getComponents()){
-                    if(comp instanceof JCheckBox){
-                        JCheckBox checkBox = (JCheckBox) comp;
-                        if(checkBox.isSelected()){
-                            selectedCatagories.add(checkBox.getText());
-                        }
-                    }
-                }
-                
-                System.out.println(projectFromDate);
-                System.out.println(projectToDate);
-                // Create a new project proposal and add it to the list
-    
-                project project = new project(projectTitle, selectedCatagories, projectDescription, projectPurpose ,projectOwner, projectTargetAudience, projectBudget, projectFromDate, projectToDate, projectActivities, main.getFundList(), main.getCatagoryBoolean());
-                main.projectList.add(project);
-                System.out.println("------------");
-                System.out.println("adding project");
-                for(project proj : main.projectList){
-                    System.out.println(proj.getTitle());
-                    System.out.println(proj.getCategories());
-                    System.out.println(proj.getDescription());
-                    System.out.println(proj.getProjectPurpose());
-                    System.out.println(proj.getProjectOwner());
-                    System.out.println(proj.getProjectTargetAudience());
-                    System.out.println(proj.getProjectBudget());
-                    System.out.println(proj.getProjectTimeSpanFrom());
-                    System.out.println(proj.getProjectTimeSpanTo());
-                    System.out.println(proj.getProjectActivities());
-                    System.out.println(proj.getClosestDeadlineFunds());
-                    System.out.println(proj.getCategories());
-
-                }
-                // Update the project proposal panel
-                //updateProjectList();
-    
-                dialog.dispose();
-            }catch (Exception e){
-                System.err.println("error when adding project");
-                e.printStackTrace();
-            }
-        });
-
-        dialog.add(new JLabel());
-        dialog.add(submitButton);
-
-        dialog.setLocationRelativeTo(frame);
-        dialog.setVisible(true);
-
-    }
-
-    public static JPanel displayTagError(){
-        JOptionPane.showMessageDialog(null, "Katagorien eksisterer allerede");
-        return new JPanel();
-    }
-
-    public static JPanel displayBudgetError(){
-        JOptionPane.showMessageDialog(null, "Budgettet skal være et tal");
-        return new JPanel();
-    }
-    public static JPanel displayDateError(){
-        JOptionPane.showMessageDialog(null, "Datoen skal være i formatet dd/MM/yyyy");
-        return new JPanel();
-    }
-
-
     private JPanel createRightSidePanel() {
         JPanel panel3 = new JPanel(new CardLayout());
         panel3.setBackground(new Color(213, 213, 213, 255));
@@ -712,33 +375,13 @@ public class UserFrame implements ActionListener {
     
         return panel3;
     }
-
     
 
-    // method to filther by tag
-    private void filterProjectProposalsByTag(String tag) {
-        projectProposalListPanel.removeAll();
-        
-        for (ProjectProposal proposal : projectProposals) {
-            if (proposal.getTags().contains(tag)) {
-                JLabel proposalLabel = new JLabel(proposal.getTitle() + " - " + proposal.getOwner());
     
-                proposalLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-                    public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        showProjectProbDetails(proposal);
-                    }
-                });
-    
-                projectProposalListPanel.add(proposalLabel);
-            }
-        }
-    
-        projectProposalListPanel.revalidate();
-        projectProposalListPanel.repaint();
-    }
     
     // Method to update the list and add mouse listeners
     private void updateProjectProposalList() {
+        projectProposalListPanel.removeAll();
     
         for (ProjectProposal proposal : projectProposals) {
             JLabel proposalLabel = new JLabel(proposal.getTitle() + " - " + proposal.getOwner());
@@ -757,7 +400,6 @@ public class UserFrame implements ActionListener {
     }
 
     private void updateProjectList() {
-        projectListPanel = new JPanel();
         projectListPanel.removeAll();
         
         for (Project project : projects) {
@@ -775,32 +417,6 @@ public class UserFrame implements ActionListener {
         projectListPanel.revalidate();
         projectListPanel.repaint();
     }
-
-    // Method to update the fund list display
-    private void updateFundList() {
-        fundListPanel.removeAll();
-
-        for (fundClass fund : main.fundList) {
-            JLabel fundLabel = new JLabel(fund.getTitle() + " - " + fund.getBudgetMax());
-
-            // Add a listener to view fund details when clicked
-            fundLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseClicked(java.awt.event.MouseEvent evt) {
-                    showFundDetails(fund);
-                }
-            });
-
-            fundListPanel.add(fundLabel);
-        }
-
-        fundListPanel.revalidate();  // Refreshes the layout
-        fundListPanel.repaint();     // Repaints the UI
-    }
-    
-    private void showFundDetails(fundClass fund){
-
-    }
-
     
     
 
@@ -812,13 +428,12 @@ public class UserFrame implements ActionListener {
         private String owner;
         private String target;
         private String budget;
-        private LocalDate fromDate;
-        private LocalDate toDate;
+        private Date fromDate;
+        private Date toDate;
         private String activities;
-        private List<String> tags;
     
         public ProjectProposal(String title, String idea, String description, String ideaFrom, String owner, String target,
-                               String budget, LocalDate fromDate, LocalDate toDate, String activities, List<String> tags) {
+                               String budget, Date fromDate, Date toDate, String activities) {
             this.title = title;
             this.idea = idea;
             this.description = description;
@@ -829,7 +444,6 @@ public class UserFrame implements ActionListener {
             this.fromDate = fromDate;
             this.toDate = toDate;
             this.activities = activities;
-            this.tags = tags;
         }
         
         
@@ -859,20 +473,16 @@ public class UserFrame implements ActionListener {
         return budget;
     }
 
-    public LocalDate getFromDate() {
+    public Date getFromDate() {
         return fromDate;
     }
 
-    public LocalDate getToDate() {
+    public Date getToDate() {
         return toDate;
     }
 
     public String getActivities() {
         return activities;
-    }
-
-    public List<String> getTags() {
-        return tags;
     }
 }  
     // Method to display the clicked project's details
@@ -889,7 +499,6 @@ public class UserFrame implements ActionListener {
         projectProposalFullPanel.add(new JLabel("Fra Dato: " + proposal.getFromDate().toString()));
         projectProposalFullPanel.add(new JLabel("Til Dato: " + proposal.getToDate().toString()));
         projectProposalFullPanel.add(new JLabel("Aktiviteter: " + proposal.getActivities()));
-        projectProposalFullPanel.add(new JLabel("Katagorier: " + proposal.getTags()));
         
         // Approve button
         JButton approveButton = new JButton("Godkend");
@@ -960,12 +569,12 @@ class Project {
     private String owner;
     private String target;
     private String budget;
-    private LocalDate fromDate;
-    private LocalDate toDate;
+    private Date fromDate;
+    private Date toDate;
     private String activities;
 
     public Project(String title, String idea, String description, String ideaFrom, String owner, String target,
-                   String budget, LocalDate fromDate, LocalDate toDate, String activities) {
+                   String budget, Date fromDate, Date toDate, String activities) {
         this.title = title;
         this.idea = idea;
         this.description = description;
@@ -985,7 +594,7 @@ class Project {
     public String getIdeaFrom() { return ideaFrom; }
     public String getTarget() { return target; }
     public String getBudget() { return budget; }
-    public LocalDate getFromDate() { return fromDate; }
-    public LocalDate getToDate() { return toDate; }
+    public Date getFromDate() { return fromDate; }
+    public Date getToDate() { return toDate; }
     public String getActivities() { return activities; }
 }
