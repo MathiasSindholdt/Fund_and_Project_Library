@@ -10,7 +10,8 @@ public class sortingFundDeadlines {
         // Print unsorted funds by furthest deadline
         System.out.println("Before sorting:");
         for (fundClass fund : tempfundList) {
-            System.out.println(fund.getDeadlines());
+
+            System.out.println(fund.getDeadlines() + " " + fund.getTitle());
         }
         fundQSort sortingQ = new fundQSort();
         sortingQ.fundQuickSort(tempfundList);
@@ -18,7 +19,7 @@ public class sortingFundDeadlines {
         // Print sorted funds by furthest deadline
         System.out.println("\nAfter sorting:");
         for (fundClass fund : tempfundList) {
-            System.out.println(fund.getDeadlines());
+            System.out.println(fund.getDeadlines() + " " + fund.getTitle());
         }
         return tempfundList;
     }
