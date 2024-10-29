@@ -83,6 +83,7 @@ public class fundClass extends elementFormatting{
         this.setDescription(fundDescription);
         this.setBudget(fundAmountFrom,fundAmountTo);
         for(int i = 0; i < fundDeadline.length ; i++){
+            System.out.println("Deadline XD: " + fundDeadline[i]);
             this.setDeadlines(fundDeadline[i]);
         }
         for(int i = 0; i < fundCategory.length ; i++){

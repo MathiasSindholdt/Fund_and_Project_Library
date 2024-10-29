@@ -61,23 +61,12 @@ public class main {
 
         }
         for(fundClass fund1 : fundList){
-            System.out.println(fund1.getTitle());
-            System.out.println(fund1.getDescription());
-            System.out.println(fund1.getBudgetSpan());
-            System.out.println(fund1.getDeadlines());
-            System.out.println(fund1.getCategories());
-            System.out.println(fund1.getContacts());
-            System.out.println(fund1.getCollaborationHistory());            
+            System.out.println(fund1.getDeadlines());        
         }
         System.out.println("------Running Funds------");
         for(fundClass fund2 : runningFundList){
-            System.out.println(fund2.getTitle());
-            System.out.println(fund2.getDescription());
-            System.out.println(fund2.getBudgetSpan());
             System.out.println(fund2.getDeadlines());
-            System.out.println(fund2.getCategories());
-            System.out.println(fund2.getContacts());
-            System.out.println(fund2.getCollaborationHistory());            
+        
         }
         //Test of Proposal to Project constructor
         ProjectDescription = "Lorem Ipsum";
@@ -99,9 +88,13 @@ public class main {
         }
         for(project proj : projectList){
             System.out.println("project :" + proj.getTitle() + " has the following funds:");
-            for(fundClass fund : proj.getDeadlines()){
-            System.out.println(fund.getTitle());
-            }    
+            for(fundClass fund : fundList){
+                System.out.println(fund.getTitle());
+            }
+        }
+        System.out.println("Running Fund: ");
+        for(fundClass runningFund: runningFundList){
+            System.out.println(runningFund.getTitle());
         }
     }
 }
