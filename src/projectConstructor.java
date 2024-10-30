@@ -4,14 +4,14 @@ import java.util.ArrayList;
 public class projectConstructor extends projectAbstract {
 //Import project proposal and create a new project
     public project proposalToProjectConstructor(proposalProject proposal, boolean onlyOneIsNeeded, ArrayList<fundClass> fundList){
-        sortingFundDeadlines sorter = new sortingFundDeadlines();
+        sortingFundLists sorter = new sortingFundLists();
         project newProject = new project();
         for(int i = 0; i < fundList.size(); i++){
             System.out.println("------------");
             System.out.println(fundList.get(i).getTitle());
             System.out.println("------------");
         }
-        newProject.setDeadlines(sorter.sortFundsForCloesestDeadlines(fundList, newProject, onlyOneIsNeeded));
+        newProject.setDeadlines(sorter.sortFunds(fundList, newProject, onlyOneIsNeeded));
         newProject.setTitle(proposal.getTitle());
         newProject.setProjectCatagories(proposal.getCategories());
         newProject.setDescription(proposal.getDescription());
@@ -22,6 +22,5 @@ public class projectConstructor extends projectAbstract {
         newProject.setTimeSpan(proposal.getProjectTimeSpanFrom(), proposal.getProjectTimeSpanTo());
         newProject.setProjectActivities(proposal.getProjectActivities());
         return newProject;
-        
     }
 }
