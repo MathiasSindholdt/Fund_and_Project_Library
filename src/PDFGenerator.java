@@ -1,4 +1,3 @@
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -10,6 +9,18 @@ import java.util.stream.Collectors;
 
 public class PDFGenerator {
 
+    /*
+     * GeneratePDF() - Generates a pdf
+     *
+     * @arg1 project
+     * 
+     * @arg2 list of fundClass
+     *
+     * This function generates a pdf based on a project and a list of related
+     * funds. The first page consists of informmation about the project.
+     * The second page contains an index of related funds.
+     * Then each of the related funds get their own pages that describe them.
+     */
     public void GeneratePDF(project project, List<fundClass> fundClasseList) {
         int pageTop = 750;
         int textOffset = 0;
@@ -145,7 +156,6 @@ public class PDFGenerator {
 
         PageObject page1 = new PageObject();
         page1.addAttribute("Resources", new FontObject("F1", "Times-Roman"));
-        // page1.addAttribute("Resources", new FontObject("F1", "Helvetica"));
         page1.addContent(textStreamObject);
 
         TextStreamObject textStreamObject2 = new TextStreamObject("F1", 20, 30, pageTop, "Suggested Funds");
@@ -159,7 +169,6 @@ public class PDFGenerator {
         }
 
         PageObject page2 = new PageObject();
-        // page1.addAttribute("Resources", new FontObject("F1", "Helvetica"));
         page2.addAttribute("Resources", new FontObject("F1", "Times-Roman"));
         page2.addContent(textStreamObject2);
         PageCollectionObject pageCollectionObject = new PageCollectionObject();
@@ -170,14 +179,8 @@ public class PDFGenerator {
         }
         CatalogObject catalogObject = new CatalogObject(pageCollectionObject);
 
-        /*
-         * Build final PDF.
-         */
         PDF pdf = new PDF(catalogObject);
 
-        /*
-         * Write PDF to a file.
-         */
         try {
             FileWriter fileWriter = new FileWriter("report.pdf");
             fileWriter.write(pdf.build());
@@ -188,6 +191,14 @@ public class PDFGenerator {
 
     }
 
+    /*
+     * createFundPages() - creates list of pages for funds
+     *
+     * @arg list of funds
+     * Return: list of pageObject
+     *
+     * This function creates a list of pages from a list of funds.
+     */
     private ArrayList<PageObject> createFundPages(List<fundClass> funds) {
         ArrayList<PageObject> pages = new ArrayList<PageObject>();
         int pageTop = 750;
@@ -202,7 +213,7 @@ public class PDFGenerator {
             textOffset += 14;
             String budget = new String();
 
-            budget = fc.getCommonBudget() + "";
+            budget = fc.getBudgetSpan() + "";
             if (budget.length() % 3 != 0) {
                 budget = budget.substring(0, budget.length() % 3);
                 switch (((budget.length() - budget.length() % 3) / 3) + 1) {
@@ -314,104 +325,20 @@ public class PDFGenerator {
                     textStreamObject.add("F1", 11, 30, pageTop - textOffset, collabs.get(j));
                     textOffset += 14;
                 }
-
             }
             textOffset += 18;
 
             PageObject page = new PageObject();
             page.addAttribute("Resources", new FontObject("F1", "Times-Roman"));
-            // page1.addAttribute("Resources", new FontObject("F1", "Helvetica"));
             page.addContent(textStreamObject);
             pages.add(page);
         }
         return pages;
 
     }
-
-    public static void main(String[] args) throws IOException {
-
-        /*
-         * Create text stream with few lines
-         */
-        TextStreamObject textStreamObject = new TextStreamObject("F1", 18, 30, 750, "Hello World");
-        textStreamObject.add("F2", 18, 30, 80, "Hello World");
-        String text = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra";
-
-        List<String> strings = new ArrayList<String>();
-        int index = 0;
-        while (index < text.length()) {
-            strings.add(text.substring(index, Math.min(index + 105, text.length())));
-            index += 105;
-        }
-        int textOffset = 0;
-        for (int i = 0; i < 3; i++) {
-            for (String s : strings) {
-                textStreamObject.add("F1", 11, 30, 700 - textOffset, s.trim());
-                textOffset += 11;
-            }
-
-            textStreamObject.add("F1", 11, 30, 700 - textOffset, "");
-            textOffset += 11;
-        }
-        textStreamObject.add("F1", 11, 30, 30, "kys lucas");
-
-        /*
-         * First page with above text stream
-         */
-        PageObject page1 = new PageObject();
-        page1.addAttribute("Resources", new FontObject("F1", "Helvetica"));
-        page1.addContent(textStreamObject);
-        // page1.addAttribute("MediaBox", "[0 0 300 600]");
-
-        /*
-         * Create graphic stream with few graphics.
-         * 
-         * GraphicStreamObject graphicStreamObject = new GraphicStreamObject();
-         * graphicStreamObject.addFilledRectangle(100, 600, 50, 75, "0.75 g");
-         * graphicStreamObject.addLine(100, 100, 400, 500);
-         * 
-         * /*
-         * Second page with above graphics
-         * 
-         * PageObject page2 = new PageObject();
-         * page2.addContent(graphicStreamObject);
-         * 
-         * /*
-         * Create curve & color graphics.
-         * /
-         * GraphicStreamObject graphicCurveStreamObject = new GraphicStreamObject();
-         * graphicCurveStreamObject.addBezierCurve(300, 300, 300, 400, 400, 400, 400,
-         * 300, "0.0 0.0 0.5", 10,
-         * "0.5 0.1 0.2");
-         * 
-         * /*
-         * Third page with above curve & color graphics.
-         * /
-         * PageObject page3 = new PageObject();
-         * page3.addContent(graphicCurveStreamObject);
-         * 
-         * /*
-         * Prepare pages & catalog objects.
-         */
-        PageCollectionObject pageCollectionObject = new PageCollectionObject();
-        pageCollectionObject.addPages(page1/* , page2, page3 */);
-        CatalogObject catalogObject = new CatalogObject(pageCollectionObject);
-
-        /*
-         * Build final PDF.
-         */
-        PDF pdf = new PDF(catalogObject);
-
-        /*
-         * Write PDF to a file.
-         */
-        FileWriter fileWriter = new FileWriter("generatedPDFWithGraphics.pdf");
-        fileWriter.write(pdf.build());
-        fileWriter.close();
-    }
 }
 
-/**
+/*
  * Representation of entire PDF file.
  *
  */
@@ -425,6 +352,11 @@ class PDF {
         this.catalogObject = catalogObject;
     }
 
+    /*
+     * Build() - builds the PDF
+     *
+     * Return: string that contains the contents of the PDF
+     */
     public String build() {
         populateObjectNumbers();
         StringBuilder pdf = new StringBuilder();
@@ -448,6 +380,9 @@ class PDF {
         return pdf.toString();
     }
 
+    /*
+     * populateObjectNumbers() - populates object numbers
+     */
     private void populateObjectNumbers() {
         catalogObject.setObjectNumber(++objectCount);
         catalogObject.getPages().setObjectNumber(++objectCount);
@@ -464,7 +399,7 @@ class PDF {
 
 }
 
-/**
+/*
  * Representation of reference to any PDF object.
  *
  */
@@ -508,6 +443,11 @@ abstract class PDFObject {
 
     public abstract void addSpecificAttributes();
 
+    /*
+     * build() - builds the pdfObject
+     *
+     * Return: string containing the built pdfObject.
+     * */
     public String build() {
 
         addSpecificAttributes();
@@ -563,7 +503,7 @@ abstract class PDFObject {
 
 }
 
-/**
+/*
  * Representation of catalog object
  *
  */
@@ -587,7 +527,7 @@ class CatalogObject extends PDFObject {
 
 }
 
-/**
+/*
  * Representation of page object.
  *
  */
@@ -614,7 +554,7 @@ class PageObject extends PDFObject {
 
 }
 
-/**
+/*
  * Representation of pages object
  *
  */
@@ -653,7 +593,7 @@ class PageCollectionObject extends PDFObject {
 
 }
 
-/**
+/*
  * Representation of font object
  *
  */
@@ -690,7 +630,7 @@ class FontObject extends PDFObject {
 
 }
 
-/**
+/*
  * Abstract Representation of stream object
  *
  */
@@ -715,7 +655,7 @@ abstract class StreamObject extends PDFObject {
 
 }
 
-/**
+/*
  * Representation of text stream object
  *
  */
@@ -749,7 +689,7 @@ class TextStreamObject extends StreamObject {
     }
 }
 
-/**
+/*
  * Representation of graphics stream object
  *
  */

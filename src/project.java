@@ -43,8 +43,8 @@ public class project extends projectAbstract {
 
 
     public void setClosestDeadlineFunds(ArrayList<fundClass> fundList, boolean onlyOneIsNeeded){
-        sortingFundDeadlines sorter = new sortingFundDeadlines();
-        closestDeadlineFunds =  sorter.sortFundsForCloesestDeadlines(fundList, this, onlyOneIsNeeded);
+        sortingFundLists sorter = new sortingFundLists();
+        closestDeadlineFunds =  sorter.sortFunds(fundList, this, onlyOneIsNeeded);
     }
 
     public static void main(String[] args) {
@@ -137,6 +137,8 @@ public class project extends projectAbstract {
         }
         
 
+
+
         // Add funds to list
     ArrayList<fundClass> listOfFunds = new ArrayList<>();
     listOfFunds.add(fund1);
@@ -151,11 +153,12 @@ public class project extends projectAbstract {
     for (fundClass funde : fundList) {
         System.out.println(funde.getTitle());
     }
-    sortingFundDeadlines sorter = new sortingFundDeadlines();
-    sorter.sortFundsForCloesestDeadlines(fundList, myProject, true);
-        
-    sorter.sortFundsForCloesestDeadlines(fundList, myProject, true);
-        
+
+
+
+    sortingFundLists sorter = new sortingFundLists();
+    sorter.sortFunds(listOfFunds, myProject, false);
+
 
 }
 }
