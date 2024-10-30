@@ -8,6 +8,11 @@ public class fundClass extends elementFormatting{
     private long budgetMax = 0; //Handles large numbers
     private ArrayList<String> collaborationHistory= new ArrayList<String>();
     private boolean running;
+    private String fundWebsite;
+
+    public String getFundWebsite(){
+        return fundWebsite;
+    }
 
     public ArrayList<LocalDateTime> getDeadlines(){
         return deadlines;
@@ -36,6 +41,10 @@ public class fundClass extends elementFormatting{
 
     public boolean getRunning(){
         return running;
+    }
+
+    public void setfundWebsite(String newFundWebsite){
+        this.fundWebsite = newFundWebsite;
     }
 
     public void setDeadlines(LocalDateTime newDeadline){
@@ -77,11 +86,13 @@ public class fundClass extends elementFormatting{
         String[] fundCategory,
         String[] fundCollaborationHistory,
         String[] fundContacts,
+        String fundWebsite,
         boolean Collaborated,
         boolean running){
         this.setTitle(fundName);
         this.setDescription(fundDescription);
         this.setBudget(fundAmountFrom,fundAmountTo);
+        this.setfundWebsite(fundWebsite);
         for(int i = 0; i < fundDeadline.length ; i++){
             this.setDeadlines(fundDeadline[i]);
         }
@@ -111,6 +122,7 @@ public class fundClass extends elementFormatting{
         fundClass fund = new fundClass();
         fund.setTitle("testTitle2");
         fund.setDescription("Lorem Ipsum");
+        fund.setfundWebsite("ManyMoney.com");
         fund.setBudget(100000,80000000);
         for (int i = 0; i < testCatories.length ; i++){
             fund.setCategories(testCatories[i]);
@@ -132,5 +144,6 @@ public class fundClass extends elementFormatting{
         System.out.println("Contact persons at the fund are: " + fund.getContacts());
         System.out.println("The fund has a budget of: " + fund.getBudgetSpan());
         System.out.println("We have previously collaborated on: " + fund.getCollaborationHistory());
+        System.out.println("The fund website can be found at: " + fund.getFundWebsite());
     }
 }
