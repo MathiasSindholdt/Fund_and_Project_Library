@@ -62,7 +62,7 @@ public class project extends projectAbstract {
         fundClass fund0 = new fundClass();
         fund0.setTitle("fund0");
         fund0.setDescription("This is fund0");
-        fund0.setCommonBudget(100000);
+        fund0.setBudget(30250, 232000);
         for (String category : cat1) {
             fund0.setCategories(category);
 
@@ -78,7 +78,7 @@ public class project extends projectAbstract {
         fundClass fund1 = new fundClass();
         fund1.setTitle("fund1");
         fund1.setDescription("This is fund1");
-        fund1.setCommonBudget(1000);
+        fund1.setBudget(1000, 100002);
         for (String category : cat2) {
             fund1.setCategories(category);
         }
@@ -96,6 +96,7 @@ public class project extends projectAbstract {
         fund2.setTitle("fundTitle2");
         fund2.setDescription("Lorem Ipsum");
         fund2.setBudget(100000,80000000);
+        String[] fund2Catories = {"cat1","cat2","cat3"};
         for (int i = 0; i < fund2Catories.length ; i++){
             fund2.setCategories(fund2Catories[i]);
         }
@@ -125,51 +126,22 @@ public class project extends projectAbstract {
         for (int i = 0; i < fund3Catories.length ; i++){
             fund3.setCategories(fund3Catories[i]);
         }
-        for (int i = 0; i < fund3Deadlines.length ; i++){
-            fund3.setDeadlines(fund3Deadlines[i]);
+        for (String contact : contact2) {
+            fund2.setContacts(contact);
         }
-        for (int i = 0; i < fund3Contacts.length ; i++){
-            fund3.setContacts(fund3Contacts[i]);
+        for (String collab : collab2) {
+            fund2.setCollaborationHistory(collab);
         }
-        for (int i = 0; i < fund3CollaborationHistory.length ; i++){
-            fund3.setCollaborationHistory(fund3CollaborationHistory[i]);
+        for (LocalDateTime deadline : fund2Deadline) {
+            fund2.setDeadlines(deadline);
         }
-        myProject2.setDescription("This is a description too");
-        myProject2.setProjectPurpose("Purpose2");
-        myProject2.setProjectOwner("Lucas");
-        myProject2.setProjectTargetAudience("TargetAudience2");
-        myProject2.setProjectBudget(10055000);
-        myProject2.setTimeSpan(LocalDateTime.parse("2024-10-17T12:00:00"), LocalDateTime.parse("2024-12-24T12:00:00"));
-        myProject2.setProjectActivities("Activities2");
-        myProject2.setClosestDeadlineFunds(fundList, false);
-
-        System.out.println("TYPE: " + myProject1.getClass());
-        System.out.println("Here is the myProject1: " + myProject1.getTitle());
-        System.out.println("It has the following description: " + myProject1.getDescription());
-        System.out.println("It was created at: " + myProject1.getDateCreated());
-        System.out.println("It has the following categoreis: " + myProject1.getCategories());
-        System.out.println("The main idea is: " + myProject1.getProjectPurpose());
-        System.out.println("The myProject1 Owner is: " + myProject1.getProjectOwner());
-        System.out.println("The main audience is: " + myProject1.getProjectTargetAudience());
-        System.out.println("The following should be completed: " + myProject1.getProjectActivities());
-
-        LocalDateTime timeSpanproject[] = {project.getProjectTimeSpanFrom(),project.getProjectTimeSpanTo()};
-        System.out.println("TYPE: " + project.getClass());
-        System.out.println("Here is the project: " + project.getTitle());
-        System.out.println("It has the following description: " + project.getDescription());
-        System.out.println("It was created at: " + project.getDateCreated());
-        System.out.println("It has the following categoreis: " + project.getCategories());
-        System.out.println("The main idea is: " + project.getProjectPurpose());
-        System.out.println("The Project Owner is: " + project.getProjectOwner());
-        System.out.println("The main audience is: " + project.getProjectTargetAudience());
-        System.out.println("The span of the project is from: " + timeSpanproject[0] + "and to: " + timeSpanproject[1]);
-        System.out.println("The following should be completed: " + project.getProjectActivities());
+        
 
 
 
         // Add funds to list
     ArrayList<fundClass> listOfFunds = new ArrayList<>();
-    listOfFunds.add(fund);
+    listOfFunds.add(fund1);
     listOfFunds.add(fund2);
     listOfFunds.add(fund3);
 
@@ -182,8 +154,11 @@ public class project extends projectAbstract {
         System.out.println(funde.getTitle());
     }
 
+
+
     sortingFundLists sorter = new sortingFundLists();
     sorter.sortFunds(listOfFunds, myProject, false);
+
 
 }
 }

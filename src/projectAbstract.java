@@ -50,6 +50,7 @@ public class projectAbstract extends elementFormatting {
     }
 
     public void setProjectPurpose(String newProjectPurpose){
+        validationUtils.validateInput(newProjectPurpose, "Purpose");
         this.projectPurpose = newProjectPurpose;
     }
 
