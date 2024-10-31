@@ -96,6 +96,7 @@ public class main {
         for(fundClass runningFund: runningFundList){
             System.out.println(runningFund.getTitle());
         }
+        
         // ----------------------------------------------------START OF MAIN FILE----------------------------------------------------------------------------
                 UserFrame UI = new UserFrame();
                 UI.show();

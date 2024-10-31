@@ -248,6 +248,7 @@ public class UserFrame implements ActionListener {
         if (e.getSource() == projectPropButton) {
             cardLayout.show(cardPanel, "ProjectProposal"); // Switch to Project Proposal view
         } else if (e.getSource() == projectButton) {
+            openProjectDialog();
             cardLayout.show(cardPanel, "Projects"); // Switch to Projects view
         } else if (e.getSource() == fundsButton) {
             cardLayout.show(cardPanel, "Funds"); // Switch to Funds view
@@ -355,6 +356,32 @@ public class UserFrame implements ActionListener {
 
         dialog.setLocationRelativeTo(frame);
         dialog.setVisible(true);
+    }
+
+    
+
+    private void openProjectDialog(){
+        JDialog dialog = new JDialog(frame, "Lav Projekt", true);
+        dialog.setSize(700, 700);
+        dialog.setLayout(new GridLayout(11, 2, 10, 10));
+
+        JLabel nameLabel = new JLabel("Titel:");
+        JTextField nameField = new JTextField();
+        dialog.add(nameLabel);
+        dialog.add(nameField);
+
+        JLabel ideaLabel = new JLabel("Formål:");
+        JTextField ideaField = new JTextField();
+        dialog.add(ideaLabel);
+
+        JLabel descriptionLabel = new JLabel("Beskrivelse af projektet:");
+        JTextArea descriptionArea = new JTextArea(5, 20);
+        JScrollPane scrollPane = new JScrollPane(descriptionArea);
+        dialog.add(descriptionLabel);
+        dialog.add(scrollPane);
+
+
+
     }
 
     private JPanel createRightSidePanel() {
