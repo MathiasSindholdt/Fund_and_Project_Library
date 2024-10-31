@@ -21,16 +21,17 @@ public class project extends projectAbstract {
         this.setTitle(projectTitle);
         for (String category : categories) {
             this.setCategories(category);
+            }
+            this.setDescription(description);
+            this.setProjectPurpose(purpose);
+            this.setProjectOwner(owner);
+            this.setProjectTargetAudience(projectTargetAudience);
+            this.setProjectBudget(projectBudget);
+            this.setTimeSpan(from, to);
+            this.setProjectActivities(projectActivities);
+            this.setClosestDeadlineFunds(fundList, onlyOneIsNeeded);
         }
-        this.setDescription(description);
-        this.setProjectPurpose(purpose);
-        this.setProjectOwner(owner);
-        this.setProjectTargetAudience(projectTargetAudience);
-        this.setProjectBudget(projectBudget);
-        this.setTimeSpan(from, to);
-        this.setProjectActivities(projectActivities);
-        this.setClosestDeadlineFunds(fundList, onlyOneIsNeeded);
-    }
+    
 
     //Overloaded constructor This enables the user of pure setters if only parts are needed to be changed
     //IMPORTANT! THIS REQUIRES MANUAL SETTING OF ALL PARAMETERS!
@@ -46,7 +47,7 @@ public class project extends projectAbstract {
         sortingFundLists sorter = new sortingFundLists();
         closestDeadlineFunds =  sorter.sortFunds(fundList, this, onlyOneIsNeeded);
     }
-
+public static void main(String[] args) {
 //     public static void main(String[] args) {
 
         ArrayList<fundClass> fundList = new ArrayList<fundClass>();

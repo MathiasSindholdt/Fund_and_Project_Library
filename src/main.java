@@ -8,7 +8,7 @@ public class main {
     static ArrayList<fundClass> fundList = new ArrayList<>();
     static ArrayList<fundClass> runningFundList = new ArrayList<>();
     static ArrayList<String> categories = new ArrayList<>();
-    boolean onlyOneIsNeeded;
+    static boolean onlyOneIsNeeded;
     //Test of Fund constructor vvvv Remove Later
     private static String FundTitle;
     private static String FundDescription;
@@ -33,11 +33,14 @@ public class main {
     private static String ProjectActivities;
     private static ArrayList<String> ProjectCategories;
     
-    
+    public static boolean getCatagoryBoolean(){
+        return onlyOneIsNeeded;
+    }
+
     public ArrayList<project> getProjectList(){
         return projectList;
     }
-    public ArrayList<fundClass> getFundList(){
+    public static ArrayList<fundClass> getFundList(){
         return fundList;
     }
     public ArrayList<fundClass> getRunningFundList(){
@@ -53,7 +56,10 @@ public class main {
     public void setRunningFundList(ArrayList<fundClass> runningFundList){
         main.runningFundList = runningFundList;
     }
-
+    public static void addNewCatagory(String category){
+        System.out.println("adding category");
+            categories.add(category);
+    }
     public static void main(String[] args) {
         Random rand = new Random();
         //runConstructor();  
