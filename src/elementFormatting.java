@@ -7,6 +7,7 @@ public class elementFormatting {
     private String description;
     private LocalDateTime dateCreated = LocalDateTime.now();
 
+
     public String getTitle(){
         return title;
     }
@@ -25,23 +26,29 @@ public class elementFormatting {
 
     public void setTitle(String newTitle){
         if (newTitle.length() > 200){
-            throw new IllegalArgumentException("title length exceeds 200 characters.");
+            throw new validationUtils.WrongDataInputException("Title length exceeds 200 characters.");
         }
+        validationUtils.validateInput(newTitle, "Title");
         this.title = newTitle;
     }
 
     public void setCategories(String newCategory){
+        validationUtils.validateInput(newCategory, "Category");
         this.categories.add(newCategory);
     }
 
     public void setProjectCatagories(ArrayList<String> newCategories){
+        for (String category : newCategories){
+            validationUtils.validateInput(category, "Category");
+        }
         this.categories = newCategories;
     }
 
     public void setDescription(String newDescription){
         if (newDescription.length() > 2000){
-            throw new IllegalArgumentException("Description length exceeds 2000 characters.");
+            throw new validationUtils.WrongDataInputException("Description length exceeds 2000 characters.");
         }
+        validationUtils.validateInput(newDescription, "Description");
         this.description = newDescription;
     }
 
