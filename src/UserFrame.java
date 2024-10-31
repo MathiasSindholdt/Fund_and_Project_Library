@@ -36,6 +36,9 @@ public class UserFrame implements ActionListener {
     private JPanel projectListPanel;
     private JPanel projectFullPanel;
 
+    // tag button
+    private JPanel tagButtonPanel;
+
 
     // Constructor to set up the GUI
     public UserFrame() {
@@ -143,6 +146,11 @@ public class UserFrame implements ActionListener {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
 
+         // Panel for tag buttons
+        tagButtonPanel = new JPanel();
+        tagButtonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(tagButtonPanel, BorderLayout.NORTH);
+
         JLabel label = new JLabel("Projekt Forslag", SwingConstants.CENTER);
         panel.add(label, BorderLayout.NORTH);
 
@@ -236,6 +244,14 @@ public class UserFrame implements ActionListener {
         button.setOpaque(false);
         button.addActionListener(this);
         return button;
+    }
+
+    //catagory button
+    private JButton CreateCatagoryButton(String text){
+            JButton button = new JButton(text);
+            button.setPreferredSize(new Dimension(130, 50));
+            button.addActionListener(this);
+            return button;
     }
 
     // Show the frame
@@ -341,6 +357,13 @@ public class UserFrame implements ActionListener {
                 tagPanel.revalidate();
                 tagPanel.repaint();
             }
+
+            //tag button for filtering between the different tags
+            JButton tagButton = new JButton(newTag);
+            tagButton.addActionListener(tagEvent -> filterProjectProposalsByTag(newTag));
+            tagButtonPanel.add(tagButton);
+            tagButtonPanel.revalidate();
+            tagButtonPanel.repaint();
         });
 
         JButton submitButton = new JButton("Tilføj");
@@ -409,11 +432,30 @@ public class UserFrame implements ActionListener {
     }
     
 
+    // method to filther by tag
+    private void filterProjectProposalsByTag(String tag) {
+        projectProposalListPanel.removeAll();
+        
+        for (ProjectProposal proposal : projectProposals) {
+            if (proposal.getTags().contains(tag)) {
+                JLabel proposalLabel = new JLabel(proposal.getTitle() + " - " + proposal.getOwner());
     
+                proposalLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+                    public void mouseClicked(java.awt.event.MouseEvent evt) {
+                        showProjectProbDetails(proposal);
+                    }
+                });
+    
+                projectProposalListPanel.add(proposalLabel);
+            }
+        }
+    
+        projectProposalListPanel.revalidate();
+        projectProposalListPanel.repaint();
+    }
     
     // Method to update the list and add mouse listeners
     private void updateProjectProposalList() {
-        projectProposalListPanel.removeAll();
     
         for (ProjectProposal proposal : projectProposals) {
             JLabel proposalLabel = new JLabel(proposal.getTitle() + " - " + proposal.getOwner());
