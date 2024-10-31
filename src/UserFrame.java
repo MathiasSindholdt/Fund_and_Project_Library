@@ -157,6 +157,22 @@ public class UserFrame implements ActionListener {
         return panel;
     }
 
+    private JPanel createProjectView(){
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+
+        JLabel label = new JLabel("Projekter", SwingConstants.CENTER);
+        panel.add(label, BorderLayout.NORTH);
+
+        projectListPanel = new JPanel();
+        projectListPanel.setLayout(new BoxLayout(projectListPanel, BoxLayout.Y_AXIS));
+
+        JScrollPane scrollPane = new JScrollPane(projectListPanel);
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+        return panel;
+    }
+
     // Separate view for "Projekter"
     private JPanel createProjectsView() {
         JPanel panel = new JPanel(new BorderLayout());
@@ -248,7 +264,6 @@ public class UserFrame implements ActionListener {
         if (e.getSource() == projectPropButton) {
             cardLayout.show(cardPanel, "ProjectProposal"); // Switch to Project Proposal view
         } else if (e.getSource() == projectButton) {
-            openProjectDialog();
             cardLayout.show(cardPanel, "Projects"); // Switch to Projects view
         } else if (e.getSource() == fundsButton) {
             cardLayout.show(cardPanel, "Funds"); // Switch to Funds view
@@ -259,6 +274,7 @@ public class UserFrame implements ActionListener {
         } else if (e.getSource() == createProbButton) {
             openProjectProposalDialog(); // Opens a popup for creating a project proposal
         } // Switch back to the main view
+        
     }
 
     // Restore the project proposal dialog
@@ -341,9 +357,6 @@ public class UserFrame implements ActionListener {
             ProjectProposal proposal = new ProjectProposal(name, idea, description, ideaFrom, owner, target, budget, fromDate, toDate, activities);
             projectProposals.add(proposal);
 
-            Project project = new Project(name, idea, description, ideaFrom, owner, target, budget, fromDate, toDate, activities);
-            projects.add(project);
-            
             
             // Update the project proposal panel
             updateProjectProposalList();
@@ -370,9 +383,10 @@ public class UserFrame implements ActionListener {
         dialog.add(nameLabel);
         dialog.add(nameField);
 
-        JLabel ideaLabel = new JLabel("Formål:");
-        JTextField ideaField = new JTextField();
-        dialog.add(ideaLabel);
+        JLabel purposeLabel = new JLabel("Formål:");
+        JTextField purposeField = new JTextField();
+        dialog.add(purposeField);
+        dialog.add(purposeLabel);
 
         JLabel descriptionLabel = new JLabel("Beskrivelse af projektet:");
         JTextArea descriptionArea = new JTextArea(5, 20);
@@ -380,7 +394,74 @@ public class UserFrame implements ActionListener {
         dialog.add(descriptionLabel);
         dialog.add(scrollPane);
 
+        JLabel ownerLabel = new JLabel("Ejer af projektet:");
+        JTextField ownerField = new JTextField();
+        dialog.add(ownerLabel);
+        dialog.add(ownerField);
 
+        JLabel targetLabel = new JLabel("Målgruppe (hvem gavner dette projekt):");
+        JTextField targetField = new JTextField();
+        dialog.add(targetLabel);
+        dialog.add(targetField);
+
+        JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
+        JTextField budgetField = new JTextField();
+        dialog.add(budgetLabel);
+        dialog.add(budgetField);
+
+        JLabel fromDateLabel = new JLabel("Fra dato:");
+        SpinnerDateModel fromDateModel = new SpinnerDateModel();
+        JSpinner fromDateSpinner = new JSpinner(fromDateModel);
+        JSpinner.DateEditor fromDateEditor = new JSpinner.DateEditor(fromDateSpinner, "dd/MM/yyyy");
+        fromDateSpinner.setEditor(fromDateEditor);
+        dialog.add(fromDateLabel);
+        dialog.add(fromDateSpinner);
+
+        JLabel toDateLabel = new JLabel("Til dato:");
+        SpinnerDateModel toDateModel = new SpinnerDateModel();
+        JSpinner toDateSpinner = new JSpinner(toDateModel);
+        JSpinner.DateEditor toDateEditor = new JSpinner.DateEditor(toDateSpinner, "dd/MM/yyyy");
+        toDateSpinner.setEditor(toDateEditor);
+        dialog.add(toDateLabel);
+        dialog.add(toDateSpinner);
+
+        JLabel activitiesLabel = new JLabel("Aktiviteter:");
+        JTextField activitiesField = new JTextField();
+        dialog.add(activitiesLabel);
+        dialog.add(activitiesField);
+
+        JLabel categoriesLabel = new JLabel("Kategorier:");
+        
+
+        JButton submitButton = new JButton("Tilføj");
+        submitButton.addActionListener(event -> {
+            String projectTitle = nameField.getText();
+            String projectDescription = descriptionArea.getText();
+            String projectPurpose = purposeField.getText();
+            String projectOwner = ownerField.getText();
+            String projectTargetAudience = targetField.getText();
+            Long projectBudget = Long.parseLong(budgetField.getText());
+            Date projectFromDate = new Date(((java.util.Date) fromDateSpinner.getValue()).getTime());
+            Date projectToDate = new Date(((java.util.Date) toDateSpinner.getValue()).getTime());
+            String projectActivities = activitiesField.getText();
+
+            // Create a new project proposal and add it to the list
+
+            Project project = new Project(projectTitle, projectCategories, projectDescription, projectPurpose ,projectOwner, projectTargetAudience, projectBudget, projectFromDate, projectToDate, projectActivities);
+            // projects.add(project);
+            
+            
+            // Update the project proposal panel
+            updateProjectList();
+
+            dialog.dispose();
+        });
+
+        dialog.add(new JLabel());
+        dialog.add(submitButton);
+
+        dialog.setLocationRelativeTo(frame);
+        dialog.setVisible(true);
 
     }
 
@@ -403,6 +484,24 @@ public class UserFrame implements ActionListener {
         return panel3;
     }
     
+    private void updateProjectList(){
+        projectListPanel.removeAll();
+        
+        for (Project project : projects){
+            JLabel projectLabel = new JLabel(project.getTitle() + " - " + project.getOwner());
+            
+            projectLabel.addMouseListener(new java.awt.event.MouseAdapter(){
+                public void mouseClicked(java.awt.event.MouseEvent evt){
+                    showProjectDetails(project);
+                }
+            });
+            
+            projectListPanel.add(projectLabel);
+        }
+        
+        projectListPanel.revalidate();
+        projectListPanel.repaint();
+    }
 
     
     
@@ -425,26 +524,6 @@ public class UserFrame implements ActionListener {
         projectProposalListPanel.revalidate();
         projectProposalListPanel.repaint();
     }
-
-    private void updateProjectList() {
-        projectListPanel.removeAll();
-        
-        for (Project project : projects) {
-            JLabel projectLabel = new JLabel(project.getTitle() + " - " + project.getOwner());
-            
-            projectLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseClicked(java.awt.event.MouseEvent evt) {
-                    showProjectDetails(project); // Show the selected project's details
-                }
-            });
-            
-            projectListPanel.add(projectLabel);
-        }
-    
-        projectListPanel.revalidate();
-        projectListPanel.repaint();
-    }
-    
     
 
     class ProjectProposal {

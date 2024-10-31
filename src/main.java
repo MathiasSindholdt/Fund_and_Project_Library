@@ -7,6 +7,7 @@ public class main {
     static ArrayList<project> projectList = new ArrayList<>();
     static ArrayList<fundClass> fundList = new ArrayList<>();
     static ArrayList<fundClass> runningFundList = new ArrayList<>();
+    static ArrayList<String> categories = new ArrayList<>();
     boolean onlyOneIsNeeded;
     //Test of Fund constructor vvvv Remove Later
     private static String FundTitle;
@@ -17,6 +18,7 @@ public class main {
     private static String[] FundCategory;
     private static String[] FundCollaborationHistory;
     private static String[] FundContacts;
+    private static String fundWebsite;
     private static boolean Collaborated;
     private static boolean FundRunning;
     //Test of Proposal to Project constructor vvvv Remove Later
@@ -32,6 +34,26 @@ public class main {
     private static ArrayList<String> ProjectCategories;
     
     
+    public ArrayList<project> getProjectList(){
+        return projectList;
+    }
+    public ArrayList<fundClass> getFundList(){
+        return fundList;
+    }
+    public ArrayList<fundClass> getRunningFundList(){
+        return runningFundList;
+    }
+
+    public void setProjectList(ArrayList<project> projectList){
+        main.projectList = projectList;
+    }
+    public void setFundList(ArrayList<fundClass> fundList){
+        main.fundList = fundList;
+    }
+    public void setRunningFundList(ArrayList<fundClass> runningFundList){
+        main.runningFundList = runningFundList;
+    }
+
     public static void main(String[] args) {
         Random rand = new Random();
         //runConstructor();  
@@ -52,7 +74,7 @@ public class main {
             } else {
                 FundRunning = false;
             }
-            fundClass fund = new fundClass(FundTitle, FundDescription, FundAmountFrom, FundAmountTo, FundDeadline, FundCategory, FundContacts, FundCollaborationHistory, Collaborated, FundRunning);
+            fundClass fund = new fundClass(FundTitle, FundDescription, FundAmountFrom, FundAmountTo, FundDeadline, FundCategory, FundContacts, FundCollaborationHistory,fundWebsite, Collaborated, FundRunning);
             if(fund.getRunning()){
                 runningFundList.add(fund);
             } else {
