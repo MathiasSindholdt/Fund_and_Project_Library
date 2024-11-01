@@ -50,9 +50,11 @@ public class projectAbstract extends elementFormatting {
     }
 
     public void setProjectPurpose(String newProjectPurpose){
+
         if (newProjectPurpose.length() > 2400){
             throw new validationUtils.WrongDataInputException("The project purpose exceeds 2400 characters");
         }
+
         validationUtils.validateInput(newProjectPurpose, "Purpose");
         this.projectPurpose = newProjectPurpose;
     }

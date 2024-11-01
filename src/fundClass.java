@@ -44,10 +44,15 @@ public class fundClass extends elementFormatting{
     }
 
     public void setfundWebsite(String newFundWebsite){
+ src/elementFormatting.java
+src/fundClass.java
+src/projectAbstract.java
+src/validationUtils.java 
         if (newFundWebsite.length() > 1000) {
             throw new validationUtils.WrongDataInputException("The website URL exceeds 1000 characters");
         }
         validationUtils.validateURL(newFundWebsite, "URL");
+
         this.fundWebsite = newFundWebsite;
     }
 
