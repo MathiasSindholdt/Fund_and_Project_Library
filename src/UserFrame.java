@@ -457,14 +457,12 @@ public class UserFrame implements ActionListener {
         JTextField targetField = new JTextField();
         dialog.add(targetLabel);
         dialog.add(targetField);
-
+//NEED ERROR HANDLING FOR BUDGET
         JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
         JTextField budgetField = new JTextField();
-        if(!budgetField.getText().matches("[0-9]+")){
-            
-        }
-        dialog.add(budgetLabel);
-        dialog.add(budgetField);
+            dialog.add(budgetLabel);
+            dialog.add(budgetField);
+      
 
         JLabel fromDateLabel = new JLabel("Fra dato:");
         SpinnerDateModel fromDateModel = new SpinnerDateModel();
@@ -576,6 +574,11 @@ public class UserFrame implements ActionListener {
 
     public static JPanel displayTagError(){
         JOptionPane.showMessageDialog(null, "Katagorien eksisterer allerede");
+        return new JPanel();
+    }
+
+    public static JPanel displayBudgetError(){
+        JOptionPane.showMessageDialog(null, "Budgettet skal være et tal");
         return new JPanel();
     }
 
