@@ -1,39 +1,39 @@
 import java.util.ArrayList;
 
 public class compareProjectCatsWithFundCats {
+
     public ArrayList<fundClass> compareCategoriesWithFund(boolean onlyOneIsNeeded, ArrayList<fundClass> fundList, project project) {
-        ArrayList<fundClass> tempList = fundList;
-        for(fundClass fund : fundList){
-            boolean flagPresent = false;
-            // Iterate through 'this' categories
+
+        // Initialize a new ArrayList for the result
+        ArrayList<fundClass> tempList = new ArrayList<>();
+
+        for (fundClass fund : fundList) {
+            boolean flagPresent = onlyOneIsNeeded ? false : true;  // Initialize based on `onlyOneIsNeeded`
+
+            // Iterate through 'project' categories
+
             for (String category : project.getCategories()) {
-                // If you only need to check for one match, break out of the loop
                 if (onlyOneIsNeeded) {
-                    // Check if the fund's categories contain the current category from 'this'
+                    // If any one category matches, add the fund and break
                     if (fund.getCategories().contains(category)) {
-                        System.out.println("Category '" + category + "' was present in both 'this' and the fund.");
+                        System.out.println("Category '" + category + "' was present in both the project and the fund.");
                         flagPresent = true;
-                        tempList.add(fund);
                         break;
                     }
-                } else if (!onlyOneIsNeeded) {
-                    flagPresent = true; // Assume all will match unless we find a mismatch
+                } else {
                     // Check if the fund does NOT contain the current category
-                    for (String thisCategory : project.getCategories()) {
-                        if (!fund.getCategories().contains(thisCategory)) {
-                            System.out.println("Category '" + thisCategory + "' is missing in the fund.");
-                            flagPresent = false;  // Set flag to false if any category is missing
-                            break;  // Exit early as all categories must match
-                        }
-                    }
-                    // If all categories matched
-                    if (flagPresent) {
-                        System.out.println("All categories match.");
-                        tempList.add(fund);
+                    if (!fund.getCategories().contains(category)) {
+                        System.out.println("Category '" + category + "' is missing in the fund.");
+                        flagPresent = false;
+                        break; // Exit early if a mismatch is found
                     }
                 }
             }
-            System.out.println("Final flag state: " + flagPresent);
+
+            // Only add to tempList if flagPresent is still true after the checks
+            if (flagPresent) {
+                tempList.add(fund);
+            }
         }
         return tempList;
     }

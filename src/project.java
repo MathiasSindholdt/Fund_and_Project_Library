@@ -1,64 +1,117 @@
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class project extends projectAbstract {
     private ArrayList<fundClass> closestDeadlineFunds = new ArrayList<fundClass>();
+    public project(
+        String projectTitle,
+        ArrayList<String> categories,
+        String description,
+        String purpose,
+        String owner,
+        String projectTargetAudience,
+        Long projectBudget,
+        LocalDateTime from,
+        LocalDateTime to,
+        String projectActivities,
+        ArrayList<fundClass> fundList,
+        boolean onlyOneIsNeeded
+    ){
+        this.setTitle(projectTitle);
+        for (String category : categories) {
+            this.setCategories(category);
+        }
+        this.setDescription(description);
+        this.setProjectPurpose(purpose);
+        this.setProjectOwner(owner);
+        this.setProjectTargetAudience(projectTargetAudience);
+        this.setProjectBudget(projectBudget);
+        this.setTimeSpan(from, to);
+        this.setProjectActivities(projectActivities);
+        this.setClosestDeadlineFunds(fundList, onlyOneIsNeeded);
+    }
+
+    //Overloaded constructor This enables the user of pure setters if only parts are needed to be changed
+    //IMPORTANT! THIS REQUIRES MANUAL SETTING OF ALL PARAMETERS!
+    public project(){
+    }
 
     public ArrayList<fundClass> getClosestDeadlineFunds(){
         return closestDeadlineFunds;
     }
 
+
     public void setClosestDeadlineFunds(ArrayList<fundClass> fundList, boolean onlyOneIsNeeded){
-        sortingFundDeadlines sorter = new sortingFundDeadlines();
-        closestDeadlineFunds =  sorter.sortFundsForCloesestDeadlines(fundList, this, onlyOneIsNeeded);
+        sortingFundLists sorter = new sortingFundLists();
+        closestDeadlineFunds =  sorter.sortFunds(fundList, this, onlyOneIsNeeded);
     }
 
     public static void main(String[] args) {
-        //test fund1
-        String[] fundCatories = {"cat1","cat2","cat3"};
-        LocalDateTime[] fundDeadlines = {LocalDateTime.parse("2024-10-02T12:00:00"),LocalDateTime.parse("2024-12-08T12:00:00")};
-        String[] fundContacts = {"lucas","lundse"};
-        String[] fundCollaborationHistory = {"P1","P2"};
 
-        fundClass fund = new fundClass();
-        fund.setTitle("fundTitle");
-        fund.setDescription("Lorem Ipsum");
-        fund.setCommonBudget(80000000);
-        for (int i = 0; i < fundCatories.length ; i++){
-            fund.setCategories(fundCatories[i]);
-        }
-        for (int i = 0; i < fundDeadlines.length ; i++){
-            fund.setDeadlines(fundDeadlines[i]);
-        }
-        for (int i = 0; i < fundContacts.length ; i++){
-            fund.setContacts(fundContacts[i]);
-        }
-        for (int i = 0; i < fundCollaborationHistory.length ; i++){
-            fund.setCollaborationHistory(fundCollaborationHistory[i]);
-        }
+        ArrayList<fundClass> fundList = new ArrayList<fundClass>();
+        String[] cat1 = {"Byg", "Trivsel", "Undervisning"};
+        String[] cat2 = {"Byg", "Random", "Undervisning"};
+        String[] cat3 = {"Byg", "Trivsel", "Undervisning"};
+        String[] contact1 = {"Anders", "Lucas"};
+        String[] contact2 = {"Lund", "Walther"};
+        String[] collab1 = {"P1", "P2"};
+        String[] collab2 = {"P2", "P3"};
+        LocalDateTime[] fund1Deadline = {LocalDateTime.parse("2024-10-04T12:00:00"), LocalDateTime.parse("2024-12-05T12:00:00")};
+        LocalDateTime[] fund2Deadline = {LocalDateTime.parse("2024-11-05T12:00:00"), LocalDateTime.parse("2024-09-05T12:00:00")};
+        fundClass fund0 = new fundClass();
+        fund0.setTitle("fund0");
+        fund0.setDescription("This is fund0");
+        fund0.setBudget(30250, 232000);
+        for (String category : cat1) {
+            fund0.setCategories(category);
 
-        //test fund2
-        String[] fund2Catories = {"cat1","cat2","cat3"};
-        LocalDateTime[] fund2Deadlines = {LocalDateTime.parse("2024-12-04T12:00:00")};
-        String[] fund2Contacts = {"lucas","lundse"};
-        String[] fund2CollaborationHistory = {"P1","P2"};
+        }
+        for (String contact : contact1) {
+            fund0.setContacts(contact);
+        }
+        for (String collab : collab1) {
+            fund0.setContacts(collab);
+        }
+        fund0.setDeadlines(LocalDateTime.parse("2024-10-04T12:00:00"));
+
+        fundClass fund1 = new fundClass();
+        fund1.setTitle("fund1");
+        fund1.setDescription("This is fund1");
+        fund1.setBudget(1000, 100002);
+        for (String category : cat2) {
+            fund1.setCategories(category);
+        }
+        for (String contact : contact2) {
+            fund1.setContacts(contact);
+        }
+        for (String collab : collab2) {
+            fund1.setCollaborationHistory(collab);
+        }
+        for (LocalDateTime deadline : fund1Deadline) {
+            fund1.setDeadlines(deadline);
+        }
 
         fundClass fund2 = new fundClass();
         fund2.setTitle("fundTitle2");
         fund2.setDescription("Lorem Ipsum");
-        fund2.setCommonBudget(80000000);
+        fund2.setBudget(100000,80000000);
+        String[] fund2Catories = {"cat1","cat2","cat3"};
         for (int i = 0; i < fund2Catories.length ; i++){
             fund2.setCategories(fund2Catories[i]);
         }
-        for (int i = 0; i < fund2Deadlines.length ; i++){
-            fund2.setDeadlines(fund2Deadlines[i]);
+        for (String contact : contact2) {
+            fund2.setContacts(contact);
         }
-        for (int i = 0; i < fund2Contacts.length ; i++){
-            fund2.setContacts(fund2Contacts[i]);
+        for (String collab : collab2) {
+            fund2.setCollaborationHistory(collab);
         }
-        for (int i = 0; i < fund2CollaborationHistory.length ; i++){
-            fund2.setCollaborationHistory(fund2CollaborationHistory[i]);
+        for (LocalDateTime deadline : fund2Deadline) {
+            fund2.setDeadlines(deadline);
         }
+        fundList.add(fund0);
+        fundList.add(fund1);
+        fundList.add(fund2);
 
         //test fund3
         String[] fund3Catories = {"cat1","cat2","cat3"};
@@ -69,54 +122,26 @@ public class project extends projectAbstract {
         fundClass fund3 = new fundClass();
         fund3.setTitle("fundTitle3");
         fund3.setDescription("Lorem Ipsum");
-        fund3.setCommonBudget(80000000);
+        fund3.setBudget(100000,80000000);
         for (int i = 0; i < fund3Catories.length ; i++){
             fund3.setCategories(fund3Catories[i]);
         }
-        for (int i = 0; i < fund3Deadlines.length ; i++){
-            fund3.setDeadlines(fund3Deadlines[i]);
+        for (String contact : contact2) {
+            fund2.setContacts(contact);
         }
-        for (int i = 0; i < fund3Contacts.length ; i++){
-            fund3.setContacts(fund3Contacts[i]);
+        for (String collab : collab2) {
+            fund2.setCollaborationHistory(collab);
         }
-        for (int i = 0; i < fund3CollaborationHistory.length ; i++){
-            fund3.setCollaborationHistory(fund3CollaborationHistory[i]);
+        for (LocalDateTime deadline : fund2Deadline) {
+            fund2.setDeadlines(deadline);
         }
-
-        //TestProject
-        String[] projectCatories = {"Byg","Trivsel","cat3"};
-  
-        project project = new project();
-        project.setTitle("Project");
-        project.setDescription("Lorem Ipsum");
-        project.setProjectBudget(80000000);
-        for (int i = 0; i < projectCatories.length ; i++){
-            project.setCategories(projectCatories[i]);
-        }
-        project.setTimeSpan(LocalDateTime.now(), LocalDateTime.now().plusDays(3));
-        //project.setTimeSpan(); //This also works
-        project.setProjectPurpose("Here is the main idea");
-        project.setProjectOwner("Lucas");
-        project.setProjectTargetAudience("Techcollege med mere");
-        project.setProjectActivities("Her er noget vi skal have gjort");
-
-        LocalDateTime timeSpanproject[] = {project.getProjectTimeSpanFrom(),project.getProjectTimeSpanTo()};
-
-        System.out.println("Here is the project: " + project.getTitle());
-        System.out.println("It has the following description: " + project.getDescription());
-        System.out.println("It was created at: " + project.getDateCreated());
-        System.out.println("It has the following categoreis: " + project.getCategories());
-        System.out.println("The main idea is: " + project.getProjectPurpose());
-        System.out.println("The Project Owner is: " + project.getProjectOwner());
-        System.out.println("The main audience is: " + project.getProjectTargetAudience());
-        System.out.println("The span of the project is from: " + timeSpanproject[0] + "and to: " + timeSpanproject[1]);
-        System.out.println("The following should be completed: " + project.getProjectActivities());
+        
 
 
 
         // Add funds to list
     ArrayList<fundClass> listOfFunds = new ArrayList<>();
-    listOfFunds.add(fund);
+    listOfFunds.add(fund1);
     listOfFunds.add(fund2);
     listOfFunds.add(fund3);
 
@@ -125,10 +150,15 @@ public class project extends projectAbstract {
 
     // Print initial list of funds
     System.out.println("Initial list of funds:");
-    for (fundClass funde : listOfFunds) {
+    for (fundClass funde : fundList) {
         System.out.println(funde.getTitle());
     }
-    sortingFundDeadlines sorter = new sortingFundDeadlines();
-    sorter.sortFundsForCloesestDeadlines(listOfFunds, myProject, false);
+
+
+
+    sortingFundLists sorter = new sortingFundLists();
+    sorter.sortFunds(listOfFunds, myProject, false);
+
+
 }
 }

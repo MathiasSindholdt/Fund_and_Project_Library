@@ -20,22 +20,46 @@ public class fundQSort {
     // Partition method
     private static int partition(ArrayList<fundClass> funds, int low, int high) {
         fundClass pivot = funds.get(high); // Choose the last element as the pivot
-        LocalDateTime pivotDeadline = getFurthestDeadline(pivot);
+        LocalDateTime pivotDateCreated = pivot.getDateCreated();
+        LocalDateTime pivotDeadline = getClosestDeadline(pivot);
+        if (pivot.getRunning() == true){
+            pivotDateCreated = pivot.getDateCreated();
+        } else {
+            pivotDeadline = getClosestDeadline(pivot);
+        }
 
-        int i = low - 1; // Index of the smaller element
+        if (pivot.getRunning() == true){
+            int i = low - 1; // Index of the smaller element
         for (int j = low; j < high; j++) {
-            LocalDateTime currentFundDeadline = getFurthestDeadline(funds.get(j));
+            LocalDateTime currentFundCreationDate = funds.get(j).getDateCreated();
 
             // Compare deadlines and swap if current fund's deadline is before the pivot's
-            if (currentFundDeadline.isBefore(pivotDeadline) ||
-                currentFundDeadline.isEqual(pivotDeadline)) {
-                i++;
-                swap(funds, i, j);
+            if (currentFundCreationDate.isBefore(pivotDateCreated) ||
+                currentFundCreationDate.isEqual(pivotDateCreated)) {
+                    i++;
+                    swap(funds, i, j);
+                }
             }
+            // Swap funds[i + 1] and pivot (funds[high])
+            swap(funds, i + 1, high);
+            return i + 1;
+
+        } else {
+            // This sorts the list based on closest deadline
+            int i = low - 1; // Index of the smaller element
+            for (int j = low; j < high; j++) {
+                LocalDateTime currentFundDeadline = getClosestDeadline(funds.get(j));
+                // Compare deadlines and swap if current fund's deadline is before the pivot's
+                if (currentFundDeadline.isBefore(pivotDeadline) ||
+                    currentFundDeadline.isEqual(pivotDeadline)) {
+                    i++;
+                    swap(funds, i, j);
+                }
+            }
+            // Swap funds[i + 1] and pivot (funds[high])
+            swap(funds, i + 1, high);
+            return i + 1;
         }
-        // Swap funds[i + 1] and pivot (funds[high])
-        swap(funds, i + 1, high);
-        return i + 1;
     }
 
     // Helper method to swap elements in the ArrayList
@@ -46,19 +70,19 @@ public class fundQSort {
     }
 
     // Method to get the furthest deadline from a fund
-    private static LocalDateTime getFurthestDeadline(fundClass fund) {
+    public static LocalDateTime getClosestDeadline(fundClass fund) {
         ArrayList<LocalDateTime> deadlines = fund.getDeadlines();
         if (deadlines.isEmpty()) {
             return LocalDateTime.MIN; // Return the earliest possible date if no deadlines
         }
 
-        LocalDateTime furthest = deadlines.get(0); // Start with the first deadline
+        LocalDateTime closest = deadlines.get(0); // Start with the first deadline
         for (LocalDateTime deadline : deadlines) {
-            if (deadline.isAfter(furthest)) {
-                furthest = deadline;
+            if (deadline.isBefore(closest)) {
+                closest = deadline;
             }
         }
-        return furthest;
+        return closest;
     }
 
     // Test method
@@ -67,31 +91,36 @@ public class fundQSort {
         ArrayList<fundClass> funds = new ArrayList<>();
 
         fundClass fund1 = new fundClass();
-        fund1.setDeadlines(LocalDateTime.of(2024, 11, 20, 12, 0)); // Single deadline
-        fund1.setDeadlines(LocalDateTime.of(2025, 11, 21, 12, 0)); // Two deadlines
+        fund1.setDateCreated(LocalDateTime.of(2025, 11, 20, 12, 0)); // Single deadline
+        fund1.setRunning(false);
+        fund1.setDeadlines(LocalDateTime.of(2028, 11, 21, 12, 0)); // Two deadlines
         funds.add(fund1);
 
         fundClass fund2 = new fundClass();
-        fund2.setDeadlines(LocalDateTime.of(2024, 12, 15, 12, 0)); // Single deadline
+        fund2.setDateCreated(LocalDateTime.of(2024, 12, 15, 12, 0)); // Single deadline
+        fund2.setDeadlines(LocalDateTime.of(2026, 11, 21, 12, 0)); // Two deadlines
+        fund2.setRunning(false);
         funds.add(fund2);
 
         fundClass fund3 = new fundClass();
-        fund3.setDeadlines(LocalDateTime.of(2024, 9, 5, 12, 0)); // Single deadline
+        fund3.setDateCreated(LocalDateTime.of(2023, 9, 5, 12, 0)); // Single deadline
+        fund3.setDeadlines(LocalDateTime.of(2027, 11, 21, 12, 0)); // Two deadlines
+        fund3.setRunning(false);
         funds.add(fund3);
 
-        // Print unsorted funds by furthest deadline
+        // Print unsorted funds by closest deadline
         System.out.println("Before sorting:");
         for (fundClass fund : funds) {
-            System.out.println(getFurthestDeadline(fund));
+            System.out.println(fund.getDateCreated() + " + " + getClosestDeadline(fund));
         }
 
         // Apply quickSort on the list of funds
         fundQuickSort(funds);
 
-        // Print sorted funds by furthest deadline
+        // Print sorted funds by closest deadline
         System.out.println("\nAfter sorting:");
         for (fundClass fund : funds) {
-            System.out.println(getFurthestDeadline(fund));
+            System.out.println(fund.getDateCreated() + " + " + getClosestDeadline(fund));
         }
     }
 }
