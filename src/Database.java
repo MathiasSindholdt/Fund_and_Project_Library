@@ -118,6 +118,7 @@ public class Database {
                     tmp.setCollaborationHistory(s);
                 }
                 tmp.setRunning(rs.getBoolean(9));
+                tmp.setfundWebsite(rs.getString(10));
 
             }
 
@@ -410,7 +411,8 @@ public class Database {
             query += fund.getContacts().toString() + ", ";
             query += fund.getBudgetSpan() + ", ";
             query += fund.getCollaborationHistory().toString();
-            query += fund.getRunning() + "); ";
+            query += fund.getRunning() + ", ";
+            query += fund.getFundWebsite() +"); ";
             String Database_host = "jdbc:mariadb://" + this.IP_of_Database.trim() + "/mydb";
             Connection con = DriverManager.getConnection(Database_host, "toor", "toor");
             Statement stmt = con.createStatement();
@@ -725,6 +727,7 @@ public class Database {
             query += "budgetSpan = '" + fc.getBudgetSpan() + "' ";
             query += "collaborationHistory = '" + fc.getCollaborationHistory() + "'";
             query += "running = '" + fc.getRunning() + "' ";
+            query += "website = '" + fc.getFundWebsite() + "' ";
             query += " where title = " + fc.getTitle() + ";";
 
             String Database_host = "jdbc:mariadb://" + this.IP_of_Database.trim() + "/mydb";
