@@ -33,15 +33,11 @@ public class elementFormatting {
     }
 
     public void setCategories(String newCategory){
+        if (newCategory.length() > 200){
+            throw new validationUtils.WrongDataInputException("Category length exceeds 200 characters.");
+        }
         validationUtils.validateInput(newCategory, "Category");
         this.categories.add(newCategory);
-    }
-
-    public void setProjectCatagories(ArrayList<String> newCategories){
-        for (String category : newCategories){
-            validationUtils.validateInput(category, "Category");
-        }
-        this.categories = newCategories;
     }
 
     public void setDescription(String newDescription){
