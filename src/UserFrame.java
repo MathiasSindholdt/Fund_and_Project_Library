@@ -2,10 +2,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Array;
-import java.sql.Date;
+import java.lang.reflect.Method;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.*;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 import javax.swing.*;
 
 public class UserFrame implements ActionListener {
@@ -38,6 +42,8 @@ public class UserFrame implements ActionListener {
     private JPanel projectListPanel;
     private JPanel projectFullPanel;
 
+    private JPanel fundListPanel;
+
     // tag button
     private JPanel tagButtonPanel;
 
@@ -64,6 +70,8 @@ public class UserFrame implements ActionListener {
         cardPanel.add(createFundsView(), "Funds"); // Funds view
         cardPanel.add(createArchiveView(), "Archive"); // Archive view
 
+
+        projectProposalListPanel = new JPanel();
 
         // Adding panels to the frame
         frame.add(panel1, BorderLayout.NORTH);
@@ -380,11 +388,11 @@ public class UserFrame implements ActionListener {
             String owner = ownerField.getText();
             String target = targetField.getText();
             String budget = budgetField.getText();
-            Date fromDate = new Date(((java.util.Date) fromDateSpinner.getValue()).getTime());
-            Date toDate = new Date(((java.util.Date) toDateSpinner.getValue()).getTime());
+            LocalDate fromDate = LocalDate.parse(fromDateSpinner.getValue().toString());
+            LocalDate toDate = LocalDate.parse((toDateSpinner.getValue().toString()));
             String activities = activitiesField.getText();
             List<String> selectedTags = new ArrayList<>();
-
+ 
 
             for (Component comp : tagPanel.getComponents()) {
                 if (comp instanceof JCheckBox) {
@@ -452,6 +460,9 @@ public class UserFrame implements ActionListener {
 
         JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
         JTextField budgetField = new JTextField();
+        if(!budgetField.getText().matches("[0-9]+")){
+            
+        }
         dialog.add(budgetLabel);
         dialog.add(budgetField);
 
@@ -512,36 +523,47 @@ public class UserFrame implements ActionListener {
         
 
         JButton submitButton = new JButton("Tilføj");
-        submitButton.addActionListener(event -> {
-            String projectTitle = nameField.getText();
-            String projectDescription = descriptionArea.getText();
-            String projectPurpose = purposeField.getText();
-            String projectOwner = ownerField.getText();
-            String projectTargetAudience = targetField.getText();
-            Long projectBudget = Long.parseLong(budgetField.getText());
-            //Date fromDate = new Date(((java.util.Date) fromDateSpinner.getValue()).getTime());
-            //Date toDate = new Date(((java.util.Date) toDateSpinner.getValue()).getTime());
-            String projectActivities = activitiesField.getText();
-            ArrayList<String> selectedCatagories = new ArrayList<>();
-            for(Component comp : tagPanel.getComponents()){
-                if(comp instanceof JCheckBox){
-                    JCheckBox checkBox = (JCheckBox) comp;
-                    if(checkBox.isSelected()){
-                        selectedCatagories.add(checkBox.getText());
+        submitButton.addActionListener((ActionEvent ae) -> {
+            try{
+                String projectTitle = nameField.getText();
+                String projectDescription = descriptionArea.getText();
+                String projectPurpose = purposeField.getText();
+                String projectOwner = ownerField.getText();
+                String projectTargetAudience = targetField.getText();
+                Long projectBudget = Long.parseLong(budgetField.getText());
+                LocalDate fromDate = ((Date) ((fromDateSpinner.getValue()))).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                LocalDate toDate = ((Date) (toDateSpinner.getValue())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                LocalDateTime projectFromDate = fromDate.atStartOfDay();
+                LocalDateTime projectToDate = toDate.atStartOfDay();
+                String projectActivities = activitiesField.getText();
+                ArrayList<String> selectedCatagories = new ArrayList<>();
+                for(Component comp : tagPanel.getComponents()){
+                    if(comp instanceof JCheckBox){
+                        JCheckBox checkBox = (JCheckBox) comp;
+                        if(checkBox.isSelected()){
+                            selectedCatagories.add(checkBox.getText());
+                        }
                     }
                 }
+                
+                System.out.println(projectFromDate);
+                System.out.println(projectToDate);
+                // Create a new project proposal and add it to the list
+    
+                project project = new project(projectTitle, selectedCatagories, projectDescription, projectPurpose ,projectOwner, projectTargetAudience, projectBudget, projectFromDate, projectToDate, projectActivities, main.getFundList(), main.getCatagoryBoolean());
+                main.projectList.add(project);
+                
+                for(project proj : main.projectList){
+                    System.out.println(proj.getTitle());
+                }
+                // Update the project proposal panel
+                //updateProjectList();
+    
+                dialog.dispose();
+            }catch (Exception e){
+                System.err.println("error when adding project");
+                e.printStackTrace();
             }
-            
-            // Create a new project proposal and add it to the list
-
-            project project = new project(projectTitle, selectedCatagories, projectDescription, projectPurpose ,projectOwner, projectTargetAudience, projectBudget, projectFromDate, projectToDate, projectActivities, main.getFundList(), main.getCatagoryBoolean());
-            projects.add(project);
-            
-            
-            // Update the project proposal panel
-            updateProjectList();
-
-            dialog.dispose();
         });
 
         dialog.add(new JLabel());
@@ -620,6 +642,7 @@ public class UserFrame implements ActionListener {
     }
 
     private void updateProjectList() {
+        projectListPanel = new JPanel();
         projectListPanel.removeAll();
         
         for (Project project : projects) {
@@ -637,6 +660,32 @@ public class UserFrame implements ActionListener {
         projectListPanel.revalidate();
         projectListPanel.repaint();
     }
+
+    // Method to update the fund list display
+    private void updateFundList() {
+        fundListPanel.removeAll();
+
+        for (fundClass fund : main.fundList) {
+            JLabel fundLabel = new JLabel(fund.getTitle() + " - " + fund.getBudgetMax());
+
+            // Add a listener to view fund details when clicked
+            fundLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    showFundDetails(fund);
+                }
+            });
+
+            fundListPanel.add(fundLabel);
+        }
+
+        fundListPanel.revalidate();  // Refreshes the layout
+        fundListPanel.repaint();     // Repaints the UI
+    }
+    
+    private void showFundDetails(fundClass fund){
+
+    }
+
     
     
 
@@ -648,13 +697,13 @@ public class UserFrame implements ActionListener {
         private String owner;
         private String target;
         private String budget;
-        private Date fromDate;
-        private Date toDate;
+        private LocalDate fromDate;
+        private LocalDate toDate;
         private String activities;
         private List<String> tags;
     
         public ProjectProposal(String title, String idea, String description, String ideaFrom, String owner, String target,
-                               String budget, Date fromDate, Date toDate, String activities, List<String> tags) {
+                               String budget, LocalDate fromDate, LocalDate toDate, String activities, List<String> tags) {
             this.title = title;
             this.idea = idea;
             this.description = description;
@@ -695,11 +744,11 @@ public class UserFrame implements ActionListener {
         return budget;
     }
 
-    public Date getFromDate() {
+    public LocalDate getFromDate() {
         return fromDate;
     }
 
-    public Date getToDate() {
+    public LocalDate getToDate() {
         return toDate;
     }
 
@@ -796,12 +845,12 @@ class Project {
     private String owner;
     private String target;
     private String budget;
-    private Date fromDate;
-    private Date toDate;
+    private LocalDate fromDate;
+    private LocalDate toDate;
     private String activities;
 
     public Project(String title, String idea, String description, String ideaFrom, String owner, String target,
-                   String budget, Date fromDate, Date toDate, String activities) {
+                   String budget, LocalDate fromDate, LocalDate toDate, String activities) {
         this.title = title;
         this.idea = idea;
         this.description = description;
@@ -821,7 +870,7 @@ class Project {
     public String getIdeaFrom() { return ideaFrom; }
     public String getTarget() { return target; }
     public String getBudget() { return budget; }
-    public Date getFromDate() { return fromDate; }
-    public Date getToDate() { return toDate; }
+    public LocalDate getFromDate() { return fromDate; }
+    public LocalDate getToDate() { return toDate; }
     public String getActivities() { return activities; }
 }
