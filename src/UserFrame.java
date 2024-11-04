@@ -1,8 +1,7 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.Array;
-import java.sql.Date;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
@@ -29,9 +28,9 @@ public class UserFrame implements ActionListener {
     private JButton archiveButton;
 
     // List to store project proposals
-    private List<ProjectProposal> projectProposals;
-    private JPanel projectProposalListPanel;
-    private JPanel projectProposalFullPanel;
+    private List<proposalProject> proposalProjects;
+    private JPanel proposalProjectListPanel;
+    private JPanel proposalProjectFullPanel;
 
     private ArrayList<project> projects;
     private JPanel projectListPanel;
@@ -54,7 +53,7 @@ public class UserFrame implements ActionListener {
     public UserFrame() {
         initializeFrame();  // Initialize JFrame
 
-        projectProposals = new ArrayList<>();  // Initialize the project proposals list
+        proposalProjects = new ArrayList<>();  // Initialize the project proposals list
         projects = new ArrayList<>(); 
 
         JPanel panel1 = createTopPanel();  // Top panel
@@ -68,7 +67,7 @@ public class UserFrame implements ActionListener {
 
         // Adding different views as "cards" to cardPanel
         cardPanel.add(createCenterPanel(), "Main"); // The main view
-        cardPanel.add(createProjectProposalView(), "ProjectProposal"); // Project Proposal view
+        cardPanel.add(createproposalProjectView(), "proposalProject"); // Project Proposal view
         cardPanel.add(createProjectsView(), "Projects"); // Projects view
         cardPanel.add(createFundsView(), "Funds"); // Funds view
         cardPanel.add(createArchiveView(), "Archive"); // Archive view
@@ -153,7 +152,7 @@ public class UserFrame implements ActionListener {
     }
 
     // Separate view for "Projekt forslag"
-    private JPanel createProjectProposalView() {
+    private JPanel createproposalProjectView() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
 
@@ -161,11 +160,11 @@ public class UserFrame implements ActionListener {
         panel.add(label, BorderLayout.NORTH);
 
         // Panel to display project proposals dynamically
-        projectProposalListPanel = new JPanel();
-        projectProposalListPanel.setLayout(new BoxLayout(projectProposalListPanel, BoxLayout.Y_AXIS));
+        proposalProjectListPanel = new JPanel();
+        proposalProjectListPanel.setLayout(new BoxLayout(proposalProjectListPanel, BoxLayout.Y_AXIS));
 
         // Scroll pane to handle multiple proposals
-        JScrollPane scrollPane = new JScrollPane(projectProposalListPanel);
+        JScrollPane scrollPane = new JScrollPane(proposalProjectListPanel);
         panel.add(scrollPane, BorderLayout.CENTER);
 
         return panel;
@@ -281,8 +280,8 @@ public class UserFrame implements ActionListener {
 private void updateRightSidePanel(String tab) {
     CardLayout layout = (CardLayout) rightSidePanel.getLayout();
     switch (tab) {
-        case "ProjectProposal":
-            layout.show(rightSidePanel, "ProjectProposalDetails");
+        case "proposalProject":
+            layout.show(rightSidePanel, "proposalProjectDetails");
             break;
         case "Projects":
             layout.show(rightSidePanel, "ProjectDetails");
@@ -302,8 +301,8 @@ private void updateRightSidePanel(String tab) {
 @Override
 public void actionPerformed(ActionEvent e) {
     if (e.getSource() == projectPropButton) {
-        cardLayout.show(cardPanel, "ProjectProposal");
-        updateRightSidePanel("ProjectProposal");
+        cardLayout.show(cardPanel, "proposalProject");
+        updateRightSidePanel("proposalProject");
     } else if (e.getSource() == projectButton) {
         cardLayout.show(cardPanel, "Projects");
         updateRightSidePanel("Projects");
@@ -316,7 +315,7 @@ public void actionPerformed(ActionEvent e) {
     } else if (e.getSource() == backButton) {
         cardLayout.show(cardPanel, "Main");
     } else if (e.getSource() == createProbButton) {
-        openProjectProposalDialog();
+        openproposalProjectDialog();
     } else if (e.getSource() == createFundButton) {
         openFundDialog(); // New method to open fund dialog
     }
@@ -328,10 +327,10 @@ private JPanel createRightSidePanel() {
     rightSidePanel.setBackground(new Color(213, 213, 213, 255));
     rightSidePanel.setPreferredSize(new Dimension(900, 100));
     
-    projectProposalFullPanel = new JPanel();
-    projectProposalFullPanel.setLayout(new BoxLayout(projectProposalFullPanel, BoxLayout.Y_AXIS));
-    JScrollPane proposalScrollPane = new JScrollPane(projectProposalFullPanel);
-    rightSidePanel.add(proposalScrollPane, "ProjectProposalDetails");
+    proposalProjectFullPanel = new JPanel();
+    proposalProjectFullPanel.setLayout(new BoxLayout(proposalProjectFullPanel, BoxLayout.Y_AXIS));
+    JScrollPane proposalScrollPane = new JScrollPane(proposalProjectFullPanel);
+    rightSidePanel.add(proposalScrollPane, "proposalProjectDetails");
     
     projectFullPanel = new JPanel();
     projectFullPanel.setLayout(new BoxLayout(projectFullPanel, BoxLayout.Y_AXIS));
@@ -350,7 +349,7 @@ private JPanel createRightSidePanel() {
 }
 
     // Restore the project proposal dialog
-    private void openProjectProposalDialog() {
+    private void openproposalProjectDialog() {
         JDialog dialog = new JDialog(frame, "Lav Projekt Forslag", true);
         dialog.setSize(700, 700);
         dialog.setLayout(new GridLayout(11, 2, 10, 10));
@@ -421,16 +420,16 @@ private JPanel createRightSidePanel() {
             String owner = ownerField.getText();
             String target = targetField.getText();
             String budget = budgetField.getText();
-            Date fromDate = new Date(((java.util.Date) fromDateSpinner.getValue()).getTime());
-            Date toDate = new Date(((java.util.Date) toDateSpinner.getValue()).getTime());
+            LocalDateTime fromDate = LocalDateTime.parse((fromDateSpinner.getValue()).toString());
+            LocalDateTime toDate = LocalDateTime.parse(( toDateSpinner.getValue()).toString());
             String activities = activitiesField.getText();
 
             // Create a new project proposal and add it to the list
-            ProjectProposal proposal = new ProjectProposal(name, idea, description, ideaFrom, owner, target, budget, fromDate, toDate, activities);
-            projectProposals.add(proposal);
+            proposalProject proposal = new proposalProject();
+            proposalProjects.add(proposal);
             
             // Update the project proposal panel
-            updateProjectProposalList();
+            updateproposalProjectList();
 
             dialog.dispose();
         });
@@ -444,11 +443,11 @@ private JPanel createRightSidePanel() {
     
     
     // Method to update the list and add mouse listeners
-    private void updateProjectProposalList() {
-        projectProposalListPanel.removeAll();
+    private void updateproposalProjectList() {
+        proposalProjectListPanel.removeAll();
     
-        for (ProjectProposal proposal : projectProposals) {
-            JLabel proposalLabel = new JLabel(proposal.getTitle() + " - " + proposal.getOwner());
+        for (proposalProject proposal : proposalProjects) {
+            JLabel proposalLabel = new JLabel(proposal.getTitle() + " - " + proposal.getProjectOwner());
     
             proposalLabel.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -456,11 +455,11 @@ private JPanel createRightSidePanel() {
                 }
             });
     
-            projectProposalListPanel.add(proposalLabel);
+            proposalProjectListPanel.add(proposalLabel);
         }
     
-        projectProposalListPanel.revalidate();
-        projectProposalListPanel.repaint();
+        proposalProjectListPanel.revalidate();
+        proposalProjectListPanel.repaint();
     }
 
     private void updateProjectList() {
@@ -489,129 +488,90 @@ private JPanel createRightSidePanel() {
         }
         
     
-
-    class ProjectProposal {
-        private String title;
-        private String idea;
-        private String description;
-        private String ideaFrom;
-        private String owner;
-        private String target;
-        private String budget;
-        private Date fromDate;
-        private Date toDate;
-        private String activities;
-    
-        public ProjectProposal(String title, String idea, String description, String ideaFrom, String owner, String target,
-                               String budget, Date fromDate, Date toDate, String activities) {
-            this.title = title;
-            this.idea = idea;
-            this.description = description;
-            this.ideaFrom = ideaFrom;
-            this.owner = owner;
-            this.target = target;
-            this.budget = budget;
-            this.fromDate = fromDate;
-            this.toDate = toDate;
-            this.activities = activities;
-        }
-        
+     
         
 
-   public String getTitle() {
-            return title;
-        }
-    public String getOwner() {
-            return owner;
-        }
-    public String getIdea() {
-        return idea;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getIdeaFrom() {
-        return ideaFrom;
-    }
-    public String getTarget() {
-        return target;
-    }
-
-    public String getBudget() {
-        return budget;
-    }
-
-    public Date getFromDate() {
-        return fromDate;
-    }
-
-    public Date getToDate() {
-        return toDate;
-    }
-
-    public String getActivities() {
-        return activities;
-    }
-}  
+  
     // Method to display the clicked project's details
-    private void showProjectProbDetails(ProjectProposal proposal) {
-        projectProposalFullPanel.removeAll();
+    private void showProjectProbDetails(proposalProject proposal) {
+        proposalProjectFullPanel.removeAll();
     
         // Vis detaljer om projektforslaget
-        projectProposalFullPanel.add(new JLabel("Titel: " + proposal.getTitle()));
-        projectProposalFullPanel.add(new JLabel("Ejer: " + proposal.getOwner()));
-        projectProposalFullPanel.add(new JLabel("Idé: " + proposal.getIdea()));
-        projectProposalFullPanel.add(new JLabel("Beskrivelse: " + proposal.getDescription()));
-        projectProposalFullPanel.add(new JLabel("Ideens oprindelse: " + proposal.getIdeaFrom()));
-        projectProposalFullPanel.add(new JLabel("Målgruppe: " + proposal.getTarget()));
-        projectProposalFullPanel.add(new JLabel("Budget: " + proposal.getBudget()));
-        projectProposalFullPanel.add(new JLabel("Fra Dato: " + proposal.getFromDate().toString()));
-        projectProposalFullPanel.add(new JLabel("Til Dato: " + proposal.getToDate().toString()));
-        projectProposalFullPanel.add(new JLabel("Aktiviteter: " + proposal.getActivities()));
+        proposalProjectFullPanel.add(new JLabel("Titel: " + proposal.getTitle()));
+        proposalProjectFullPanel.add(new JLabel("Ejer: " + proposal.getProjectOwner()));
+        proposalProjectFullPanel.add(new JLabel("Idé: " + proposal.getProjectPurpose()));
+        proposalProjectFullPanel.add(new JLabel("Beskrivelse: " + proposal.getDescription()));
+        proposalProjectFullPanel.add(new JLabel("Målgruppe: " + proposal.getProjectTargetAudience()));
+        proposalProjectFullPanel.add(new JLabel("Budget: " + proposal.getProjectBudget()));
+        proposalProjectFullPanel.add(new JLabel("Fra Dato: " + proposal.getProjectTimeSpanFrom().toString()));
+        proposalProjectFullPanel.add(new JLabel("Til Dato: " + proposal.getProjectTimeSpanTo().toString()));
+        proposalProjectFullPanel.add(new JLabel("Aktiviteter: " + proposal.getProjectActivities()));
     
         // Godkend knap
         JButton approveButton = new JButton("Godkend");
         approveButton.addActionListener(event -> {
             approveProposal(proposal);
-            projectProposalFullPanel.getParent().getParent().remove(projectProposalFullPanel); // Luk detaljer
-            updateProjectProposalList(); // Opdater listen
+            proposalProjectFullPanel.getParent().getParent().remove(proposalProjectFullPanel); // Luk detaljer
+            updateproposalProjectList(); // Opdater listen
         });
     
         // Afvis knap
         JButton rejectButton = new JButton("Afvis");
         rejectButton.addActionListener(event -> {
-            projectProposalFullPanel.getParent().getParent().remove(projectProposalFullPanel); // Luk detaljer
+            proposalProjectFullPanel.getParent().getParent().remove(proposalProjectFullPanel); // Luk detaljer
         });
     
-        projectProposalFullPanel.add(approveButton);
-        projectProposalFullPanel.add(rejectButton);
+        proposalProjectFullPanel.add(approveButton);
+        proposalProjectFullPanel.add(rejectButton);
     
-        projectProposalFullPanel.revalidate();
-        projectProposalFullPanel.repaint();
+        proposalProjectFullPanel.revalidate();
+        proposalProjectFullPanel.repaint();
     }
     
-    private void approveProposal(ProjectProposal proposal) {
-        System.out.println("Godkendelse af forslag: " + proposal.getTitle());
-        
-        // Remove the proposal from the list
-        if (projectProposals.remove(proposal)) {
-            System.out.println("Proposal removed: " + proposal.getTitle());
-        } else {
-            System.out.println("Proposal not found: " + proposal.getTitle());
+    private void approveProposal(proposalProject proposal) {
+        System.out.println("Approving proposal: " + proposal.getTitle());
+    
+        // Check if proposalProjects list is initialized
+        if (proposalProjects == null) {
+            System.out.println("Error: proposalProjects list is not initialized.");
+            return;
         }
     
-        // Create a new Project and add it to the list
-        project project = new project(proposal.getTitle(), proposal.getIdea(), proposal.getDescription(),
-                                      proposal.getIdeaFrom(), proposal.getOwner(), proposal.getTarget(),
-                                      proposal.getBudget(), proposal.getFromDate(), proposal.getToDate(),
-                                      proposal.getActivities());
-        projects.add(project);
-        
-        // Update the UI with the new project list
+        // Remove the proposal from the proposalProjects list
+        if (proposalProjects.remove(proposal)) {
+            System.out.println("Proposal removed: " + proposal.getTitle());
+        } else {
+            System.out.println("Proposal not found in proposalProjects list: " + proposal.getTitle());
+        }
+    
+        // Create a new projectAbstract instance using proposal details
+        project project = new project();
+    
+        // Set project details based on proposal details
+        try {
+            project.setTitle(proposal.getTitle());
+            project.setProjectPurpose(proposal.getProjectPurpose());
+            project.setDescription(proposal.getDescription());
+            project.setProjectOwner(proposal.getProjectOwner());
+            project.setProjectTargetAudience(proposal.getProjectTargetAudience());
+            project.setProjectBudget(proposal.getProjectBudget());
+            project.setTimeSpan(proposal.getProjectTimeSpanFrom(), proposal.getProjectTimeSpanTo());
+            project.setProjectActivities(proposal.getProjectActivities()); // Make sure proposal.getActivities() returns a valid string or list
+    
+            // Add the new project to the projects list
+            if (projects != null) {
+                projects.add(project);
+                System.out.println("New project added: " + project.getTitle());
+            } else {
+                System.out.println("Error: projects list is not initialized.");
+            }
+    
+        } catch (NullPointerException e) {
+            System.out.println("Error: One of the proposal properties is null - " + e.getMessage());
+        }
+    
+        // Update the UI to reflect the new project list
         updateProjectList();
-        
     }
     
     
@@ -721,11 +681,11 @@ private JPanel createRightSidePanel() {
                 long amount = Long.parseLong(amountField.getText().trim());
                 long toAmount = Long.parseLong(toAmountField.getText().trim());
                 
-                Date deadline = new Date(((java.util.Date) deadlineSpinner.getValue()).getTime());
+                LocalDateTime deadline = LocalDateTime.parse((deadlineSpinner.getValue()).toString());
                 String previousCollab = previousCollabField.isVisible() ? previousCollabField.getText().trim() : "";
                 
                 // Create a new fund and add it to the fund list
-                fundClass newFund = new fundClass(name, description, amount, toAmount, deadline, previousCollab, tags);
+                fundClass newFund = new fundClass();
                 fundList.add(newFund);
         
                 // Update the fund list panel with the new fund
@@ -779,11 +739,12 @@ dialog.add(submitButton); // Add the initialized button to the dialog
     private void showFundDetails(fundClass fund) {
     }
     
-    
     public static void main(String[] args) {
-        UserFrame guestFrame = new UserFrame();
-        guestFrame.show();
+        UserFrame frame = new UserFrame();
+        frame.show();
     }
+    
+
 
 }
 
