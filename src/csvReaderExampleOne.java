@@ -28,7 +28,7 @@ public class csvReaderExampleOne {
             String fundWebsite = fundData[1]; 
             String fundDescription = fundData[2]; 
             String applicationDeadline = fundData[3]; 
-            String budgetSize = fundData[4]; 
+            String budgetSize = extractBudgetRange(fundData[4]);
             String collaborationHistory = fundData[6]; 
 
             // Output fund details
@@ -54,7 +54,7 @@ public class csvReaderExampleOne {
             for (int categoryIndex = 0; categoryIndex < categoryNames.length; categoryIndex++) {
                 if ("x".equalsIgnoreCase(fundData[7 + categoryIndex].trim())) {
                     includedCategories.add(categoryNames[categoryIndex]);
-                    hasIncludedCategory = true; // Set flag to true if at least one category is included
+                    hasIncludedCategory = true;
                 }
             }
 
@@ -68,8 +68,26 @@ public class csvReaderExampleOne {
                 System.out.println("NoCategory");
             }
 
-            // Print a separator between funds
             System.out.println("------------------------------------------------------");
+        }
+    }
+
+
+    public static String extractBudgetRange(String budget) {
+        boolean isMillion = budget.toLowerCase().contains("mio");
+        // Remove any non-numeric or non-dash characters, then split by the dash
+        String[] parts = budget.replaceAll("[^\\d-]", "").split("-");
+        
+        // Check if there are two parts
+        if (parts.length == 2) {
+            
+            return parts[0].trim() + " - " + parts[1].trim();
+        } else if (parts.length == 1) {
+            // Single budget amount
+            return parts[0].trim();
+        } else {
+            // If there's no valid number, return a default message
+            return "N/A";
         }
     }
 
