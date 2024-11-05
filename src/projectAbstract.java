@@ -49,6 +49,7 @@ public class projectAbstract extends elementFormatting {
         return projectActivities;
     }
 
+ 
     public void setProjectPurpose(String newProjectPurpose){
 
         if (newProjectPurpose.length() > 2400){

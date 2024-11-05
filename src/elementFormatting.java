@@ -20,7 +20,6 @@ public class elementFormatting {
         return description;
     }
 
-    
 
     public LocalDateTime getDateCreated(){
         return dateCreated;

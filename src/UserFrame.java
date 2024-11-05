@@ -646,21 +646,21 @@ public class UserFrame implements ActionListener {
                 main.projectList.add(project);
                 System.out.println("------------");
                 System.out.println("adding project");
-                // for(project proj : main.projectList){
-                //     System.out.println(proj.getTitle());
-                //     System.out.println(proj.getCategories());
-                //     System.out.println(proj.getDescription());
-                //     System.out.println(proj.getPurpose());
-                //     System.out.println(proj.getOwner());
-                //     System.out.println(proj.getTargetAudience());
-                //     System.out.println(proj.getBudget());
-                //     System.out.println(proj.getTimeSpanFrom());
-                //     System.out.println(proj.getTimeSpanTo());
-                //     System.out.println(proj.getActivities());
-                //     System.out.println(proj.getClosestDeadlineFunds());
-                //     System.out.println(proj.getCategories());
+                for(project proj : main.projectList){
+                    System.out.println(proj.getTitle());
+                    System.out.println(proj.getCategories());
+                    System.out.println(proj.getDescription());
+                    System.out.println(proj.getProjectPurpose());
+                    System.out.println(proj.getProjectOwner());
+                    System.out.println(proj.getProjectTargetAudience());
+                    System.out.println(proj.getProjectBudget());
+                    System.out.println(proj.getProjectTimeSpanFrom());
+                    System.out.println(proj.getProjectTimeSpanTo());
+                    System.out.println(proj.getProjectActivities());
+                    System.out.println(proj.getClosestDeadlineFunds());
+                    System.out.println(proj.getCategories());
 
-                // }
+                }
                 // Update the project proposal panel
                 //updateProjectList();
     
