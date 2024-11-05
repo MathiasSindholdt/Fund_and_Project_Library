@@ -461,7 +461,7 @@ public class UserFrame implements ActionListener {
         JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
         JTextField budgetField = new JTextField();
             dialog.add(budgetLabel);
-            dialog.add(budgetField);
+            dialog.add(budgetField);  
       
 
         JLabel fromDateLabel = new JLabel("Fra dato:");
