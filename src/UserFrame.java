@@ -1,10 +1,14 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List; // Import for date formatting
 import javax.swing.*;
+
 
 public class UserFrame implements ActionListener {
 
@@ -60,6 +64,7 @@ public class UserFrame implements ActionListener {
         JPanel panel2 = createSidePanel();  // Left-side panel
         JPanel panel3 = createRightSidePanel();  // Right-side panel
         
+        fundList = new ArrayList<>();
 
         // Card layout for switching between views
         cardLayout = new CardLayout();
@@ -135,19 +140,12 @@ public class UserFrame implements ActionListener {
         createFundButton = createButton("Lav en ny fond");
         changeFundButton = createButton("Redigér en fond");
 
-
-        
-
         panel5.add(createProbButton);
         panel5.add(changeProbButton);
         panel5.add(createProjectButton);
         panel5.add(changeProjectButton);
         panel5.add(createFundButton);
         panel5.add(changeFundButton);
-
-
-
-
         return panel5;
     }
 
@@ -184,28 +182,26 @@ public class UserFrame implements ActionListener {
     
         JScrollPane scrollPane = new JScrollPane(projectListPanel); // Add project list panel in a scroll pane
         panel.add(scrollPane, BorderLayout.CENTER);
-    
+
         return panel;
     }
-    
-    
-
-    // Separate view for "Fonde"
 
 
     private JPanel createFundsView() {
-        JPanel panel = new JPanel();
+        JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
-        JLabel label = new JLabel("Fonde");
-        panel.add(label);
+
+        JLabel label = new JLabel("Fonde", SwingConstants.CENTER);
+        panel.add(label, BorderLayout.NORTH);
+    
         
         // Initialize fund list panel
         fundListPanel = new JPanel();
         fundListPanel.setLayout(new BoxLayout(fundListPanel, BoxLayout.Y_AXIS));
         
         // Create a scroll pane for the fund list
-        JScrollPane fundScrollPane = new JScrollPane(fundListPanel);
-        panel.add(fundScrollPane);
+        JScrollPane scrollPane = new JScrollPane(fundListPanel);
+        panel.add(scrollPane, BorderLayout.CENTER);
         
         return panel;
     }
@@ -316,8 +312,8 @@ public void actionPerformed(ActionEvent e) {
         cardLayout.show(cardPanel, "Main");
     } else if (e.getSource() == createProbButton) {
         openproposalProjectDialog();
-    } else if (e.getSource() == createFundButton) {
-        openFundDialog(); // New method to open fund dialog
+    }else if (e.getSource() == createFundButton) {
+        openFundDialog();
     }
 }
 
@@ -337,9 +333,10 @@ private JPanel createRightSidePanel() {
     JScrollPane projectScrollPane = new JScrollPane(projectFullPanel);
     rightSidePanel.add(projectScrollPane, "ProjectDetails");
     
-    JPanel fundPanel = new JPanel();
-    fundPanel.add(new JLabel("Fond Detaljer"));
-    rightSidePanel.add(fundPanel, "FundDetails");
+    fundFullPanel = new JPanel();
+    fundFullPanel.setLayout(new BoxLayout(fundFullPanel, BoxLayout.Y_AXIS));
+    JScrollPane fundScrollPane = new JScrollPane(fundFullPanel);
+    rightSidePanel.add(fundScrollPane, "FundDetails");
     
     JPanel archivePanel = new JPanel();
     archivePanel.add(new JLabel("Arkiv Detaljer"));
@@ -369,11 +366,6 @@ private JPanel createRightSidePanel() {
         JScrollPane scrollPane = new JScrollPane(descriptionArea);
         dialog.add(descriptionLabel);
         dialog.add(scrollPane);
-
-        JLabel ideaFromLabel = new JLabel("Ideens oprindelse:");
-        JTextField ideaFromField = new JTextField();
-        dialog.add(ideaFromLabel);
-        dialog.add(ideaFromField);
 
         JLabel ownerLabel = new JLabel("Ejer af idé/forslaget:");
         JTextField ownerField = new JTextField();
@@ -416,23 +408,62 @@ private JPanel createRightSidePanel() {
             String name = nameField.getText();
             String idea = ideaField.getText();
             String description = descriptionArea.getText();
-            String ideaFrom = ideaFromField.getText();
             String owner = ownerField.getText();
             String target = targetField.getText();
-            String budget = budgetField.getText();
-            LocalDateTime fromDate = LocalDateTime.parse((fromDateSpinner.getValue()).toString());
-            LocalDateTime toDate = LocalDateTime.parse(( toDateSpinner.getValue()).toString());
+            long budget;
+            LocalDateTime fromDate;
+            LocalDateTime toDate;
             String activities = activitiesField.getText();
-
-            // Create a new project proposal and add it to the list
-            proposalProject proposal = new proposalProject();
+        
+            try {
+                // Parse the budget
+                budget = Long.parseLong(budgetField.getText());
+        
+                // Get Date from JSpinner
+                Date fromDateValue = (Date) fromDateSpinner.getValue();
+                Date toDateValue = (Date) toDateSpinner.getValue();
+        
+                // Convert Dates to LocalDateTime
+                fromDate = fromDateValue.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                toDate = toDateValue.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        
+                // Additional validation for date range
+                if (fromDate.isAfter(toDate)) {
+                    JOptionPane.showMessageDialog(dialog, "Fra dato skal være før Til dato.", "Ugyldig datointerval", JOptionPane.ERROR_MESSAGE);
+                    return; // Exit if date range is invalid
+                }
+        
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(dialog, "Budget skal være et gyldigt nummer.", "Ugyldig indtastning", JOptionPane.ERROR_MESSAGE);
+                return; // Exit if budget input is invalid
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(dialog, "Fejl ved parsing af datoer. Kontroller venligst dine indtastninger.", "Ugyldig dato", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace(); // Print stack trace for debugging
+                return; // Exit if date parsing fails
+            }
+        
+            // Create the proposal project instance
+            proposalProject proposal = new proposalProject(
+                name,
+                new ArrayList<>(Arrays.asList(target.split(","))), // Assuming target is a comma-separated string
+                description,
+                idea,
+                owner,
+                target,
+                budget,
+                fromDate,
+                toDate,
+                activities
+            );
+        
+            // Add the proposal to the list and update the UI
             proposalProjects.add(proposal);
-            
-            // Update the project proposal panel
             updateproposalProjectList();
-
+        
+            // Close the dialog
             dialog.dispose();
         });
+        
 
         dialog.add(new JLabel());
         dialog.add(submitButton);
@@ -487,11 +518,6 @@ private JPanel createRightSidePanel() {
             projectListPanel.repaint();
         }
         
-    
-     
-        
-
-  
     // Method to display the clicked project's details
     private void showProjectProbDetails(proposalProject proposal) {
         proposalProjectFullPanel.removeAll();
@@ -573,10 +599,6 @@ private JPanel createRightSidePanel() {
         // Update the UI to reflect the new project list
         updateProjectList();
     }
-    
-    
-    
-
 
     private void showProjectDetails(project project) {
         projectFullPanel.removeAll();
@@ -595,32 +617,37 @@ private JPanel createRightSidePanel() {
         projectFullPanel.repaint();
     }
     
-
     private void openFundDialog() {
-        JDialog dialog = new JDialog(frame, "Lav en ny fond", true);
-        dialog.setSize(700, 600);
-        dialog.setLayout(new GridLayout(11, 2, 10, 10));
+        JDialog dialog = new JDialog(frame, "Lav En Fond", true);
+        dialog.setSize(700, 700);
+        dialog.setLayout(new GridLayout(12, 2, 10, 10));
     
-        JLabel nameLabel = new JLabel("Fondens navn:");
+        // Fund Name
+        JLabel nameLabel = new JLabel("Fond Titel:");
         JTextField nameField = new JTextField();
         dialog.add(nameLabel);
         dialog.add(nameField);
     
-        JLabel descriptionLabel = new JLabel("Beskrivelse af foden:");
-        JTextField descriptionField = new JTextField();
+        // Fund Description
+        JLabel descriptionLabel = new JLabel("Beskrivelse:");
+        JTextArea descriptionArea = new JTextArea(3, 20);
+        JScrollPane scrollPane = new JScrollPane(descriptionArea);
         dialog.add(descriptionLabel);
-        dialog.add(descriptionField);
+        dialog.add(scrollPane);
     
-        JLabel amountLabel = new JLabel("Fra beløb (kr.):");
-        JTextField amountField = new JTextField();
-        dialog.add(amountLabel);
-        dialog.add(amountField);
+        // Fund Amount From
+        JLabel amountFromLabel = new JLabel("Beløb fra:");
+        JTextField amountFromField = new JTextField();
+        dialog.add(amountFromLabel);
+        dialog.add(amountFromField);
     
-        JLabel toAmountLabel = new JLabel("Til beløb (kr.):");
-        JTextField toAmountField = new JTextField();
-        dialog.add(toAmountLabel);
-        dialog.add(toAmountField);
+        // Fund Amount To
+        JLabel amountToLabel = new JLabel("Beløb til:");
+        JTextField amountToField = new JTextField();
+        dialog.add(amountToLabel);
+        dialog.add(amountToField);
     
+        // Fund Deadline
         JLabel deadlineLabel = new JLabel("Deadline:");
         SpinnerDateModel deadlineModel = new SpinnerDateModel();
         JSpinner deadlineSpinner = new JSpinner(deadlineModel);
@@ -629,115 +656,137 @@ private JPanel createRightSidePanel() {
         dialog.add(deadlineLabel);
         dialog.add(deadlineSpinner);
     
-        dialog.add(new JLabel("Create Tag:"));
-        JButton createTagButton = new JButton("Create Tag");
-        dialog.add(createTagButton);
+        // Fund Category
+        JLabel categoryLabel = new JLabel("Kategori:");
+        JTextField categoryField = new JTextField();
+        dialog.add(categoryLabel);
+        dialog.add(categoryField);
     
-        dialog.add(new JLabel("Choose Tags:"));
-        JPanel tagPanel = new JPanel();
-        tagPanel.setLayout(new BoxLayout(tagPanel, BoxLayout.Y_AXIS));
-        JScrollPane tagScrollPane = new JScrollPane(tagPanel);
-        dialog.add(tagScrollPane);
-        
-        createTagButton.addActionListener(e -> {
-            String newTag = JOptionPane.showInputDialog(dialog, "Enter new tag:");
-            if (newTag != null && !newTag.trim().isEmpty()) {
-                JCheckBox tagCheckBox = new JCheckBox(newTag);
-                tagPanel.add(tagCheckBox);
-                tagCheckBoxes.add(tagCheckBox); // Store the checkbox for later access
-                tagPanel.revalidate();
-                tagPanel.repaint();
-            }
-        });
-        
+        // Fund Contacts
+        JLabel contactsLabel = new JLabel("Kontakt person(er):");
+        JTextField contactsField = new JTextField();
+        dialog.add(contactsLabel);
+        dialog.add(contactsField);
     
-        // Checkbox for previous collaboration
-        JCheckBox collaborationCheckbox = new JCheckBox("Har I arbejdet sammen før?");
-        dialog.add(collaborationCheckbox);
+        // Fund Website
+        JLabel websiteLabel = new JLabel("Hjemmeside:");
+        JTextField websiteField = new JTextField();
+        dialog.add(websiteLabel);
+        dialog.add(websiteField);
     
-        JLabel previousCollabLabel = new JLabel("Tidligere samarbejdspartnere:");
-        JTextField previousCollabField = new JTextField();
-        previousCollabLabel.setVisible(false);
-        previousCollabField.setVisible(false);
+        // Collaborated (checkbox)
+        JLabel collaboratedLabel = new JLabel("Tidligere samarbejde?:");
+        JCheckBox collaboratedCheckBox = new JCheckBox();
+        dialog.add(collaboratedLabel);
+        dialog.add(collaboratedCheckBox);
     
-        dialog.add(previousCollabLabel);
-        dialog.add(previousCollabField);
+        // Collaboration History (initially hidden)
+        JPanel collaborationPanel = new JPanel(new GridLayout(1, 2)); // New panel for collaboration
+        JLabel collaborationLabel = new JLabel("Tidligere samarbejdsprojekter:");
+        JTextField collaborationField = new JTextField();
+        collaborationPanel.add(collaborationLabel);
+        collaborationPanel.add(collaborationField);
+        collaborationPanel.setVisible(false); // Initially hidden
     
-        // Show/Hide the previous collaborations field when checkbox is selected/deselected
-        collaborationCheckbox.addActionListener(e -> {
-            boolean selected = collaborationCheckbox.isSelected();
-            previousCollabLabel.setVisible(selected);
-            previousCollabField.setVisible(selected);
+        // Enable or add collaborationField based on collaboratedCheckBox
+        collaboratedCheckBox.addItemListener(e -> {
+            collaborationPanel.setVisible(collaboratedCheckBox.isSelected()); // Toggle visibility
+            dialog.revalidate(); // Refresh dialog to reflect changes
+            dialog.repaint();
         });
     
-
-        JButton submitButton = new JButton("Tilføj"); // Create and initialize the button
+        dialog.add(collaborationPanel); // Add the collaboration panel to the dialog
+    
+        // Running (checkbox)
+        JLabel runningLabel = new JLabel("Løbende deadline:");
+        JCheckBox runningCheckBox = new JCheckBox();
+        dialog.add(runningLabel);
+        dialog.add(runningCheckBox);
+    
+        // Submit button
+        JButton submitButton = new JButton("Tilføj Fond");
         submitButton.addActionListener(event -> {
             try {
-                String name = nameField.getText().trim();
-                String description = descriptionField.getText().trim();
+                // Retrieve values and create new fund instance
+                String fundName = nameField.getText().trim();
+                String fundDescription = descriptionArea.getText().trim();
+                long fundAmountFrom = Long.parseLong(amountFromField.getText().trim());
+                long fundAmountTo = Long.parseLong(amountToField.getText().trim());
+    
+                // Ensure LocalDateTime is correctly parsed
+                LocalDateTime fundDeadline = ((java.util.Date) deadlineSpinner.getValue())
+                    .toInstant()
+                    .atZone(java.time.ZoneId.systemDefault())
+                    .toLocalDateTime();
+    
+                String[] fundCategory = categoryField.getText().split(",");
+                String[] fundCollaborationHistory = collaboratedCheckBox.isSelected() 
+                    ? new String[]{collaborationField.getText().trim()} 
+                    : new String[0]; // If not collaborated, empty array
+                String[] fundContacts = {contactsField.getText().trim()};
+                String fundWebsite = websiteField.getText().trim();
+                boolean collaborated = collaboratedCheckBox.isSelected();
+                boolean running = runningCheckBox.isSelected();
+    
+                // Add fund to fund list
+                fundClass fund = new fundClass(fundName, fundDescription, fundAmountFrom, fundAmountTo,
+                        new LocalDateTime[]{fundDeadline}, fundCategory, fundCollaborationHistory, fundContacts, fundWebsite,
+                        collaborated, running);
                 
-                // Parsing amount values safely
-                long amount = Long.parseLong(amountField.getText().trim());
-                long toAmount = Long.parseLong(toAmountField.getText().trim());
-                
-                LocalDateTime deadline = LocalDateTime.parse((deadlineSpinner.getValue()).toString());
-                String previousCollab = previousCollabField.isVisible() ? previousCollabField.getText().trim() : "";
-                
-                // Create a new fund and add it to the fund list
-                fundClass newFund = new fundClass();
-                fundList.add(newFund);
-        
-                // Update the fund list panel with the new fund
-                updateFundList();
-                
-                dialog.dispose(); // Close the dialog after successfully adding the fund
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(dialog, "Indtast venligst gyldige beløb i numerisk format.", "Input Fejl", JOptionPane.ERROR_MESSAGE);
+                fundList.add(fund); // Add to list
+                updateFundList(); // Update UI
+    
+                dialog.dispose();
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(dialog, "Indtast venligst gyldige tal for beløb.", "Fejl", JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(dialog, "Der opstod en fejl. Prøv igen.", "Fejl", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(dialog, "Der opstod en fejl: " + e.getMessage(), "Fejl", JOptionPane.ERROR_MESSAGE);
             }
         });
-        
-
-dialog.add(new JLabel()); // Spacer
-dialog.add(submitButton); // Add the initialized button to the dialog
-
-        
     
-        dialog.add(new JLabel()); // Spacer
+        dialog.add(new JLabel());
         dialog.add(submitButton);
-    
         dialog.setLocationRelativeTo(frame);
         dialog.setVisible(true);
     }
     
-    
-    // Method to update the fund list display
+
     private void updateFundList() {
-        fundListPanel.removeAll();
+        fundListPanel.removeAll();  // Clear existing funds
     
-        for (fundClass fund : main.fundList) {
-            JLabel fundLabel = new JLabel(fund.getTitle() + " - " + fund.getBudgetMax());
-    
-            // Add a listener to view fund details when clicked
+        for (fundClass fund : fundList) {
+            JLabel fundLabel = new JLabel(fund.getTitle() + " - " + fund.getCategories());
             fundLabel.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
-                    showFundDetails(fund);
+                    showFundDetails(fund);  // Display details on click
                 }
             });
-    
             fundListPanel.add(fundLabel);
         }
-    
-        fundListPanel.revalidate();  // Refreshes the layout
-        fundListPanel.repaint();     // Repaints the UI
+        
+        fundListPanel.revalidate();
+        fundListPanel.repaint();
     }
-    
-    
+
     private void showFundDetails(fundClass fund) {
+        fundFullPanel.removeAll();
+    
+        fundFullPanel.add(new JLabel("Navn: " + fund.getTitle()));
+        fundFullPanel.add(new JLabel("Beskrivelse: " + fund.getDescription()));
+        fundFullPanel.add(new JLabel("Beløb Fra: " + fund.getBudgetMin()));
+        fundFullPanel.add(new JLabel("Beløb Til: " + fund.getBudgetMax()));
+        fundFullPanel.add(new JLabel("Deadline: " + fund.getDeadlines()));
+        fundFullPanel.add(new JLabel("Løbende: " + fund.getRunning()));
+        fundFullPanel.add(new JLabel("Kategori: " + fund.getCategories()));
+        fundFullPanel.add(new JLabel("Tidligere samarbejde: " + fund.getCollaborationHistory()));
+        fundFullPanel.add(new JLabel("Tidligere samarbejde: " + fund.getCollaborationHistory()));
+        fundFullPanel.add(new JLabel("Kontaktperson(er): " + fund.getContacts()));
+        fundFullPanel.add(new JLabel("Hjemmeside: " + fund.getFundWebsite()));
+    
+        fundFullPanel.revalidate();
+        fundFullPanel.repaint();
     }
+    
     
     public static void main(String[] args) {
         UserFrame frame = new UserFrame();
