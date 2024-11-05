@@ -8,9 +8,9 @@ public class masterTest {
     public static void main(String[] args) {
         System.out.print("\033[2J \033[H");
         List<testTemplate> tests = new ArrayList<>();
-        Fundclass_test ft = new Fundclass_test();
         tests.add(new settings_test());
         tests.add(new Fundclass_test());
+        tests.add(new test_project());
 
         System.out.println("Starting Tests \n" + "Total tests: " + tests.size());
 
