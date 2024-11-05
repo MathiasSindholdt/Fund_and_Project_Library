@@ -32,21 +32,34 @@ public class UserFrame implements ActionListener {
     private JButton projectButton;
     private JButton fundsButton;
     private JButton archiveButton;
-
+    
     // List to store project proposals
     private List<ProjectProposal> projectProposals;
     private JPanel projectProposalListPanel;
     private JPanel projectProposalFullPanel;
-
+    
     private List<Project> projects;
     private JPanel projectListPanel;
     private JPanel projectFullPanel;
-
+    
     private JPanel fundListPanel;
-
+    
     // tag button
     private JPanel tagButtonPanel;
-
+    
+    private boolean isInvalidLenght;
+    String projectTitle;
+    String projectDescription;
+    String projectPurpose; 
+    String projectOwner;
+    String projectTargetAudience;
+    Long projectBudget;
+    LocalDate fromDate;
+    LocalDate toDate;
+    LocalDateTime projectFromDate;
+    LocalDateTime projectToDate;
+    String projectActivities;
+    ArrayList<String> selectedCatagories;
 
     // Constructor to set up the GUI
     public UserFrame() {
@@ -434,50 +447,32 @@ public class UserFrame implements ActionListener {
 
         JLabel nameLabel = new JLabel("Titel:");
         JTextField nameField = new JTextField();
-        if(!validationUtils.isValidInput(nameField.getText()) /*&& !validationUtils.titleLenght()*/){
-            dialog.add(UserFrameErrorHandling.displayTitleError());
-        }else{
-            dialog.add(nameLabel);
-            dialog.add(nameField);
-        }
+        dialog.add(nameLabel);
+        dialog.add(nameField);
+    
 
         JLabel purposeLabel = new JLabel("Formål:");
         JTextField purposeField = new JTextField();
-        if(!validationUtils.isValidInput(purposeField.getText()) /*&& !validationUtils.purposeLenght()*/){
-            dialog.add(UserFrameErrorHandling.displayPurposeError());
-        }else{
         dialog.add(purposeLabel);
         dialog.add(purposeField);
-        }
 
         JLabel descriptionLabel = new JLabel("Beskrivelse af projektet:");
         JTextArea descriptionArea = new JTextArea(5, 20);
         JScrollPane scrollPane = new JScrollPane(descriptionArea);
-        if(!validationUtils.isValidInput(descriptionArea.getText()) /*&& !validationUtils.descriptionLenght()*/){
-            dialog.add(UserFrameErrorHandling.displayDescriptionError());
-        }else{
         dialog.add(descriptionLabel);
         dialog.add(scrollPane);
-        }
 
         JLabel ownerLabel = new JLabel("Ejer af projektet:");
         JTextField ownerField = new JTextField();
-        if(!validationUtils.isValidInput(ownerField.getText()) /*&& !validationUtils.ownerLenght()*/){
-            dialog.add(UserFrameErrorHandling.displayOwnerError());
-        }else{
         dialog.add(ownerLabel);
         dialog.add(ownerField);
-        }
+        
         
         JLabel targetLabel = new JLabel("Målgruppe (hvem gavner dette projekt):");
         JTextField targetField = new JTextField();
-        if(!validationUtils.isValidInput(targetField.getText()) /*&& !validationUtils.targetAudienceLenght()*/){
-            dialog.add(UserFrameErrorHandling.displayTargetAudienceError());
-        }else{
         dialog.add(targetLabel);
         dialog.add(targetField);
-        }
-//NEED ERROR HANDLING FOR BUDGET
+
         JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
         JTextField budgetField = new JTextField();
         if(!validationUtils.isNumericInput(budgetField.getText()) /*&& !validationUtils.budgetLenght()*/){
@@ -539,22 +534,100 @@ public class UserFrame implements ActionListener {
             tagButtonPanel.repaint();
         });
 
-        
-
+     
         JButton submitButton = new JButton("Tilføj");
         submitButton.addActionListener((ActionEvent ae) -> {
             try{
-                String projectTitle = nameField.getText();
-                String projectDescription = descriptionArea.getText();
-                String projectPurpose = purposeField.getText();
-                String projectOwner = ownerField.getText();
-                String projectTargetAudience = targetField.getText();
-                Long projectBudget = Long.parseLong(budgetField.getText());
+                // Get the values from the input fields
+                if(validationUtils.isWithinLowerCharLimit(nameField.getText()) == false){
+                    isInvalidLenght = true;
+                    dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
+                }else if(validationUtils.isValidInput(nameField.getText()) == false){
+                    isInvalidLenght = false;
+                    dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
+                }else{
+                    projectTitle = nameField.getText();
+                }
+             
+                if(validationUtils.isWithinLowerCharLimit(purposeField.getText()) == false){
+                    isInvalidLenght = true;
+                    dialog.add(UserFrameErrorHandling.displayPurposeError(isInvalidLenght));
+                }else if(validationUtils.isValidInput(purposeField.getText()) == false){
+                    isInvalidLenght = false;
+                    dialog.add(UserFrameErrorHandling.displayPurposeError(isInvalidLenght));
+                }else{
+                    projectPurpose = purposeField.getText();
+                }
+                
+                if(validationUtils.isWithinUpperCharLimit(descriptionArea.getText()) == false){
+                    isInvalidLenght = true;
+                    dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
+                }else if(validationUtils.isValidDescription(descriptionArea.getText()) == false){
+                    isInvalidLenght = false;
+                    dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
+                }else{
+                    projectDescription = descriptionArea.getText();
+                }
+
+                if(validationUtils.isWithinLowerCharLimit(ownerField.getText()) == false){
+                    isInvalidLenght = true;
+                    dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
+                }else if(validationUtils.isValidInput(ownerField.getText()) == false){
+                    isInvalidLenght = false;
+                    dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
+                }else{
+                    projectOwner = ownerField.getText();
+                }
+
+                if(validationUtils.isWithinLowerCharLimit(targetField.getText()) == false){
+                    isInvalidLenght = true;
+                    dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
+                }else if(validationUtils.isValidInput(targetField.getText()) == false){
+                    isInvalidLenght = false;
+                    dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
+                }else{
+                    projectTargetAudience = targetField.getText();
+                }
+
+                if(validationUtils.isNumericInput(budgetField.getText()) == false){
+                    dialog.add(UserFrameErrorHandling.displayBudgetError());
+                }else{
+                    projectBudget = Long.parseLong(budgetField.getText());
+                }
+
+                //ERRORHANDLING FOR DATE TYPE SHIT
+                /*
+                 * if(validDateFormat == false){
+                 * invalidDate = true
+                 * display invalid format error
+                 * }else if(invalid character){
+                 * invalidDate = false
+                 * display invalid date character error
+                 * } else{
+                 *  LocalDate fromDate = ((Date) ((fromDateSpinner.getValue()))).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    LocalDate toDate = ((Date) (toDateSpinner.getValue())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    LocalDateTime projectFromDate = fromDate.atStartOfDay();
+                    LocalDateTime projectToDate = toDate.atStartOfDay();
+                 * }
+
+                 */
+
+        
                 LocalDate fromDate = ((Date) ((fromDateSpinner.getValue()))).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 LocalDate toDate = ((Date) (toDateSpinner.getValue())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 LocalDateTime projectFromDate = fromDate.atStartOfDay();
                 LocalDateTime projectToDate = toDate.atStartOfDay();
-                String projectActivities = activitiesField.getText();
+               
+                if(validationUtils.isWithinLowerCharLimit(activitiesField.getText()) == false){
+                    isInvalidLenght = true;
+                    dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
+                } else if(validationUtils.isValidInput(activitiesField.getText()) == false){
+                    isInvalidLenght = false; 
+                    dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
+                }else{
+                    projectActivities = activitiesField.getText();
+                }
+
                 ArrayList<String> selectedCatagories = new ArrayList<>();
                 for(Component comp : tagPanel.getComponents()){
                     if(comp instanceof JCheckBox){
@@ -573,21 +646,21 @@ public class UserFrame implements ActionListener {
                 main.projectList.add(project);
                 System.out.println("------------");
                 System.out.println("adding project");
-                for(project proj : main.projectList){
-                    System.out.println(proj.getTitle());
-                    System.out.println(proj.getCategories());
-                    System.out.println(proj.getDescription());
-                    System.out.println(proj.getPurpose());
-                    System.out.println(proj.getOwner());
-                    System.out.println(proj.getTargetAudience());
-                    System.out.println(proj.getBudget());
-                    System.out.println(proj.getTimeSpanFrom());
-                    System.out.println(proj.getTimeSpanTo());
-                    System.out.println(proj.getActivities());
-                    System.out.println(proj.getClosestDeadlineFunds());
-                    System.out.println(proj.getCategories());
+                // for(project proj : main.projectList){
+                //     System.out.println(proj.getTitle());
+                //     System.out.println(proj.getCategories());
+                //     System.out.println(proj.getDescription());
+                //     System.out.println(proj.getPurpose());
+                //     System.out.println(proj.getOwner());
+                //     System.out.println(proj.getTargetAudience());
+                //     System.out.println(proj.getBudget());
+                //     System.out.println(proj.getTimeSpanFrom());
+                //     System.out.println(proj.getTimeSpanTo());
+                //     System.out.println(proj.getActivities());
+                //     System.out.println(proj.getClosestDeadlineFunds());
+                //     System.out.println(proj.getCategories());
 
-                }
+                // }
                 // Update the project proposal panel
                 //updateProjectList();
     

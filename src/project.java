@@ -41,30 +41,6 @@ public class project extends projectAbstract {
     public ArrayList<fundClass> getClosestDeadlineFunds(){
         return closestDeadlineFunds;
     }
-    public String getPurpose(){
-        return this.getPurpose();
-    }
-    public String getOwner(){
-        return this.getOwner();
-    }
-    public String getTargetAudience(){
-        return this.getTargetAudience();
-    }
-    public Long getBudget(){
-        return this.getBudget();
-    }
-    public LocalDateTime getTimeSpanFrom(){
-        return this.getTimeSpanFrom();
-    }
-    public LocalDateTime getTimeSpanTo(){
-        return this.getTimeSpanTo();
-    }
-    public String getActivities(){
-        return this.getActivities();
-    }
-    public ArrayList<String> getCategories(){
-        return this.getCategories();
-    }
 
     public void setClosestDeadlineFunds(ArrayList<fundClass> fundList, boolean onlyOneIsNeeded){
         sortingFundLists sorter = new sortingFundLists();

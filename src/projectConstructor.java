@@ -13,7 +13,9 @@ public class projectConstructor extends projectAbstract {
         }
         newProject.setDeadlines(sorter.sortFunds(fundList, newProject, onlyOneIsNeeded));
         newProject.setTitle(proposal.getTitle());
-        newProject.setProjectCatagories(proposal.getCategories());
+        for (int i = 0; i < proposal.getCategories().size(); i++){
+            newProject.setCategories(proposal.getCategories().get(i));
+        }
         newProject.setDescription(proposal.getDescription());
         newProject.setProjectPurpose(proposal.getProjectPurpose());
         newProject.setProjectOwner(proposal.getProjectOwner());

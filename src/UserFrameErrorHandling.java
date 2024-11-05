@@ -13,24 +13,45 @@ import java.util.Date;
 import javax.swing.*;
 
 public class UserFrameErrorHandling{
-    public static JPanel displayTitleError(){
-        JOptionPane.showMessageDialog(null, "Titlen skal være udfyldt");
+    public static JPanel displayTitleError(boolean isInvalidLenght){
+        if (isInvalidLenght){
+            JOptionPane.showMessageDialog(null, "Titlen skal være mellem 1 og 200 tegn");
+        } else if(!isInvalidLenght){
+            JOptionPane.showMessageDialog(null, "Ugyldige tegn i titlen");
+        }
         return new JPanel();
     }
-    public static JPanel displayPurposeError(){
-        JOptionPane.showMessageDialog(null, "Formålet skal være udfyldt");
+    public static JPanel displayPurposeError(boolean isInvalidLenght){
+        if(isInvalidLenght){
+            JOptionPane.showMessageDialog(null, "Formålet skal være mellem 1 og 2000 tegn");
+        } else if(!isInvalidLenght){
+            JOptionPane.showMessageDialog(null, "Ugyldige tegn i formålet");
+        }
         return new JPanel();
     }
-    public static JPanel displayDescriptionError(){
-        JOptionPane.showMessageDialog(null, "Beskrivelsen skal være udfyldt");
+    public static JPanel displayDescriptionError(boolean isInvalidLenght){
+        if(isInvalidLenght){
+            JOptionPane.showMessageDialog(null, "Beskrivelsen skal være mellem 1 og 2000 tegn");
+        } else if(!isInvalidLenght){
+            JOptionPane.showMessageDialog(null, "Ugyldige tegn i beskrivelsen");
+        }
         return new JPanel();
     }
-    public static JPanel displayOwnerError(){
-        JOptionPane.showMessageDialog(null, "Ejer skal være udfyldt");
+    public static JPanel displayOwnerError(boolean isInvalidLenght){
+        if (isInvalidLenght){
+            JOptionPane.showMessageDialog(null, "Ejer skal være mellem 1 og 200 tegn");
+        } else if (!isInvalidLenght){ 
+            JOptionPane.showMessageDialog(null, "Ugyldige tegn i ejer");
+            
+        }
         return new JPanel();
     }
-    public static JPanel displayTargetAudienceError(){
-        JOptionPane.showMessageDialog(null, "Målgruppen skal være udfyldt");
+    public static JPanel displayTargetAudienceError(boolean isInvalidLenght){
+        if (isInvalidLenght){
+            JOptionPane.showMessageDialog(null, "Målgruppen skal være mellem 1 og 200 tegn");
+        } else if (!isInvalidLenght){
+            JOptionPane.showMessageDialog(null, "Ugyldige tegn i målgruppen");
+        }
         return new JPanel();
     }
     public static JPanel displayBudgetError(){
@@ -41,7 +62,7 @@ public class UserFrameErrorHandling{
         JOptionPane.showMessageDialog(null, "Datoen skal være i formatet dd/MM/yyyy");
         return new JPanel();
     }
-    public static JPanel displayActivityError(){
+    public static JPanel displayActivityError(boolean isInvalidLenght){
         JOptionPane.showMessageDialog(null, "Aktiviteterne skal være udfyldt");
         return new JPanel();
     }
