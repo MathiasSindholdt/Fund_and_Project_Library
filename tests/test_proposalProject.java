@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class test_project extends testTemplate {
+public class test_proposalProject extends testTemplate {
     public String ErrDump = new String();
 
     public boolean test() {
-        this.TestName = "project Test";
+        this.TestName = "proposalProject Test";
         if (!test_Constructor()) {
             this.ErrMessage += " Error in Constructor test\n";
             this.ErrMessage += ErrDump;
@@ -43,8 +43,9 @@ public class test_project extends testTemplate {
         fundlist.add(fc);
         Boolean onlyone = true;
 
-        project pro = new project(name, categories, description, purpose, owner, audience, budget, from, to, activites,
-                fundlist, onlyone);
+        proposalProject pro = new proposalProject(name, categories, description, purpose, owner, audience, budget, from,
+                to, activites);
+
         if (!name.equals(pro.getTitle())) {
             ErrDump += name + " != " + pro.getTitle() + "\n";
             passed = false;
@@ -86,12 +87,6 @@ public class test_project extends testTemplate {
         if (!Objects.equals(activites, pro.getProjectActivities())) {
             ErrDump += activites + " != " + pro.getProjectActivities() + "\n";
             passed = false;
-        }
-        for (int i = 0; i < fundlist.size(); i++) {
-            if (!Objects.equals(fundlist.get(i), pro.getClosestDeadlineFunds().get(i))) {
-                ErrDump += fundlist.get(i) + " != " + pro.getClosestDeadlineFunds().get(i) + "\n";
-                passed = false;
-            }
         }
 
         return passed;

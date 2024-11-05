@@ -11,6 +11,7 @@ public class masterTest {
         tests.add(new settings_test());
         tests.add(new Fundclass_test());
         tests.add(new test_project());
+        tests.add(new test_proposalProject());
 
         System.out.println("Starting Tests \n" + "Total tests: " + tests.size());
 
