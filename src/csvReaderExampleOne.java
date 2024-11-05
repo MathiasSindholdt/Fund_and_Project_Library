@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class csvReaderExampleOne {
 
@@ -14,12 +15,17 @@ public class csvReaderExampleOne {
             System.out.println("Insufficient data in the CSV file.");
             return;
         }
+
         // Process each subsequent row (fund)
         for (int row = 2; row < data.size(); row++) {
             String[] fundData = data.get(row);
             
-            // Ensure there's enough data in the row
-            if (fundData.length < 19) {
+            // Log the current row data for debugging
+            System.out.println("Processing row " + (row + 1) + ": " + Arrays.toString(fundData));
+
+            // Check if the row has a minimum number of columns
+            if (fundData.length < 3) { // Adjusted minimum length check to 3
+                System.out.println("Skipping row " + (row + 1) + ": insufficient columns.");
                 continue;
             }
 
@@ -27,9 +33,9 @@ public class csvReaderExampleOne {
             String fundName = fundData[0];
             String fundWebsite = fundData[1]; 
             String fundDescription = fundData[2]; 
-            String applicationDeadline = fundData[3]; 
-            String budgetSize = extractBudgetRange(fundData[4]);
-            String collaborationHistory = fundData[6]; 
+            String applicationDeadline = fundData.length > 3 ? fundData[3] : "N/A"; // Default to N/A if not present
+            String budgetSize = fundData.length > 4 ? extractBudgetRange(fundData[4]) : "N/A"; // Default to N/A if not present
+            String collaborationHistory = fundData.length > 6 ? fundData[6] : "N/A"; // Default to N/A if not present
 
             // Output fund details
             System.out.println("Fund Name: " + fundName);
@@ -52,7 +58,7 @@ public class csvReaderExampleOne {
             ArrayList<String> includedCategories = new ArrayList<>();
            
             for (int categoryIndex = 0; categoryIndex < categoryNames.length; categoryIndex++) {
-                if ("x".equalsIgnoreCase(fundData[7 + categoryIndex].trim())) {
+                if (fundData.length > 7 + categoryIndex && "x".equalsIgnoreCase(fundData[7 + categoryIndex].trim())) {
                     includedCategories.add(categoryNames[categoryIndex]);
                     hasIncludedCategory = true;
                 }
@@ -72,19 +78,27 @@ public class csvReaderExampleOne {
         }
     }
 
-
     public static String extractBudgetRange(String budget) {
         boolean isMillion = budget.toLowerCase().contains("mio");
         // Remove any non-numeric or non-dash characters, then split by the dash
         String[] parts = budget.replaceAll("[^\\d-]", "").split("-");
         
         // Check if there are two parts
-        if (parts.length == 2) {
+        if (parts.length == 2) { 
+            String start = parts[0].trim();
+            String end = parts[1].trim();
             
-            return parts[0].trim() + " - " + parts[1].trim();
+            if (isMillion){
+                end += "000000";
+            }
+
+            return start + " - " + end;
         } else if (parts.length == 1) {
-            // Single budget amount
-            return parts[0].trim();
+            String amount = parts[0].trim();
+            if (isMillion) {
+                amount += "000000";
+            }
+            return amount;
         } else {
             // If there's no valid number, return a default message
             return "N/A";
