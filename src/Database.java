@@ -118,6 +118,7 @@ public class Database {
                     tmp.setCollaborationHistory(s);
                 }
                 tmp.setRunning(rs.getBoolean(9));
+                tmp.setfundWebsite(rs.getString(10));
 
             }
 
@@ -238,7 +239,7 @@ public class Database {
         try {
             Class.forName("org.mariadb.jdbc.Driver");
             String query = new String();
-            query = "select * from Fund";
+            query = "select * from project";
             String Database_host = "jdbc:mariadb://" + this.IP_of_Database.trim() + "/mydb";
             Connection con = DriverManager.getConnection(Database_host, "toor", "toor");
             Statement stmt = con.createStatement();
@@ -267,7 +268,112 @@ public class Database {
         try {
             Class.forName("org.mariadb.jdbc.Driver");
             String query = new String();
-            query = "select * from Fund";
+            query = "select * from projectProposals";
+            String Database_host = "jdbc:mariadb://" + this.IP_of_Database.trim() + "/mydb";
+            Connection con = DriverManager.getConnection(Database_host, "toor", "toor");
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            proposal = proposalFormatter(rs);
+            con.close();
+        } catch (ClassNotFoundException e) {
+        } catch (SQLException e) {
+
+            System.out.println(e);
+        }
+        return proposal;
+    }
+
+        
+    /*
+     * getAllArchivedFunds() - gets all archived funds from database
+     * Return: ArrayList of fundClass
+     *
+     * This function queries the database for all funds and creates a list of
+     * funds.
+     */
+    public ArrayList<fundClass> getAllArchivedFunds() {
+
+        ArrayList<fundClass> funds = new ArrayList<fundClass>();
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+            String query = new String();
+            query = "select * from ArchivedFund";
+            String Database_host = "jdbc:mariadb://" + this.IP_of_Database.trim() + "/mydb";
+            Connection con = DriverManager.getConnection(Database_host, "toor", "toor");
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            funds = fundFormatter(rs);
+            con.close();
+        } catch (ClassNotFoundException e) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                String query = new String();
+                query = "select * from Funds";
+                String Database_host = "jdbc:mysql://" + this.IP_of_Database.trim() + "/mydb";
+                Connection con = DriverManager.getConnection(Database_host, "toor", "toor");
+                Statement stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery(query);
+                funds = fundFormatter(rs);
+                con.close();
+
+            } catch (ClassNotFoundException e2) {
+
+                System.out.println("unable to find mysql connection driver");
+            } catch (SQLException e2) {
+
+                System.out.println(e2);
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println(e);
+        }
+        return funds;
+
+    }
+
+    /*
+     * getAllArchivedProjects() - gets list of all archived projects from database
+     * Return: ArrayList of projects
+     * 
+     * This function queries the database to get a list of all projects.
+     */
+    public ArrayList<project> getAllArchivedProjects() {
+
+        ArrayList<project> projects = new ArrayList<project>();
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+            String query = new String();
+            query = "select * from ArchivedProject";
+            String Database_host = "jdbc:mariadb://" + this.IP_of_Database.trim() + "/mydb";
+            Connection con = DriverManager.getConnection(Database_host, "toor", "toor");
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            projects = projectFormatter(rs);
+            con.close();
+        } catch (ClassNotFoundException e) {
+        } catch (SQLException e) {
+
+            System.out.println(e);
+        }
+        return projects;
+    }
+
+    /*
+     * getAllArchivedProjectProposals() - returns list of all archived projectProposals in database
+     *
+     * Return: ArrayList of projectProposals
+     *
+     * This function queries the database for all archived projectProposals and returns
+     * a list of them.
+     */
+    public ArrayList<proposalProject> getAllArchivedProjectProposals() {
+
+        ArrayList<proposalProject> proposal = new ArrayList<proposalProject>();
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+            String query = new String();
+            query = "select * from ArchivedProposal";
             String Database_host = "jdbc:mariadb://" + this.IP_of_Database.trim() + "/mydb";
             Connection con = DriverManager.getConnection(Database_host, "toor", "toor");
             Statement stmt = con.createStatement();
@@ -305,7 +411,8 @@ public class Database {
             query += fund.getContacts().toString() + ", ";
             query += fund.getBudgetSpan() + ", ";
             query += fund.getCollaborationHistory().toString();
-            query += fund.getRunning() + "); ";
+            query += fund.getRunning() + ", ";
+            query += fund.getFundWebsite() +"); ";
             String Database_host = "jdbc:mariadb://" + this.IP_of_Database.trim() + "/mydb";
             Connection con = DriverManager.getConnection(Database_host, "toor", "toor");
             Statement stmt = con.createStatement();
@@ -398,41 +505,115 @@ public class Database {
     }
 
     /*
-     * updateProject() - updates a row in the database to contain updated project
+     * AddArchivedFundToDatabase() - adds archived fund to database
      * 
-     * @arg project
+     * @arg fundClass
      *
-     * This function creates & executes a query that updates the contents of a
-     * row in the project table where the title matches the title of the
-     * given project.
-     *
-     * NOTE: if two projects have the same title then the wrong one
-     * may be overwritten.
+     * This function takes a fundClass and adds it to a new row of the
+     * ArchivedFund table in the database.
      */
-    public void updateProject(project pro) {
+    public void AddArchivedFundToDatabase(fundClass fund) {
+
         try {
             Class.forName("org.mariadb.jdbc.Driver");
             String query = new String();
-            query = "update Fund set ";
-            query += "title = '" + pro.getTitle() + "' ";
-            query += "categories = '" + pro.getCategories().toString() + "' ";
-            query += "description = '" + pro.getDescription() + "' ";
-            query += "dateCreated = '" + pro.getDateCreated().toString() + "' ";
-            query += "deadlines = '" + pro.getDeadlines().toString() + "' ";
-            query += "projectPurpose = '" + pro.getProjectPurpose() + "' ";
-            query += "projectOwner = '" + pro.getProjectOwner() + "' ";
-            query += "projectTargetAudience = '" + pro.getProjectTargetAudience() + "'";
-            query += "projectBudget = '" + pro.getProjectBudget() + "' ";
-            query += "projectTimespan = '" + "[" + pro.getProjectTimeSpanFrom().toString() + ", "
-                    + pro.getProjectTimeSpanFrom().toString() + "]" + "' ";
-            query += "projetActivities = '" + pro.getProjectActivities() + "' ";
-            query += " where title = " + pro.getTitle() + ";";
-
+            query = "insert into ArchivedFund (title, categories, description, dateCreated,"
+                    + " deadlines, contacts, budgetSpan, collaborationHistory, running) values (";
+            query += fund.getTitle() + ", ";
+            query += fund.getCategories().toString() + ", ";
+            query += fund.getDescription() + ", ";
+            query += fund.getDateCreated().toString() + ", ";
+            query += fund.getDeadlines().toString() + ", ";
+            query += fund.getContacts().toString() + ", ";
+            query += fund.getBudgetSpan() + ", ";
+            query += fund.getCollaborationHistory().toString();
+            query += fund.getRunning() + "); ";
             String Database_host = "jdbc:mariadb://" + this.IP_of_Database.trim() + "/mydb";
             Connection con = DriverManager.getConnection(Database_host, "toor", "toor");
             Statement stmt = con.createStatement();
             stmt.executeQuery(query);
             con.close();
+        } catch (ClassNotFoundException e) {
+
+        } catch (SQLException e) {
+
+            System.out.println(e);
+        }
+    }
+
+    /*
+     * addArchviedProjectProposalToDatabase() - adds archived projectProposal to database
+     * 
+     * @arg projectProposal
+     *
+     * This function takes a projectProposal and adds it to a new row of the
+     * ArchivedProjectProposal table in the database.
+     */
+    public void addArchivedProjectProposalToDatabase(project pro) {
+        try {
+
+            Class.forName("org.mariadb.jdbc.Driver");
+            String query = new String();
+            query = "insert into ArchivedProposal (title, categories, description, dateCreated, projectPurpose, "
+                    + "projectOwner, projectTargetAudience, projectBudget, projectTimespan, projetActivities) values (";
+            query += pro.getTitle() + ", ";
+            query += pro.getCategories().toString() + ", ";
+            query += pro.getDescription() + ", ";
+            query += pro.getDateCreated().toString() + ", ";
+            query += pro.getProjectPurpose().toString() + ", ";
+            query += pro.getProjectOwner().toString() + ", ";
+            query += pro.getProjectTargetAudience().toString() + ", ";
+            query += pro.getProjectBudget() + ", ";
+            ArrayList<LocalDateTime> tmparr = new ArrayList<LocalDateTime>();
+            tmparr.add(pro.getProjectTimeSpanTo());
+            tmparr.add(pro.getProjectTimeSpanFrom());
+            query += tmparr.toString() + ", ";
+            query += pro.getProjectActivities() + ");";
+            String Database_host = "jdbc:mariadb://" + this.IP_of_Database.trim() + "/mydb";
+            Connection con = DriverManager.getConnection(Database_host, "toor", "toor");
+            Statement stmt = con.createStatement();
+            stmt.executeQuery(query);
+            con.close();
+
+        } catch (ClassNotFoundException e) {
+        } catch (SQLException e) {
+        }
+    }
+
+    /*
+     * addArchivedProjectToDatabase() - add a archived project to database
+     * 
+     * @arg project
+     * 
+     * This function takes a project and adds a new row to the archived project table
+     * of the database containing the contents of the project.
+     */
+    public void addArchivedProjectToDatabase(project pro) {
+        try {
+
+            Class.forName("org.mariadb.jdbc.Driver");
+            String query = new String();
+            query = "insert into ArchivedProject (title, categories, description, dateCreated, projectPurpose, projectOwner,"
+                    + " projectTargetAudience, projectBudget, projectTimespan, projetActivities) values (";
+            query += pro.getTitle() + ", ";
+            query += pro.getCategories().toString() + ", ";
+            query += pro.getDescription() + ", ";
+            query += pro.getDateCreated().toString() + ", ";
+            query += pro.getProjectPurpose().toString() + ", ";
+            query += pro.getProjectOwner().toString() + ", ";
+            query += pro.getProjectTargetAudience().toString() + ", ";
+            query += pro.getProjectBudget() + ", ";
+            ArrayList<LocalDateTime> tmparr = new ArrayList<LocalDateTime>();
+            tmparr.add(pro.getProjectTimeSpanTo());
+            tmparr.add(pro.getProjectTimeSpanFrom());
+            query += tmparr.toString() + ", ";
+            query += pro.getProjectActivities() + ");";
+            String Database_host = "jdbc:mariadb://" + this.IP_of_Database.trim() + "/mydb";
+            Connection con = DriverManager.getConnection(Database_host, "toor", "toor");
+            Statement stmt = con.createStatement();
+            stmt.executeQuery(query);
+            con.close();
+
         } catch (ClassNotFoundException e) {
         } catch (SQLException e) {
         }
@@ -480,6 +661,47 @@ public class Database {
     }
 
     /*
+     * updateProject() - updates a row in the database to contain updated project
+     * 
+     * @arg project
+     *
+     * This function creates & executes a query that updates the contents of a
+     * row in the project table where the title matches the title of the
+     * given project.
+     *
+     * NOTE: if two projects have the same title then the wrong one
+     * may be overwritten.
+     */
+    public void updateProject(project pro) {
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+            String query = new String();
+            query = "update Fund set ";
+            query += "title = '" + pro.getTitle() + "' ";
+            query += "categories = '" + pro.getCategories().toString() + "' ";
+            query += "description = '" + pro.getDescription() + "' ";
+            query += "dateCreated = '" + pro.getDateCreated().toString() + "' ";
+            query += "deadlines = '" + pro.getDeadlines().toString() + "' ";
+            query += "projectPurpose = '" + pro.getProjectPurpose() + "' ";
+            query += "projectOwner = '" + pro.getProjectOwner() + "' ";
+            query += "projectTargetAudience = '" + pro.getProjectTargetAudience() + "'";
+            query += "projectBudget = '" + pro.getProjectBudget() + "' ";
+            query += "projectTimespan = '" + "[" + pro.getProjectTimeSpanFrom().toString() + ", "
+                    + pro.getProjectTimeSpanFrom().toString() + "]" + "' ";
+            query += "projetActivities = '" + pro.getProjectActivities() + "' ";
+            query += " where title = " + pro.getTitle() + ";";
+
+            String Database_host = "jdbc:mariadb://" + this.IP_of_Database.trim() + "/mydb";
+            Connection con = DriverManager.getConnection(Database_host, "toor", "toor");
+            Statement stmt = con.createStatement();
+            stmt.executeQuery(query);
+            con.close();
+        } catch (ClassNotFoundException e) {
+        } catch (SQLException e) {
+        }
+    }
+
+    /*
      * updateFund() - updates fund in database
      * 
      * @arg fundClass
@@ -505,6 +727,7 @@ public class Database {
             query += "budgetSpan = '" + fc.getBudgetSpan() + "' ";
             query += "collaborationHistory = '" + fc.getCollaborationHistory() + "'";
             query += "running = '" + fc.getRunning() + "' ";
+            query += "website = '" + fc.getFundWebsite() + "' ";
             query += " where title = " + fc.getTitle() + ";";
 
             String Database_host = "jdbc:mariadb://" + this.IP_of_Database.trim() + "/mydb";
