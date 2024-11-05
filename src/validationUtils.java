@@ -7,7 +7,7 @@ public class validationUtils {
     public static final Pattern VALID_URL = Pattern.compile("^[a-zA-Z0-9 .;:\"'!?]*$");
     public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
-    //public static final Pattern NUMERIC_CHARACTERS = Pattern.compile("^[0-9]+$");
+    public static final Pattern NUMERIC_CHARACTERS = Pattern.compile("^[0-9]+$");
 
 
     public static class WrongDataInputException extends IllegalArgumentException {
@@ -25,9 +25,9 @@ public class validationUtils {
         return VALID_URL.matcher(input).matches();
     }
 
-    // public static boolean isNumericInput(String input){
-    //     return NUMERIC_CHARACTERS.matcher(input).matches();
-    // }
+    public static boolean isNumericInput(String input){
+        return NUMERIC_CHARACTERS.matcher(input).matches();
+    }
 
 
     public static void validateInput(String input, String fieldName) {

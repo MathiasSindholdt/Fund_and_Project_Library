@@ -51,7 +51,7 @@ public class UserFrame implements ActionListener {
     // Constructor to set up the GUI
     public UserFrame() {
         initializeFrame();  // Initialize JFrame
-
+        //UserFrameErrorHandling ErrorHandling = new UserFrameErrorHandling();
         projectProposals = new ArrayList<>();  // Initialize the project proposals list
         projects = new ArrayList<>(); 
 
@@ -434,35 +434,56 @@ public class UserFrame implements ActionListener {
 
         JLabel nameLabel = new JLabel("Titel:");
         JTextField nameField = new JTextField();
-        dialog.add(nameLabel);
-        dialog.add(nameField);
+        if(!validationUtils.isValidInput(nameField.getText()) /*&& !validationUtils.titleLenght()*/){
+            dialog.add(UserFrameErrorHandling.displayTitleError());
+        }else{
+            dialog.add(nameLabel);
+            dialog.add(nameField);
+        }
 
         JLabel purposeLabel = new JLabel("Formål:");
         JTextField purposeField = new JTextField();
+        if(!validationUtils.isValidInput(purposeField.getText()) /*&& !validationUtils.purposeLenght()*/){
+            dialog.add(UserFrameErrorHandling.displayPurposeError());
+        }else{
         dialog.add(purposeLabel);
         dialog.add(purposeField);
+        }
 
         JLabel descriptionLabel = new JLabel("Beskrivelse af projektet:");
         JTextArea descriptionArea = new JTextArea(5, 20);
         JScrollPane scrollPane = new JScrollPane(descriptionArea);
+        if(!validationUtils.isValidInput(descriptionArea.getText()) /*&& !validationUtils.descriptionLenght()*/){
+            dialog.add(UserFrameErrorHandling.displayDescriptionError());
+        }else{
         dialog.add(descriptionLabel);
         dialog.add(scrollPane);
+        }
 
         JLabel ownerLabel = new JLabel("Ejer af projektet:");
         JTextField ownerField = new JTextField();
+        if(!validationUtils.isValidInput(ownerField.getText()) /*&& !validationUtils.ownerLenght()*/){
+            dialog.add(UserFrameErrorHandling.displayOwnerError());
+        }else{
         dialog.add(ownerLabel);
         dialog.add(ownerField);
-
+        }
+        
         JLabel targetLabel = new JLabel("Målgruppe (hvem gavner dette projekt):");
         JTextField targetField = new JTextField();
+        if(!validationUtils.isValidInput(targetField.getText()) /*&& !validationUtils.targetAudienceLenght()*/){
+            dialog.add(UserFrameErrorHandling.displayTargetAudienceError());
+        }else{
         dialog.add(targetLabel);
         dialog.add(targetField);
+        }
 //NEED ERROR HANDLING FOR BUDGET
         JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
         JTextField budgetField = new JTextField();
+        if(!validationUtils.isNumericInput(budgetField.getText()) /*&& !validationUtils.budgetLenght()*/){
             dialog.add(budgetLabel);
             dialog.add(budgetField);  
-      
+        }
 
         JLabel fromDateLabel = new JLabel("Fra dato:");
         SpinnerDateModel fromDateModel = new SpinnerDateModel();
@@ -501,7 +522,7 @@ public class UserFrame implements ActionListener {
             if (newTag != null && !newTag.trim().isEmpty()) {
                 JCheckBox tagCheckBox = new JCheckBox(newTag);
                 if(main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))){
-                    tagPanel.add(displayTagError());
+                    tagPanel.add(UserFrameErrorHandling.displayTagError());
                 }else{
                     main.addNewCatagory(newTag);
                     tagPanel.add(tagCheckBox);
@@ -550,9 +571,22 @@ public class UserFrame implements ActionListener {
     
                 project project = new project(projectTitle, selectedCatagories, projectDescription, projectPurpose ,projectOwner, projectTargetAudience, projectBudget, projectFromDate, projectToDate, projectActivities, main.getFundList(), main.getCatagoryBoolean());
                 main.projectList.add(project);
-                
+                System.out.println("------------");
+                System.out.println("adding project");
                 for(project proj : main.projectList){
                     System.out.println(proj.getTitle());
+                    System.out.println(proj.getCategories());
+                    System.out.println(proj.getDescription());
+                    System.out.println(proj.getPurpose());
+                    System.out.println(proj.getOwner());
+                    System.out.println(proj.getTargetAudience());
+                    System.out.println(proj.getBudget());
+                    System.out.println(proj.getTimeSpanFrom());
+                    System.out.println(proj.getTimeSpanTo());
+                    System.out.println(proj.getActivities());
+                    System.out.println(proj.getClosestDeadlineFunds());
+                    System.out.println(proj.getCategories());
+
                 }
                 // Update the project proposal panel
                 //updateProjectList();
@@ -581,6 +615,11 @@ public class UserFrame implements ActionListener {
         JOptionPane.showMessageDialog(null, "Budgettet skal være et tal");
         return new JPanel();
     }
+    public static JPanel displayDateError(){
+        JOptionPane.showMessageDialog(null, "Datoen skal være i formatet dd/MM/yyyy");
+        return new JPanel();
+    }
+
 
     private JPanel createRightSidePanel() {
         JPanel panel3 = new JPanel(new CardLayout());
