@@ -50,7 +50,6 @@ public class projectAbstract extends elementFormatting {
     }
 
     public void setProjectPurpose(String newProjectPurpose){
-
         if (newProjectPurpose.length() > 2400){
             throw new validationUtils.WrongDataInputException("The project purpose exceeds 2400 characters");
         }
@@ -60,7 +59,7 @@ public class projectAbstract extends elementFormatting {
     }
 
     public void setProjectOwner(String newProjectOwner){
-        if (newProjectOwner.length() > 200){
+        if (!validationUtils.isWithinLowerCharLimit(newProjectOwner)){
             throw new validationUtils.WrongDataInputException("The project owner exceeds 200 characters");
         }
         validationUtils.validateInput(newProjectOwner, "Purpose");
