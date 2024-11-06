@@ -340,13 +340,14 @@ public class UserFrame implements ActionListener {
     
         JLabel activitiesLabel = new JLabel("Aktiviteter:");
         JTextField activitiesField = new JTextField();
-    
-        // "Create Tag" label and button
-        JLabel createTagLabel = new JLabel("Opret Kategori:");
-        JButton createTagButton = new JButton("Opret Kategori");
-    
-        // Tag selection panel (scrollable)
-        JLabel selectTagLabel = new JLabel("Vælg relevante kategorier:");
+        dialog.add(activitiesLabel);
+        dialog.add(activitiesField);
+
+        dialog.add(new JLabel("Lav katagori:"));
+        JButton createTagButton = new JButton("Create Tag");
+        dialog.add(createTagButton);
+
+        dialog.add(new JLabel("Vælg katagori:"));
         JPanel tagPanel = new JPanel();
         tagPanel.setLayout(new BoxLayout(tagPanel, BoxLayout.Y_AXIS));
         JScrollPane tagScrollPane = new JScrollPane(tagPanel);
@@ -362,19 +363,33 @@ public class UserFrame implements ActionListener {
             String newTag = JOptionPane.showInputDialog(dialog, "Indtast ny kategori:");
             if (newTag != null && !newTag.trim().isEmpty()) {
                 JCheckBox tagCheckBox = new JCheckBox(newTag);
-    
-                // Check for duplicate category
-                if (main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))) {
-                    tagPanel.add(UserFrameErrorHandling.displayTagError());
-                } else {
-                    main.addNewCatagory(newTag); // Add to main category list
-                    tagPanel.add(tagCheckBox); // Add checkbox for new tag
-                    tagPanel.revalidate();
-                    tagPanel.repaint();
+                tagPanel.add(tagCheckBox);
+                tagPanel.revalidate();
+                tagPanel.repaint();
+        
+                // Check if a button for this tag already exists
+                boolean buttonExists = false;
+                for (Component comp : tagButtonPanel.getComponents()) {
+                    if (comp instanceof JButton && ((JButton) comp).getText().equals(newTag)) {
+                        buttonExists = true;
+                        break;
+                    }
+                }
+        
+                // Only create a new button if it doesn’t already exist
+                if (!buttonExists) {
+                    JButton tagButton = new JButton(newTag);
+                    tagButton.addActionListener(tagEvent -> filterProjectProposalsByTag(newTag));
+                    tagButtonPanel.add(tagButton);
+                    tagButtonPanel.revalidate();
+                    tagButtonPanel.repaint();
                 }
             }
         });
-    
+        
+
+            
+
         JButton submitButton = new JButton("Tilføj");
         submitButton.addActionListener(event -> {
             String name = nameField.getText();
