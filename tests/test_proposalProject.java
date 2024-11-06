@@ -41,7 +41,6 @@ public class test_proposalProject extends testTemplate {
         fc.setCategories("cat1");
 
         fundlist.add(fc);
-        Boolean onlyone = true;
 
         proposalProject pro = new proposalProject(name, categories, description, purpose, owner, audience, budget, from,
                 to, activites);
