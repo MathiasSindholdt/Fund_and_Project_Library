@@ -13,6 +13,7 @@ public class masterTest {
         tests.add(new test_project());
         tests.add(new test_proposalProject());
         tests.add(new test_sorting());
+        tests.add(new PDFGen_test());
 
         System.out.println("Starting Tests \n" + "Total tests: " + tests.size());
 

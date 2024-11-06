@@ -7,7 +7,7 @@ public class test_sorting extends testTemplate {
     public String ErrDump = new String();
 
     public boolean test() {
-        this.TestName = "proposalProject Test";
+        this.TestName = "Sorting Test";
         if (!testSorting()) {
             this.ErrMessage += " Error in Sorting test\n";
             this.ErrMessage += ErrDump;
