@@ -8,7 +8,8 @@ public class main {
     static ArrayList<fundClass> fundList = new ArrayList<>();
     static ArrayList<fundClass> runningFundList = new ArrayList<>();
     static ArrayList<String> categories = new ArrayList<>();
-    static boolean onlyOneIsNeeded;
+    static ArrayList<proposalProject> proposalList = new ArrayList<>();
+    static boolean onlyOneIsNeeded = true;
     //Test of Fund constructor vvvv Remove Later
     private static String FundTitle;
     private static String FundDescription;
