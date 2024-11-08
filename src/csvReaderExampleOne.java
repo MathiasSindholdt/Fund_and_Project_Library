@@ -1,8 +1,16 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
+
 
 public class csvReaderExampleOne {
 
@@ -15,6 +23,8 @@ public class csvReaderExampleOne {
             System.out.println("Insufficient data in the CSV file.");
             return;
         }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd. MMMM yyyy 'kl.' HH:mm");
 
         // Process each subsequent row (fund)
         for (int row = 2; row < data.size(); row++) {
@@ -33,15 +43,17 @@ public class csvReaderExampleOne {
             String fundName = fundData[0];
             String fundWebsite = fundData[1]; 
             String fundDescription = fundData[2]; 
-            String applicationDeadline = fundData.length > 3 ? fundData[3] : "N/A"; // Default to N/A if not present
-            String budgetSize = fundData.length > 4 ? extractBudgetRange(fundData[4]) : "N/A"; // Default to N/A if not present
-            String collaborationHistory = fundData.length > 6 ? fundData[6] : "N/A"; // Default to N/A if not present
+            String applicationDeadlineRaw = fundData.length > 3 ? fundData[3].trim() : "N/A";
+            Temporal applicationDeadline = parseApplicationDeadline(applicationDeadlineRaw);
+            String budgetSize = fundData.length > 4 ? extractBudgetRange(fundData[4]) : "N/A";
+            String collaborationHistory = fundData.length > 6 ? fundData[6] : "N/A"; 
 
             // Output fund details
             System.out.println("Fund Name: " + fundName);
             System.out.println("Fund Website: " + fundWebsite);
             System.out.println("Description: " + fundDescription);
-            System.out.println("Application Deadline: " + applicationDeadline);
+            //System.out.println("Application Deadline: " + (applicationDeadline != null ? applicationDeadline : "N/A"));
+            System.out.println("Application Deadline: " + formatApplicationDeadline(applicationDeadline));
             System.out.println("Budget Size: " + budgetSize);
             System.out.println("Collaboration History: " + collaborationHistory);
 
@@ -78,12 +90,87 @@ public class csvReaderExampleOne {
         }
     }
 
+    public static Temporal parseApplicationDeadline(String deadline) {
+
+        int currentYear = LocalDate.now().getYear();
+
+        if (deadline.toLowerCase().contains("running")) {
+        return LocalDate.of(1970, 1, 1);
+        }
+        System.out.println(deadline);
+
+        // Define patterns for date-only and date-time formats
+        String[] dateOnlyPatterns = {
+            "d. MMMM yyyy",          // e.g., "24. oktober 2024"
+            "d. MMMM",               // e.g., "24. oktober" (assumes current year)
+            "d/MMMM/yyyy",           // e.g., "01/oktober/2024"
+            "dd. MMMM yyyy",         // e.g., "01. oktober 2024"
+            "d-M-yyyy",              // e.g., "24-10-2024"
+            "d/M/yyyy",              // e.g., "24/10/2024"
+            "d MMM yyyy",            // e.g., "24 okt 2024"
+            "dd-MM-yyyy",            // e.g., "24-10-2024"
+            "d. MMMM yyyy"           // e.g., "24. oktober 2024"
+        };
+
+        String[] dateTimePatterns = {
+            "d. MMMM yyyy 'kl.' HH:mm",      // e.g., "24. oktober 2024 kl. 13:00"
+            "d. MMMM yyyy 'klokken' HH",     // e.g., "24. oktober 2024 klokken 13"
+            "d. MMMM yyyy 'kl.' HH"          // e.g., "24. oktober 2024 kl. 13"
+        };
+
+        // Append the current year if date is missing it
+        if (deadline.matches("\\d{1,2}\\.\\s+\\w+")) {
+        deadline += " " + currentYear;
+        }
+
+        System.out.println("Attempting to parse deadline: " + deadline);
+
+        // Try parsing as LocalDate
+        for (String pattern : dateOnlyPatterns) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern, Locale.forLanguageTag("da-DK"));
+            try {
+                return LocalDate.parse(deadline, formatter);
+            }catch (DateTimeParseException e) {
+                System.out.println("Pattern failed for LocalDate: " + pattern + " for deadline: " + deadline);
+            }
+        }
+
+        // Try parsing as LocalDateTime if the date has a time component
+        for (String pattern : dateTimePatterns) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern, Locale.forLanguageTag("da-DK"));
+            try {
+                return LocalDateTime.parse(deadline, formatter);
+            } catch (DateTimeParseException e) {
+                System.out.println("Pattern failed for LocalDateTime: " + pattern + " for deadline: " + deadline);
+            }
+        }
+
+        System.out.println("Error parsing application deadline: " + deadline);
+        return null;
+    }
+
+public static String formatApplicationDeadline(Temporal deadline) {
+    if (deadline == null) {
+        return "N/A";
+    }
+    
+    DateTimeFormatter outputFormatter;
+    if (deadline instanceof LocalDateTime) {
+        outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return ((LocalDateTime) deadline).format(outputFormatter);
+    } else if (deadline instanceof LocalDate) {
+        outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return ((LocalDate) deadline).format(outputFormatter);
+    }
+    
+    return "N/A";
+}
+    
     public static String extractBudgetRange(String budget) {
         boolean isMillion = budget.toLowerCase().contains("mio");
-        // Remove any non-numeric or non-dash characters, then split by the dash
+        
         String[] parts = budget.replaceAll("[^\\d-]", "").split("-");
         
-        // Check if there are two parts
         if (parts.length == 2) { 
             String start = parts[0].trim();
             String end = parts[1].trim();
@@ -100,7 +187,7 @@ public class csvReaderExampleOne {
             }
             return amount;
         } else {
-            // If there's no valid number, return a default message
+
             return "N/A";
         }
     }
