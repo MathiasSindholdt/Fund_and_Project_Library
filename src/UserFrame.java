@@ -414,6 +414,7 @@ private void updateproposalProjectList() {
     proposalProjectListPanel.revalidate();
     proposalProjectListPanel.repaint();
 }
+
 private void updateProjectList() {
     // Ryd panelet før opdatering
     projectListPanel.removeAll();
@@ -990,16 +991,12 @@ private void showFundDetails(fundClass fund) {
         System.out.println(tab);
         switch (tab) {
             case "proposalProjects":
-                System.out.println("YALLAH YALLAH");
                 layout.show(rightSidePanel, "proposalProjectsDetails");
                 break;
             case "Projects":
-                System.out.println("FLAG 123");
                 layout.show(rightSidePanel, "ProjectDetails");
                 break;
             case "Funds":
-            System.out.println("FLAG 1333");
-              
             layout.show(rightSidePanel, "FundDetails");
                 break;
             case "Archive":
@@ -1015,17 +1012,12 @@ private void showFundDetails(fundClass fund) {
         System.out.println("Action performed");
         System.out.println(e.getSource());
         if (e.getSource() == projectPropButton) {
-            System.out.println("FLAG 1");
             cardLayout.show(cardPanel, "proposalProjects");
             updateRightSidePanel("proposalProjects");
         } else if (e.getSource() == projectButton) {
-            System.out.println("FLAG 2");
-
             cardLayout.show(cardPanel, "Projects");
             updateRightSidePanel("Projects");
         } else if (e.getSource() == fundsButton) {
-            System.out.println("FLAG 3");
-
             cardLayout.show(cardPanel, "Funds");
             updateRightSidePanel("Funds");
         } else if (e.getSource() == archiveButton) {
