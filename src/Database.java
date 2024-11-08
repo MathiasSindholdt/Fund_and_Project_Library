@@ -52,7 +52,7 @@ public class Database {
                 for (String s : tmpstr.split(",")) {
                     tmpLDTarr.add(LocalDateTime.parse(s.trim()));
                 }
-                tmp.setTimeSpan(tmpLDTarr.get(0), tmpLDTarr.get(1));
+                tmp.setTimeSpan(tmpLDTarr.get(1), tmpLDTarr.get(0));
                 tmp.setProjectActivities(rs.getString(10));
 
                 tmparr.add(tmp);
@@ -97,7 +97,7 @@ public class Database {
                 tmpstr = tmpstr.replace("]", "");
                 tmpstr = tmpstr.trim();
                 for (String s : tmpstr.split(",")) {
-                    tmp.setDeadlines(LocalDateTime.parse(s));
+                    tmp.setDeadlines(LocalDateTime.parse(s.trim()));
                 }
                 tmpstr = rs.getString(6);
                 tmpstr = tmpstr.replace("[", "");
@@ -108,7 +108,7 @@ public class Database {
                 }
                 tmpstr = rs.getString(7);
                 String[] tmpstrArr = tmpstr.split(" - ");
-                tmp.setBudget(Long.parseLong(tmpstrArr[0]), Long.parseLong(tmpstrArr[0]));
+                tmp.setBudget(Long.parseLong(tmpstrArr[0]), Long.parseLong(tmpstrArr[1]));
 
                 tmpstr = rs.getString(8);
                 tmpstr = tmpstr.replace("[", "");
@@ -119,6 +119,7 @@ public class Database {
                 }
                 tmp.setRunning(rs.getBoolean(9));
                 tmp.setfundWebsite(rs.getString(10));
+                tmparr.add(tmp);
 
             }
 
@@ -157,6 +158,7 @@ public class Database {
                 tmp.setProjectPurpose(rs.getString(5));
                 tmp.setProjectOwner(rs.getString(6));
                 tmp.setProjectTargetAudience(rs.getString(7));
+
                 tmp.setProjectBudget(rs.getLong(8));
 
                 tmpstr = rs.getString(9);
@@ -167,7 +169,7 @@ public class Database {
                 for (String s : tmpstr.split(",")) {
                     tmpLDTarr.add(LocalDateTime.parse(s.trim()));
                 }
-                tmp.setTimeSpan(tmpLDTarr.get(0), tmpLDTarr.get(1));
+                tmp.setTimeSpan(tmpLDTarr.get(1), tmpLDTarr.get(0));
                 tmp.setProjectActivities(rs.getString(10));
                 tmparr.add(tmp);
             }
@@ -268,7 +270,7 @@ public class Database {
         try {
             Class.forName("org.mariadb.jdbc.Driver");
             String query = new String();
-            query = "select * from projectProposals";
+            query = "select * from projectProposal";
             String Database_host = "jdbc:mariadb://" + this.IP_of_Database.trim() + "/mydb";
             Connection con = DriverManager.getConnection(Database_host, "toor", "toor");
             Statement stmt = con.createStatement();
@@ -283,7 +285,6 @@ public class Database {
         return proposal;
     }
 
-        
     /*
      * getAllArchivedFunds() - gets all archived funds from database
      * Return: ArrayList of fundClass
@@ -360,11 +361,13 @@ public class Database {
     }
 
     /*
-     * getAllArchivedProjectProposals() - returns list of all archived projectProposals in database
+     * getAllArchivedProjectProposals() - returns list of all archived
+     * projectProposals in database
      *
      * Return: ArrayList of projectProposals
      *
-     * This function queries the database for all archived projectProposals and returns
+     * This function queries the database for all archived projectProposals and
+     * returns
      * a list of them.
      */
     public ArrayList<proposalProject> getAllArchivedProjectProposals() {
@@ -402,17 +405,23 @@ public class Database {
             Class.forName("org.mariadb.jdbc.Driver");
             String query = new String();
             query = "insert into Fund (title, categories, description, dateCreated,"
-                    + " deadlines, contacts, budgetSpan, collaborationHistory, running) values (";
-            query += fund.getTitle() + ", ";
-            query += fund.getCategories().toString() + ", ";
-            query += fund.getDescription() + ", ";
-            query += fund.getDateCreated().toString() + ", ";
-            query += fund.getDeadlines().toString() + ", ";
-            query += fund.getContacts().toString() + ", ";
-            query += fund.getBudgetSpan() + ", ";
-            query += fund.getCollaborationHistory().toString();
-            query += fund.getRunning() + ", ";
-            query += fund.getFundWebsite() +"); ";
+                    + " deadlines, contacts, budgetSpan, collaborationHistory, running, website) values (";
+            query += "\"" + fund.getTitle() + "\"" + ", ";
+            query += "\"" + fund.getCategories().toString() + "\"" + ", ";
+            query += "\"" + fund.getDescription() + "\"" + ", ";
+            query += "\"" + fund.getDateCreated().toString() + "\"" + ", ";
+            query += "\"" + fund.getDeadlines().toString() + "\"" + ", ";
+            query += "\"" + fund.getContacts().toString() + "\"" + ", ";
+            query += "\"" + fund.getBudgetSpan() + "\"" + ", ";
+            query += "\"" + fund.getCollaborationHistory().toString() + "\"" + ", ";
+            if (fund.getRunning()) {
+                query += 1 + ", ";
+            } else {
+                query += 0 + ", ";
+            }
+
+            query += "\"" + fund.getFundWebsite() + "\"" + "); ";
+            System.out.println("\033[31m" + query + "\033[0m");
             String Database_host = "jdbc:mariadb://" + this.IP_of_Database.trim() + "/mydb";
             Connection con = DriverManager.getConnection(Database_host, "toor", "toor");
             Statement stmt = con.createStatement();
@@ -434,29 +443,30 @@ public class Database {
      * This function takes a projectProposal and adds it to a new row of the
      * projectProposal table in the database.
      */
-    public void addProjectProposalToDatabase(project pro) {
+    public void addProjectProposalToDatabase(proposalProject pro) {
         try {
 
             Class.forName("org.mariadb.jdbc.Driver");
             String query = new String();
             query = "insert into projectProposal (title, categories, description, dateCreated, projectPurpose, "
-                    + "projectOwner, projectTargetAudience, projectBudget, projectTimespan, projetActivities) values (";
-            query += pro.getTitle() + ", ";
-            query += pro.getCategories().toString() + ", ";
-            query += pro.getDescription() + ", ";
-            query += pro.getDateCreated().toString() + ", ";
-            query += pro.getProjectPurpose().toString() + ", ";
-            query += pro.getProjectOwner().toString() + ", ";
-            query += pro.getProjectTargetAudience().toString() + ", ";
-            query += pro.getProjectBudget() + ", ";
+                    + "projectOwner, projectTargetAudience, projectBudget, projectTimespan, projectActivities) values (";
+            query += "\"" + pro.getTitle() + "\"" + ", ";
+            query += "\"" + pro.getCategories().toString() + "\"" + ", ";
+            query += "\"" + pro.getDescription() + "\"" + ", ";
+            query += "\"" + pro.getDateCreated().toString() + "\"" + ", ";
+            query += "\"" + pro.getProjectPurpose().toString() + "\"" + ", ";
+            query += "\"" + pro.getProjectOwner().toString() + "\"" + ", ";
+            query += "\"" + pro.getProjectTargetAudience().toString() + "\"" + ", ";
+            query += "\"" + pro.getProjectBudget() + "\"" + ", ";
             ArrayList<LocalDateTime> tmparr = new ArrayList<LocalDateTime>();
             tmparr.add(pro.getProjectTimeSpanTo());
             tmparr.add(pro.getProjectTimeSpanFrom());
-            query += tmparr.toString() + ", ";
-            query += pro.getProjectActivities() + ");";
+            query += "\"" + tmparr.toString() + "\"" + ", ";
+            query += "\"" + pro.getProjectActivities() + "\");";
             String Database_host = "jdbc:mariadb://" + this.IP_of_Database.trim() + "/mydb";
             Connection con = DriverManager.getConnection(Database_host, "toor", "toor");
             Statement stmt = con.createStatement();
+            System.out.println("\033[31m" + query + "\033[0m");
             stmt.executeQuery(query);
             con.close();
 
@@ -479,20 +489,20 @@ public class Database {
             Class.forName("org.mariadb.jdbc.Driver");
             String query = new String();
             query = "insert into project (title, categories, description, dateCreated, projectPurpose, projectOwner,"
-                    + " projectTargetAudience, projectBudget, projectTimespan, projetActivities) values (";
-            query += pro.getTitle() + ", ";
-            query += pro.getCategories().toString() + ", ";
-            query += pro.getDescription() + ", ";
-            query += pro.getDateCreated().toString() + ", ";
-            query += pro.getProjectPurpose().toString() + ", ";
-            query += pro.getProjectOwner().toString() + ", ";
-            query += pro.getProjectTargetAudience().toString() + ", ";
-            query += pro.getProjectBudget() + ", ";
+                    + " projectTargetAudience, projectBudget, projectTimespan, projectActivities) values (";
+            query += "\"" + pro.getTitle() + "\"" + ", ";
+            query += "\"" + pro.getCategories().toString() + "\"" + ", ";
+            query += "\"" + pro.getDescription() + "\"" + ", ";
+            query += "\"" + pro.getDateCreated().toString() + "\"" + ", ";
+            query += "\"" + pro.getProjectPurpose().toString() + "\"" + ", ";
+            query += "\"" + pro.getProjectOwner().toString() + "\"" + ", ";
+            query += "\"" + pro.getProjectTargetAudience().toString() + "\"" + ", ";
+            query += "\"" + pro.getProjectBudget() + "\"" + ", ";
             ArrayList<LocalDateTime> tmparr = new ArrayList<LocalDateTime>();
             tmparr.add(pro.getProjectTimeSpanTo());
             tmparr.add(pro.getProjectTimeSpanFrom());
-            query += tmparr.toString() + ", ";
-            query += pro.getProjectActivities() + ");";
+            query += "\"" + tmparr.toString() + "\"" + ", ";
+            query += "\"" + pro.getProjectActivities() + "\"" + ");";
             String Database_host = "jdbc:mariadb://" + this.IP_of_Database.trim() + "/mydb";
             Connection con = DriverManager.getConnection(Database_host, "toor", "toor");
             Statement stmt = con.createStatement();
@@ -518,16 +528,23 @@ public class Database {
             Class.forName("org.mariadb.jdbc.Driver");
             String query = new String();
             query = "insert into ArchivedFund (title, categories, description, dateCreated,"
-                    + " deadlines, contacts, budgetSpan, collaborationHistory, running) values (";
-            query += fund.getTitle() + ", ";
-            query += fund.getCategories().toString() + ", ";
-            query += fund.getDescription() + ", ";
-            query += fund.getDateCreated().toString() + ", ";
-            query += fund.getDeadlines().toString() + ", ";
-            query += fund.getContacts().toString() + ", ";
-            query += fund.getBudgetSpan() + ", ";
-            query += fund.getCollaborationHistory().toString();
-            query += fund.getRunning() + "); ";
+                    + " deadlines, contacts, budgetSpan, collaborationHistory, running, website) values (";
+            query += "\"" + fund.getTitle() + "\"" + ", ";
+            query += "\"" + fund.getCategories().toString() + "\"" + ", ";
+            query += "\"" + fund.getDescription() + "\"" + ", ";
+            query += "\"" + fund.getDateCreated().toString() + "\"" + ", ";
+            query += "\"" + fund.getDeadlines().toString() + "\"" + ", ";
+            query += "\"" + fund.getContacts().toString() + "\"" + ", ";
+            query += "\"" + fund.getBudgetSpan() + "\"" + ", ";
+            query += "\"" + fund.getCollaborationHistory().toString() + "\"" + ", ";
+            if (fund.getRunning()) {
+                query += 1 + ", ";
+            } else {
+                query += 0 + ", ";
+            }
+
+            query += "\"" + fund.getFundWebsite() + "\"" + "); ";
+            System.out.println("\033[31m" + query + "\033[0m");
             String Database_host = "jdbc:mariadb://" + this.IP_of_Database.trim() + "/mydb";
             Connection con = DriverManager.getConnection(Database_host, "toor", "toor");
             Statement stmt = con.createStatement();
@@ -542,38 +559,40 @@ public class Database {
     }
 
     /*
-     * addArchviedProjectProposalToDatabase() - adds archived projectProposal to database
+     * addArchviedProjectProposalToDatabase() - adds archived projectProposal to
+     * database
      * 
      * @arg projectProposal
      *
      * This function takes a projectProposal and adds it to a new row of the
      * ArchivedProjectProposal table in the database.
      */
-    public void addArchivedProjectProposalToDatabase(project pro) {
+    public void addArchivedProjectProposalToDatabase(proposalProject pro) {
         try {
 
             Class.forName("org.mariadb.jdbc.Driver");
             String query = new String();
             query = "insert into ArchivedProposal (title, categories, description, dateCreated, projectPurpose, "
-                    + "projectOwner, projectTargetAudience, projectBudget, projectTimespan, projetActivities) values (";
-            query += pro.getTitle() + ", ";
-            query += pro.getCategories().toString() + ", ";
-            query += pro.getDescription() + ", ";
-            query += pro.getDateCreated().toString() + ", ";
-            query += pro.getProjectPurpose().toString() + ", ";
-            query += pro.getProjectOwner().toString() + ", ";
-            query += pro.getProjectTargetAudience().toString() + ", ";
-            query += pro.getProjectBudget() + ", ";
+                    + "projectOwner, projectTargetAudience, projectBudget, projectTimespan, projectActivities) values (";
+            query += "\"" + pro.getTitle() + "\"" + ", ";
+            query += "\"" + pro.getCategories().toString() + "\"" + ", ";
+            query += "\"" + pro.getDescription() + "\"" + ", ";
+            query += "\"" + pro.getDateCreated().toString() + "\"" + ", ";
+            query += "\"" + pro.getProjectPurpose().toString() + "\"" + ", ";
+            query += "\"" + pro.getProjectOwner().toString() + "\"" + ", ";
+            query += "\"" + pro.getProjectTargetAudience().toString() + "\"" + ", ";
+            query += "\"" + pro.getProjectBudget() + "\"" + ", ";
             ArrayList<LocalDateTime> tmparr = new ArrayList<LocalDateTime>();
             tmparr.add(pro.getProjectTimeSpanTo());
             tmparr.add(pro.getProjectTimeSpanFrom());
-            query += tmparr.toString() + ", ";
-            query += pro.getProjectActivities() + ");";
+            query += "\"" + tmparr.toString() + "\"" + ", ";
+            query += "\"" + pro.getProjectActivities() + "\"" + ");";
             String Database_host = "jdbc:mariadb://" + this.IP_of_Database.trim() + "/mydb";
             Connection con = DriverManager.getConnection(Database_host, "toor", "toor");
             Statement stmt = con.createStatement();
             stmt.executeQuery(query);
             con.close();
+            Class.forName("org.mariadb.jdbc.Driver");
 
         } catch (ClassNotFoundException e) {
         } catch (SQLException e) {
@@ -585,29 +604,29 @@ public class Database {
      * 
      * @arg project
      * 
-     * This function takes a project and adds a new row to the archived project table
+     * This function takes a project and adds a new row to the archived project
+     * table
      * of the database containing the contents of the project.
      */
     public void addArchivedProjectToDatabase(project pro) {
         try {
-
             Class.forName("org.mariadb.jdbc.Driver");
             String query = new String();
             query = "insert into ArchivedProject (title, categories, description, dateCreated, projectPurpose, projectOwner,"
-                    + " projectTargetAudience, projectBudget, projectTimespan, projetActivities) values (";
-            query += pro.getTitle() + ", ";
-            query += pro.getCategories().toString() + ", ";
-            query += pro.getDescription() + ", ";
-            query += pro.getDateCreated().toString() + ", ";
-            query += pro.getProjectPurpose().toString() + ", ";
-            query += pro.getProjectOwner().toString() + ", ";
-            query += pro.getProjectTargetAudience().toString() + ", ";
-            query += pro.getProjectBudget() + ", ";
+                    + " projectTargetAudience, projectBudget, projectTimespan, projectActivities) values (";
+            query += "\"" + pro.getTitle() + "\"" + ", ";
+            query += "\"" + pro.getCategories().toString() + "\"" + ", ";
+            query += "\"" + pro.getDescription() + "\"" + ", ";
+            query += "\"" + pro.getDateCreated().toString() + "\"" + ", ";
+            query += "\"" + pro.getProjectPurpose().toString() + "\"" + ", ";
+            query += "\"" + pro.getProjectOwner().toString() + "\"" + ", ";
+            query += "\"" + pro.getProjectTargetAudience().toString() + "\"" + ", ";
+            query += "\"" + pro.getProjectBudget() + "\"" + ", ";
             ArrayList<LocalDateTime> tmparr = new ArrayList<LocalDateTime>();
             tmparr.add(pro.getProjectTimeSpanTo());
             tmparr.add(pro.getProjectTimeSpanFrom());
-            query += tmparr.toString() + ", ";
-            query += pro.getProjectActivities() + ");";
+            query += "\"" + tmparr.toString() + "\"" + ", ";
+            query += "\"" + pro.getProjectActivities() + "\"" + ");";
             String Database_host = "jdbc:mariadb://" + this.IP_of_Database.trim() + "/mydb";
             Connection con = DriverManager.getConnection(Database_host, "toor", "toor");
             Statement stmt = con.createStatement();
@@ -635,7 +654,7 @@ public class Database {
         try {
             Class.forName("org.mariadb.jdbc.Driver");
             String query = new String();
-            query = "update Fund set ";
+            query = "update projectProposal set ";
             query += "title = '" + pp.getTitle() + "' ";
             query += "categories = '" + pp.getCategories().toString() + "' ";
             query += "description = '" + pp.getDescription() + "' ";
