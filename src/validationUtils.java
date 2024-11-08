@@ -54,5 +54,4 @@ public class validationUtils {
             throw new WrongDataInputException(fieldName + " contains invalid characters");
         }
     } 
-
 }

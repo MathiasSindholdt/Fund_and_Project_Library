@@ -49,17 +49,20 @@ public class UserFrame implements ActionListener {
     private JPanel rightSidePanel;
     
     private boolean isInvalidLenght;
-    String projectTitle;
-    String projectDescription;
-    String projectPurpose; 
-    String projectOwner;
-    String projectTargetAudience;
-    Long projectBudget;
-    LocalDate fromDate;
-    LocalDate toDate;
-    LocalDateTime projectFromDate;
-    LocalDateTime projectToDate;
-    String projectActivities;
+    String tempTitle;
+    String tempDescription;
+    String tempPurpose; 
+    String tempOwner;
+    String tempTargetAudience;
+    Long tempBudget;
+    LocalDate tempFromDate;
+    LocalDate tempToDate;
+    LocalDateTime tempLDTFromDate;
+    LocalDateTime tempLDTToDate;
+    String tempActivities;
+    Long tempAmountFrom;
+    Long tempAmountTo;
+    String tempWebsite;
     ArrayList<String> selectedCatagories;
 
     // Constructor to set up the GUI
@@ -607,33 +610,99 @@ private void openFundDialog() {
     JButton submitButton = new JButton("Tilføj Fond");
     submitButton.addActionListener(event -> {
         try {
-            // Retrieve values and create new fund instance
-            String fundName = nameField.getText().trim();
-            String fundDescription = descriptionArea.getText().trim();
-            long fundAmountFrom = Long.parseLong(amountFromField.getText().trim());
-            long fundAmountTo = Long.parseLong(amountToField.getText().trim());
+            if(validationUtils.isWithinLowerCharLimit(nameField.getText()) == false){
+                isInvalidLenght = true;
+                dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
+            }else if(validationUtils.isValidInput(nameField.getText()) == false){
+                isInvalidLenght = false;
+                dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
+            }else{
+                tempTitle = nameField.getText().trim();
+            }
 
-            // Ensure LocalDateTime is correctly parsed
+            if(validationUtils.isWithinUpperCharLimit(descriptionArea.getText()) == false){
+                isInvalidLenght = true;
+                dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
+            }else if(validationUtils.isValidDescription(descriptionArea.getText()) == false){
+                isInvalidLenght = false;
+                dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
+            }else{
+                tempDescription = descriptionArea.getText().trim();
+            }
+
+            if(validationUtils.isNumericInput(amountFromField.getText()) == false){
+                dialog.add(UserFrameErrorHandling.displayAmountFromError());
+            }else{
+                tempAmountFrom = Long.parseLong(amountFromField.getText().trim());
+            }
+            if(validationUtils.isNumericInput(amountToField.getText()) == false){
+                dialog.add(UserFrameErrorHandling.displayAmountToError());
+            }else{
+                tempAmountTo = Long.parseLong(amountToField.getText().trim());
+            }
+
+
+
+            //DEADLINE ERRORHANDLING
+
+
+            
             LocalDateTime fundDeadline = ((java.util.Date) deadlineSpinner.getValue())
                 .toInstant()
                 .atZone(java.time.ZoneId.systemDefault())
                 .toLocalDateTime();
+
+            //Category Errorhandling
+            // ArrayList<String> selectedCatagories = new ArrayList<>();
+            // for(Component comp : tagPanel.getComponents()){
+            //     if(comp instanceof JCheckBox){
+            //         JCheckBox checkBox = (JCheckBox) comp;
+            //         if(checkBox.isSelected()){
+            //             selectedCatagories.add(checkBox.getText());
+            //         }
+            //     }
+            // }
+
+
+            //Collaboration Errorhandling
+            //ArrayList<String> collaborationHistory = new ArrayList<>();
+            //if(collaboratedCheckBox.isSelected() == true){
+                //Check if any archived project has been selected
+                //if not throw error
+                //else add to collaborationHistory
+           // }
+
+           //Contacts Errorhandling
+            //ArrayList<String> contacts = new ArrayList<>();
+            // check if all contact fields are filled
+            //if not throw error
+            // check if all contact fields are valid(Name = letters only, phone = numbers only, email = valid email)
+            //if not throw error
+            //else add all contacts to contacts arraylist
+            
+            //Website Errorhandling
+            if(validationUtils.isValidUrl(websiteField.getText()) == false){
+                dialog.add(UserFrameErrorHandling.displayWebsiteError());
+            }else{
+                tempWebsite = websiteField.getText().trim();
+            }
+
+
 
             String[] fundCategory = categoryField.getText().split(",");
             String[] fundCollaborationHistory = collaboratedCheckBox.isSelected() 
                 ? new String[]{collaborationField.getText().trim()} 
                 : new String[0]; // If not collaborated, empty array
             String[] fundContacts = {contactsField.getText().trim()};
-            String fundWebsite = websiteField.getText().trim();
             boolean collaborated = collaboratedCheckBox.isSelected();
             boolean running = runningCheckBox.isSelected();
 
             // Add fund to fund list
-            fundClass fund = new fundClass(fundName, fundDescription, fundAmountFrom, fundAmountTo,
-                    new LocalDateTime[]{fundDeadline}, fundCategory, fundCollaborationHistory, fundContacts, fundWebsite,
-                    collaborated, running);
+            //fundClass fund = new fundClass(fundTitle, fundDescription, fundAmountFrom, fundAmountTo,
+                 //   new LocalDateTime[]{fundDeadline}, fundCategory, fundCollaborationHistory, fundContacts, fundWebsite,
+                 //   collaborated, running);
             
-            main.fundList.add(fund); // Add to list
+            //main.fundList.add(fund); // Add to list
             updateFundList(); // Update UI
 
             dialog.dispose();
@@ -675,24 +744,24 @@ private void showFundDetails(fundClass fund) {
         JDialog dialog = new JDialog(frame, "Lav Projekt", true);
         dialog.setSize(700, 700);
         dialog.setLayout(new GridLayout(13, 2, 10, 10));
-
+        
         JLabel nameLabel = new JLabel("Titel:");
         JTextField nameField = new JTextField();
         dialog.add(nameLabel);
         dialog.add(nameField);
-    
-
+        
+        
         JLabel purposeLabel = new JLabel("Formål:");
         JTextField purposeField = new JTextField();
         dialog.add(purposeLabel);
         dialog.add(purposeField);
-
+        
         JLabel descriptionLabel = new JLabel("Beskrivelse af projektet:");
         JTextArea descriptionArea = new JTextArea(5, 20);
         JScrollPane scrollPane = new JScrollPane(descriptionArea);
         dialog.add(descriptionLabel);
         dialog.add(scrollPane);
-
+        
         JLabel ownerLabel = new JLabel("Ejer af projektet:");
         JTextField ownerField = new JTextField();
         dialog.add(ownerLabel);
@@ -703,14 +772,14 @@ private void showFundDetails(fundClass fund) {
         JTextField targetField = new JTextField();
         dialog.add(targetLabel);
         dialog.add(targetField);
-
+        
         JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
         JTextField budgetField = new JTextField();
         if(!validationUtils.isNumericInput(budgetField.getText()) /*&& !validationUtils.budgetLenght()*/){
             dialog.add(budgetLabel);
             dialog.add(budgetField);  
         }
-
+        
         JLabel fromDateLabel = new JLabel("Fra dato:");
         SpinnerDateModel fromDateModel = new SpinnerDateModel();
         JSpinner fromDateSpinner = new JSpinner(fromDateModel);
@@ -718,7 +787,7 @@ private void showFundDetails(fundClass fund) {
         fromDateSpinner.setEditor(fromDateEditor);
         dialog.add(fromDateLabel);
         dialog.add(fromDateSpinner);
-
+        
         JLabel toDateLabel = new JLabel("Til dato:");
         SpinnerDateModel toDateModel = new SpinnerDateModel();
         JSpinner toDateSpinner = new JSpinner(toDateModel);
@@ -726,23 +795,24 @@ private void showFundDetails(fundClass fund) {
         toDateSpinner.setEditor(toDateEditor);
         dialog.add(toDateLabel);
         dialog.add(toDateSpinner);
-
+        
         JLabel activitiesLabel = new JLabel("Aktiviteter:");
         JTextField activitiesField = new JTextField();
         dialog.add(activitiesLabel);
         dialog.add(activitiesField);
-
+        
         //Ved ik om det her skal stå her, skal det ikke være noget som man laver udenfor projektet etc.
         dialog.add(new JLabel("Create Tag:"));
         JButton createTagButton = new JButton("Create Tag");
         dialog.add(createTagButton);
-
+        
         dialog.add(new JLabel("Vælg relevante katagorier:"));
         JPanel tagPanel = new JPanel();
         tagPanel.setLayout(new BoxLayout(tagPanel, BoxLayout.Y_AXIS));
         JScrollPane tagScrollPane = new JScrollPane(tagPanel);
+        getCurrentCatagories.getAllCurrentCatagories(tagPanel);
         dialog.add(tagScrollPane);
-
+        
         createTagButton.addActionListener(e -> {
             String newTag = JOptionPane.showInputDialog(dialog, "Enter new tag:");
             if (newTag != null && !newTag.trim().isEmpty()) {
@@ -777,7 +847,7 @@ private void showFundDetails(fundClass fund) {
                     isInvalidLenght = false;
                     dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
                 }else{
-                    projectTitle = nameField.getText();
+                    tempTitle = nameField.getText();
                 }
              
                 if(validationUtils.isWithinLowerCharLimit(purposeField.getText()) == false){
@@ -787,7 +857,7 @@ private void showFundDetails(fundClass fund) {
                     isInvalidLenght = false;
                     dialog.add(UserFrameErrorHandling.displayPurposeError(isInvalidLenght));
                 }else{
-                    projectPurpose = purposeField.getText();
+                    tempPurpose = purposeField.getText();
                 }
                 
                 if(validationUtils.isWithinUpperCharLimit(descriptionArea.getText()) == false){
@@ -797,7 +867,7 @@ private void showFundDetails(fundClass fund) {
                     isInvalidLenght = false;
                     dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
                 }else{
-                    projectDescription = descriptionArea.getText();
+                    tempDescription = descriptionArea.getText();
                 }
 
                 if(validationUtils.isWithinLowerCharLimit(ownerField.getText()) == false){
@@ -807,7 +877,7 @@ private void showFundDetails(fundClass fund) {
                     isInvalidLenght = false;
                     dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
                 }else{
-                    projectOwner = ownerField.getText();
+                    tempOwner = ownerField.getText();
                 }
 
                 if(validationUtils.isWithinLowerCharLimit(targetField.getText()) == false){
@@ -817,13 +887,13 @@ private void showFundDetails(fundClass fund) {
                     isInvalidLenght = false;
                     dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
                 }else{
-                    projectTargetAudience = targetField.getText();
+                    tempTargetAudience = targetField.getText();
                 }
 
                 if(validationUtils.isNumericInput(budgetField.getText()) == false){
                     dialog.add(UserFrameErrorHandling.displayBudgetError());
                 }else{
-                    projectBudget = Long.parseLong(budgetField.getText());
+                    tempBudget = Long.parseLong(budgetField.getText());
                 }
 
                 //ERRORHANDLING FOR DATE TYPE SHIT
@@ -856,7 +926,7 @@ private void showFundDetails(fundClass fund) {
                     isInvalidLenght = false; 
                     dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
                 }else{
-                    projectActivities = activitiesField.getText();
+                    tempActivities = activitiesField.getText();
                 }
 
                 ArrayList<String> selectedCatagories = new ArrayList<>();
@@ -873,7 +943,7 @@ private void showFundDetails(fundClass fund) {
                 System.out.println(projectToDate);
                 // Create a new project proposal and add it to the list
     
-                project project = new project(projectTitle, selectedCatagories, projectDescription, projectPurpose ,projectOwner, projectTargetAudience, projectBudget, projectFromDate, projectToDate, projectActivities, main.getFundList(), main.getCatagoryBoolean());
+                project project = new project(tempTitle, selectedCatagories, tempDescription, tempPurpose, tempOwner, tempTargetAudience, tempBudget, tempLDTFromDate, tempLDTToDate, tempActivities, main.getFundList(), main.getCatagoryBoolean());
                 main.projectList.add(project);
                 System.out.println("------------");
                 System.out.println("adding project");

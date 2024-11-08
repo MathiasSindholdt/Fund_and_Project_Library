@@ -70,4 +70,21 @@ public class UserFrameErrorHandling{
         JOptionPane.showMessageDialog(null, "Katagorien eksisterer allerede");
         return new JPanel();
     }
+
+    public static JPanel displayAmountFromError(){
+        JOptionPane.showMessageDialog(null, "Fra beløbet skal være et tal");
+        return new JPanel();
+    }
+
+    public static JPanel displayAmountToError(){
+        JOptionPane.showMessageDialog(null, "Til beløbet skal være et tal");
+        return new JPanel();
+    }
+
+    public static JPanel displayWebsiteError(){
+        JOptionPane.showMessageDialog(null, "Websitet skal være i formatet www.example.com");
+        return new JPanel();
+    }
+
+    
 }
