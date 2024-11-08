@@ -25,7 +25,7 @@ public class PDFGen_test extends testTemplate {
     public boolean test_PDFGen() {
         boolean passed = true;
 
-        String name = "Example fund";
+        String name = "Example project";
         String[] tmpstrarr = { "cat1", "cat2", "cat3" };
         ArrayList<String> categories = new ArrayList<String>(Arrays.asList(tmpstrarr));
         String description = "Example description";
@@ -42,10 +42,12 @@ public class PDFGen_test extends testTemplate {
             String tmp = "Fund" + i;
             fundClass fc = new fundClass();
             fc.setTitle(tmp);
-            fc.setDescription(
-                    "Lorem ipsum dolor sit amet, consectetuer adipiscing elit.");
-            long tmpLong = (69 * (10 * i));
+            fc.setDescription(description +
+                    ": Lorem");
+            long tmpLong = (690 * (10 * i));
             System.out.println(tmpLong);
+            fc.setBudget(tmpLong, tmpLong * 2);
+
             // fc.setCommonBudget(tmpLong);
             fc.setCategories("cat1");
             fc.setCategories("cat2");
@@ -61,8 +63,9 @@ public class PDFGen_test extends testTemplate {
         }
         Boolean onlyone = true;
 
-        project project = new project(name, categories, description, purpose, owner, audience, budget, from, to,
-                activites,
+        project project = new project(name, categories, description +
+                ": Lorem ipsum dolor sit amet, consectetuer adipiscing elit.",
+                purpose, owner, audience, budget, from, to, activites,
                 fundlist, onlyone);
 
         PDFGenerator PDFGen = new PDFGenerator();

@@ -14,6 +14,7 @@ public class masterTest {
         tests.add(new test_proposalProject());
         tests.add(new test_sorting());
         tests.add(new PDFGen_test());
+        tests.add(new Database_test());
 
         System.out.println("Starting Tests \n" + "Total tests: " + tests.size());
 
