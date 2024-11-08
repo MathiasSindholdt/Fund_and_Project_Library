@@ -58,15 +58,20 @@ public class sortingFundLists {
         project.setProjectOwner("Lucas");
         project.setProjectTargetAudience("Techcollege med mere");
         project.setProjectActivities("Her er noget vi skal have gjort");
+
+        System.out.println("Before sorting 1:");
+        for (fundClass fund : funds) {
+            System.out.println(fund.getDeadlines());
     
         // Sort and filter the list of funds
         sortingFundLists sorter = new sortingFundLists();
-        ArrayList<fundClass> filteredAndSortedFunds = sorter.sortFunds(funds, project, false);
-    
-        // Print filtered and sorted funds
-        System.out.println("\nAfter filtering and sorting:");
-        for (fundClass fund : filteredAndSortedFunds) {
-            System.out.println("Date Created: " + fund.getDateCreated() + ", Deadline: " + fund.getDeadlines());
+        ArrayList<fundClass> filteredAndSortedFunds = sorter.sortFunds(funds, project, true);
+
+        // Print sorted funds by closest deadline
+        System.out.println("\nAfter sorting 1:");
+        for (fundClass testFund : filteredAndSortedFunds) {
+            System.out.println(testFund.getDeadlines());
+        }
         }
     }
 }
