@@ -39,7 +39,6 @@ public class UserFrame implements ActionListener {
     private JPanel projectFullPanel;
     
     
-    private ArrayList<fundClass> fundList;
     private JPanel fundListPanel;
     private JPanel fundFullPanel;
     // tag button
@@ -48,23 +47,25 @@ public class UserFrame implements ActionListener {
     private JPanel rightSidePanel;
     
     private boolean isInvalidLenght;
-    String projectTitle;
-    String projectDescription;
-    String projectPurpose; 
-    String projectOwner;
-    String projectTargetAudience;
-    Long projectBudget;
-    LocalDate fromDate;
-    LocalDate toDate;
-    LocalDateTime projectFromDate;
-    LocalDateTime projectToDate;
-    String projectActivities;
+    String tempTitle;
+    String tempDescription;
+    String tempPurpose; 
+    String tempOwner;
+    String tempTargetAudience;
+    Long tempBudget;
+    LocalDate tempFromDate;
+    LocalDate tempToDate;
+    LocalDateTime tempFromDateLDT;
+    LocalDateTime tempToDateLDT;
+    String tempActivities;
     ArrayList<String> selectedCatagories;
+    String tempWebsite;
+    Long tempAmountFrom;
+    Long tempAmountTo;
 
     // Constructor to set up the GUI
     public UserFrame() {
         
-        fundList = new ArrayList<>();
         initializeFrame();  // Initialize JFrame
         //UserFrameErrorHandling ErrorHandling = new UserFrameErrorHandling();
 
@@ -698,6 +699,7 @@ private void openFundDialog() {
     tagPanel.setLayout(new BoxLayout(tagPanel, BoxLayout.Y_AXIS));
     JScrollPane tagScrollPane = new JScrollPane(tagPanel);
     tagScrollPane.setPreferredSize(new Dimension(200, 100));
+    getCurrentCatagories.getAllCurrentCatagories(tagPanel);
 
     // Action Listener for Create Tag knap
     createTagButton.addActionListener(e -> {
@@ -719,6 +721,7 @@ private void openFundDialog() {
     // Kontakt person(er)
     JLabel contactsLabel = new JLabel("Kontakt person(er):");
     JTextField contactsField = new JTextField();
+    
 
     // Hjemmeside
     JLabel websiteLabel = new JLabel("Hjemmeside:");
@@ -813,15 +816,15 @@ private void openFundDialog() {
                 .toLocalDateTime();
 
             //Category Errorhandling
-            // ArrayList<String> selectedCatagories = new ArrayList<>();
-            // for(Component comp : tagPanel.getComponents()){
-            //     if(comp instanceof JCheckBox){
-            //         JCheckBox checkBox = (JCheckBox) comp;
-            //         if(checkBox.isSelected()){
-            //             selectedCatagories.add(checkBox.getText());
-            //         }
-            //     }
-            // }
+             ArrayList<String> selectedCatagories = new ArrayList<>();
+            for(Component comp : tagPanel.getComponents()){
+                if(comp instanceof JCheckBox){
+                    JCheckBox checkBox = (JCheckBox) comp;
+                    if(checkBox.isSelected()){
+                        selectedCatagories.add(checkBox.getText());
+                    }
+                }
+            }
 
 
             //Collaboration Errorhandling
@@ -861,7 +864,7 @@ private void openFundDialog() {
                     fundDeadlines, fundCategory, fundCollaborationHistory, fundContacts, fundWebsite,
                     collaborated, running);
 
-            fundList.add(fund);
+            main.fundList.add(fund);
             updateFundList();
             // Add fund to fund list
             //fundClass fund = new fundClass(fundTitle, fundDescription, fundAmountFrom, fundAmountTo,
@@ -941,7 +944,7 @@ private void showFundDetails(fundClass fund) {
  private void updateFundList() {
     fundListPanel.removeAll();  // Clear existing funds
 
-    for (fundClass fund : fundList) {
+    for (fundClass fund : main.fundList) {
         JLabel fundLabel = new JLabel(fund.getTitle() + " - " + fund.getCategories());
         fundLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1026,6 +1029,7 @@ private void showFundDetails(fundClass fund) {
         tagPanel.setLayout(new BoxLayout(tagPanel, BoxLayout.Y_AXIS));
         JScrollPane tagScrollPane = new JScrollPane(tagPanel);
         dialog.add(tagScrollPane);
+        getCurrentCatagories.getAllCurrentCatagories(tagPanel);
 
         createTagButton.addActionListener(e -> {
             String newTag = JOptionPane.showInputDialog(dialog, "Enter new tag:");
@@ -1061,7 +1065,7 @@ private void showFundDetails(fundClass fund) {
                     isInvalidLenght = false;
                     dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
                 }else{
-                    projectTitle = nameField.getText();
+                    tempTitle = nameField.getText();
                 }
              
                 if(validationUtils.isWithinLowerCharLimit(purposeField.getText()) == false){
@@ -1071,7 +1075,7 @@ private void showFundDetails(fundClass fund) {
                     isInvalidLenght = false;
                     dialog.add(UserFrameErrorHandling.displayPurposeError(isInvalidLenght));
                 }else{
-                    projectPurpose = purposeField.getText();
+                    tempPurpose = purposeField.getText();
                 }
                 
                 if(validationUtils.isWithinUpperCharLimit(descriptionArea.getText()) == false){
@@ -1081,7 +1085,7 @@ private void showFundDetails(fundClass fund) {
                     isInvalidLenght = false;
                     dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
                 }else{
-                    projectDescription = descriptionArea.getText();
+                    tempDescription = descriptionArea.getText();
                 }
 
                 if(validationUtils.isWithinLowerCharLimit(ownerField.getText()) == false){
@@ -1091,7 +1095,7 @@ private void showFundDetails(fundClass fund) {
                     isInvalidLenght = false;
                     dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
                 }else{
-                    projectOwner = ownerField.getText();
+                    tempOwner = ownerField.getText();
                 }
 
                 if(validationUtils.isWithinLowerCharLimit(targetField.getText()) == false){
@@ -1101,13 +1105,13 @@ private void showFundDetails(fundClass fund) {
                     isInvalidLenght = false;
                     dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
                 }else{
-                    projectTargetAudience = targetField.getText();
+                    tempTargetAudience = targetField.getText();
                 }
 
                 if(validationUtils.isNumericInput(budgetField.getText()) == false){
                     dialog.add(UserFrameErrorHandling.displayBudgetError());
                 }else{
-                    projectBudget = Long.parseLong(budgetField.getText());
+                    tempBudget = Long.parseLong(budgetField.getText());
                 }
 
                 //ERRORHANDLING FOR DATE TYPE SHIT
@@ -1140,7 +1144,7 @@ private void showFundDetails(fundClass fund) {
                     isInvalidLenght = false; 
                     dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
                 }else{
-                    projectActivities = activitiesField.getText();
+                    tempActivities = activitiesField.getText();
                 }
 
                 ArrayList<String> selectedCatagories = new ArrayList<>();
@@ -1157,7 +1161,7 @@ private void showFundDetails(fundClass fund) {
                 System.out.println(projectToDate);
                 // Create a new project proposal and add it to the list
     
-                project project = new project(projectTitle, selectedCatagories, projectDescription, projectPurpose ,projectOwner, projectTargetAudience, projectBudget, projectFromDate, projectToDate, projectActivities, main.getFundList(), main.getCatagoryBoolean());
+                project project = new project(tempTitle, selectedCatagories, tempDescription, tempPurpose ,tempOwner, tempTargetAudience, tempBudget, projectFromDate, projectToDate, tempActivities, main.getFundList(), main.getCatagoryBoolean());
                 main.projectList.add(project);
                 System.out.println("------------");
                 System.out.println("adding project");
