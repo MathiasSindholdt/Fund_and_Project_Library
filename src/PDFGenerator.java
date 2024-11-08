@@ -38,54 +38,7 @@ public class PDFGenerator {
                 "Dato: " + project.getDateCreated().toString().split("T")[0]);
         String budget = new String();
 
-        budget = project.getProjectBudget() + "";
-        if (budget.length() % 3 != 0) {
-            budget = budget.substring(0, budget.length() % 3);
-            switch (((budget.length() - budget.length() % 3) / 3) + 1) {
-                case 0:
-                    budget += " ";
-                    break;
-                case 1:
-                    budget += "k";
-                    break;
-                case 2:
-                    budget += "m";
-                    break;
-                case 3:
-                    budget += "b";
-                    break;
-                case 4:
-                    budget += "t";
-                    break;
-                case 5:
-                    budget += "q";
-                    break;
-
-            }
-        } else if (budget.length() % 3 == 0) {
-            budget = budget.substring(0, (budget.length() % 3) + 3);
-            switch (((budget.length() - budget.length() % 3) / 3)) {
-                case 0:
-                    budget += " ";
-                    break;
-                case 1:
-                    budget += "k";
-                    break;
-                case 2:
-                    budget += "m";
-                    break;
-                case 3:
-                    budget += "b";
-                    break;
-                case 4:
-                    budget += "t";
-                    break;
-                case 5:
-                    budget += "q";
-                    break;
-
-            }
-        }
+        budget = formatNumber(project.getProjectBudget() + "");
 
         textStreamObject.add("F1", 11, 30 + 400, pageTop - textOffset + 14, "Budget: " + budget);
         textOffset += 20;
@@ -96,8 +49,8 @@ public class PDFGenerator {
         List<String> strings = new ArrayList<String>();
         int index = 0;
         while (index < text.length()) {
-            strings.add(text.substring(index, Math.min(index + 105, text.length())));
-            index += 105;
+            strings.add(text.substring(index, Math.min(index + 100, text.length())));
+            index += Math.min(index + 100, text.length());
         }
 
         for (int i = 0; i < strings.size(); i++) {
@@ -116,6 +69,9 @@ public class PDFGenerator {
                     textStreamObject.add("F1", 11, 30, pageTop - textOffset, strings.get(i).trim());
                     textOffset += 14;
                 }
+            } else {
+                textStreamObject.add("F1", 11, 30, pageTop - textOffset, strings.get(i).trim());
+                textOffset += 14;
             }
         }
         textOffset += 10;
@@ -192,6 +148,70 @@ public class PDFGenerator {
     }
 
     /*
+     * formatNumber() - shortens number to be at most 4 chars
+     * 
+     * @arg string
+     * Return: string
+     *
+     * This function takes a number in string form and converts it into a
+     * shortened version that contains the 3 first numbers and a letter
+     * representing the magnitude of the number i.e. 823746 would become
+     * 823k and 876238576 would become 876m
+     */
+    private String formatNumber(String number) {
+
+        if (number.length() % 3 != 0) {
+            number = number.substring(0, number.length() % 3);
+            switch (((number.length() - number.length() % 3) / 3) + 1) {
+                case 0:
+                    number += " ";
+                    break;
+                case 1:
+                    number += "k";
+                    break;
+                case 2:
+                    number += "m";
+                    break;
+                case 3:
+                    number += "b";
+                    break;
+                case 4:
+                    number += "t";
+                    break;
+                case 5:
+                    number += "q";
+                    break;
+
+            }
+        } else if (number.length() % 3 == 0) {
+            number = number.substring(0, (number.length() % 3) + 3);
+            switch (((number.length() - number.length() % 3) / 3) - 1) {
+                case 0:
+                    number += " ";
+                    break;
+                case 1:
+                    number += "k";
+                    break;
+                case 2:
+                    number += "m";
+                    break;
+                case 3:
+                    number += "b";
+                    break;
+                case 4:
+                    number += "t";
+                    break;
+                case 5:
+                    number += "q";
+                    break;
+
+            }
+        }
+        return number;
+
+    }
+
+    /*
      * createFundPages() - creates list of pages for funds
      *
      * @arg list of funds
@@ -213,54 +233,7 @@ public class PDFGenerator {
             textOffset += 14;
             String budget = new String();
 
-            budget = fc.getBudgetSpan() + "";
-            if (budget.length() % 3 != 0) {
-                budget = budget.substring(0, budget.length() % 3);
-                switch (((budget.length() - budget.length() % 3) / 3) + 1) {
-                    case 0:
-                        budget += " ";
-                        break;
-                    case 1:
-                        budget += "k";
-                        break;
-                    case 2:
-                        budget += "m";
-                        break;
-                    case 3:
-                        budget += "b";
-                        break;
-                    case 4:
-                        budget += "t";
-                        break;
-                    case 5:
-                        budget += "q";
-                        break;
-
-                }
-            } else if (budget.length() % 3 == 0) {
-                budget = budget.substring(0, (budget.length() % 3) + 3);
-                switch (((budget.length() - budget.length() % 3) / 3) - 1) {
-                    case 0:
-                        budget += " ";
-                        break;
-                    case 1:
-                        budget += "k";
-                        break;
-                    case 2:
-                        budget += "m";
-                        break;
-                    case 3:
-                        budget += "b";
-                        break;
-                    case 4:
-                        budget += "t";
-                        break;
-                    case 5:
-                        budget += "q";
-                        break;
-
-                }
-            }
+            budget = formatNumber(fc.getBudgetMin() + "") + " - " + formatNumber(fc.getBudgetMax() + "");
 
             textStreamObject.add("F1", 11, 30 + 400, pageTop - textOffset + 14, "Budget: " + budget);
             ArrayList<String> Deadlines = new ArrayList<String>();
@@ -275,10 +248,11 @@ public class PDFGenerator {
             textOffset += 18;
             List<String> strings = new ArrayList<String>();
             String text = fc.getDescription();
+            System.out.println("\033[31m" + text + "\n text length: " + text.length() + "\033[0m");
             int index = 0;
             while (index < text.length()) {
                 strings.add(text.substring(index, Math.min(index + 100, text.length())));
-                index += 100;
+                index += Math.min(index + 100, text.length());
             }
 
             for (int i = 0; i < strings.size(); i++) {
@@ -447,7 +421,7 @@ abstract class PDFObject {
      * build() - builds the pdfObject
      *
      * Return: string containing the built pdfObject.
-     * */
+     */
     public String build() {
 
         addSpecificAttributes();
