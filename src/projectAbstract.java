@@ -110,9 +110,6 @@ public class projectAbstract extends elementFormatting {
             }
             this.projectTimespan[0] = from;
             this.projectTimespan[1]  = to;
-            if (this.projectTimespan[1].isBefore(this.projectTimespan[0])) {
-                throw new validationUtils.WrongDataInputException("'to' must be after 'from'");
-            }
             System.out.println("TimeSpan set from " + from + " to " + to);
         }
     }
