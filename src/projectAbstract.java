@@ -15,12 +15,11 @@ public class projectAbstract extends elementFormatting {
         return projectPurpose;
     }
 
-    public ArrayList<fundClass> setDeadlines(ArrayList<fundClass> fundList){
+    public void setFundList(ArrayList<fundClass> fundList){
         this.fundList = fundList;
-        return fundList;
     }
 
-    public ArrayList<fundClass> getDeadlines(){
+    public ArrayList<fundClass> getFunds(){
         return fundList;
     }
 
