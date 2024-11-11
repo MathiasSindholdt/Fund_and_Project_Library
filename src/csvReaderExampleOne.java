@@ -128,7 +128,10 @@ public class csvReaderExampleOne {
             "d. MMMM yyyy HH:mm"
         };
         
-
+        if (deadline.matches("^[a-zA-ZæøåÆØÅ]+$")) {  
+            deadline = "1. " + deadline + " " + currentYear;
+        }
+    
         // Append the current year if date is missing it
         if (deadline.matches("\\d{1,2}\\.\\s+\\w+")) {
             deadline += " " + currentYear;
@@ -220,7 +223,6 @@ public class csvReaderExampleOne {
             }
         }
 
-        
         System.out.println("Error parsing application deadline: " + deadline);
         return null;
     }
