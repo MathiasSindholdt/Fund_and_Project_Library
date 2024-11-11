@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
@@ -92,7 +93,7 @@ public class csvReaderExampleOne {
     }
 
     public static Object parseApplicationDeadline(String deadline) {
-
+        int defaultDay = 01;
         int currentYear = LocalDate.now().getYear();
 
         if (deadline.toLowerCase().contains("running") || deadline.toLowerCase().contains("yearly")) {
@@ -135,6 +136,27 @@ public class csvReaderExampleOne {
 
 
         System.out.println("Attempting to parse deadline: " + deadline);
+
+        if (deadline.matches("^[a-zA-ZæøåÆØÅ]+\\s+og\\s+[a-zA-ZæøåÆØÅ]+$")) {
+            String[] monthParts = deadline.split("\\s+og\\s+");
+            List<LocalDate> dates = new ArrayList<>();
+            DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.forLanguageTag("da-DK"));
+
+            for (String month : monthParts) {
+                try {
+                    // Parse the month and year, then add the default day afterward
+                    YearMonth yearMonth = YearMonth.parse(month.trim() + " " + currentYear, monthFormatter);
+                    // Convert YearMonth to LocalDate
+                    LocalDate dateWithDefaultDay = yearMonth.atDay(defaultDay);  
+                    dates.add(dateWithDefaultDay);
+                } catch (DateTimeParseException e) {
+                    System.out.println("Error parsing month-only date: " + month);
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+            return dates;
+        }
 
         // If the deadline contains multiple dates separated by "og" or "&"
         if (deadline.contains(" og ") || deadline.contains("&")) {
