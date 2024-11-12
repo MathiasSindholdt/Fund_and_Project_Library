@@ -1,15 +1,3 @@
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.*;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Date;
 import javax.swing.*;
 
 public class UserFrameErrorHandling{
