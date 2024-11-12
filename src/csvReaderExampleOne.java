@@ -17,8 +17,9 @@ import java.util.Locale;
 public class csvReaderExampleOne {
 
     public static void main(String[] args) {
-        String filePath = "Fondsoverblik(2).csv";
-        ArrayList<String[]> data = readCsv(filePath);
+        String inputFilePath = "Fondsoverblik(2).csv";
+
+        ArrayList<String[]> data = readCsv(inputFilePath);
 
         String[] categoryNames = {
             "Attraktive EUD", "Trivsel", "Bæredygtighed, Demokrati",
@@ -35,6 +36,8 @@ public class csvReaderExampleOne {
         }
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd. MMMM yyyy 'kl.' HH:mm");
+
+        List<fundClass> fundList = new ArrayList<>();
 
         // Process each subsequent row (fund)
         for (int row = 2; row < data.size(); row++) {
@@ -100,6 +103,8 @@ public class csvReaderExampleOne {
             }
             fund.setCollaborationHistory(collaborationHistory);
 
+            fundList.add(fund);
+
             System.out.println("The fund name is: " + fund.getTitle());           
             System.out.println("It has the following description: " + fund.getDescription());
             System.out.println("It was created at: " + fund.getDateCreated());
@@ -112,6 +117,8 @@ public class csvReaderExampleOne {
 
             System.out.println("------------------------------------------------------");
         }
+        CsvWriter.writeCsv("output.csv", fundList);
+
         
     }
 
@@ -315,10 +322,10 @@ public class csvReaderExampleOne {
         return new Long[]{budgetMin, budgetMax};
     }
 
-    public static ArrayList<String[]> readCsv(String filePath) {
+    public static ArrayList<String[]> readCsv(String inputFilePath) {
         ArrayList<String[]> rows = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
             String line;
 
             while ((line = br.readLine()) != null) {
