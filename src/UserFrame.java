@@ -5,9 +5,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Date;
 import java.util.List;
-import javax.swing.*; // Import for date formatting
+import javax.swing.*;
 
 
 public class UserFrame implements ActionListener {
@@ -41,9 +40,6 @@ public class UserFrame implements ActionListener {
     private JPanel projectFullPanel;
     
     
-    private ArrayList<fundClass> fundList;
-    private JPanel fundListPanel;
-    private JPanel fundFullPanel;
     // tag button
 
     private JPanel tagButtonPanel;
@@ -160,7 +156,6 @@ public class UserFrame implements ActionListener {
 
     // Separate view for "Projekt forslag"
     private JPanel createproposalProjectView() {
-    private JPanel createproposalProjectView() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
 
@@ -174,7 +169,6 @@ public class UserFrame implements ActionListener {
         proposalProjectListPanel.setLayout(new BoxLayout(proposalProjectListPanel, BoxLayout.Y_AXIS));
 
         // Scroll pane to handle multiple proposals
-        JScrollPane scrollPane = new JScrollPane(proposalProjectListPanel);
         JScrollPane scrollPane = new JScrollPane(proposalProjectListPanel);
         panel.add(scrollPane, BorderLayout.CENTER);
 
@@ -209,7 +203,6 @@ public class UserFrame implements ActionListener {
 
     private JPanel createFundsView() {
         JPanel panel = new JPanel(new BorderLayout());
-        JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
 
         JLabel label = new JLabel("Fonde", SwingConstants.CENTER);
@@ -224,18 +217,9 @@ public class UserFrame implements ActionListener {
         JScrollPane scrollPane = new JScrollPane(fundListPanel);
         panel.add(scrollPane, BorderLayout.CENTER);
         
-
-        JLabel label = new JLabel("Fonde", SwingConstants.CENTER);
-        panel.add(label, BorderLayout.NORTH);
-    
-        
         // Initialize fund list panel
         fundListPanel = new JPanel();
         fundListPanel.setLayout(new BoxLayout(fundListPanel, BoxLayout.Y_AXIS));
-        
-        // Create a scroll pane for the fund list
-        JScrollPane scrollPane = new JScrollPane(fundListPanel);
-        panel.add(scrollPane, BorderLayout.CENTER);
         
         return panel;
     }
@@ -458,7 +442,6 @@ private JPanel createRightSidePanel() {
         // Action Listener for Create Tag button
         createTagButton.addActionListener(e -> {
             String newTag = JOptionPane.showInputDialog(dialog, "Indtast ny kategori:");
-            String newTag = JOptionPane.showInputDialog(dialog, "Indtast ny kategori:");
             if (newTag != null && !newTag.trim().isEmpty()) {
                 JCheckBox tagCheckBox = new JCheckBox(newTag);
     
@@ -481,9 +464,6 @@ private JPanel createRightSidePanel() {
             String description = descriptionArea.getText();
             String owner = ownerField.getText();
             String target = targetField.getText();
-            long budget;
-            LocalDateTime fromDate;
-            LocalDateTime toDate;
             long budget;
             LocalDateTime fromDate;
             LocalDateTime toDate;
