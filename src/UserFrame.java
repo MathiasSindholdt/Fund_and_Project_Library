@@ -339,6 +339,10 @@ public class UserFrame implements ActionListener {
 
 
 
+<<<<<<< HEAD
+=======
+            // Add more fields as needed
+>>>>>>> fc8f243 (Created archive button functionality with funds,)
         } else if (item instanceof proposalProject) {
             proposalProject proposal = (proposalProject) item;
             detailsPanel.add(new JLabel("Titel: " + proposal.getTitle()));
@@ -359,6 +363,10 @@ public class UserFrame implements ActionListener {
 
 
 
+<<<<<<< HEAD
+=======
+            // Add more fields as needed
+>>>>>>> fc8f243 (Created archive button functionality with funds,)
         } else if (item instanceof fundClass) {
             fundClass fund = (fundClass) item;
             detailsPanel.add(new JLabel("Titel: " + fund.getTitle()));
@@ -1061,6 +1069,10 @@ private void showFundDetails(fundClass fund) {
     archiveButton.setPreferredSize(buttonSize);
     
     archiveButton.addActionListener(e -> {
+<<<<<<< HEAD
+=======
+        // Archive the project
+>>>>>>> fc8f243 (Created archive button functionality with funds,)
         archive.archiveFund(fund);
 
         // Call update methods after archiving
