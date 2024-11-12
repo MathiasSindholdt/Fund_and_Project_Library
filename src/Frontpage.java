@@ -50,10 +50,13 @@ public class Frontpage extends JFrame {
         });
 
         guestButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Fortsætter som gæst...");
+                // Open GuestFrame when button is clicked
+                GuestFrame guestFrame = new GuestFrame();
+                guestFrame.setVisible(true);  // This should now work if GuestFrame extends JFrame
             }
-        });
+        });        
 
         panel.add(buttonPanel);
         add(panel);
