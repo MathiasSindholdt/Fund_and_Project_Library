@@ -12,7 +12,7 @@ public class factory extends projectAbstract {
             System.out.println(fundList.get(i).getTitle());
             System.out.println("------------");
         }
-        newProject.setDeadlines(sorter.sortFunds(fundList, newProject, onlyOneIsNeeded));
+        newProject.setClosestDeadlineFunds(fundList, onlyOneIsNeeded);
         newProject.setTitle(proposal.getTitle());
 
         for (String s : proposal.getCategories()) {
