@@ -9,7 +9,7 @@ import java.util.List;
 import javax.swing.*;
 
 
-public class UserFrame implements ActionListener {
+public class UserFrame extends JFrame implements ActionListener {
 
     private JFrame frame;
     private JPanel cardPanel;
@@ -57,7 +57,7 @@ public class UserFrame implements ActionListener {
     
     // Constructor to set up the GUI
     public UserFrame() {
-        
+
         fundList = new ArrayList<>();
         initializeFrame();  // Initialize JFrame
 
@@ -87,6 +87,7 @@ public class UserFrame implements ActionListener {
         frame.add(panel2, BorderLayout.WEST);
         frame.add(panel3, BorderLayout.EAST);
         frame.add(cardPanel, BorderLayout.CENTER);  // Use cardPanel as the center panel
+
     }
 
 
