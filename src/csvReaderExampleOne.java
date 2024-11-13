@@ -117,7 +117,7 @@ public class csvReaderExampleOne {
 
             System.out.println("------------------------------------------------------");
         }
-        CsvWriter.writeCsv("output.csv", fundList);
+        FundCsvWriter.writeCsv("output.csv", fundList);
 
         
     }
