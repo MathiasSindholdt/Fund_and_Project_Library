@@ -339,7 +339,6 @@ public class UserFrame implements ActionListener {
 
 
 
-            // Add more fields as needed
         } else if (item instanceof proposalProject) {
             proposalProject proposal = (proposalProject) item;
             detailsPanel.add(new JLabel("Titel: " + proposal.getTitle()));
@@ -360,7 +359,6 @@ public class UserFrame implements ActionListener {
 
 
 
-            // Add more fields as needed
         } else if (item instanceof fundClass) {
             fundClass fund = (fundClass) item;
             detailsPanel.add(new JLabel("Titel: " + fund.getTitle()));
@@ -1063,7 +1061,6 @@ private void showFundDetails(fundClass fund) {
     archiveButton.setPreferredSize(buttonSize);
     
     archiveButton.addActionListener(e -> {
-        // Archive the project
         archive.archiveFund(fund);
 
         // Call update methods after archiving
