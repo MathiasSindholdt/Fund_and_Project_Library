@@ -75,7 +75,8 @@ public class UserFrame implements ActionListener {
 
         JPanel panel1 = createTopPanel();  // Top panel
         JPanel panel2 = createSidePanel();  // Left-side panel
-        JPanel panel3 = createRightSidePanel();  // Right-side panel
+        rightSidePanel = createRightSidePanel();  // Right-side panel
+        JPanel panel3 = rightSidePanel;
 
         // Card layout for switching between views
         cardLayout = new CardLayout();
@@ -229,10 +230,118 @@ public class UserFrame implements ActionListener {
     private JPanel createArchiveView() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
+    
+        // Title label
         JLabel label = new JLabel("Arkiv");
+        label.setFont(new Font("Arial", Font.BOLD, 18));
         panel.add(label);
+    
+        // Buttons for "Proposals," "Projects," and "Funds"
+        JButton proposalsButton = new JButton("Arkiveret projektforslag");
+        JButton projectsButton = new JButton("Arkiveret projekter");
+        JButton fundsButton = new JButton("Arkiveret fonde");
+    
+        // Set button sizes (optional, adjust as needed)
+        Dimension buttonSize = new Dimension(150, 50);
+        proposalsButton.setPreferredSize(buttonSize);
+        projectsButton.setPreferredSize(buttonSize);
+        fundsButton.setPreferredSize(buttonSize);
+    
+        // Add action listeners to each button to display respective archives
+        proposalsButton.addActionListener(e -> displayArchiveList("proposalProjectsDetails", main.archiveProposalList));
+        projectsButton.addActionListener(e -> displayArchiveList("ProjectDetails", main.archiveProjectList));
+        fundsButton.addActionListener(e -> displayArchiveList("FundDetails", main.archiveFundList));
+    
+        // Layout buttons in a single row
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));  // Spacer
+        panel.add(proposalsButton);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));  // Spacer
+        panel.add(projectsButton);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));  // Spacer
+        panel.add(fundsButton);
+    
         return panel;
     }
+
+    // Creates the right-side panel with different views for each archive type
+
+    // Method to update the right-side panel based on selected archive type
+   
+    private <T> void displayItemDetails(T item) {
+        // Create a new panel or dialog to show item details
+        JPanel detailsPanel = new JPanel();
+        detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
+    
+        // Display details based on the type of item
+        if (item instanceof project) {
+            project proj = (project) item;
+            detailsPanel.add(new JLabel("Titel: " + proj.getTitle()));
+            detailsPanel.add(new JLabel("Beskrivelse: " + proj.getDescription()));
+            detailsPanel.add(new JLabel("Kategorier: " + proj.getCategories()));
+            detailsPanel.add(new JLabel("Ide/Formål: " + proj.getProjectPurpose()));
+            detailsPanel.add(new JLabel("Ejer: " + proj.getProjectOwner()));
+            detailsPanel.add(new JLabel("Målgruppe: " + proj.getProjectTargetAudience()));
+            detailsPanel.add(new JLabel("Aktiviter: " + proj.getProjectActivities()));
+            detailsPanel.add(new JLabel("\n"));
+
+            detailsPanel.add(new JLabel("Dato fra: " + proj.getProjectTimeSpanFrom()));
+            detailsPanel.add(new JLabel("Dato til: " + proj.getProjectTimeSpanTo()));
+            detailsPanel.add(new JLabel("\n"));
+
+            detailsPanel.add(new JLabel("Dato lavet: " + proj.getDateCreated()));
+
+
+
+
+
+        } else if (item instanceof proposalProject) {
+            proposalProject proposal = (proposalProject) item;
+            detailsPanel.add(new JLabel("Titel: " + proposal.getTitle()));
+            detailsPanel.add(new JLabel("Beskrivelse: " + proposal.getDescription()));
+            detailsPanel.add(new JLabel("Kategorier: " + proposal.getCategories()));
+            detailsPanel.add(new JLabel("Ide/Formål: " + proposal.getProjectPurpose()));
+            detailsPanel.add(new JLabel("Ejer: " + proposal.getProjectOwner()));
+            detailsPanel.add(new JLabel("Målgruppe: " + proposal.getProjectTargetAudience()));
+            detailsPanel.add(new JLabel("Aktiviter: " + proposal.getProjectActivities()));
+            detailsPanel.add(new JLabel("\n"));
+
+            detailsPanel.add(new JLabel("Dato fra: " + proposal.getProjectTimeSpanFrom()));
+            detailsPanel.add(new JLabel("Dato til: " + proposal.getProjectTimeSpanTo()));
+            detailsPanel.add(new JLabel("\n"));
+
+            detailsPanel.add(new JLabel("Dato lavet: " + proposal.getDateCreated()));
+
+
+
+
+        } else if (item instanceof fundClass) {
+            fundClass fund = (fundClass) item;
+            detailsPanel.add(new JLabel("Titel: " + fund.getTitle()));
+            detailsPanel.add(new JLabel("Beskrivelse: " + fund.getDescription()));
+            detailsPanel.add(new JLabel("Kategorier: " + fund.getCategories()));
+            detailsPanel.add(new JLabel("Deadline(s): " + fund.getDeadlines()));
+            detailsPanel.add(new JLabel("Kontakter: " + fund.getContacts()));
+            detailsPanel.add(new JLabel("Budget span: " + fund.getBudgetSpan()));
+            detailsPanel.add(new JLabel("Tidligere samarbejde: " + fund.getCollaborationHistory()));
+            detailsPanel.add(new JLabel("Hjemmeside: " + fund.getFundWebsite()));
+            detailsPanel.add(new JLabel("\n"));
+            detailsPanel.add(new JLabel("Dato lavet: " + fund.getDateCreated()));
+
+
+
+
+
+
+        } else {
+            detailsPanel.add(new JLabel("Details: " + item.toString()));
+        }
+    
+        // Show details in a dialog box
+        JOptionPane.showMessageDialog(null, detailsPanel, "Item Details", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    
 
     private JButton createButton(String text) {
         JButton button = new JButton(text);
@@ -304,71 +413,58 @@ public class UserFrame implements ActionListener {
     private void openproposalProjectDialog() {
         JDialog dialog = new JDialog(frame, "Lav Projekt Forslag", true);
         dialog.setSize(700, 700);
-        dialog.setLayout(new GridLayout(12, 2, 10, 10));
+    
+        JPanel mainPanel = new JPanel();
+        dialog.add(mainPanel);
+    
+        GroupLayout layout = new GroupLayout(mainPanel);
+        mainPanel.setLayout(layout);
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
     
         JLabel nameLabel = new JLabel("Titel:");
         JTextField nameField = new JTextField();
-        dialog.add(nameLabel);
-        dialog.add(nameField);
     
         JLabel ideaLabel = new JLabel("Idé/Formål:");
         JTextField ideaField = new JTextField();
-        dialog.add(ideaLabel);
-        dialog.add(ideaField);
     
         JLabel descriptionLabel = new JLabel("Kort beskrivelse af projektet:");
         JTextArea descriptionArea = new JTextArea(5, 20);
         JScrollPane scrollPane = new JScrollPane(descriptionArea);
-        dialog.add(descriptionLabel);
-        dialog.add(scrollPane);
     
         JLabel ownerLabel = new JLabel("Ejer af idé/forslaget:");
         JTextField ownerField = new JTextField();
-        dialog.add(ownerLabel);
-        dialog.add(ownerField);
     
         JLabel targetLabel = new JLabel("Målgruppe (hvem gavner dette forslag):");
         JTextField targetField = new JTextField();
-        dialog.add(targetLabel);
-        dialog.add(targetField);
     
         JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
         JTextField budgetField = new JTextField();
-        dialog.add(budgetLabel);
-        dialog.add(budgetField);
     
         JLabel fromDateLabel = new JLabel("Fra dato:");
         SpinnerDateModel fromDateModel = new SpinnerDateModel();
         JSpinner fromDateSpinner = new JSpinner(fromDateModel);
         JSpinner.DateEditor fromDateEditor = new JSpinner.DateEditor(fromDateSpinner, "dd/MM/yyyy");
         fromDateSpinner.setEditor(fromDateEditor);
-        dialog.add(fromDateLabel);
-        dialog.add(fromDateSpinner);
     
         JLabel toDateLabel = new JLabel("Til dato:");
         SpinnerDateModel toDateModel = new SpinnerDateModel();
         JSpinner toDateSpinner = new JSpinner(toDateModel);
         JSpinner.DateEditor toDateEditor = new JSpinner.DateEditor(toDateSpinner, "dd/MM/yyyy");
         toDateSpinner.setEditor(toDateEditor);
-        dialog.add(toDateLabel);
-        dialog.add(toDateSpinner);
     
         JLabel activitiesLabel = new JLabel("Aktiviteter:");
         JTextField activitiesField = new JTextField();
-        dialog.add(activitiesLabel);
-        dialog.add(activitiesField);
     
-        // "Create Tag" button
-        dialog.add(new JLabel("Opret Kategori:"));
+        // "Create Tag" label and button
+        JLabel createTagLabel = new JLabel("Opret Kategori:");
         JButton createTagButton = new JButton("Opret Kategori");
-        dialog.add(createTagButton);
     
         // Tag selection panel (scrollable)
-        dialog.add(new JLabel("Vælg relevante kategorier:"));
+        JLabel selectTagLabel = new JLabel("Vælg relevante kategorier:");
         JPanel tagPanel = new JPanel();
         tagPanel.setLayout(new BoxLayout(tagPanel, BoxLayout.Y_AXIS));
         JScrollPane tagScrollPane = new JScrollPane(tagPanel);
-        dialog.add(tagScrollPane);
     
         // Populate tagPanel with existing categories as checkboxes
         for (String category : main.categories) {
@@ -391,8 +487,10 @@ public class UserFrame implements ActionListener {
                     tagPanel.revalidate();
                     tagPanel.repaint();
                 }
+             
             }
-        });
+            }
+        );
     
         JButton submitButton = new JButton("Tilføj");
         submitButton.addActionListener(event -> {
@@ -463,13 +561,41 @@ public class UserFrame implements ActionListener {
             dialog.dispose();
         });
     
-
-    dialog.add(new JLabel());
-    dialog.add(submitButton);
-
-    dialog.setLocationRelativeTo(frame);
-    dialog.setVisible(true);
-}
+        // Define layout structure
+        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addComponent(nameLabel).addComponent(nameField)
+            .addComponent(ideaLabel).addComponent(ideaField)
+            .addComponent(descriptionLabel).addComponent(scrollPane)
+            .addComponent(ownerLabel).addComponent(ownerField)
+            .addComponent(targetLabel).addComponent(targetField)
+            .addComponent(budgetLabel).addComponent(budgetField)
+            .addComponent(fromDateLabel).addComponent(fromDateSpinner)
+            .addComponent(toDateLabel).addComponent(toDateSpinner)
+            .addComponent(activitiesLabel).addComponent(activitiesField)
+            .addComponent(createTagLabel).addComponent(createTagButton)
+            .addComponent(selectTagLabel).addComponent(tagScrollPane)
+            .addComponent(submitButton)
+        );
+    
+        layout.setVerticalGroup(layout.createSequentialGroup()
+            .addComponent(nameLabel).addComponent(nameField)
+            .addComponent(ideaLabel).addComponent(ideaField)
+            .addComponent(descriptionLabel).addComponent(scrollPane)
+            .addComponent(ownerLabel).addComponent(ownerField)
+            .addComponent(targetLabel).addComponent(targetField)
+            .addComponent(budgetLabel).addComponent(budgetField)
+            .addComponent(fromDateLabel).addComponent(fromDateSpinner)
+            .addComponent(toDateLabel).addComponent(toDateSpinner)
+            .addComponent(activitiesLabel).addComponent(activitiesField)
+            .addComponent(createTagLabel).addComponent(createTagButton)
+            .addComponent(selectTagLabel).addComponent(tagScrollPane)
+            .addComponent(submitButton)
+        );
+    
+        dialog.setLocationRelativeTo(frame);
+        dialog.setVisible(true);
+    }
+    
 
 private void updateproposalProjectList() {
     proposalProjectListPanel.removeAll();
@@ -558,6 +684,23 @@ private void showProjectProbDetails(proposalProject proposal) {
      // Add buttons to the panel
      proposalProjectFullPanel.add(approveButton);
      proposalProjectFullPanel.add(rejectButton);
+   
+    JButton archiveButton = new JButton("Arkivér");
+    Dimension buttonSize = new Dimension(150, 50); 
+    archiveButton.setPreferredSize(buttonSize);
+    
+    archiveButton.addActionListener(e -> {
+        // Archive the project
+        archive.archiveProposal(proposal);
+
+        // Call update methods after archiving
+        updateproposalProjectList();
+        proposalProjectFullPanel.removeAll(); 
+        proposalProjectFullPanel.revalidate();
+        proposalProjectFullPanel.repaint();
+    });
+    
+    proposalProjectFullPanel.add(archiveButton);
  
      // Refresh the panel to reflect the changes
      proposalProjectFullPanel.revalidate();
@@ -633,6 +776,23 @@ private void showProjectDetails(project project) {
     projectFullPanel.add(new JLabel("Til Dato: " + project.getProjectTimeSpanTo().toString()));
     projectFullPanel.add(new JLabel("Aktiviteter: " + project.getProjectActivities()));
 
+    JButton archiveButton = new JButton("Arkivér");
+    Dimension buttonSize = new Dimension(150, 50); 
+    archiveButton.setPreferredSize(buttonSize);
+    
+    archiveButton.addActionListener(e -> {
+        // Archive the project
+        archive.archiveProject(project);
+
+        // Call update methods after archiving
+        updateProjectList();
+        projectFullPanel.removeAll(); 
+        projectFullPanel.revalidate();
+        projectFullPanel.repaint();
+    });
+    
+    projectFullPanel.add(archiveButton);
+    
     projectFullPanel.revalidate();
     projectFullPanel.repaint();
 }
@@ -1114,8 +1274,48 @@ private void showFundDetails(fundClass fund) {
         fundFullPanel.add(new JLabel(tempContacts.get(i).getContactName() + " - " + tempContacts.get(i).getContactPhoneNumber() + " - " + tempContacts.get(i).getContactEmail()));
     }
     fundFullPanel.add(new JLabel("Hjemmeside: " + fund.getFundWebsite()));
+    JButton archiveButton = new JButton("Arkivér");
+    Dimension buttonSize = new Dimension(150, 50); 
+    archiveButton.setPreferredSize(buttonSize);
+    
+    archiveButton.addActionListener(e -> {
+        archive.archiveFund(fund);
+
+        // Call update methods after archiving
+        updateFundList();
+        fundFullPanel.removeAll(); 
+        fundFullPanel.revalidate();
+        fundFullPanel.repaint();
+      
+    });
+    
+    fundFullPanel.add(archiveButton);
+
+    /*JButton archiveButton = new JButton("Arkivér");
+    Dimension buttonSize = new Dimension(150, 50); */
+    archiveButton.setPreferredSize(buttonSize);
+    
+    archiveButton.addActionListener(e -> {
+
+        // Archive the project
+
+        archive.archiveFund(fund);
+
+        // Call update methods after archiving
+        updateFundList();
+        fundFullPanel.removeAll(); 
+        fundFullPanel.revalidate();
+        fundFullPanel.repaint();
+      
+    });
+    
+    fundFullPanel.add(archiveButton);
+
     fundFullPanel.revalidate();
     fundFullPanel.repaint();
+
+    fundListPanel.revalidate();
+    fundListPanel.repaint();
 }
 
  // Method to update the fund list display
@@ -1136,100 +1336,98 @@ private void showFundDetails(fundClass fund) {
     fundListPanel.repaint();
 }
 
-    private void openProjectDialog(){
-        JDialog dialog = new JDialog(frame, "Lav Projekt", true);
-        dialog.setSize(700, 700);
-        dialog.setLayout(new GridLayout(13, 2, 10, 10));
+private void openProjectDialog() {
+    JDialog dialog = new JDialog(frame, "Lav Projekt", true);
+    dialog.setSize(700, 700);
 
-        JLabel nameLabel = new JLabel("Titel:");
-        JTextField nameField = new JTextField();
-        dialog.add(nameLabel);
-        dialog.add(nameField);
+    JPanel mainPanel = new JPanel();
+    dialog.add(mainPanel);
+
+    GroupLayout layout = new GroupLayout(mainPanel);
+    mainPanel.setLayout(layout);
+    layout.setAutoCreateGaps(true);
+    layout.setAutoCreateContainerGaps(true);
+
+    // Components
+    JLabel nameLabel = new JLabel("Titel:");
+    JTextField nameField = new JTextField();
+
+    JLabel purposeLabel = new JLabel("Formål:");
+    JTextField purposeField = new JTextField();
+
+    JLabel descriptionLabel = new JLabel("Beskrivelse af projektet:");
+    JTextArea descriptionArea = new JTextArea(5, 20);
+    JScrollPane scrollPane = new JScrollPane(descriptionArea);
+
+    JLabel ownerLabel = new JLabel("Ejer af projektet:");
+    JTextField ownerField = new JTextField();
+
+    JLabel targetLabel = new JLabel("Målgruppe (hvem gavner dette projekt):");
+    JTextField targetField = new JTextField();
+
+
+    JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
+    JTextField budgetField = new JTextField();
+
+    JLabel fromDateLabel = new JLabel("Fra dato:");
+    SpinnerDateModel fromDateModel = new SpinnerDateModel();
+    JSpinner fromDateSpinner = new JSpinner(fromDateModel);
+    JSpinner.DateEditor fromDateEditor = new JSpinner.DateEditor(fromDateSpinner, "dd/MM/yyyy");
+    fromDateSpinner.setEditor(fromDateEditor);
+
+    JLabel toDateLabel = new JLabel("Til dato:");
+    SpinnerDateModel toDateModel = new SpinnerDateModel();
+    JSpinner toDateSpinner = new JSpinner(toDateModel);
+    JSpinner.DateEditor toDateEditor = new JSpinner.DateEditor(toDateSpinner, "dd/MM/yyyy");
+    toDateSpinner.setEditor(toDateEditor);
+  
+  JLabel activitiesLabel = new JLabel("Aktiviteter:");
+    JTextField activitiesField = new JTextField();
+
+    // Tag creation and selection
+    JLabel createTagLabel = new JLabel("Create Tag:");
+    JButton createTagButton = new JButton("Create Tag");
     
-
-        JLabel purposeLabel = new JLabel("Formål:");
-        JTextField purposeField = new JTextField();
-        dialog.add(purposeLabel);
-        dialog.add(purposeField);
-
-        JLabel descriptionLabel = new JLabel("Beskrivelse af projektet:");
-        JTextArea descriptionArea = new JTextArea(5, 20);
-        JScrollPane scrollPane = new JScrollPane(descriptionArea);
-        dialog.add(descriptionLabel);
-        dialog.add(scrollPane);
-
-        JLabel ownerLabel = new JLabel("Ejer af projektet:");
-        JTextField ownerField = new JTextField();
-        dialog.add(ownerLabel);
-        dialog.add(ownerField);
-        
-        
-        JLabel targetLabel = new JLabel("Målgruppe (hvem gavner dette projekt):");
-        JTextField targetField = new JTextField();
-        dialog.add(targetLabel);
-        dialog.add(targetField);
-
-        JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
-        JTextField budgetField = new JTextField();
-        if(!validationUtils.isNumericInput(budgetField.getText()) /*&& !validationUtils.budgetLenght()*/){
-            dialog.add(budgetLabel);
-            dialog.add(budgetField);  
-        }
-
-        JLabel fromDateLabel = new JLabel("Fra dato:");
-        SpinnerDateModel fromDateModel = new SpinnerDateModel();
-        JSpinner fromDateSpinner = new JSpinner(fromDateModel);
-        JSpinner.DateEditor fromDateEditor = new JSpinner.DateEditor(fromDateSpinner, "dd/MM/yyyy");
-        fromDateSpinner.setEditor(fromDateEditor);
-        dialog.add(fromDateLabel);
-        dialog.add(fromDateSpinner);
-
-        JLabel toDateLabel = new JLabel("Til dato:");
-        SpinnerDateModel toDateModel = new SpinnerDateModel();
-        JSpinner toDateSpinner = new JSpinner(toDateModel);
-        JSpinner.DateEditor toDateEditor = new JSpinner.DateEditor(toDateSpinner, "dd/MM/yyyy");
-        toDateSpinner.setEditor(toDateEditor);
-        dialog.add(toDateLabel);
-        dialog.add(toDateSpinner);
-
-        JLabel activitiesLabel = new JLabel("Aktiviteter:");
-        JTextField activitiesField = new JTextField();
-        dialog.add(activitiesLabel);
-        dialog.add(activitiesField);
-
-        //Ved ik om det her skal stå her, skal det ikke være noget som man laver udenfor projektet etc.
-        dialog.add(new JLabel("Create Tag:"));
-        JButton createTagButton = new JButton("Create Tag");
-        dialog.add(createTagButton);
-
-        dialog.add(new JLabel("Vælg relevante katagorier:"));
+        JLabel selectTagLabel = new JLabel("Vælg relevante kategorier:");
         JPanel tagPanel = new JPanel();
         tagPanel.setLayout(new BoxLayout(tagPanel, BoxLayout.Y_AXIS));
         JScrollPane tagScrollPane = new JScrollPane(tagPanel);
-        dialog.add(tagScrollPane);
-        getCurrentCheckboxes.getAllCurrentCatagories(tagPanel);
 
-        createTagButton.addActionListener(e -> {
-            String newTag = JOptionPane.showInputDialog(dialog, "Enter new tag:");
-            if (newTag != null && !newTag.trim().isEmpty()) {
-                JCheckBox tagCheckBox = new JCheckBox(newTag);
-                if(main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))){
-                    tagPanel.add(UserFrameErrorHandling.displayTagError());
-                }else{
-                    main.addNewCatagory(newTag);
-                    tagPanel.add(tagCheckBox);
-                    tagPanel.revalidate();
-                    tagPanel.repaint();
-                }
+    createTagButton.addActionListener(e -> {
+        String newTag = JOptionPane.showInputDialog(dialog, "Enter new tag:");
+        if (newTag != null && !newTag.trim().isEmpty()) {
+            JCheckBox tagCheckBox = new JCheckBox(newTag);
+            if (main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))) {
+                tagPanel.add(UserFrameErrorHandling.displayTagError());
+            } else {
+                main.addNewCatagory(newTag);
+                tagPanel.add(tagCheckBox);
+                tagPanel.revalidate();
+                tagPanel.repaint();
             }
+        }
+    });
 
-            //tag button for filtering between the different tags
-            JButton tagButton = new JButton(newTag);
-            tagButton.addActionListener(tagEvent -> filterproposalProjectssByTag(newTag));
-            tagButtonPanel.add(tagButton);
-            tagButtonPanel.revalidate();
-            tagButtonPanel.repaint();
-        });
+    for (String category : main.categories) {
+        JCheckBox tagCheckBox = new JCheckBox(category);
+        tagPanel.add(tagCheckBox);
+    }
+
+    // Event for create tag button
+    createTagButton.addActionListener(e -> {
+        String newTag = JOptionPane.showInputDialog(dialog, "Enter new tag:");
+        if (newTag != null && !newTag.trim().isEmpty()) {
+            JCheckBox tagCheckBox = new JCheckBox(newTag);
+            if (main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))) {
+                tagPanel.add(UserFrameErrorHandling.displayTagError());
+            } else {
+                main.addNewCatagory(newTag);
+                tagPanel.add(tagCheckBox);
+                tagPanel.revalidate();
+                tagPanel.repaint();
+            }
+        }
+    });
 
      
         JButton submitButton = new JButton("Tilføj");
@@ -1292,24 +1490,8 @@ private void showFundDetails(fundClass fund) {
                     tempBudget = Long.parseLong(budgetField.getText());
                 }
 
-                //ERRORHANDLING FOR DATE TYPE SHIT
-                /*
-                 * if(validDateFormat == false){
-                 * invalidDate = true
-                 * display invalid format error
-                 * }else if(invalid character){
-                 * invalidDate = false
-                 * display invalid date character error
-                 * } else{
-                 *  LocalDate fromDate = ((Date) ((fromDateSpinner.getValue()))).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                    LocalDate toDate = ((Date) (toDateSpinner.getValue())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                    LocalDateTime projectFromDate = fromDate.atStartOfDay();
-                    LocalDateTime projectToDate = toDate.atStartOfDay();
-                 * }
 
-                 */
-
-        
+   
                 LocalDate fromDate = ((Date) ((fromDateSpinner.getValue()))).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 LocalDate toDate = ((Date) (toDateSpinner.getValue())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 LocalDateTime projectFromDate = fromDate.atStartOfDay();
@@ -1323,7 +1505,9 @@ private void showFundDetails(fundClass fund) {
                     dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
                 }else{
                     tempActivities = activitiesField.getText();
+
                 }
+            
 
                 ArrayList<String> selectedCatagories = new ArrayList<>();
                 for(Component comp : tagPanel.getComponents()){
@@ -1341,6 +1525,7 @@ private void showFundDetails(fundClass fund) {
     
                 project project = new project(tempTitle, selectedCatagories, tempDescription, tempPurpose ,tempOwner, tempTargetAudience, tempBudget, projectFromDate, projectToDate, tempActivities, main.getFundList(), main.getCatagoryBoolean());
                 main.projectList.add(project);
+
                 System.out.println("------------");
                 System.out.println("adding project");
                 for(project proj : main.projectList){
@@ -1356,28 +1541,51 @@ private void showFundDetails(fundClass fund) {
                     System.out.println(proj.getProjectActivities());
                     System.out.println(proj.getClosestDeadlineFunds());
                     System.out.println(proj.getCategories());
-
                 }
-                // Update the project proposal panel
-                //updateProjectList();
-    
+                updateProjectList();
                 dialog.dispose();
-            }catch (Exception e){
-                System.err.println("error when adding project");
-                e.printStackTrace();
+            }catch(Exception e){
+
             }
         });
 
-        dialog.add(new JLabel());
-        dialog.add(submitButton);
+    // Layout definition
+    layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+        .addComponent(nameLabel).addComponent(nameField)
+        .addComponent(purposeLabel).addComponent(purposeField)
+        .addComponent(descriptionLabel).addComponent(scrollPane)
+        .addComponent(ownerLabel).addComponent(ownerField)
+        .addComponent(targetLabel).addComponent(targetField)
+        .addComponent(budgetLabel).addComponent(budgetField)
+        .addComponent(fromDateLabel).addComponent(fromDateSpinner)
+        .addComponent(toDateLabel).addComponent(toDateSpinner)
+        .addComponent(activitiesLabel).addComponent(activitiesField)
+        .addComponent(createTagLabel).addComponent(createTagButton)
+        .addComponent(selectTagLabel).addComponent(tagScrollPane)
+        .addComponent(submitButton)
+      );
 
-        dialog.setLocationRelativeTo(frame);
-        dialog.setVisible(true);
+    layout.setVerticalGroup(layout.createSequentialGroup()
+        .addComponent(nameLabel).addComponent(nameField)
+        .addComponent(purposeLabel).addComponent(purposeField)
+        .addComponent(descriptionLabel).addComponent(scrollPane)
+        .addComponent(ownerLabel).addComponent(ownerField)
+        .addComponent(targetLabel).addComponent(targetField)
+        .addComponent(budgetLabel).addComponent(budgetField)
+        .addComponent(fromDateLabel).addComponent(fromDateSpinner)
+        .addComponent(toDateLabel).addComponent(toDateSpinner)
+        .addComponent(activitiesLabel).addComponent(activitiesField)
+        .addComponent(createTagLabel).addComponent(createTagButton)
+        .addComponent(selectTagLabel).addComponent(tagScrollPane)
+        .addComponent(submitButton)
+    );
 
-    }
+    dialog.setLocationRelativeTo(frame);
+    dialog.setVisible(true);
+}
 
     private JPanel createRightSidePanel() {
-        rightSidePanel = new JPanel(new CardLayout());
+        JPanel rightSidePanel = new JPanel(new CardLayout());
         rightSidePanel.setBackground(new Color(213, 213, 213, 255));
         rightSidePanel.setPreferredSize(new Dimension(900, 100));
         
@@ -1397,8 +1605,9 @@ private void showFundDetails(fundClass fund) {
         rightSidePanel.add(fundScrollPane, "FundDetails");
         
         JPanel archivePanel = new JPanel();
-        archivePanel.add(new JLabel("Arkiv Detaljer"));
-        rightSidePanel.add(archivePanel, "ArchiveDetails");
+        archivePanel.setLayout(new BoxLayout(archivePanel, BoxLayout.Y_AXIS));
+        JScrollPane archiveScrollPane = new JScrollPane(archivePanel);
+        rightSidePanel.add(archiveScrollPane, "Arkiv");
         
         return rightSidePanel;
     }
@@ -1474,7 +1683,61 @@ private void showFundDetails(fundClass fund) {
         }else if(e.getSource() == createProjectButton){
             openProjectDialog();
             
-    }
+        }
  
-}
+    }
+
+ private <T> void displayArchiveList(String cardName, List<T> archiveList) {
+        JPanel targetPanel;
+    
+        // Determine which panel to update based on card name
+        switch (cardName) {
+            case "proposalProjectsDetails":
+                targetPanel = proposalProjectFullPanel;
+                break;
+            case "ProjectDetails":
+                targetPanel = projectFullPanel;
+                break;
+            case "FundDetails":
+                targetPanel = fundFullPanel;
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid card name");
+        }
+    
+        // Clear the panel and populate it with clickable items from the archive list
+        targetPanel.removeAll();
+        for (int i =0; i < archiveList.size() && archiveList.size()!=0; i++) {
+            String displayText;
+            
+            // Get the title of each item
+            if (archiveList.get(i) instanceof project) {
+                displayText = ((project) archiveList.get(i)).getTitle();
+            } else if (archiveList.get(i) instanceof proposalProject) {
+                displayText = ((proposalProject) archiveList.get(i)).getTitle();
+            } else if (archiveList.get(i) instanceof fundClass) {
+                displayText = ((fundClass) archiveList.get(i)).getTitle();
+            } else {
+                displayText = archiveList.get(i).toString();
+            }
+    
+            // Create a JButton for each item to make it clickable
+            JButton itemButton = new JButton(displayText);
+            T item = archiveList.get(i);
+            // Add an ActionListener to display item details when clicked
+            itemButton.addActionListener(e->displayItemDetails(item));
+            
+            targetPanel.add(itemButton);
+            targetPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Spacer between items
+        }
+        
+        // Refresh the panel and switch to the selected archive view
+        targetPanel.revalidate();
+        targetPanel.repaint();
+        CardLayout cardLayout = (CardLayout) rightSidePanel.getLayout();
+        cardLayout.show(rightSidePanel, cardName);
+    }
+    
+
+
 }

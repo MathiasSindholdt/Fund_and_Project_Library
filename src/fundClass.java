@@ -113,7 +113,6 @@ public class fundClass extends elementFormatting{
         this.setBudget(fundAmountFrom,fundAmountTo);
         this.setfundWebsite(fundWebsite);
         for(int i = 0; i < fundDeadline.size() ; i++){
-            System.out.println("Deadline XD: " + fundDeadline.get(i));
             this.setDeadlines(fundDeadline.get(i));
         }
         for(int i = 0; i < fundCategory.size() ; i++){
@@ -121,7 +120,6 @@ public class fundClass extends elementFormatting{
         }
         for(int i = 0; i < fundContacts.size() ; i++){
             for(int j = 0; j < fundContacts.size(); j++){
-                System.out.println("Contact XD: " + fundContacts.get(i).toString());
             }
             this.setContacts(fundContacts.get(i));
         }

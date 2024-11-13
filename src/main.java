@@ -7,8 +7,11 @@ public class main {
     static ArrayList<project> projectList = new ArrayList<>();
     static ArrayList<String> userProjectList = new ArrayList<>();
     static ArrayList<fundClass> fundList = new ArrayList<>();
+    static ArrayList<fundClass> archiveFundList = new ArrayList<>();
     static ArrayList<fundClass> runningFundList = new ArrayList<>();
     static ArrayList<String> categories = new ArrayList<>();
+    static ArrayList<project> archiveProjectList = new ArrayList<>();
+    static ArrayList<proposalProject> archiveProposalList = new ArrayList<>();
     static ArrayList<proposalProject> proposalList = new ArrayList<>();
     static boolean onlyOneIsNeeded = true;
     //Test of Fund constructor vvvv Remove Later
