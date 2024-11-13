@@ -86,5 +86,23 @@ public class UserFrameErrorHandling{
         return new JPanel();
     }
 
-    
+    public static JPanel displayAllTextFieldError(){
+        JOptionPane.showMessageDialog(null, "Alle felter skal være udfyldt");
+        return new JPanel();
+    }
+
+    public static JPanel displayPhoneError(){
+        JOptionPane.showMessageDialog(null, "Ugyldigt telefonnummer");
+        return new JPanel();
+    }
+
+    public static JPanel displayEmailError(){
+        JOptionPane.showMessageDialog(null, "Ugyldig email, email skal være i formatet example@example.com");
+        return new JPanel();
+    }
+
+    public static JPanel displayTimeError(){
+        JOptionPane.showMessageDialog(null, "Ugyldig tid, tid skal være i formatet hh:mm, og tiden skal være mellem 00:00 og 23:59");
+        return new JPanel();
+    }
 }

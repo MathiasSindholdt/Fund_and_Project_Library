@@ -5,6 +5,7 @@ import java.util.Random;
 
 public class main {
     static ArrayList<project> projectList = new ArrayList<>();
+    static ArrayList<String> userProjectList = new ArrayList<>();
     static ArrayList<fundClass> fundList = new ArrayList<>();
     static ArrayList<fundClass> runningFundList = new ArrayList<>();
     static ArrayList<String> categories = new ArrayList<>();

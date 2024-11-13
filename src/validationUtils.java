@@ -35,6 +35,10 @@ public class validationUtils {
         return VALID_DESCRIPTION.matcher(input).matches();
     }
 
+    public static boolean isValidPhoneNumber(String input){
+        return input != null && NUMERIC_CHARACTERS.matcher(input).matches() && input.length() == 8;
+    }
+
     public static boolean isWithinLowerCharLimit(String input){
         return input != null && input.length() >= MIN_LENGTH && input.length() <= LOWER_MAX_LENGTH;
     }
@@ -43,11 +47,28 @@ public class validationUtils {
         return input != null && input.length() >= MIN_LENGTH && input.length() <= UPPER_MAX_LENGTH;
     }
 
+    public static boolean isValidTime(String input, boolean hour){
+        if(hour){
+            return input != null && input.length() == 2 && isNumericInput(input) && Integer.parseInt(input) >= 0 && Integer.parseInt(input) <= 23;
+        }else{
+            return input != null && input.length() == 2 && isNumericInput(input) && Integer.parseInt(input) >= 0 && Integer.parseInt(input) <= 59;
+        }
+    }
+
+    public static boolean validateEmailInput(String input) {
+        if (!input.contains("@") || !input.contains(".")) {
+            System.out.println("Email does not contain @ or .");
+            return false;
+        }else{
+            return true;
+        }
+    }
     public static void validateInput(String input, String fieldName) {
         if (!isValidInput(input)) {
             throw new WrongDataInputException(fieldName + " contains invalid characters");
         }
     } 
+
 
     public static void validateURL(String input, String fieldName) {
         if (!isValidUrl(input)) {
