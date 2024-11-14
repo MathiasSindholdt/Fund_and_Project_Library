@@ -45,8 +45,8 @@ public class main {
             FundTitle = "fundTitle" + i;
             int randomNum = rand.nextInt(10)+1;
             FundDeadline = new LocalDateTime[]{LocalDateTime.now().minusDays(randomNum),LocalDateTime.now().plusDays(randomNum+1)};
-            FundAmountFrom = i*1000000;
-            FundAmountTo = i*10000000;
+            FundAmountFrom = i*1000000L;
+            FundAmountTo = i*10000000L;
             if(i%2 == 0){
                 FundRunning = true;
             } else {
