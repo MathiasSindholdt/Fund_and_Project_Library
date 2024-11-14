@@ -6,11 +6,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.swing.*;
-import javax.swing.text.Utilities;
 
 public class UserFrame implements ActionListener {
 
@@ -321,13 +320,7 @@ public class UserFrame implements ActionListener {
 
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-            // Add more fields as needed
->>>>>>> fc8f243 (Created archive button functionality with funds,)
-=======
->>>>>>> 8541e60 (Still needed to have the fund list connected to)
+
         } else if (item instanceof fundClass) {
             fundClass fund = (fundClass) item;
             detailsPanel.add(new JLabel("Titel: " + fund.getTitle()));
@@ -1293,13 +1286,7 @@ private void showFundDetails(fundClass fund) {
     archiveButton.setPreferredSize(buttonSize);
     
     archiveButton.addActionListener(e -> {
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-        // Archive the project
->>>>>>> fc8f243 (Created archive button functionality with funds,)
-=======
->>>>>>> 8541e60 (Still needed to have the fund list connected to)
+
         archive.archiveFund(fund);
 
         // Call update methods after archiving
