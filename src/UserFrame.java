@@ -232,11 +232,13 @@ public class UserFrame implements ActionListener {
         panel.setBackground(Color.WHITE);
     
         // Title label
+
     
         // Title label
         JLabel label = new JLabel("Arkiv");
         label.setFont(new Font("Arial", Font.BOLD, 18));
         label.setFont(new Font("Arial", Font.BOLD, 18));
+
         panel.add(label);
     
         // Buttons for "Proposals," "Projects," and "Funds"
@@ -270,7 +272,7 @@ public class UserFrame implements ActionListener {
     // Creates the right-side panel with different views for each archive type
 
     // Method to update the right-side panel based on selected archive type
-   
+
     private <T> void displayItemDetails(T item) {
         // Create a new panel or dialog to show item details
         JPanel detailsPanel = new JPanel();
@@ -293,6 +295,7 @@ public class UserFrame implements ActionListener {
             detailsPanel.add(new JLabel("\n"));
 
             detailsPanel.add(new JLabel("Dato lavet: " + proj.getDateCreated()));
+
 
 
 
@@ -687,7 +690,7 @@ private void showProjectProbDetails(proposalProject proposal) {
      // Add buttons to the panel
      proposalProjectFullPanel.add(approveButton);
      proposalProjectFullPanel.add(rejectButton);
-   
+
 JButton archiveButton = new JButton("Arkivér");
 Dimension buttonSize = new Dimension(150, 50); 
 archiveButton.setPreferredSize(buttonSize);
@@ -704,6 +707,7 @@ archiveButton.addActionListener(e -> {
 });
 
 proposalProjectFullPanel.add(archiveButton);
+
  
      // Refresh the panel to reflect the changes
      proposalProjectFullPanel.revalidate();
@@ -1296,22 +1300,7 @@ private void showFundDetails(fundClass fund) {
 
     /*JButton archiveButton = new JButton("Arkivér");
     Dimension buttonSize = new Dimension(150, 50); */
-    archiveButton.setPreferredSize(buttonSize);
-    
-    archiveButton.addActionListener(e -> {
 
-        // Archive the project
-
-        archive.archiveFund(fund);
-
-        // Call update methods after archiving
-        updateFundList();
-        fundFullPanel.removeAll(); 
-        fundFullPanel.revalidate();
-        fundFullPanel.repaint();
-      
-    });
-    
     fundFullPanel.add(archiveButton);
 
     fundFullPanel.revalidate();
@@ -1342,6 +1331,7 @@ private void showFundDetails(fundClass fund) {
 private void openProjectDialog() {
     JDialog dialog = new JDialog(frame, "Lav Projekt", true);
     dialog.setSize(700, 700);
+
 
     JPanel mainPanel = new JPanel();
     dialog.add(mainPanel);
@@ -1555,6 +1545,7 @@ private void openProjectDialog() {
 
     // Layout definition
     layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+
         .addComponent(nameLabel).addComponent(nameField)
         .addComponent(purposeLabel).addComponent(purposeField)
         .addComponent(descriptionLabel).addComponent(scrollPane)
@@ -1567,6 +1558,7 @@ private void openProjectDialog() {
         .addComponent(createTagLabel).addComponent(createTagButton)
         .addComponent(selectTagLabel).addComponent(tagScrollPane)
         .addComponent(submitButton)
+
       );
 
     layout.setVerticalGroup(layout.createSequentialGroup()
@@ -1587,6 +1579,7 @@ private void openProjectDialog() {
     dialog.setLocationRelativeTo(frame);
     dialog.setVisible(true);
 }
+
 
     private JPanel createRightSidePanel() {
         JPanel rightSidePanel = new JPanel(new CardLayout());
@@ -1689,6 +1682,7 @@ private void openProjectDialog() {
             
         }
  
+
     }
 
  private <T> void displayArchiveList(String cardName, List<T> archiveList) {
@@ -1741,7 +1735,4 @@ private void openProjectDialog() {
         CardLayout cardLayout = (CardLayout) rightSidePanel.getLayout();
         cardLayout.show(rightSidePanel, cardName);
     }
-    
-
-
 }

@@ -8,6 +8,7 @@ public class main {
     static ArrayList<fundClass> runningFundList = new ArrayList<>();
     static ArrayList<String> categories = new ArrayList<>();
     static ArrayList<proposalProject> proposalList = new ArrayList<>();
+
     static ArrayList<proposalProject> archiveProposalList = new ArrayList<>();
     static ArrayList<project> archiveProjectList = new ArrayList<>();
     static ArrayList<fundClass> archiveFundList = new ArrayList<>();
