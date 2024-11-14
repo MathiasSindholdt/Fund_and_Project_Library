@@ -17,8 +17,17 @@ import java.util.Locale;
 public class csvReaderExampleOne {
 
     public static void main(String[] args) {
-        String filePath = "Fondsoverblik(2).csv";
-        ArrayList<String[]> data = readCsv(filePath);
+        String inputFilePath = "Fondsoverblik(2).csv";
+
+        ArrayList<String[]> data = readCsv(inputFilePath);
+
+        String[] categoryNames = {
+            "Attraktive EUD", "Trivsel", "Bæredygtighed, Demokrati",
+            "STEM", "Iværksætteri", "Byggebranchen",
+            "Fællesskab", "Teknologi, digitalisering og markedsføring",
+            "Grøn omstilling", "Anlægsprojekter", "Piger i EUD/STEM",
+            "Viden og uddannelse"
+        };
 
         // Check if there is sufficient data
         if (data.size() < 2) {
@@ -28,6 +37,8 @@ public class csvReaderExampleOne {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd. MMMM yyyy 'kl.' HH:mm");
 
+        List<fundClass> fundList = new ArrayList<>();
+
         // Process each subsequent row (fund)
         for (int row = 2; row < data.size(); row++) {
             String[] fundData = data.get(row);
@@ -36,7 +47,7 @@ public class csvReaderExampleOne {
             System.out.println("Processing row " + (row + 1) + ": " + Arrays.toString(fundData));
 
             // Check if the row has a minimum number of columns
-            if (fundData.length < 3) { // Adjusted minimum length check to 3
+            if (fundData.length < 3) {
                 System.out.println("Skipping row " + (row + 1) + ": insufficient columns.");
                 continue;
             }
@@ -47,49 +58,68 @@ public class csvReaderExampleOne {
             String fundDescription = fundData[2]; 
             String applicationDeadlineRaw = fundData.length > 3 ? fundData[3].trim() : "N/A";
             Object applicationDeadline = parseApplicationDeadline(applicationDeadlineRaw);
-            String budgetSize = fundData.length > 4 ? extractBudgetRange(fundData[4]) : "N/A";
+            Long[] budgetRange = fundData.length > 4 ? extractBudgetRange(fundData[4]) : new Long[]{null, null};
+            Long budgetMin = budgetRange[0] != null ? budgetRange[0] : 0L;
+            Long budgetMax = budgetRange[1] != null ? budgetRange[1] : 0L;
             String collaborationHistory = fundData.length > 6 ? fundData[6] : "N/A"; 
+            
+            fundClass fund = new fundClass();
+            fund.setTitle(fundName);
+            fund.setDescription(fundDescription);
+            fund.setfundWebsite(fundWebsite);
+            fund.setBudget(budgetMin, budgetMax);
+            if (applicationDeadline instanceof LocalDate) {
+                // Convert LocalDate to LocalDateTime at start of the day
+                fund.setDeadlines(((LocalDate) applicationDeadline).atStartOfDay());
+            } else if (applicationDeadline instanceof LocalDateTime) {
+                fund.setDeadlines((LocalDateTime) applicationDeadline);
+            } else if (applicationDeadline instanceof List) {
+                // If it's a List, handle each element if needed
+                List<?> dateList = (List<?>) applicationDeadline;
+                if (!dateList.isEmpty() && dateList.get(0) instanceof LocalDate) {
+                    // Using the first date in the list and converting to LocalDateTime
+                    fund.setDeadlines(((LocalDate) dateList.get(0)).atStartOfDay());
+                } else {
+                    System.out.println("No valid date found in list for deadline.");
+                }
+            } else {
+                System.out.println("Invalid date format for application deadline.");
+            }
 
-            // Output fund details
-            System.out.println("Fund Name: " + fundName);
-            System.out.println("Fund Website: " + fundWebsite);
-            System.out.println("Description: " + fundDescription);
-            //System.out.println("Application Deadline: " + (applicationDeadline != null ? applicationDeadline : "N/A"));
-            System.out.println("Application Deadline: " + formatApplicationDeadline(applicationDeadline));
-            System.out.println("Budget Size: " + budgetSize);
-            System.out.println("Collaboration History: " + collaborationHistory);
-
-            // Define the category names based on columns 7 to 18
-            String[] categoryNames = {
-                "Attraktive EUD", "Trivsel", "Bæredygtighed, Demokrati",
-                "STEM", "Iværksætteri", "Byggebranchen",
-                "Fællesskab", "Teknologi, digitalisering og markedsføring",
-                "Grøn omstilling", "Anlægsprojekter", "Piger i EUD/STEM",
-                "Viden og uddannelse"
-            };
-
-            boolean hasIncludedCategory = false;
             ArrayList<String> includedCategories = new ArrayList<>();
-           
             for (int categoryIndex = 0; categoryIndex < categoryNames.length; categoryIndex++) {
                 if (fundData.length > 7 + categoryIndex && "x".equalsIgnoreCase(fundData[7 + categoryIndex].trim())) {
                     includedCategories.add(categoryNames[categoryIndex]);
-                    hasIncludedCategory = true;
                 }
             }
+            
+            // Add a default category if none are marked
+            if (includedCategories.isEmpty()) {
+                includedCategories.add("NoCategory");
+            }
+            System.out.println(includedCategories);
+            for (String category : includedCategories) {
+                fund.setCategories(category);
+            }
+            fund.setCollaborationHistory(collaborationHistory);
 
-            // Print included categories or "NoCategory"
-            if (hasIncludedCategory) {
-                System.out.println("\nIncluded Categories:");
-                for (String category : includedCategories) {
-                    System.out.println(category);
-                }
-            } else {
-                System.out.println("NoCategory");
-            }
+            fundList.add(fund);
+
+            System.out.println("The fund name is: " + fund.getTitle());           
+            System.out.println("It has the following description: " + fund.getDescription());
+            System.out.println("It was created at: " + fund.getDateCreated());
+            System.out.println("It has the following categoreis: " + fund.getCategories());
+            System.out.println("The deadlines for the fund is: " + fund.getDeadlines());
+            System.out.println("Contact persons at the fund are: " + fund.getContacts());
+            System.out.println("The fund has a budget of: " + fund.getBudgetSpan());
+            System.out.println("We have previously collaborated on: " + fund.getCollaborationHistory());
+            System.out.println("The fund website can be found at: " + fund.getFundWebsite());
 
             System.out.println("------------------------------------------------------");
         }
+        CsvWriter.writeCsv("output.csv", fundList);
+
+        
     }
 
     public static Object parseApplicationDeadline(String deadline) {
@@ -260,36 +290,42 @@ public class csvReaderExampleOne {
         return "Unknown format";
     }
     
-    public static String extractBudgetRange(String budget) {
+    public static Long[] extractBudgetRange(String budget) {
         boolean isMillion = budget.toLowerCase().contains("mio");
-        
+    
+        // Remove any non-digit or non-hyphen characters and split by '-'
         String[] parts = budget.replaceAll("[^\\d-]", "").split("-");
-        
-        if (parts.length == 2) { 
-            String start = parts[0].trim();
-            String end = parts[1].trim();
-            
-            if (isMillion){
-                end += "000000";
+        Long budgetMin = null;
+        Long budgetMax = null;
+    
+        try {
+            if (parts.length == 2) {  // Handle ranges like "1-2 mio"
+                budgetMin = Long.parseLong(parts[0].trim());
+                budgetMax = Long.parseLong(parts[1].trim());
+    
+                if (isMillion) {
+                    budgetMin *= 1_000_000;
+                    budgetMax *= 1_000_000;
+                }
+            } else if (parts.length == 1) {
+                budgetMin = Long.parseLong(parts[0].trim());
+                if (isMillion) {
+                    budgetMin *= 1_000_000;
+                }
+                budgetMax = budgetMin;
             }
-
-            return start + " - " + end;
-        } else if (parts.length == 1) {
-            String amount = parts[0].trim();
-            if (isMillion) {
-                amount += "000000";
-            }
-            return amount;
-        } else {
-
-            return "N/A";
+        } catch (NumberFormatException e) {
+            System.out.println("Error parsing budget: " + budget);
+            return new Long[]{null, null};
         }
+    
+        return new Long[]{budgetMin, budgetMax};
     }
 
-    public static ArrayList<String[]> readCsv(String filePath) {
+    public static ArrayList<String[]> readCsv(String inputFilePath) {
         ArrayList<String[]> rows = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
             String line;
 
             while ((line = br.readLine()) != null) {

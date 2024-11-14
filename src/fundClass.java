@@ -44,11 +44,7 @@ public class fundClass extends elementFormatting{
     }
 
     public void setfundWebsite(String newFundWebsite){
-        if (newFundWebsite.length() > 1000) {
-            throw new validationUtils.WrongDataInputException("The website URL exceeds 1000 characters");
-        }
-        validationUtils.validateURL(newFundWebsite, "URL");
-
+      
         this.fundWebsite = newFundWebsite;
     }
 
@@ -57,30 +53,15 @@ public class fundClass extends elementFormatting{
     }
 
     public void setContacts(String newContact){
-        if (newContact.length() > 200) {
-            throw new validationUtils.WrongDataInputException("The contact exceeds 200 characters");
-        }
-        validationUtils.validateInput(newContact, "Contact");
         this.contacts.add(newContact);
     }
 
-    public void setBudgetMin(long newBudgetMin, long newBudgetMax){
-        if (newBudgetMin < 0){
-            throw new validationUtils.WrongDataInputException("The minimum fund budget cannot be negative");
-        }
-        if (newBudgetMin > newBudgetMax){
-            throw new validationUtils.WrongDataInputException("The minimum budget cannot be greater than the maximum budget");
-        }
+    public void setBudgetMin(long newBudgetMin){
         this.budgetMin = newBudgetMin;
     }
 
-    public void setBudgetMax(long newBudgetMax, long newBudgetMin){
-        if (newBudgetMax < 0){
-            throw new validationUtils.WrongDataInputException("The maximum fund budget cannot be negative");
-        }
-        if (newBudgetMin > newBudgetMax){
-            throw new validationUtils.WrongDataInputException("The maximum budget cannot be smaller than the minimum budget");
-        }
+    public void setBudgetMax(long newBudgetMax){
+        
         this.budgetMin = newBudgetMax;
     }
 
@@ -90,10 +71,6 @@ public class fundClass extends elementFormatting{
     }
 
     public void setCollaborationHistory(String newCollaboration){
-        if (newCollaboration.length() > 200) {
-            throw new validationUtils.WrongDataInputException("The collaboration history cannot exceed 200 characters");
-        }
-        validationUtils.validateInput(newCollaboration, "Collaboration");
         this.collaborationHistory.add(newCollaboration);
     }
 
