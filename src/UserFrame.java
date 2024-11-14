@@ -75,7 +75,8 @@ public class UserFrame implements ActionListener {
 
         JPanel panel1 = createTopPanel();  // Top panel
         JPanel panel2 = createSidePanel();  // Left-side panel
-        JPanel panel3 = createRightSidePanel();  // Right-side panel
+        rightSidePanel = createRightSidePanel();  // Right-side panel
+        JPanel panel3 = rightSidePanel;
 
         // Card layout for switching between views
         cardLayout = new CardLayout();
@@ -231,8 +232,13 @@ public class UserFrame implements ActionListener {
         panel.setBackground(Color.WHITE);
     
         // Title label
+
+    
+        // Title label
         JLabel label = new JLabel("Arkiv");
         label.setFont(new Font("Arial", Font.BOLD, 18));
+        label.setFont(new Font("Arial", Font.BOLD, 18));
+
         panel.add(label);
     
         // Buttons for "Proposals," "Projects," and "Funds"
@@ -266,58 +272,7 @@ public class UserFrame implements ActionListener {
     // Creates the right-side panel with different views for each archive type
 
     // Method to update the right-side panel based on selected archive type
-    private <T> void displayArchiveList(String cardName, List<T> archiveList) {
-        JPanel targetPanel;
-    
-        // Determine which panel to update based on card name
-        switch (cardName) {
-            case "proposalProjectsDetails":
-                targetPanel = proposalProjectFullPanel;
-                break;
-            case "ProjectDetails":
-                targetPanel = projectFullPanel;
-                break;
-            case "FundDetails":
-                targetPanel = fundFullPanel;
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid card name");
-        }
-    
-        // Clear the panel and populate it with clickable items from the archive list
-        targetPanel.removeAll();
-        for (T item : archiveList) {
-            String displayText;
-            
-            // Get the title of each item
-            if (item instanceof project) {
-                displayText = ((project) item).getTitle();
-            } else if (item instanceof proposalProject) {
-                displayText = ((proposalProject) item).getTitle();
-            } else if (item instanceof fundClass) {
-                displayText = ((fundClass) item).getTitle();
-            } else {
-                displayText = item.toString();
-            }
-    
-            // Create a JButton for each item to make it clickable
-            JButton itemButton = new JButton(displayText);
-            
-            // Add an ActionListener to display item details when clicked
-            itemButton.addActionListener(e -> displayItemDetails(item));
-            
-            targetPanel.add(itemButton);
-            targetPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Spacer between items
-        }
-        
-        // Refresh the panel and switch to the selected archive view
-        targetPanel.revalidate();
-        targetPanel.repaint();
-        CardLayout cardLayout = (CardLayout) rightSidePanel.getLayout();
-        cardLayout.show(rightSidePanel, cardName);
-    }
-    
-    
+
     private <T> void displayItemDetails(T item) {
         // Create a new panel or dialog to show item details
         JPanel detailsPanel = new JPanel();
@@ -345,13 +300,7 @@ public class UserFrame implements ActionListener {
 
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-            // Add more fields as needed
->>>>>>> fc8f243 (Created archive button functionality with funds,)
-=======
->>>>>>> 8541e60 (Still needed to have the fund list connected to)
+
         } else if (item instanceof proposalProject) {
             proposalProject proposal = (proposalProject) item;
             detailsPanel.add(new JLabel("Titel: " + proposal.getTitle()));
@@ -551,8 +500,10 @@ public class UserFrame implements ActionListener {
                     tagPanel.revalidate();
                     tagPanel.repaint();
                 }
+             
             }
-        });
+            }
+        );
     
         JButton submitButton = new JButton("Tilføj");
         submitButton.addActionListener(event -> {
@@ -746,23 +697,24 @@ private void showProjectProbDetails(proposalProject proposal) {
      // Add buttons to the panel
      proposalProjectFullPanel.add(approveButton);
      proposalProjectFullPanel.add(rejectButton);
-   
-    JButton archiveButton = new JButton("Arkivér");
-    Dimension buttonSize = new Dimension(150, 50); 
-    archiveButton.setPreferredSize(buttonSize);
-    
-    archiveButton.addActionListener(e -> {
-        // Archive the project
-        archive.archiveProposal(proposal);
 
-        // Call update methods after archiving
-        updateproposalProjectList();
-        proposalProjectFullPanel.removeAll(); 
-        proposalProjectFullPanel.revalidate();
-        proposalProjectFullPanel.repaint();
-    });
-    
-    proposalProjectFullPanel.add(archiveButton);
+JButton archiveButton = new JButton("Arkivér");
+Dimension buttonSize = new Dimension(150, 50); 
+archiveButton.setPreferredSize(buttonSize);
+
+archiveButton.addActionListener(e -> {
+    // Archive the project
+    archive.archiveProposal(proposal);
+
+    // Call update methods after archiving
+    updateproposalProjectList();
+    proposalProjectFullPanel.removeAll(); 
+    proposalProjectFullPanel.revalidate();
+    proposalProjectFullPanel.repaint();
+});
+
+proposalProjectFullPanel.add(archiveButton);
+
  
      // Refresh the panel to reflect the changes
      proposalProjectFullPanel.revalidate();
@@ -1360,6 +1312,11 @@ private void showFundDetails(fundClass fund) {
     
     fundFullPanel.add(archiveButton);
 
+    /*JButton archiveButton = new JButton("Arkivér");
+    Dimension buttonSize = new Dimension(150, 50); */
+
+    fundFullPanel.add(archiveButton);
+
     fundFullPanel.revalidate();
     fundFullPanel.repaint();
 
@@ -1389,6 +1346,7 @@ private void openProjectDialog() {
     JDialog dialog = new JDialog(frame, "Lav Projekt", true);
     dialog.setSize(700, 700);
 
+
     JPanel mainPanel = new JPanel();
     dialog.add(mainPanel);
 
@@ -1403,6 +1361,7 @@ private void openProjectDialog() {
 
     JLabel purposeLabel = new JLabel("Formål:");
     JTextField purposeField = new JTextField();
+    
 
     JLabel descriptionLabel = new JLabel("Beskrivelse af projektet:");
     JTextArea descriptionArea = new JTextArea(5, 20);
@@ -1414,13 +1373,9 @@ private void openProjectDialog() {
     JLabel targetLabel = new JLabel("Målgruppe (hvem gavner dette projekt):");
     JTextField targetField = new JTextField();
 
-        dialog.add(new JLabel("Vælg relevante katagorier:"));
-        JPanel tagPanel = new JPanel();
-        tagPanel.setLayout(new BoxLayout(tagPanel, BoxLayout.Y_AXIS));
-        JScrollPane tagScrollPane = new JScrollPane(tagPanel);
-        dialog.add(tagScrollPane);
-        getCurrentCheckboxes.getAllCurrentCatagories(tagPanel);
 
+    JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
+    JTextField budgetField = new JTextField();
 
     JLabel fromDateLabel = new JLabel("Fra dato:");
     SpinnerDateModel fromDateModel = new SpinnerDateModel();
@@ -1433,6 +1388,54 @@ private void openProjectDialog() {
     JSpinner toDateSpinner = new JSpinner(toDateModel);
     JSpinner.DateEditor toDateEditor = new JSpinner.DateEditor(toDateSpinner, "dd/MM/yyyy");
     toDateSpinner.setEditor(toDateEditor);
+  
+  JLabel activitiesLabel = new JLabel("Aktiviteter:");
+    JTextField activitiesField = new JTextField();
+
+    // Tag creation and selection
+    JLabel createTagLabel = new JLabel("Create Tag:");
+    JButton createTagButton = new JButton("Create Tag");
+    
+        JLabel selectTagLabel = new JLabel("Vælg relevante kategorier:");
+        JPanel tagPanel = new JPanel();
+        tagPanel.setLayout(new BoxLayout(tagPanel, BoxLayout.Y_AXIS));
+        JScrollPane tagScrollPane = new JScrollPane(tagPanel);
+
+    createTagButton.addActionListener(e -> {
+        String newTag = JOptionPane.showInputDialog(dialog, "Enter new tag:");
+        if (newTag != null && !newTag.trim().isEmpty()) {
+            JCheckBox tagCheckBox = new JCheckBox(newTag);
+            if (main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))) {
+                tagPanel.add(UserFrameErrorHandling.displayTagError());
+            } else {
+                main.addNewCatagory(newTag);
+                tagPanel.add(tagCheckBox);
+                tagPanel.revalidate();
+                tagPanel.repaint();
+            }
+        }
+    });
+
+    for (String category : main.categories) {
+        JCheckBox tagCheckBox = new JCheckBox(category);
+        tagPanel.add(tagCheckBox);
+    }
+
+    // Event for create tag button
+    createTagButton.addActionListener(e -> {
+        String newTag = JOptionPane.showInputDialog(dialog, "Enter new tag:");
+        if (newTag != null && !newTag.trim().isEmpty()) {
+            JCheckBox tagCheckBox = new JCheckBox(newTag);
+            if (main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))) {
+                tagPanel.add(UserFrameErrorHandling.displayTagError());
+            } else {
+                main.addNewCatagory(newTag);
+                tagPanel.add(tagCheckBox);
+                tagPanel.revalidate();
+                tagPanel.repaint();
+            }
+        }
+    });
 
      
         JButton submitButton = new JButton("Tilføj");
@@ -1496,22 +1499,7 @@ private void openProjectDialog() {
                 }
 
 
-    // Event for create tag button
-    createTagButton.addActionListener(e -> {
-        String newTag = JOptionPane.showInputDialog(dialog, "Enter new tag:");
-        if (newTag != null && !newTag.trim().isEmpty()) {
-            JCheckBox tagCheckBox = new JCheckBox(newTag);
-            if (main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))) {
-                tagPanel.add(UserFrameErrorHandling.displayTagError());
-            } else {
-                main.addNewCatagory(newTag);
-                tagPanel.add(tagCheckBox);
-                tagPanel.revalidate();
-                tagPanel.repaint();
-            }
-        }
-    });
-
+   
                 LocalDate fromDate = ((Date) ((fromDateSpinner.getValue()))).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 LocalDate toDate = ((Date) (toDateSpinner.getValue())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 LocalDateTime projectFromDate = fromDate.atStartOfDay();
@@ -1527,7 +1515,7 @@ private void openProjectDialog() {
                     tempActivities = activitiesField.getText();
 
                 }
-            }
+            
 
                 ArrayList<String> selectedCatagories = new ArrayList<>();
                 for(Component comp : tagPanel.getComponents()){
@@ -1545,6 +1533,7 @@ private void openProjectDialog() {
     
                 project project = new project(tempTitle, selectedCatagories, tempDescription, tempPurpose ,tempOwner, tempTargetAudience, tempBudget, projectFromDate, projectToDate, tempActivities, main.getFundList(), main.getCatagoryBoolean());
                 main.projectList.add(project);
+
                 System.out.println("------------");
                 System.out.println("adding project");
                 for(project proj : main.projectList){
@@ -1560,9 +1549,17 @@ private void openProjectDialog() {
                     System.out.println(proj.getProjectActivities());
                     System.out.println(proj.getClosestDeadlineFunds());
                     System.out.println(proj.getCategories());
+                }
+                updateProjectList();
+                dialog.dispose();
+            }catch(Exception e){
+
+            }
+        });
 
     // Layout definition
     layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+
         .addComponent(nameLabel).addComponent(nameField)
         .addComponent(purposeLabel).addComponent(purposeField)
         .addComponent(descriptionLabel).addComponent(scrollPane)
@@ -1575,7 +1572,8 @@ private void openProjectDialog() {
         .addComponent(createTagLabel).addComponent(createTagButton)
         .addComponent(selectTagLabel).addComponent(tagScrollPane)
         .addComponent(submitButton)
-    );
+
+      );
 
     layout.setVerticalGroup(layout.createSequentialGroup()
         .addComponent(nameLabel).addComponent(nameField)
@@ -1598,7 +1596,7 @@ private void openProjectDialog() {
 
 
     private JPanel createRightSidePanel() {
-        rightSidePanel = new JPanel(new CardLayout());
+        JPanel rightSidePanel = new JPanel(new CardLayout());
         rightSidePanel.setBackground(new Color(213, 213, 213, 255));
         rightSidePanel.setPreferredSize(new Dimension(900, 100));
         
@@ -1696,8 +1694,59 @@ private void openProjectDialog() {
         }else if(e.getSource() == createProjectButton){
             openProjectDialog();
             
-    }
+        }
  
-}
 
+    }
+
+ private <T> void displayArchiveList(String cardName, List<T> archiveList) {
+        JPanel targetPanel;
+    
+        // Determine which panel to update based on card name
+        switch (cardName) {
+            case "proposalProjectsDetails":
+                targetPanel = proposalProjectFullPanel;
+                break;
+            case "ProjectDetails":
+                targetPanel = projectFullPanel;
+                break;
+            case "FundDetails":
+                targetPanel = fundFullPanel;
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid card name");
+        }
+    
+        // Clear the panel and populate it with clickable items from the archive list
+        targetPanel.removeAll();
+        for (int i =0; i < archiveList.size() && archiveList.size()!=0; i++) {
+            String displayText;
+            
+            // Get the title of each item
+            if (archiveList.get(i) instanceof project) {
+                displayText = ((project) archiveList.get(i)).getTitle();
+            } else if (archiveList.get(i) instanceof proposalProject) {
+                displayText = ((proposalProject) archiveList.get(i)).getTitle();
+            } else if (archiveList.get(i) instanceof fundClass) {
+                displayText = ((fundClass) archiveList.get(i)).getTitle();
+            } else {
+                displayText = archiveList.get(i).toString();
+            }
+    
+            // Create a JButton for each item to make it clickable
+            JButton itemButton = new JButton(displayText);
+            T item = archiveList.get(i);
+            // Add an ActionListener to display item details when clicked
+            itemButton.addActionListener(e->displayItemDetails(item));
+            
+            targetPanel.add(itemButton);
+            targetPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Spacer between items
+        }
+        
+        // Refresh the panel and switch to the selected archive view
+        targetPanel.revalidate();
+        targetPanel.repaint();
+        CardLayout cardLayout = (CardLayout) rightSidePanel.getLayout();
+        cardLayout.show(rightSidePanel, cardName);
+    }
 }
