@@ -1,6 +1,7 @@
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class proposalProject extends projectAbstract {
     //Normal parameter based constructor
@@ -65,5 +66,31 @@ public class proposalProject extends projectAbstract {
         System.out.println("TimeSpan (From): " + TestProposal.getProjectTimeSpanFrom());
         System.out.println("TimeSpan (To): " + TestProposal.getProjectTimeSpanTo());
         System.out.println("Activities: " + TestProposal.getProjectActivities());
+
+        // Create a list of proposalProject instances
+        List<proposalProject> proposals = new ArrayList<>();
+        proposals.add(TestProposal);
+
+        // Write the proposal list to a CSV file
+        String filepath = "proposals.csv";
+        ProposalsCsvWriter.writeProposalCsv(filepath, proposals);
+
+        System.out.println("CSV file created at: " + filepath);
+
+        List<proposalProject> readProposalProjects = ProposalCsvReader.readPropsalCsv(filepath);
+        for (proposalProject prop : readProposalProjects) {
+            System.out.println("Title: " + prop.getTitle());
+            System.out.println("Categories: " + String.join(", ", prop.getCategories()));
+            System.out.println("Description: " + prop.getDescription());
+            System.out.println("Purpose: " + prop.getProjectPurpose());
+            System.out.println("Owner: " + prop.getProjectOwner());
+            System.out.println("Target Audience: " + prop.getProjectTargetAudience());
+            System.out.println("Budget: " + prop.getProjectBudget());
+            System.out.println("TimeSpan From: " + prop.getProjectTimeSpanFrom());
+            System.out.println("TimeSpan To: " + prop.getProjectTimeSpanTo());
+            System.out.println("Activities: " + prop.getProjectActivities());
+            System.out.println();
+
+        }
     }
 }

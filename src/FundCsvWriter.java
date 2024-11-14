@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 
-public class CsvWriter {
+public class FundCsvWriter {
 
     public static void writeCsv(String filepath, List<fundClass> fundList) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath))) {

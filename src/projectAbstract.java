@@ -49,35 +49,18 @@ public class projectAbstract extends elementFormatting {
     }
 
     public void setProjectPurpose(String newProjectPurpose){
-
-        if (newProjectPurpose.length() > 2400){
-            throw new validationUtils.WrongDataInputException("The project purpose exceeds 2400 characters");
-        }
-
-        validationUtils.validateInput(newProjectPurpose, "Purpose");
         this.projectPurpose = newProjectPurpose;
     }
 
     public void setProjectOwner(String newProjectOwner){
-        if (newProjectOwner.length() > 200){
-            throw new validationUtils.WrongDataInputException("The project owner exceeds 200 characters");
-        }
-        validationUtils.validateInput(newProjectOwner, "Purpose");
         this.projectOwner = newProjectOwner;
     }
 
     public void setProjectTargetAudience(String newProjectTargetAudience){
-        if (newProjectTargetAudience.length() > 200){
-            throw new validationUtils.WrongDataInputException("The target audience exceeds 200 characters");
-        }
-        validationUtils.validateInput(newProjectTargetAudience, "ProjectTargetAudience");
         this.projectTargetAudience = newProjectTargetAudience;
     }
 
     public void setProjectBudget(long newProjectBudget){
-        if (newProjectBudget < 0){
-            throw new validationUtils.WrongDataInputException("The project budget cannot be negative");
-        }
         this.projectBudget = newProjectBudget;
     }
 
@@ -114,10 +97,6 @@ public class projectAbstract extends elementFormatting {
     }
 
     public void setProjectActivities(String newProjectActivities){
-        if (newProjectActivities.length() > 2400){
-            throw new validationUtils.WrongDataInputException("The project activities exceeds 2400 characters");
-        }
-        validationUtils.validateInput(newProjectActivities, "Activities");
         this.projectActivities = newProjectActivities;
     }
     
