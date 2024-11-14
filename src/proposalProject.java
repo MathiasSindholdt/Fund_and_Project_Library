@@ -76,5 +76,21 @@ public class proposalProject extends projectAbstract {
         ProposalsCsvWriter.writeProposalCsv(filepath, proposals);
 
         System.out.println("CSV file created at: " + filepath);
+
+        List<proposalProject> readProposalProjects = ProposalCsvReader.readPropsalCsv(filepath);
+        for (proposalProject prop : readProposalProjects) {
+            System.out.println("Title: " + prop.getTitle());
+            System.out.println("Categories: " + String.join(", ", prop.getCategories()));
+            System.out.println("Description: " + prop.getDescription());
+            System.out.println("Purpose: " + prop.getProjectPurpose());
+            System.out.println("Owner: " + prop.getProjectOwner());
+            System.out.println("Target Audience: " + prop.getProjectTargetAudience());
+            System.out.println("Budget: " + prop.getProjectBudget());
+            System.out.println("TimeSpan From: " + prop.getProjectTimeSpanFrom());
+            System.out.println("TimeSpan To: " + prop.getProjectTimeSpanTo());
+            System.out.println("Activities: " + prop.getProjectActivities());
+            System.out.println();
+
+        }
     }
 }

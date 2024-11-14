@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -141,44 +144,59 @@ public class project extends projectAbstract {
 
 
         // Add funds to list
-    ArrayList<fundClass> listOfFunds = new ArrayList<>();
-    listOfFunds.add(fund1);
-    listOfFunds.add(fund2);
-    listOfFunds.add(fund3);
+        ArrayList<fundClass> listOfFunds = new ArrayList<>();
+        listOfFunds.add(fund1);
+        listOfFunds.add(fund2);
+        listOfFunds.add(fund3);
 
-    project myProject = new project(
-            "Community Project",
-            testCategories,
-            "Project to enhance community resources",
-            "To improve quality of life",
-            "Jane Doe",
-            "Local Residents",
-            50000L,
-            LocalDateTime.parse("2024-01-01T09:00:00"),
-            LocalDateTime.parse("2024-12-31T17:00:00"),
-            "Various activities",
-            fundList,
-            false
-        );
+        project myProject = new project(
+                "Community Project",
+                testCategories,
+                "Project to enhance community resources",
+                "To improve quality of life",
+                "Jane Doe",
+                "Local Residents",
+                50000L,
+                LocalDateTime.parse("2024-01-01T09:00:00"),
+                LocalDateTime.parse("2024-12-31T17:00:00"),
+                "Various activities",
+                fundList,
+                false
+            );
 
-    // Print initial list of funds
-    System.out.println("Initial list of funds:");
-    for (fundClass funde : fundList) {
-        System.out.println(funde.getTitle());
+        // Print initial list of funds
+        System.out.println("Initial list of funds:");
+        for (fundClass funde : fundList) {
+            System.out.println(funde.getTitle());
+        }
+
+
+
+        sortingFundLists sorter = new sortingFundLists();
+        sorter.sortFunds(listOfFunds, myProject, false);
+
+        List<project> projects = new ArrayList<>();
+        projects.add(myProject); // Add your project(s) here
+
+        
+        String filepath = "projects.csv";
+        ProjectCsvWriter.writeProjectCsv(filepath, projects);
+        
+        List<project> readProjects = ProjectCsvReader.readProjectCsv(filepath);
+        System.out.println("Projects read from projects.csv");
+        for (project proj : readProjects) {
+                System.out.println("Title: " + proj.getTitle());
+                System.out.println("Categories: " + String.join(", ", proj.getCategories()));
+                System.out.println("Description: " + proj.getDescription());
+                System.out.println("Purpose: " + proj.getProjectPurpose());
+                System.out.println("Owner: " + proj.getProjectOwner());
+                System.out.println("Target Audience: " + proj.getProjectTargetAudience());
+                System.out.println("Budget: " + proj.getProjectBudget());
+                System.out.println("TimeSpan From: " + proj.getProjectTimeSpanFrom());
+                System.out.println("TimeSpan To: " + proj.getProjectTimeSpanTo());
+                System.out.println("Activities: " + proj.getProjectActivities());
+                System.out.println();
+        }
+
     }
-
-
-
-    sortingFundLists sorter = new sortingFundLists();
-    sorter.sortFunds(listOfFunds, myProject, false);
-
-    List<project> projects = new ArrayList<>();
-    projects.add(myProject); // Add your project(s) here
-
-    // Write all projects to the CSV file
-    String filepath = "projects.csv";
-    ProjectCsvWriter.writeProjectCsv(filepath, projects);
-
-
-}
 }

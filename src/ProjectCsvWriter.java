@@ -24,7 +24,7 @@ public class ProjectCsvWriter {
                 // Specific project
                 rowData[0] = myProject.getTitle();
                 List<String> categories = myProject.getCategories();
-                rowData[1] = categories != null ? String.join(", ", categories) : "N/A";
+                rowData[1] = categories != null ? "\"" + String.join(", ", categories) + "\"" : "N/A";
                 rowData[2] = myProject.getDescription();
                 rowData[3] = myProject.getProjectPurpose();
                 rowData[4] = myProject.getProjectOwner();
