@@ -264,32 +264,6 @@ public class UserFrame implements ActionListener {
         panel.add(Box.createRigidArea(new Dimension(0, 10)));  // Spacer
         panel.add(fundsButton);
     
-    
-        // Buttons for "Proposals," "Projects," and "Funds"
-        JButton proposalsButton = new JButton("Arkiveret projektforslag");
-        JButton projectsButton = new JButton("Arkiveret projekter");
-        JButton fundsButton = new JButton("Arkiveret fonde");
-    
-        // Set button sizes (optional, adjust as needed)
-        Dimension buttonSize = new Dimension(150, 50);
-        proposalsButton.setPreferredSize(buttonSize);
-        projectsButton.setPreferredSize(buttonSize);
-        fundsButton.setPreferredSize(buttonSize);
-    
-        // Add action listeners to each button to display respective archives
-        proposalsButton.addActionListener(e -> displayArchiveList("proposalProjectsDetails", main.archiveProposalList));
-        projectsButton.addActionListener(e -> displayArchiveList("ProjectDetails", main.archiveProjectList));
-        fundsButton.addActionListener(e -> displayArchiveList("FundDetails", main.archiveFundList));
-    
-        // Layout buttons in a single row
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));  // Spacer
-        panel.add(proposalsButton);
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));  // Spacer
-        panel.add(projectsButton);
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));  // Spacer
-        panel.add(fundsButton);
-    
         return panel;
     }
 
@@ -451,14 +425,6 @@ public class UserFrame implements ActionListener {
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
     
-        JPanel mainPanel = new JPanel();
-        dialog.add(mainPanel);
-    
-        GroupLayout layout = new GroupLayout(mainPanel);
-        mainPanel.setLayout(layout);
-        layout.setAutoCreateGaps(true);
-        layout.setAutoCreateContainerGaps(true);
-    
         JLabel nameLabel = new JLabel("Titel:");
         JTextField nameField = new JTextField();
     
@@ -495,12 +461,9 @@ public class UserFrame implements ActionListener {
     
         // "Create Tag" label and button
         JLabel createTagLabel = new JLabel("Opret Kategori:");
-        // "Create Tag" label and button
-        JLabel createTagLabel = new JLabel("Opret Kategori:");
         JButton createTagButton = new JButton("Opret Kategori");
     
         // Tag selection panel (scrollable)
-        JLabel selectTagLabel = new JLabel("Vælg relevante kategorier:");
         JLabel selectTagLabel = new JLabel("Vælg relevante kategorier:");
         JPanel tagPanel = new JPanel();
         tagPanel.setLayout(new BoxLayout(tagPanel, BoxLayout.Y_AXIS));
@@ -636,41 +599,6 @@ public class UserFrame implements ActionListener {
         dialog.setVisible(true);
     }
     
-        // Define layout structure
-        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(nameLabel).addComponent(nameField)
-            .addComponent(ideaLabel).addComponent(ideaField)
-            .addComponent(descriptionLabel).addComponent(scrollPane)
-            .addComponent(ownerLabel).addComponent(ownerField)
-            .addComponent(targetLabel).addComponent(targetField)
-            .addComponent(budgetLabel).addComponent(budgetField)
-            .addComponent(fromDateLabel).addComponent(fromDateSpinner)
-            .addComponent(toDateLabel).addComponent(toDateSpinner)
-            .addComponent(activitiesLabel).addComponent(activitiesField)
-            .addComponent(createTagLabel).addComponent(createTagButton)
-            .addComponent(selectTagLabel).addComponent(tagScrollPane)
-            .addComponent(submitButton)
-        );
-    
-        layout.setVerticalGroup(layout.createSequentialGroup()
-            .addComponent(nameLabel).addComponent(nameField)
-            .addComponent(ideaLabel).addComponent(ideaField)
-            .addComponent(descriptionLabel).addComponent(scrollPane)
-            .addComponent(ownerLabel).addComponent(ownerField)
-            .addComponent(targetLabel).addComponent(targetField)
-            .addComponent(budgetLabel).addComponent(budgetField)
-            .addComponent(fromDateLabel).addComponent(fromDateSpinner)
-            .addComponent(toDateLabel).addComponent(toDateSpinner)
-            .addComponent(activitiesLabel).addComponent(activitiesField)
-            .addComponent(createTagLabel).addComponent(createTagButton)
-            .addComponent(selectTagLabel).addComponent(tagScrollPane)
-            .addComponent(submitButton)
-        );
-    
-        dialog.setLocationRelativeTo(frame);
-        dialog.setVisible(true);
-    }
-    
 
 private void updateproposalProjectList() {
     proposalProjectListPanel.removeAll();
@@ -760,39 +688,22 @@ private void showProjectProbDetails(proposalProject proposal) {
      proposalProjectFullPanel.add(approveButton);
      proposalProjectFullPanel.add(rejectButton);
    
-    JButton archiveButton = new JButton("Arkivér");
-    Dimension buttonSize = new Dimension(150, 50); 
-    archiveButton.setPreferredSize(buttonSize);
-    
-    archiveButton.addActionListener(e -> {
-        // Archive the project
-        archive.archiveProposal(proposal);
+JButton archiveButton = new JButton("Arkivér");
+Dimension buttonSize = new Dimension(150, 50); 
+archiveButton.setPreferredSize(buttonSize);
 
-        // Call update methods after archiving
-        updateproposalProjectList();
-        proposalProjectFullPanel.removeAll(); 
-        proposalProjectFullPanel.revalidate();
-        proposalProjectFullPanel.repaint();
-    });
-    
-    proposalProjectFullPanel.add(archiveButton);
-   
-    JButton archiveButton = new JButton("Arkivér");
-    Dimension buttonSize = new Dimension(150, 50); 
-    archiveButton.setPreferredSize(buttonSize);
-    
-    archiveButton.addActionListener(e -> {
-        // Archive the project
-        archive.archiveProposal(proposal);
+archiveButton.addActionListener(e -> {
+    // Archive the project
+    archive.archiveProposal(proposal);
 
-        // Call update methods after archiving
-        updateproposalProjectList();
-        proposalProjectFullPanel.removeAll(); 
-        proposalProjectFullPanel.revalidate();
-        proposalProjectFullPanel.repaint();
-    });
-    
-    proposalProjectFullPanel.add(archiveButton);
+    // Call update methods after archiving
+    updateproposalProjectList();
+    proposalProjectFullPanel.removeAll(); 
+    proposalProjectFullPanel.revalidate();
+    proposalProjectFullPanel.repaint();
+});
+
+proposalProjectFullPanel.add(archiveButton);
  
      // Refresh the panel to reflect the changes
      proposalProjectFullPanel.revalidate();
@@ -867,24 +778,6 @@ private void showProjectDetails(project project) {
     projectFullPanel.add(new JLabel("Fra Dato: " + project.getProjectTimeSpanFrom().toString()));
     projectFullPanel.add(new JLabel("Til Dato: " + project.getProjectTimeSpanTo().toString()));
     projectFullPanel.add(new JLabel("Aktiviteter: " + project.getProjectActivities()));
-
-    JButton archiveButton = new JButton("Arkivér");
-    Dimension buttonSize = new Dimension(150, 50); 
-    archiveButton.setPreferredSize(buttonSize);
-    
-    archiveButton.addActionListener(e -> {
-        // Archive the project
-        archive.archiveProject(project);
-
-        // Call update methods after archiving
-        updateProjectList();
-        projectFullPanel.removeAll(); 
-        projectFullPanel.revalidate();
-        projectFullPanel.repaint();
-    });
-    
-    projectFullPanel.add(archiveButton);
-    
 
     JButton archiveButton = new JButton("Arkivér");
     Dimension buttonSize = new Dimension(150, 50); 
