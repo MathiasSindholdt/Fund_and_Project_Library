@@ -3,6 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
+
 public class Frontpage extends JFrame {
 
     public Frontpage() {
@@ -42,16 +43,30 @@ public class Frontpage extends JFrame {
         JButton submitButton = new JButton("Log ind");
         buttonPanel.add(submitButton);
 
-        submitButton.addActionListener(new ActionListener() {
+        // Guest login action
+        guestButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-                char[] password = passwordField.getPassword();
-                JOptionPane.showMessageDialog(null, "Logger ind: " + new String(password));
+                // Open GuestFrame when button is clicked
+                GuestFrame guestFrame = new GuestFrame();
+                guestFrame.show();
             }
         });
 
-        guestButton.addActionListener(new ActionListener() {
+        // User login action with password verification
+        submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Fortsætter som gæst...");
+                char[] password = passwordField.getPassword();
+                String enteredPassword = new String(password);
+
+                if (enteredPassword.equals("Bruger")) {
+                    // Password is correct, open UserFrame
+                    UserFrame userFrame = new UserFrame();
+                    userFrame.setVisible(true);
+                } else {
+                    // Show an error message if the password is incorrect
+                    JOptionPane.showMessageDialog(null, "Forkert kode, prøv igen", "Login Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
