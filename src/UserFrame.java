@@ -95,10 +95,13 @@ public class UserFrame extends JFrame implements ActionListener {
         fundList = new ArrayList<>();
         //UserFrameErrorHandling ErrorHandling = new UserFrameErrorHandling();
 
-        JPanel panel1 = createTopPanel();  // Top panel
-        JPanel panel2 = createSidePanel();  // Left-side panel
+      
+1 conflicting file
+UserFrame.java
+src/UserFrame.java
+
         rightSidePanel = createRightSidePanel();  // Right-side panel
-        JPanel panel3 = rightSidePanel;
+
 
         // Card layout for switching between views
         cardLayout = new CardLayout();
