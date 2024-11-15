@@ -1,6 +1,8 @@
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import javax.swing.SwingUtilities;
+
 public class main {
     static ArrayList<project> projectList = new ArrayList<>();
     static ArrayList<String> userProjectList = new ArrayList<>();
@@ -146,9 +148,10 @@ public class main {
         // }
         
         // ----------------------------------------------------START OF MAIN FILE----------------------------------------------------------------------------
-                UserFrame UI = new UserFrame();
-                UI.show();
-                
-            
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+            new Frontpage();
+            }
+        });
     }
 }
