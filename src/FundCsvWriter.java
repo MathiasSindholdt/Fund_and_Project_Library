@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-
 public class FundCsvWriter {
 
     public static void writeCsv(String filepath, List<fundClass> fundList) {
@@ -24,18 +23,20 @@ public class FundCsvWriter {
             for (fundClass fund : fundList) {
                 // Extract data from the fundClass object
                 String[] fundData = new String[8];
-                fundData[0] = fund.getTitle();  
-                fundData[1] = fund.getFundWebsite();  
-                fundData[2] = fund.getDescription();  
+                fundData[0] = escapeCsvField(fund.getTitle());  
+                fundData[1] = escapeCsvField(fund.getFundWebsite());  
+                fundData[2] = escapeCsvField(fund.getDescription());  
                 fundData[3] = formatApplicationDeadline(fund.getDeadlines());  
                 fundData[4] = String.valueOf(fund.getBudgetMin()); 
                 fundData[5] = String.valueOf(fund.getBudgetMax());  
+                
+                // Handle collaboration history and categories
                 List<String> collaborationHistory = fund.getCollaborationHistory();
-                fundData[6] = collaborationHistory != null ? String.join(", ", collaborationHistory) : "N/A";
+                fundData[6] = collaborationHistory != null ? escapeCsvField(String.join(", ", collaborationHistory)) : "N/A";
                 
                 // Handle categories as a comma-separated string
-                String categories = String.join(", ", fund.getCategories());
-                fundData[7] = categories;  // Categories
+                List<String> categories = fund.getCategories();
+                fundData[7] = categories != null ? "\"" + String.join(", ", categories) + "\"" : "N/A";
                 
                 // Join fund data and write to file
                 String line = String.join(",", fundData);
@@ -49,8 +50,8 @@ public class FundCsvWriter {
         } 
     }
 
+    // Method to format the application deadline
     public static String formatApplicationDeadline(Object deadline) {
-        // Format the application deadline
         if (deadline == null) {
             return "N/A";
         }
@@ -63,7 +64,6 @@ public class FundCsvWriter {
         } else if (deadline instanceof LocalDateTime) {
             return ((LocalDateTime) deadline).format(dateTimeFormatter);
         } else if (deadline instanceof List<?>) {
-            // If the deadline is a list of LocalDate or LocalDateTime
             List<?> dateList = (List<?>) deadline;
             if (!dateList.isEmpty()) {
                 Object firstDate = dateList.get(0);
@@ -75,5 +75,18 @@ public class FundCsvWriter {
             }
         }
         return "N/A";
+    }
+
+    // Method to escape fields that might contain commas or quotes
+    private static String escapeCsvField(String field) {
+        if (field == null) return "N/A";
+        
+        // Check if the field contains commas or quotes
+        if (field.contains(",") || field.contains("\"")) {
+            // Enclose the field in double quotes and escape internal quotes
+            field = "\"" + field.replace("\"", "\"\"") + "\"";
+        }
+        
+        return field;
     }
 }

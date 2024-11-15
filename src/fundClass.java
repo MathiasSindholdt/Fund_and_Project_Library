@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 import java.time.LocalDateTime;
 
 public class fundClass extends elementFormatting{
@@ -121,31 +122,22 @@ public class fundClass extends elementFormatting{
         String[] testContacts = {"lucas","lundse"};
         String[] testCollaborationHistory = {"P1","P2"};
 
-        fundClass fund = new fundClass();
-        fund.setTitle("testTitle2");
-        fund.setDescription("Lorem Ipsum");
-        fund.setfundWebsite("ManyMoney.com");
-        fund.setBudget(100000,80000000);
-        for (int i = 0; i < testCatories.length ; i++){
-            fund.setCategories(testCatories[i]);
+        String filepath = "output.csv";
+
+        // Read funds from the CSV
+        List<fundClass> funds = FundCsvReader.readFundCsv(filepath);
+
+        // Print all funds
+        System.out.println("Funds loaded from CSV:");
+        for (fundClass fund : funds) {
+            System.out.println("Title: " + fund.getTitle());
+            System.out.println("Website: " + fund.getFundWebsite());
+            System.out.println("Description: " + fund.getDescription());
+            System.out.println("Budget: " + fund.getBudgetSpan());
+            System.out.println("Categories: " + fund.getCategories());
+            System.out.println("Deadlines: " + fund.getDeadlines());
+            System.out.println("Collaboration History: " + fund.getCollaborationHistory());
+            System.out.println("----------------------------------------");
         }
-        for (int i = 0; i < testDeadlines.length ; i++){
-            fund.setDeadlines(testDeadlines[i]);
-        }
-        for (int i = 0; i < testContacts.length ; i++){
-            fund.setContacts(testContacts[i]);
-        }
-        for (int i = 0; i < testCollaborationHistory.length ; i++){
-            fund.setCollaborationHistory(testCollaborationHistory[i]);
-        }
-        System.out.println("Here is the fund: " + fund.getTitle());
-        System.out.println("It has the following description: " + fund.getDescription());
-        System.out.println("It was created at: " + fund.getDateCreated());
-        System.out.println("It has the following categoreis: " + fund.getCategories());
-        System.out.println("The deadlines for the fund is: " + fund.getDeadlines());
-        System.out.println("Contact persons at the fund are: " + fund.getContacts());
-        System.out.println("The fund has a budget of: " + fund.getBudgetSpan());
-        System.out.println("We have previously collaborated on: " + fund.getCollaborationHistory());
-        System.out.println("The fund website can be found at: " + fund.getFundWebsite());
     }
 }

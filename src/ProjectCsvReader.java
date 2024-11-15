@@ -1,6 +1,9 @@
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -14,12 +17,12 @@ public class ProjectCsvReader {
         List<project> projects = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(filepath))) {
-            String headerLine = reader.readLine();  // Skip header line
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filepath), StandardCharsets.UTF_8))) {
+            String headerLine = br.readLine();  // Skip header line
             String line;
 
-            while ((line = reader.readLine()) != null) {
-                // Use regex to split CSV, handling quoted fields
+            while ((line = br.readLine()) != null) {
+                // Split CSV, handling quoted fields
                 String[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
                 String title = values[0].replace("\"", "");
