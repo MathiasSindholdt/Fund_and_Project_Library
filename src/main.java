@@ -1,14 +1,19 @@
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
 
 public class main {
     static ArrayList<project> projectList = new ArrayList<>();
+    static ArrayList<String> userProjectList = new ArrayList<>();
     static ArrayList<fundClass> fundList = new ArrayList<>();
     static ArrayList<fundClass> runningFundList = new ArrayList<>();
     static ArrayList<String> categories = new ArrayList<>();
-    static boolean onlyOneIsNeeded;
+    static ArrayList<proposalProject> proposalList = new ArrayList<>();
+
+    static ArrayList<proposalProject> archiveProposalList = new ArrayList<>();
+    static ArrayList<project> archiveProjectList = new ArrayList<>();
+    static ArrayList<fundClass> archiveFundList = new ArrayList<>();
+
+    static boolean onlyOneIsNeeded = true;
     //Test of Fund constructor vvvv Remove Later
     private static String FundTitle;
     private static String FundDescription;
@@ -43,9 +48,24 @@ public class main {
     public static ArrayList<fundClass> getFundList(){
         return fundList;
     }
+    
+    public ArrayList<proposalProject> getArchiveProposalList(){
+        return archiveProposalList;
+    }
+
+    public ArrayList<project> getArchiveProjectList(){
+        return archiveProjectList;
+    }
+
+    public ArrayList<fundClass> getArchiveFundList(){
+        return archiveFundList;
+    }
+
+
     public ArrayList<fundClass> getRunningFundList(){
         return runningFundList;
     }
+
 
     public void setProjectList(ArrayList<project> projectList){
         main.projectList = projectList;

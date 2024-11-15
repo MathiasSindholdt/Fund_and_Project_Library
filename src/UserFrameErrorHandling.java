@@ -58,4 +58,39 @@ public class UserFrameErrorHandling{
         JOptionPane.showMessageDialog(null, "Katagorien eksisterer allerede");
         return new JPanel();
     }
+
+    public static JPanel displayAmountFromError(){
+        JOptionPane.showMessageDialog(null, "Fra beløbet skal være et tal");
+        return new JPanel();
+    }
+
+    public static JPanel displayAmountToError(){
+        JOptionPane.showMessageDialog(null, "Til beløbet skal være et tal");
+        return new JPanel();
+    }
+
+    public static JPanel displayWebsiteError(){
+        JOptionPane.showMessageDialog(null, "Websitet skal være i formatet www.example.com");
+        return new JPanel();
+    }
+
+    public static JPanel displayAllTextFieldError(){
+        JOptionPane.showMessageDialog(null, "Alle felter skal være udfyldt");
+        return new JPanel();
+    }
+
+    public static JPanel displayPhoneError(){
+        JOptionPane.showMessageDialog(null, "Ugyldigt telefonnummer");
+        return new JPanel();
+    }
+
+    public static JPanel displayEmailError(){
+        JOptionPane.showMessageDialog(null, "Ugyldig email, email skal være i formatet example@example.com");
+        return new JPanel();
+    }
+
+    public static JPanel displayTimeError(){
+        JOptionPane.showMessageDialog(null, "Ugyldig tid, tid skal være i formatet hh:mm, og tiden skal være mellem 00:00 og 23:59");
+        return new JPanel();
+    }
 }
