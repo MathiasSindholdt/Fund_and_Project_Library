@@ -95,13 +95,7 @@ public class UserFrame extends JFrame implements ActionListener {
         fundList = new ArrayList<>();
         //UserFrameErrorHandling ErrorHandling = new UserFrameErrorHandling();
 
-      
-1 conflicting file
-UserFrame.java
-src/UserFrame.java
-
         rightSidePanel = createRightSidePanel();  // Right-side panel
-
 
         // Card layout for switching between views
         cardLayout = new CardLayout();
@@ -454,207 +448,194 @@ public void actionPerformed(ActionEvent e) {
     }else if (e.getSource() == createFundButton) {
         openFundDialog();
     }
+}   
+
+private void openproposalProjectDialog() {
+    JDialog dialog = new JDialog(frame, "Lav Projekt Forslag", true);
+    dialog.setSize(700, 700);
+
+    JPanel mainPanel = new JPanel();
+    dialog.add(mainPanel);
+
+    GroupLayout layout = new GroupLayout(mainPanel);
+    mainPanel.setLayout(layout);
+    layout.setAutoCreateGaps(true);
+    layout.setAutoCreateContainerGaps(true);
+
+    JLabel nameLabel = new JLabel("Titel:");
+    JTextField nameField = new JTextField();
+
+    JLabel ideaLabel = new JLabel("Idé/Formål:");
+    JTextField ideaField = new JTextField();
+
+    JLabel descriptionLabel = new JLabel("Kort beskrivelse af projektet:");
+    JTextArea descriptionArea = new JTextArea(5, 20);
+    JScrollPane scrollPane = new JScrollPane(descriptionArea);
+
+    JLabel ownerLabel = new JLabel("Ejer af idé/forslaget:");
+    JTextField ownerField = new JTextField();
+
+    JLabel targetLabel = new JLabel("Målgruppe (hvem gavner dette forslag):");
+    JTextField targetField = new JTextField();
+
+    JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
+    JTextField budgetField = new JTextField();
+
+    JLabel fromDateLabel = new JLabel("Fra dato:");
+    SpinnerDateModel fromDateModel = new SpinnerDateModel();
+    JSpinner fromDateSpinner = new JSpinner(fromDateModel);
+    JSpinner.DateEditor fromDateEditor = new JSpinner.DateEditor(fromDateSpinner, "dd/MM/yyyy");
+    fromDateSpinner.setEditor(fromDateEditor);
+
+    JLabel toDateLabel = new JLabel("Til dato:");
+    SpinnerDateModel toDateModel = new SpinnerDateModel();
+    JSpinner toDateSpinner = new JSpinner(toDateModel);
+    JSpinner.DateEditor toDateEditor = new JSpinner.DateEditor(toDateSpinner, "dd/MM/yyyy");
+    toDateSpinner.setEditor(toDateEditor);
+
+    JLabel activitiesLabel = new JLabel("Aktiviteter:");
+    JTextField activitiesField = new JTextField();
+
+    // "Create Tag" label and button
+    JLabel createTagLabel = new JLabel("Opret Kategori:");
+    JButton createTagButton = new JButton("Opret Kategori");
+
+    // Tag selection panel (scrollable)
+    JLabel selectTagLabel = new JLabel("Vælg relevante kategorier:");
+    JPanel tagPanel = new JPanel();
+    tagPanel.setLayout(new BoxLayout(tagPanel, BoxLayout.Y_AXIS));
+    JScrollPane tagScrollPane = new JScrollPane(tagPanel);
+
+    // Populate tagPanel with existing categories as checkboxes
+    for (String category : main.categories) {
+        JCheckBox tagCheckBox = new JCheckBox(category);
+        tagPanel.add(tagCheckBox);
+    }
+
+    // Action Listener for Create Tag button
+    createTagButton.addActionListener(e -> {
+        String newTag = JOptionPane.showInputDialog(dialog, "Indtast ny kategori:");
+        if (newTag != null && !newTag.trim().isEmpty()) {
+            JCheckBox tagCheckBox = new JCheckBox(newTag);
+
+            // Check for duplicate category
+            if (main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))) {
+                tagPanel.add(UserFrameErrorHandling.displayTagError());
+            } else {
+                main.addNewCatagory(newTag); // Add to main category list
+                tagPanel.add(tagCheckBox); // Add checkbox for new tag
+                tagPanel.revalidate();
+                tagPanel.repaint();
+            }
+         
+        }
+        }
+    );
+
+    JButton submitButton = new JButton("Tilføj");
+    submitButton.addActionListener(event -> {
+        String name = nameField.getText();
+        String idea = ideaField.getText();
+        String description = descriptionArea.getText();
+        String owner = ownerField.getText();
+        String target = targetField.getText();
+        long budget;
+        LocalDateTime fromDate;
+        LocalDateTime toDate;
+        String activities = activitiesField.getText();
+
+        try {
+            // Parse the budget
+            budget = Long.parseLong(budgetField.getText());
+
+            // Get Date from JSpinner
+            Date fromDateValue = (Date) fromDateSpinner.getValue();
+            Date toDateValue = (Date) toDateSpinner.getValue();
+
+            // Convert Dates to LocalDateTime
+            fromDate = fromDateValue.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            toDate = toDateValue.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+            // Validate date range
+            if (fromDate.isAfter(toDate)) {
+                JOptionPane.showMessageDialog(dialog, "Fra dato skal være før Til dato.", "Ugyldig datointerval", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(dialog, "Budget skal være et gyldigt nummer.", "Ugyldig indtastning", JOptionPane.ERROR_MESSAGE);
+            return;
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(dialog, "Fejl ved parsing af datoer. Kontroller venligst dine indtastninger.", "Ugyldig dato", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+            return;
+        }
+
+        // Collect selected categories
+        ArrayList<String> selectedCategories = new ArrayList<>();
+        for (Component component : tagPanel.getComponents()) {
+            if (component instanceof JCheckBox checkbox && checkbox.isSelected()) {
+                selectedCategories.add(checkbox.getText());
+            }
+        }
+
+        // Create the proposal project instance with categories
+        proposalProject proposal = new proposalProject(
+            name,
+            selectedCategories,  // Add selected categories to proposal
+            description,
+            idea,
+            owner,
+            target,
+            budget,
+            fromDate,
+            toDate,
+            activities
+        );
+
+        // Add the proposal to the list and update UI
+        main.proposalList.add(proposal);
+        updateproposalProjectList();
+
+        // Close the dialog
+        dialog.dispose();
+    });
+
+    // Define layout structure
+    layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+        .addComponent(nameLabel).addComponent(nameField)
+        .addComponent(ideaLabel).addComponent(ideaField)
+        .addComponent(descriptionLabel).addComponent(scrollPane)
+        .addComponent(ownerLabel).addComponent(ownerField)
+        .addComponent(targetLabel).addComponent(targetField)
+        .addComponent(budgetLabel).addComponent(budgetField)
+        .addComponent(fromDateLabel).addComponent(fromDateSpinner)
+        .addComponent(toDateLabel).addComponent(toDateSpinner)
+        .addComponent(activitiesLabel).addComponent(activitiesField)
+        .addComponent(createTagLabel).addComponent(createTagButton)
+        .addComponent(selectTagLabel).addComponent(tagScrollPane)
+        .addComponent(submitButton)
+    );
+
+    layout.setVerticalGroup(layout.createSequentialGroup()
+        .addComponent(nameLabel).addComponent(nameField)
+        .addComponent(ideaLabel).addComponent(ideaField)
+        .addComponent(descriptionLabel).addComponent(scrollPane)
+        .addComponent(ownerLabel).addComponent(ownerField)
+        .addComponent(targetLabel).addComponent(targetField)
+        .addComponent(budgetLabel).addComponent(budgetField)
+        .addComponent(fromDateLabel).addComponent(fromDateSpinner)
+        .addComponent(toDateLabel).addComponent(toDateSpinner)
+        .addComponent(activitiesLabel).addComponent(activitiesField)
+        .addComponent(createTagLabel).addComponent(createTagButton)
+        .addComponent(selectTagLabel).addComponent(tagScrollPane)
+        .addComponent(submitButton)
+    );
+
+    dialog.setLocationRelativeTo(frame);
+    dialog.setVisible(true);
 }
 
-
-
-    
-
-    
-    private void openproposalProjectDialog() {
-        JDialog dialog = new JDialog(frame, "Lav Projekt Forslag", true);
-        dialog.setSize(700, 700);
-    
-        JPanel mainPanel = new JPanel();
-        dialog.add(mainPanel);
-    
-        GroupLayout layout = new GroupLayout(mainPanel);
-        mainPanel.setLayout(layout);
-        layout.setAutoCreateGaps(true);
-        layout.setAutoCreateContainerGaps(true);
-    
-        JLabel nameLabel = new JLabel("Titel:");
-        JTextField nameField = new JTextField();
-    
-        JLabel ideaLabel = new JLabel("Idé/Formål:");
-        JTextField ideaField = new JTextField();
-    
-        JLabel descriptionLabel = new JLabel("Kort beskrivelse af projektet:");
-        JTextArea descriptionArea = new JTextArea(5, 20);
-        JScrollPane scrollPane = new JScrollPane(descriptionArea);
-
-    
-        JLabel ownerLabel = new JLabel("Ejer af idé/forslaget:");
-        JTextField ownerField = new JTextField();
-    
-        JLabel targetLabel = new JLabel("Målgruppe (hvem gavner dette forslag):");
-        JTextField targetField = new JTextField();
-    
-        JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
-        JTextField budgetField = new JTextField();
-
-    
-        JLabel fromDateLabel = new JLabel("Fra dato:");
-        SpinnerDateModel fromDateModel = new SpinnerDateModel();
-        JSpinner fromDateSpinner = new JSpinner(fromDateModel);
-        JSpinner.DateEditor fromDateEditor = new JSpinner.DateEditor(fromDateSpinner, "dd/MM/yyyy");
-        fromDateSpinner.setEditor(fromDateEditor);
-
-    
-        JLabel toDateLabel = new JLabel("Til dato:");
-        SpinnerDateModel toDateModel = new SpinnerDateModel();
-        JSpinner toDateSpinner = new JSpinner(toDateModel);
-        JSpinner.DateEditor toDateEditor = new JSpinner.DateEditor(toDateSpinner, "dd/MM/yyyy");
-        toDateSpinner.setEditor(toDateEditor);
-
-    
-        JLabel activitiesLabel = new JLabel("Aktiviteter:");
-        JTextField activitiesField = new JTextField();
-    
-        // "Create Tag" label and button
-        JLabel createTagLabel = new JLabel("Opret Kategori:");
-        JButton createTagButton = new JButton("Opret Kategori");
-    
-        // Tag selection panel (scrollable)
-        JLabel selectTagLabel = new JLabel("Vælg relevante kategorier:");
-        JPanel tagPanel = new JPanel();
-        tagPanel.setLayout(new BoxLayout(tagPanel, BoxLayout.Y_AXIS));
-        JScrollPane tagScrollPane = new JScrollPane(tagPanel);
-
-    
-        // Populate tagPanel with existing categories as checkboxes
-        for (String category : main.categories) {
-            JCheckBox tagCheckBox = new JCheckBox(category);
-            tagPanel.add(tagCheckBox);
-        }
-    
-        // Action Listener for Create Tag button
-        createTagButton.addActionListener(e -> {
-            String newTag = JOptionPane.showInputDialog(dialog, "Indtast ny kategori:");
-            if (newTag != null && !newTag.trim().isEmpty()) {
-                JCheckBox tagCheckBox = new JCheckBox(newTag);
-    
-                // Check for duplicate category
-                if (main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))) {
-                    tagPanel.add(UserFrameErrorHandling.displayTagError());
-                } else {
-                    main.addNewCatagory(newTag); // Add to main category list
-                    tagPanel.add(tagCheckBox); // Add checkbox for new tag
-                    tagPanel.revalidate();
-                    tagPanel.repaint();
-                }
-
-             
-            }
-            }
-        );
-
-    
-        JButton submitButton = new JButton("Tilføj");
-        submitButton.addActionListener(event -> {
-            String name = nameField.getText();
-            String idea = ideaField.getText();
-            String description = descriptionArea.getText();
-            String owner = ownerField.getText();
-            String target = targetField.getText();
-            long budget;
-            LocalDateTime fromDate;
-            LocalDateTime toDate;
-            String activities = activitiesField.getText();
-    
-            try {
-                // Parse the budget
-                budget = Long.parseLong(budgetField.getText());
-    
-                // Get Date from JSpinner
-                Date fromDateValue = (Date) fromDateSpinner.getValue();
-                Date toDateValue = (Date) toDateSpinner.getValue();
-    
-                // Convert Dates to LocalDateTime
-                fromDate = fromDateValue.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-                toDate = toDateValue.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-    
-                // Validate date range
-                if (fromDate.isAfter(toDate)) {
-                    JOptionPane.showMessageDialog(dialog, "Fra dato skal være før Til dato.", "Ugyldig datointerval", JOptionPane.ERROR_MESSAGE);
-                    return;
-
-                }
-    
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(dialog, "Budget skal være et gyldigt nummer.", "Ugyldig indtastning", JOptionPane.ERROR_MESSAGE);
-                return;
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(dialog, "Fejl ved parsing af datoer. Kontroller venligst dine indtastninger.", "Ugyldig dato", JOptionPane.ERROR_MESSAGE);
-                ex.printStackTrace();
-                return;
-            }
-    
-            // Collect selected categories
-            ArrayList<String> selectedCategories = new ArrayList<>();
-            for (Component component : tagPanel.getComponents()) {
-                if (component instanceof JCheckBox checkbox && checkbox.isSelected()) {
-                    selectedCategories.add(checkbox.getText());
-                }
-            }
-    
-            // Create the proposal project instance with categories
-            proposalProject proposal = new proposalProject(
-                name,
-                selectedCategories,  // Add selected categories to proposal
-                description,
-                idea,
-                owner,
-                target,
-                budget,
-                fromDate,
-                toDate,
-                activities
-            );
-    
-            // Add the proposal to the list and update UI
-            main.proposalList.add(proposal);
-            updateproposalProjectList();
-    
-            // Close the dialog
-            dialog.dispose();
-        });
-    
-        // Define layout structure
-        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(nameLabel).addComponent(nameField)
-            .addComponent(ideaLabel).addComponent(ideaField)
-            .addComponent(descriptionLabel).addComponent(scrollPane)
-            .addComponent(ownerLabel).addComponent(ownerField)
-            .addComponent(targetLabel).addComponent(targetField)
-            .addComponent(budgetLabel).addComponent(budgetField)
-            .addComponent(fromDateLabel).addComponent(fromDateSpinner)
-            .addComponent(toDateLabel).addComponent(toDateSpinner)
-            .addComponent(activitiesLabel).addComponent(activitiesField)
-            .addComponent(createTagLabel).addComponent(createTagButton)
-            .addComponent(selectTagLabel).addComponent(tagScrollPane)
-            .addComponent(submitButton)
-        );
-    
-        layout.setVerticalGroup(layout.createSequentialGroup()
-            .addComponent(nameLabel).addComponent(nameField)
-            .addComponent(ideaLabel).addComponent(ideaField)
-            .addComponent(descriptionLabel).addComponent(scrollPane)
-            .addComponent(ownerLabel).addComponent(ownerField)
-            .addComponent(targetLabel).addComponent(targetField)
-            .addComponent(budgetLabel).addComponent(budgetField)
-            .addComponent(fromDateLabel).addComponent(fromDateSpinner)
-            .addComponent(toDateLabel).addComponent(toDateSpinner)
-            .addComponent(activitiesLabel).addComponent(activitiesField)
-            .addComponent(createTagLabel).addComponent(createTagButton)
-            .addComponent(selectTagLabel).addComponent(tagScrollPane)
-            .addComponent(submitButton)
-        );
-    
-        dialog.setLocationRelativeTo(frame);
-        dialog.setVisible(true);
-    }
-    
 
 private void updateproposalProjectList() {
     proposalProjectListPanel.removeAll();
@@ -1145,16 +1126,7 @@ private void openFundDialog() {
                     if(checkBox.isSelected()){
                         selectedCatagories.add(checkBox.getText());
                     }
-
                 }
-    
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(dialog, "Budget skal være et gyldigt nummer.", "Ugyldig indtastning", JOptionPane.ERROR_MESSAGE);
-                return;
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(dialog, "Fejl ved parsing af datoer. Kontroller venligst dine indtastninger.", "Ugyldig dato", JOptionPane.ERROR_MESSAGE);
-                ex.printStackTrace();
-                return;
             }
 
             //Website Errorhandling
@@ -1237,6 +1209,7 @@ private void openFundDialog() {
 
     dialog.setLocationRelativeTo(frame);
     dialog.setVisible(true);
+
 }
 
 
@@ -1682,38 +1655,9 @@ private void openProjectDialog() {
             if (proposal.getCategories().contains(tag)) {
                 JLabel proposalLabel = new JLabel(proposal.getTitle() + " - " + proposal.getProjectOwner());
 
-    
-        // Submit knap
-        JButton submitButton = new JButton("Tilføj Fond");
-        submitButton.addActionListener(event -> {
-            try {
-                // Indhent værdier og opret ny fond-instans
-                String fundName = nameField.getText().trim();
-                String fundDescription = descriptionArea.getText().trim();
-                long fundAmountFrom = Long.parseLong(amountFromField.getText().trim());
-                long fundAmountTo = Long.parseLong(amountToField.getText().trim());
-    
-                LocalDateTime fundDeadline = ((java.util.Date) deadlineSpinner.getValue())
-                    .toInstant()
-                    .atZone(java.time.ZoneId.systemDefault())
-                    .toLocalDateTime();
-    
-                // Indsamling af valgte kategorier fra checkboxes
-                List<String> selectedCategories = new ArrayList<>();
-                for (Component component : tagPanel.getComponents()) {
-                    if (component instanceof JCheckBox checkbox && checkbox.isSelected()) {
-                        selectedCategories.add(checkbox.getText());
-                    }
-                });
-    
-                proposalProjectListPanel.add(proposalLabel);
             }
         }
-    
-        proposalProjectListPanel.revalidate();
-        proposalProjectListPanel.repaint();
     }
-    
    
     private void updateRightSidePanel(String tab) {
         CardLayout layout = (CardLayout) rightSidePanel.getLayout();
