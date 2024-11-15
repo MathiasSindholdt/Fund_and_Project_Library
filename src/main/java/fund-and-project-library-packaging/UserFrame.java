@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.*;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -329,7 +328,7 @@ public class UserFrame extends JFrame implements ActionListener {
             detailsPanel.add(new JLabel("Titel: " + fund.getTitle()));
             detailsPanel.add(new JLabel("Beskrivelse: " + fund.getDescription()));
             detailsPanel.add(new JLabel("Kategorier: " + fund.getCategories()));
-            detailsPanel.add(new JLabel("Deadline(s): " + fund.getDeadlines()));
+            detailsPanel.add(new JLabel("Ansøgningsfrist(er): " + fund.getDeadlines()));
             detailsPanel.add(new JLabel("Kontakter: " + fund.getContacts()));
             detailsPanel.add(new JLabel("Budget span: " + fund.getBudgetSpan()));
             detailsPanel.add(new JLabel("Tidligere samarbejde: " + fund.getCollaborationHistory()));
@@ -775,7 +774,8 @@ proposalProjectFullPanel.add(archiveButton);
 
 private void showProjectDetails(project project) {
     projectFullPanel.removeAll();
-    
+
+    // Display project details
     projectFullPanel.add(new JLabel("Titel: " + project.getTitle()));
     projectFullPanel.add(new JLabel("Ejer: " + project.getProjectOwner()));
     projectFullPanel.add(new JLabel("Idé: " + project.getProjectPurpose()));
@@ -785,26 +785,80 @@ private void showProjectDetails(project project) {
     projectFullPanel.add(new JLabel("Fra Dato: " + project.getProjectTimeSpanFrom().toString()));
     projectFullPanel.add(new JLabel("Til Dato: " + project.getProjectTimeSpanTo().toString()));
     projectFullPanel.add(new JLabel("Aktiviteter: " + project.getProjectActivities()));
+    projectFullPanel.add(new JLabel("Kategori: " + project.getCategories()));
+    projectFullPanel.add(new JLabel("\n"));
 
+    // Compare project categories with fund categories to find matches
+    compareProjectCatsWithFundCats comparer = new compareProjectCatsWithFundCats();
+    ArrayList<fundClass> matchingFunds = comparer.compareCategoriesWithFund(true, main.fundList, project);
+
+    if (!matchingFunds.isEmpty()) {
+        projectFullPanel.add(new JLabel("Fonde med matchende kategorier:"));
+
+        // Create a clickable JButton for each matching fund
+        for (fundClass fund : matchingFunds) {
+            JButton fundButton = new JButton(fund.getTitle());
+            fundButton.addActionListener(e -> showFundDetailsDialog(fund));
+            projectFullPanel.add(fundButton);
+        }
+    } else {
+        projectFullPanel.add(new JLabel("Ingen fonde matcher nogle kategorier"));
+    }
+
+    // Archive button to archive the project
     JButton archiveButton = new JButton("Arkivér");
-    Dimension buttonSize = new Dimension(150, 50); 
+    Dimension buttonSize = new Dimension(150, 50);
     archiveButton.setPreferredSize(buttonSize);
     
     archiveButton.addActionListener(e -> {
         // Archive the project
         archive.archiveProject(project);
 
-        // Call update methods after archiving
+        // Update project list and clear details display
         updateProjectList();
-        projectFullPanel.removeAll(); 
+        projectFullPanel.removeAll();
         projectFullPanel.revalidate();
         projectFullPanel.repaint();
     });
     
     projectFullPanel.add(archiveButton);
-    
+
     projectFullPanel.revalidate();
     projectFullPanel.repaint();
+}
+
+// Helper method to display fund details in a dialog box
+private void showFundDetailsDialog(fundClass fund) {
+    // Create the dialog box
+    JDialog fundDialog = new JDialog((Frame) null, fund.getTitle(), true);
+    fundDialog.setLayout(new GridLayout(0, 1));
+    
+    // Add fund details to the dialog box
+    fundDialog.add(new JLabel("Titel: " + fund.getTitle()));
+    fundDialog.add(new JLabel("Beskrivelse: " + fund.getDescription()));
+    fundDialog.add(new JLabel("Kategorier: " + fund.getCategories()));
+    fundDialog.add(new JLabel("Ansøgningsfrist: " + fund.getDeadlines().toString()));
+    for(int i = 0; i<tempContacts.size(); i++){
+        fundDialog.add(new JLabel("Kontaktpersoner: " + tempContacts.get(i).getContactName() + " - " + tempContacts.get(i).getContactPhoneNumber() + " - " + tempContacts.get(i).getContactEmail()));
+    }    
+    fundDialog.add(new JLabel("Budget: " + fund.getBudgetSpan()));
+    fundDialog.add(new JLabel("Tidligere projekter: " + fund.getCollaborationHistory()));
+    fundDialog.add(new JLabel("Hjemmeside: " + fund.getFundWebsite()));
+    fundDialog.add(new JLabel("\n"));
+    fundDialog.add(new JLabel("Dato tilføjet: " + fund.getDateCreated()));
+
+
+
+
+
+    // Button to close the dialog
+    JButton closeButton = new JButton("Luk");
+    closeButton.addActionListener(e -> fundDialog.dispose());
+    fundDialog.add(closeButton);
+
+    fundDialog.pack();
+    fundDialog.setLocationRelativeTo(projectFullPanel);  // Center dialog relative to main panel
+    fundDialog.setVisible(true);
 }
 
 private void openFundDialog() {
@@ -843,19 +897,21 @@ private void openFundDialog() {
     JSpinner.DateEditor deadlineEditor = new JSpinner.DateEditor(deadlineSpinner, "dd/MM/yyyy");
     deadlineSpinner.setEditor(deadlineEditor);
     deadlineSpinner.setValue(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())); // Set default time to 00:00
-// Tilføjede Deadlines Panel
-JLabel addedDeadlinesLabel = new JLabel("Tilføjede Deadlines:");
-JPanel deadlineListPanel = new JPanel();
-deadlineListPanel.setLayout(new BoxLayout(deadlineListPanel, BoxLayout.Y_AXIS));
-JScrollPane deadlineScrollPane = new JScrollPane(deadlineListPanel);
-deadlineScrollPane.setPreferredSize(new Dimension(200, 100));
-JLabel isDeadLineTimeLabel = new JLabel("Er deadline med bestemt tidspunkt?:");
-JCheckBox deadLineTimeCheckBox = new JCheckBox();
-JPanel deadLineTimePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-JLabel deadLineTimeLabel = new JLabel("Tidspunkt:");
-JTextField deadLineTimeFieldHour = new JTextField(2);
-JLabel deadLineTimeLabelColon = new JLabel(":");
-JTextField deadLineTimeFieldMinute = new JTextField(2);
+
+    // Tilføjede Deadlines Panel
+    JLabel addedDeadlinesLabel = new JLabel("Tilføjede ansøgningsfrister:");
+    JPanel deadlineListPanel = new JPanel();
+    deadlineListPanel.setLayout(new BoxLayout(deadlineListPanel, BoxLayout.Y_AXIS));
+    JScrollPane deadlineScrollPane = new JScrollPane(deadlineListPanel);
+    deadlineScrollPane.setPreferredSize(new Dimension(200, 100));
+    JLabel isDeadLineTimeLabel = new JLabel("Er ansøgningsfrist på et bestemt tidspunkt?:");
+    JCheckBox deadLineTimeCheckBox = new JCheckBox();
+    JPanel deadLineTimePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    JLabel deadLineTimeLabel = new JLabel("Tidspunkt:");
+    JTextField deadLineTimeFieldHour = new JTextField(2);
+    JLabel deadLineTimeLabelColon = new JLabel(":");
+    JTextField deadLineTimeFieldMinute = new JTextField(2);
+
 
 deadLineTimePanel.add(deadLineTimeLabel);
 deadLineTimePanel.add(deadLineTimeFieldHour);
@@ -869,12 +925,12 @@ deadLineTimeCheckBox.addItemListener(e -> {
     dialog.repaint();
 });
 
-// Knap til at tilføje en ny deadline
-JButton addDeadlineButton = new JButton("Tilføj Deadline");
-
-// List til opbevaring af tilføjede deadlines
-List<LocalDateTime> addedDeadlines = new ArrayList<>();
-DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    // Knap til at tilføje en ny deadline
+    JButton addDeadlineButton = new JButton("Tilføj ansøgningsfrist");
+    
+    // List til opbevaring af tilføjede deadlines
+    List<LocalDateTime> addedDeadlines = new ArrayList<>();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
 addDeadlineButton.addActionListener(e -> {
     LocalDateTime newDeadline;
@@ -1018,7 +1074,7 @@ addDeadlineButton.addActionListener(e -> {
     });
 
     createCollaborationButton.addActionListener(e -> {
-        String newCollaboration = JOptionPane.showInputDialog(dialog, "Enter new collaboration:");
+        String newCollaboration = JOptionPane.showInputDialog(dialog, "Skriv nye tidligere samarbejdeprojekter:");
         if (newCollaboration != null && !newCollaboration.trim().isEmpty()) {
             main.userProjectList.add(newCollaboration);
             collaborationContentPanel.add(new JCheckBox(newCollaboration));
@@ -1031,7 +1087,7 @@ addDeadlineButton.addActionListener(e -> {
     mainPanel.add(collaborationPanel, BorderLayout.WEST);
 
     // Løbende deadline
-    JLabel runningLabel = new JLabel("Løbende deadline:");
+    JLabel runningLabel = new JLabel("Løbende ansøgningsfrist:");
     JCheckBox runningCheckBox = new JCheckBox();
     runningCheckBox.addItemListener(e -> {
         deadlineSpinner.setEnabled(!runningCheckBox.isSelected());
@@ -1299,7 +1355,7 @@ private void showFundDetails(fundClass fund) {
     tempContacts = fund.getContacts();
     fundFullPanel.removeAll();
 
-    fundFullPanel.add(new JLabel("Navn: " + fund.getTitle()));
+    fundFullPanel.add(new JLabel("Titel: " + fund.getTitle()));
     fundFullPanel.add(new JLabel("Beskrivelse: " + fund.getDescription()));
     fundFullPanel.add(new JLabel("Beløb Fra: " + fund.getBudgetMin()));
     fundFullPanel.add(new JLabel("Beløb Til: " + fund.getBudgetMax()));
@@ -1308,7 +1364,7 @@ private void showFundDetails(fundClass fund) {
     for(int i = 0; i<fund.getDeadlines().size(); i++){
         tempDeadlines.add(fund.getDeadlines().get(i).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
     }
-    fundFullPanel.add(new JLabel("Deadlines: " + String.join(", ", tempDeadlines)));
+    fundFullPanel.add(new JLabel("Ansøgningsfrist: " + String.join(", ", tempDeadlines)));
     //fundFullPanel.add(new JLabel("Deadline: " + fund.getDeadlines()));
     fundFullPanel.add(new JLabel("Løbende: " + fund.getRunning()));
     fundFullPanel.add(new JLabel("Kategori: " + fund.getCategories()));
