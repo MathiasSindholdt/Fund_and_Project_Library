@@ -3,9 +3,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
 public class validationUtils {
-    public static final Pattern VALID_CHARACTERS = Pattern.compile("^[a-zA-Z0-9 .,;:\"'?@]*$");
+    public static final Pattern VALID_CHARACTERS = Pattern.compile("^[a-zA-ZæøåÆØÅ0-9 .,;:\"'?@]*$");
     public static final Pattern VALID_URL = Pattern.compile("^[a-zA-Z0-9 .;:\"'!?]*$");
-    public static final Pattern VALID_DESCRIPTION = Pattern.compile("^[a-zA-Z0-9 .,;:\"'?\\t()]*$");
+    public static final Pattern VALID_DESCRIPTION = Pattern.compile("^[a-zA-ZæøåÆØÅ0-9 .,;:\"'?\\t()]*$");
     public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
     public static final int MIN_LENGTH = 1;
     public static final int LOWER_MAX_LENGTH = 200;

@@ -1066,6 +1066,7 @@ addDeadlineButton.addActionListener(e -> {
 
            
             //FundTitle errorhandling
+            //System.out.println("Title: " + nameField.getText());
             if(validationUtils.isWithinLowerCharLimit(nameField.getText()) == false){
                 isInvalidLenght = true;
                 dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
