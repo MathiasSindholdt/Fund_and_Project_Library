@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -423,12 +424,15 @@ public class UserFrame extends JFrame implements ActionListener {
         dialog.setSize(700, 700);
     
         JPanel mainPanel = new JPanel();
-        dialog.add(mainPanel);
-    
         GroupLayout layout = new GroupLayout(mainPanel);
         mainPanel.setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
+    
+        // Wrap the main panel in a scroll pane
+        JScrollPane scrollPane = new JScrollPane(mainPanel);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        dialog.add(scrollPane);
     
         JLabel nameLabel = new JLabel("Titel:");
         JTextField nameField = new JTextField();
@@ -438,7 +442,7 @@ public class UserFrame extends JFrame implements ActionListener {
     
         JLabel descriptionLabel = new JLabel("Kort beskrivelse af projektet:");
         JTextArea descriptionArea = new JTextArea(5, 20);
-        JScrollPane scrollPane = new JScrollPane(descriptionArea);
+        JScrollPane desciptionScrollPane = new JScrollPane(descriptionArea);
     
         JLabel ownerLabel = new JLabel("Ejer af idé/forslaget:");
         JTextField ownerField = new JTextField();
@@ -573,7 +577,7 @@ public class UserFrame extends JFrame implements ActionListener {
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addComponent(nameLabel).addComponent(nameField)
             .addComponent(ideaLabel).addComponent(ideaField)
-            .addComponent(descriptionLabel).addComponent(scrollPane)
+            .addComponent(descriptionLabel).addComponent(desciptionScrollPane)
             .addComponent(ownerLabel).addComponent(ownerField)
             .addComponent(targetLabel).addComponent(targetField)
             .addComponent(budgetLabel).addComponent(budgetField)
@@ -588,7 +592,7 @@ public class UserFrame extends JFrame implements ActionListener {
         layout.setVerticalGroup(layout.createSequentialGroup()
             .addComponent(nameLabel).addComponent(nameField)
             .addComponent(ideaLabel).addComponent(ideaField)
-            .addComponent(descriptionLabel).addComponent(scrollPane)
+            .addComponent(descriptionLabel).addComponent(desciptionScrollPane)
             .addComponent(ownerLabel).addComponent(ownerField)
             .addComponent(targetLabel).addComponent(targetField)
             .addComponent(budgetLabel).addComponent(budgetField)
@@ -863,10 +867,11 @@ private void showFundDetailsDialog(fundClass fund) {
 
 private void openFundDialog() {
     JDialog dialog = new JDialog(frame, "Lav En Fond", true);
-    dialog.setSize(700, 950);
+    dialog.setSize(700, 600);
     
-    JPanel mainPanel = new JPanel();
-    dialog.add(mainPanel);
+ JPanel mainPanel = new JPanel();
+    mainPanel.setLayout(new GroupLayout(mainPanel));
+    mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     
     GroupLayout layout = new GroupLayout(mainPanel);
     mainPanel.setLayout(layout);
@@ -891,12 +896,12 @@ private void openFundDialog() {
     JTextField amountToField = new JTextField();
 
     // Fond Deadline
-    JLabel deadlineLabel = new JLabel("Deadline:");
+    JLabel deadlineLabel = new JLabel("Ansøgningsfrist:");
     SpinnerDateModel deadlineModel = new SpinnerDateModel(new Date(), null, null, Calendar.DAY_OF_MONTH);
     JSpinner deadlineSpinner = new JSpinner(deadlineModel);
     JSpinner.DateEditor deadlineEditor = new JSpinner.DateEditor(deadlineSpinner, "dd/MM/yyyy");
     deadlineSpinner.setEditor(deadlineEditor);
-    deadlineSpinner.setValue(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())); // Set default time to 00:00
+    deadlineSpinner.setValue(Date.from(Instant.now())); // Set default time to 00:00
 
     // Tilføjede Deadlines Panel
     JLabel addedDeadlinesLabel = new JLabel("Tilføjede ansøgningsfrister:");
@@ -1248,6 +1253,14 @@ addDeadlineButton.addActionListener(e -> {
         .addComponent(submitButton)
     );
 
+    JScrollPane scrollPane = new JScrollPane(mainPanel);
+    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Optional: Smooth scrolling
+
+    // Add the scrollPane to the dialog
+    dialog.add(scrollPane);
+
     dialog.setLocationRelativeTo(frame);
     dialog.setVisible(true);
 }
@@ -1426,14 +1439,18 @@ private void openProjectDialog() {
     JDialog dialog = new JDialog(frame, "Lav Projekt", true);
     dialog.setSize(700, 700);
 
-
+    // Main panel with layout
     JPanel mainPanel = new JPanel();
-    dialog.add(mainPanel);
-
     GroupLayout layout = new GroupLayout(mainPanel);
     mainPanel.setLayout(layout);
     layout.setAutoCreateGaps(true);
     layout.setAutoCreateContainerGaps(true);
+
+    // Wrap the main panel in a scroll pane
+    JScrollPane scrollPane = new JScrollPane(mainPanel);
+    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    dialog.add(scrollPane);
+
 
     // Components
     JLabel nameLabel = new JLabel("Titel:");
@@ -1445,7 +1462,7 @@ private void openProjectDialog() {
 
     JLabel descriptionLabel = new JLabel("Beskrivelse af projektet:");
     JTextArea descriptionArea = new JTextArea(5, 20);
-    JScrollPane scrollPane = new JScrollPane(descriptionArea);
+    JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
 
     JLabel ownerLabel = new JLabel("Ejer af projektet:");
     JTextField ownerField = new JTextField();
@@ -1642,7 +1659,7 @@ private void openProjectDialog() {
 
         .addComponent(nameLabel).addComponent(nameField)
         .addComponent(purposeLabel).addComponent(purposeField)
-        .addComponent(descriptionLabel).addComponent(scrollPane)
+        .addComponent(descriptionLabel).addComponent(descriptionScrollPane)
         .addComponent(ownerLabel).addComponent(ownerField)
         .addComponent(targetLabel).addComponent(targetField)
         .addComponent(budgetLabel).addComponent(budgetField)
@@ -1658,7 +1675,7 @@ private void openProjectDialog() {
     layout.setVerticalGroup(layout.createSequentialGroup()
         .addComponent(nameLabel).addComponent(nameField)
         .addComponent(purposeLabel).addComponent(purposeField)
-        .addComponent(descriptionLabel).addComponent(scrollPane)
+        .addComponent(descriptionLabel).addComponent(descriptionScrollPane)
         .addComponent(ownerLabel).addComponent(ownerField)
         .addComponent(targetLabel).addComponent(targetField)
         .addComponent(budgetLabel).addComponent(budgetField)
