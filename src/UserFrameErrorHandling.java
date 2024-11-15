@@ -93,4 +93,18 @@ public class UserFrameErrorHandling{
         JOptionPane.showMessageDialog(null, "Ugyldig tid, tid skal være i formatet hh:mm, og tiden skal være mellem 00:00 og 23:59");
         return new JPanel();
     }
+    //Error Handling for fields that take 2x dates as input
+    public static JPanel displayDateSpinnerError(){
+        JOptionPane.showMessageDialog(null, "Fra datoen skal være før til datoen");
+        return new JPanel();
+    }
+    
+    public static JPanel displayIdeaError(Boolean isInvalidLenght){
+        if(isInvalidLenght){
+            JOptionPane.showMessageDialog(null, "Ideen skal være mellem 1 og 2000 tegn");
+        } else if(!isInvalidLenght){
+            JOptionPane.showMessageDialog(null, "Ugyldige tegn i ideen");
+        }
+        return new JPanel();
+    }
 }

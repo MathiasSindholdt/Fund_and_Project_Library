@@ -23,6 +23,7 @@ public class proposalProject extends projectAbstract {
         }
         this.setDescription(description);
         this.setProjectPurpose(purpose);
+        System.out.println("Owner----------: " + owner);
         this.setProjectOwner(owner);
         this.setProjectTargetAudience(projectTargetAudience);
         this.setProjectBudget(projectBudget);
