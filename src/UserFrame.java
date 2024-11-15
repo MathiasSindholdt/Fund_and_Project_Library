@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.*;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Calendar;
@@ -28,6 +29,8 @@ public class UserFrame implements ActionListener {
 
 
     private JButton backButton;
+    private JButton xButton;
+    private JButton xButtonHover;
     private JButton projectPropButton;
     private JButton projectButton;
     private JButton fundsButton;
@@ -840,74 +843,89 @@ private void openFundDialog() {
     JSpinner.DateEditor deadlineEditor = new JSpinner.DateEditor(deadlineSpinner, "dd/MM/yyyy");
     deadlineSpinner.setEditor(deadlineEditor);
     deadlineSpinner.setValue(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())); // Set default time to 00:00
+// Tilføjede Deadlines Panel
+JLabel addedDeadlinesLabel = new JLabel("Tilføjede Deadlines:");
+JPanel deadlineListPanel = new JPanel();
+deadlineListPanel.setLayout(new BoxLayout(deadlineListPanel, BoxLayout.Y_AXIS));
+JScrollPane deadlineScrollPane = new JScrollPane(deadlineListPanel);
+deadlineScrollPane.setPreferredSize(new Dimension(200, 100));
+JLabel isDeadLineTimeLabel = new JLabel("Er deadline med bestemt tidspunkt?:");
+JCheckBox deadLineTimeCheckBox = new JCheckBox();
+JPanel deadLineTimePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+JLabel deadLineTimeLabel = new JLabel("Tidspunkt:");
+JTextField deadLineTimeFieldHour = new JTextField(2);
+JLabel deadLineTimeLabelColon = new JLabel(":");
+JTextField deadLineTimeFieldMinute = new JTextField(2);
 
-    // Tilføjede Deadlines Panel
-    JLabel addedDeadlinesLabel = new JLabel("Tilføjede Deadlines:");
-    JPanel deadlineListPanel = new JPanel();
-    deadlineListPanel.setLayout(new BoxLayout(deadlineListPanel, BoxLayout.Y_AXIS));
-    JScrollPane deadlineScrollPane = new JScrollPane(deadlineListPanel);
-    deadlineScrollPane.setPreferredSize(new Dimension(200, 100));
-    JLabel isDeadLineTimeLabel = new JLabel("Er deadline med bestemt tidspunkt?:");
-    JCheckBox deadLineTimeCheckBox = new JCheckBox();
-    JPanel deadLineTimePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    JLabel deadLineTimeLabel = new JLabel("Tidspunkt:");
-    JTextField deadLineTimeFieldHour = new JTextField(2);
-    JLabel deadLineTimeLabelColon = new JLabel(":");
-    JTextField deadLineTimeFieldMinute = new JTextField(2);
+deadLineTimePanel.add(deadLineTimeLabel);
+deadLineTimePanel.add(deadLineTimeFieldHour);
+deadLineTimePanel.add(deadLineTimeLabelColon);
+deadLineTimePanel.add(deadLineTimeFieldMinute);
+deadLineTimePanel.setVisible(false);
 
+deadLineTimeCheckBox.addItemListener(e -> {
+    deadLineTimePanel.setVisible(deadLineTimeCheckBox.isSelected());
+    dialog.revalidate();
+    dialog.repaint();
+});
 
-    deadLineTimePanel.add(deadLineTimeLabel);
-    deadLineTimePanel.add(deadLineTimeFieldHour);
-    deadLineTimePanel.add(deadLineTimeLabelColon);
-    deadLineTimePanel.add(deadLineTimeFieldMinute);
-    deadLineTimePanel.setVisible(false);
-    
-    deadLineTimeCheckBox.addItemListener(e -> {
-        deadLineTimePanel.setVisible(deadLineTimeCheckBox.isSelected());
-        dialog.revalidate();
-        dialog.repaint();
-    });
+// Knap til at tilføje en ny deadline
+JButton addDeadlineButton = new JButton("Tilføj Deadline");
 
-    // Knap til at tilføje en ny deadline
-    JButton addDeadlineButton = new JButton("Tilføj Deadline");
-    
-    // List til opbevaring af tilføjede deadlines
-    List<LocalDateTime> addedDeadlines = new ArrayList<>();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+// List til opbevaring af tilføjede deadlines
+List<LocalDateTime> addedDeadlines = new ArrayList<>();
+DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    addDeadlineButton.addActionListener(e -> {
-        LocalDateTime newDeadline;
-        if(deadLineTimeCheckBox.isSelected()){
-            if(!validationUtils.isValidTime(deadLineTimeFieldHour.getText(), true)){
-                dialog.add(UserFrameErrorHandling.displayTimeError());
-                return;
-            }
-            if(!validationUtils.isValidTime(deadLineTimeFieldMinute.getText(), false)){
-                dialog.add(UserFrameErrorHandling.displayTimeError());
-                return;
-            }
-            newDeadline = ((java.util.Date) deadlineSpinner.getValue())
-            .toInstant()
-            .atZone(java.time.ZoneId.systemDefault())
-            .toLocalDateTime();
-            newDeadline = newDeadline.withHour(Integer.parseInt(deadLineTimeFieldHour.getText()));
-            newDeadline = newDeadline.withMinute(Integer.parseInt(deadLineTimeFieldMinute.getText()));
-        }else{
-            newDeadline = ((java.util.Date) deadlineSpinner.getValue())
-            .toInstant()
-            .atZone(java.time.ZoneId.systemDefault())
-            .toLocalDateTime();
+addDeadlineButton.addActionListener(e -> {
+    LocalDateTime newDeadline;
+    if (deadLineTimeCheckBox.isSelected()) {
+        if (!validationUtils.isValidTime(deadLineTimeFieldHour.getText(), true)) {
+            dialog.add(UserFrameErrorHandling.displayTimeError());
+            return;
         }
-        addedDeadlines.add(newDeadline);
+        if (!validationUtils.isValidTime(deadLineTimeFieldMinute.getText(), false)) {
+            dialog.add(UserFrameErrorHandling.displayTimeError());
+            return;
+        }
+        newDeadline = ((java.util.Date) deadlineSpinner.getValue())
+            .toInstant()
+            .atZone(java.time.ZoneId.systemDefault())
+            .toLocalDateTime();
+        newDeadline = newDeadline.withHour(Integer.parseInt(deadLineTimeFieldHour.getText()));
+        newDeadline = newDeadline.withMinute(Integer.parseInt(deadLineTimeFieldMinute.getText()));
+    } else {
+        newDeadline = ((java.util.Date) deadlineSpinner.getValue())
+            .toInstant()
+            .atZone(java.time.ZoneId.systemDefault())
+            .toLocalDateTime();
+    }
+    addedDeadlines.add(newDeadline);
 
-        JLabel deadlineLabelItem = new JLabel(newDeadline.format(formatter));
-        deadlineListPanel.add(deadlineLabelItem);
+    // Create a panel to hold the deadline label and the remove button
+    JPanel deadlinePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    JLabel deadlineLabelItem = new JLabel(newDeadline.format(formatter));
+    JButton xButton = createXButton();
+    
+    
+    // Add action listener to the remove button
+    final LocalDateTime deadlineToRemove = newDeadline;
+    xButton.addActionListener(removeEvent -> {
+        addedDeadlines.remove(deadlineToRemove);
+        deadlineListPanel.remove(deadlinePanel);
         deadlineListPanel.revalidate();
         deadlineListPanel.repaint();
-        
-
-
     });
+
+
+    // Add components to the deadline panel
+    deadlinePanel.add(deadlineLabelItem);
+    deadlinePanel.add(xButton);
+
+    // Add the deadline panel to the main panel
+    deadlineListPanel.add(deadlinePanel);
+    deadlineListPanel.revalidate();
+    deadlineListPanel.repaint();
+});
 
     // Kategori valg
     JLabel tagLabel = new JLabel("Tilføj Kategori:");
@@ -1176,6 +1194,24 @@ private void openFundDialog() {
     dialog.setLocationRelativeTo(frame);
     dialog.setVisible(true);
 }
+
+private JButton createXButton() {
+    ImageIcon originalIcon = new ImageIcon("X_Button.png");
+    Image scaledImage = originalIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+    ImageIcon resizedIcon = new ImageIcon(scaledImage);
+
+    JButton button = new JButton();
+        button.setPreferredSize(new Dimension(20, 20));
+        button.setIcon(resizedIcon);
+        button.setBorderPainted(false);
+        button.setContentAreaFilled(false);
+        button.setFocusPainted(false);
+        button.setOpaque(false);
+        button.addActionListener(this);
+        return button;
+}
+
+
 
 
 private void openContactsDialog(JDialog dialog){
