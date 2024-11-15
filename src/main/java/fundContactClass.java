@@ -39,5 +39,7 @@ public class fundContactClass {
     public String getContactPhoneNumber(){
         return contactPhoneNumber;
     }
-
+    public static void main(String[] args) {
+        System.out.println("Eeerm");
+    }
 }
