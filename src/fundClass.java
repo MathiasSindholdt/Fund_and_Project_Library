@@ -53,7 +53,7 @@ public class fundClass extends elementFormatting{
         this.deadlines.add(newDeadline);
     }
 
-    public void setContacts(String newContact){
+    public void setContacts(fundContactClass newContact){
         this.contacts.add(newContact);
     }
 
