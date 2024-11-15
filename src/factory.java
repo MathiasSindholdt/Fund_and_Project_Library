@@ -14,9 +14,8 @@ public class factory extends projectAbstract {
         }
         newProject.setClosestDeadlineFunds(fundList, onlyOneIsNeeded);
         newProject.setTitle(proposal.getTitle());
-
-        for (String s : proposal.getCategories()) {
-            newProject.setCategories(s);
+        for (int i = 0; i < proposal.getCategories().size(); i++){
+            newProject.setCategories(proposal.getCategories().get(i));
         }
         newProject.setDescription(proposal.getDescription());
         newProject.setProjectPurpose(proposal.getProjectPurpose());

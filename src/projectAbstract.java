@@ -48,12 +48,16 @@ public class projectAbstract extends elementFormatting {
         return projectActivities;
     }
 
+ 
     public void setProjectPurpose(String newProjectPurpose){
         this.projectPurpose = newProjectPurpose;
     }
 
     public void setProjectOwner(String newProjectOwner){
-        this.projectOwner = newProjectOwner;
+        if (!validationUtils.isWithinLowerCharLimit(newProjectOwner)){
+            throw new validationUtils.WrongDataInputException("The project owner exceeds 200 characters");
+        }
+        validationUtils.validateInput(newProjectOwner, "Purpose");
     }
 
     public void setProjectTargetAudience(String newProjectTargetAudience){
