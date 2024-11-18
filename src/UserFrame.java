@@ -507,146 +507,162 @@ public class UserFrame extends JFrame implements ActionListener {
         submitButton.addActionListener(event -> {
             System.out.println("Submit button clicked");
 
+            boolean hasError = false; // Flag to check if any validation error occurs
+
             //Proposal Error Handling
 
             //Title Error Handling
             if(!validationUtils.isWithinLowerCharLimit(nameField.getText())){
-                System.out.println("her er din mo ++---?????");
-            isInvalidLenght = true;
-            UserFrameErrorHandling.displayTitleError(isInvalidLenght);
-            System.out.println("Title error: Length is invalid");
+                isInvalidLenght = true;
+                UserFrameErrorHandling.displayTitleError(isInvalidLenght);
+                System.out.println("Title error: Length is invalid");
+                hasError = true;
             }else if(!validationUtils.isValidInput(nameField.getText())){
-            isInvalidLenght = false;
-            dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
-            System.out.println("Title error: Invalid input");
+                isInvalidLenght = false;
+                dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
+                System.out.println("Title error: Invalid input");
+                hasError = true;
             }else{
-            tempTitle = nameField.getText();
-            System.out.println("Title set: " + tempTitle);
+                tempTitle = nameField.getText();
+                System.out.println("Title set: " + tempTitle);
             }
 
             //Ideas Error Handling
             if(!validationUtils.isWithinLowerCharLimit(ideaField.getText())){
-            isInvalidLenght = true;
-            dialog.add(UserFrameErrorHandling.displayIdeaError(isInvalidLenght));
-            System.out.println("Idea error: Length is invalid");
+                isInvalidLenght = true;
+                dialog.add(UserFrameErrorHandling.displayIdeaError(isInvalidLenght));
+                System.out.println("Idea error: Length is invalid");
+                hasError = true;
             }else if(!validationUtils.isValidInput(ideaField.getText())){
-            isInvalidLenght = false;
-            dialog.add(UserFrameErrorHandling.displayIdeaError(isInvalidLenght));
-            System.out.println("Idea error: Invalid input");
+                isInvalidLenght = false;
+                dialog.add(UserFrameErrorHandling.displayIdeaError(isInvalidLenght));
+                System.out.println("Idea error: Invalid input");
+                hasError = true;
             }else{
-            tempIdea = ideaField.getText();
-            System.out.println("Idea set: " + tempIdea);
+                tempIdea = ideaField.getText();
+                System.out.println("Idea set: " + tempIdea);
             }
 
             //Description Error Handling
             if(!validationUtils.isWithinUpperCharLimit(descriptionArea.getText())){
-            isInvalidLenght = true;
-            dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
-            System.out.println("Description error: Length is invalid");
+                isInvalidLenght = true;
+                dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
+                System.out.println("Description error: Length is invalid");
+                hasError = true;
             }else if(!validationUtils.isValidDescription(descriptionArea.getText())){
-            isInvalidLenght = false;
-            dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
-            System.out.println("Description error: Invalid input");
+                isInvalidLenght = false;
+                dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
+                System.out.println("Description error: Invalid input");
+                hasError = true;
             }else{
-            tempDescription = descriptionArea.getText();
-            System.out.println("Description set: " + tempDescription);
+                tempDescription = descriptionArea.getText();
+                System.out.println("Description set: " + tempDescription);
             }
 
             //Owner Error Handling
             if(!validationUtils.isWithinLowerCharLimit(ownerField.getText())){
-            isInvalidLenght = true;
-            dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
-            System.out.println("Owner error: Length is invalid");
+                isInvalidLenght = true;
+                dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
+                System.out.println("Owner error: Length is invalid");
+                hasError = true;
             }else if(!validationUtils.isValidInput(ownerField.getText())){
-            isInvalidLenght = false;
-            dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
-            System.out.println("Owner error: Invalid input");
+                isInvalidLenght = false;
+                dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
+                System.out.println("Owner error: Invalid input");
+                hasError = true;
             }else{
-            tempOwner = ownerField.getText();
-            System.out.println("Owner set: " + tempOwner);
+                tempOwner = ownerField.getText();
+                System.out.println("Owner set: " + tempOwner);
             }
 
             //Target Audience Error Handling
             if(!validationUtils.isWithinLowerCharLimit(targetField.getText())){
-            isInvalidLenght = true;
-            dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
-            System.out.println("Target Audience error: Length is invalid");
+                isInvalidLenght = true;
+                dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
+                System.out.println("Target Audience error: Length is invalid");
+                hasError = true;
             }else if(!validationUtils.isValidInput(targetField.getText())){
-            isInvalidLenght = false;
-            dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
-            System.out.println("Target Audience error: Invalid input");
+                isInvalidLenght = false;
+                dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
+                System.out.println("Target Audience error: Invalid input");
+                hasError = true;
             }else{
-            tempTargetAudience = targetField.getText();
-            System.out.println("Target Audience set: " + tempTargetAudience);
+                tempTargetAudience = targetField.getText();
+                System.out.println("Target Audience set: " + tempTargetAudience);
             }
 
             //Budget Error Handling
             if(!validationUtils.isNumericInput(budgetField.getText())){
-            dialog.add(UserFrameErrorHandling.displayBudgetError());
-            System.out.println("Budget error: Invalid input");
+                dialog.add(UserFrameErrorHandling.displayBudgetError());
+                System.out.println("Budget error: Invalid input");
+                hasError = true;
             }else{
-            tempBudget = Long.parseLong(budgetField.getText());
-            System.out.println("Budget set: " + tempBudget);
+                tempBudget = Long.parseLong(budgetField.getText());
+                System.out.println("Budget set: " + tempBudget);
             }
 
             //From Date Error Handling
             //To Date Error Handling
             //If From Date is after To Date
             if(((Date) fromDateSpinner.getValue()).after((Date) toDateSpinner.getValue())){
-            dialog.add(UserFrameErrorHandling.displayDateSpinnerError());
-            System.out.println("Date error: From date is after To date");
+                dialog.add(UserFrameErrorHandling.displayDateSpinnerError());
+                System.out.println("Date error: From date is after To date");
+                hasError = true;
             }else{
-            tempFromDate = ((Date) fromDateSpinner.getValue()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            tempToDate = ((Date) toDateSpinner.getValue()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            tempFromDateLDT = tempFromDate.atStartOfDay();
-            tempToDateLDT = tempToDate.atStartOfDay();
-            System.out.println("Dates set: From " + tempFromDateLDT + " To " + tempToDateLDT);
+                tempFromDate = ((Date) fromDateSpinner.getValue()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                tempToDate = ((Date) toDateSpinner.getValue()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                tempFromDateLDT = tempFromDate.atStartOfDay();
+                tempToDateLDT = tempToDate.atStartOfDay();
+                System.out.println("Dates set: From " + tempFromDateLDT + " To " + tempToDateLDT);
             }
 
             //Activities Error Handling
             if(!validationUtils.isWithinUpperCharLimit(activitiesField.getText())){
-            isInvalidLenght = true;
-            dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
-            System.out.println("Activities error: Length is invalid");
+                isInvalidLenght = true;
+                dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
+                System.out.println("Activities error: Length is invalid");
+                hasError = true;
             }else if(!validationUtils.isValidInput(activitiesField.getText())){
-            isInvalidLenght = false;
-            dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
-            System.out.println("Activities error: Invalid input");
+                isInvalidLenght = false;
+                dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
+                System.out.println("Activities error: Invalid input");
+                hasError = true;
             }else{
-            tempActivities = activitiesField.getText();
-            System.out.println("Activities set: " + tempActivities);
+                tempActivities = activitiesField.getText();
+                System.out.println("Activities set: " + tempActivities);
             }
 
             //Categories Error Handling
             //If no categories are selected
             ArrayList<String> selectedCatagories = new ArrayList<>();
             for(Component comp : tagPanel.getComponents()){
-            if(comp instanceof JCheckBox){
-                JCheckBox checkBox = (JCheckBox) comp;
-                if(checkBox.isSelected()){
-                selectedCatagories.add(checkBox.getText());
+                if(comp instanceof JCheckBox){
+                    JCheckBox checkBox = (JCheckBox) comp;
+                    if(checkBox.isSelected()){
+                        selectedCatagories.add(checkBox.getText());
+                    }
                 }
-            }
             }
             System.out.println("Selected categories: " + selectedCatagories);
 
+            if (hasError) {
+                return;
+            }
+
             // Create the proposal project instance with categories
             proposalProject proposal = new proposalProject(
-            tempTitle,
-            selectedCatagories,
-            tempDescription,
-            tempIdea,
-            tempOwner,
-            tempTargetAudience,
-            tempBudget,
-            tempFromDateLDT,
-            tempToDateLDT,
-            tempActivities
+                tempTitle,
+                selectedCatagories,
+                tempDescription,
+                tempIdea,
+                tempOwner,
+                tempTargetAudience,
+                tempBudget,
+                tempFromDateLDT,
+                tempToDateLDT,
+                tempActivities
             );
             
-            // Ensure all fields are set correctly
-            System.out.println("Proposal created: " + proposal);
-            System.out.println("Proposal owner: " + proposal.getProjectOwner());
 
             // Add the proposal to the list and update UI
             main.proposalList.add(proposal);
@@ -1142,100 +1158,94 @@ addDeadlineButton.addActionListener(e -> {
     // Submit knap
     JButton submitButton = new JButton("Tilføj Fond");
     submitButton.addActionListener(event -> {
-        try {
-            LocalDateTime[] fundDeadlines;
-            boolean running = runningCheckBox.isSelected();
-            
-            if (running) {
-                fundDeadlines = new LocalDateTime[]{LocalDateTime.of(1970, 1, 1, 0, 0)};
-            } else {
-                fundDeadlines = addedDeadlines.toArray(new LocalDateTime[0]);
+        LocalDateTime[] fundDeadlines;
+        boolean running = runningCheckBox.isSelected();
+        boolean hasError = false;
+
+        if (running) {
+            fundDeadlines = new LocalDateTime[]{LocalDateTime.of(1970, 1, 1, 0, 0)};
+        } else {
+            fundDeadlines = addedDeadlines.toArray(new LocalDateTime[0]);
+        }
+
+        //FundTitle errorhandling
+        if(validationUtils.isWithinLowerCharLimit(nameField.getText()) == false){
+            isInvalidLenght = true;
+            dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
+            hasError = true;
+        }else if(validationUtils.isValidInput(nameField.getText()) == false){
+            isInvalidLenght = false;
+            dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
+            hasError = true;
+        }else{
+            tempTitle = nameField.getText().trim();
+        }
+
+        //FundDescription errorhandling
+        if(validationUtils.isWithinUpperCharLimit(descriptionArea.getText()) == false){
+            isInvalidLenght = true;
+            dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
+            hasError = true;
+        }else if(validationUtils.isValidDescription(descriptionArea.getText()) == false){
+            isInvalidLenght = false;
+            dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
+            hasError = true;
+        }else{
+            tempDescription = descriptionArea.getText().trim();
+        }
+
+        //Money errorhandling
+        if(validationUtils.isNumericInput(amountFromField.getText()) == false){
+            dialog.add(UserFrameErrorHandling.displayAmountFromError());
+            hasError = true;
+        }else{
+            tempAmountFrom = Long.parseLong(amountFromField.getText().trim());
+        }
+        if(validationUtils.isNumericInput(amountToField.getText()) == false){
+            dialog.add(UserFrameErrorHandling.displayAmountToError());
+            hasError = true;
+        }else{
+            tempAmountTo = Long.parseLong(amountToField.getText().trim());
+        }
+
+        //Category Errorhandling
+        ArrayList<String> selectedCatagories = new ArrayList<>();
+        for(Component comp : tagPanel.getComponents()){
+            if(comp instanceof JCheckBox){
+                JCheckBox checkBox = (JCheckBox) comp;
+                if(checkBox.isSelected()){
+                    selectedCatagories.add(checkBox.getText());
+                }
             }
+        }
 
-           
-            //FundTitle errorhandling
-            //System.out.println("Title: " + nameField.getText());
-            if(validationUtils.isWithinLowerCharLimit(nameField.getText()) == false){
-                isInvalidLenght = true;
-                dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
-            }else if(validationUtils.isValidInput(nameField.getText()) == false){
-                isInvalidLenght = false;
-                dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
-            }else{
-                tempTitle = nameField.getText().trim();
-            }
+        //Website Errorhandling
+        if(validationUtils.isValidUrl(websiteField.getText()) == false){
+            dialog.add(UserFrameErrorHandling.displayWebsiteError());
+            hasError = true;
+        }else{
+            tempWebsite = websiteField.getText().trim();
+        }
 
-            //FundDescription errorhandling
-            if(validationUtils.isWithinUpperCharLimit(descriptionArea.getText()) == false){
-                isInvalidLenght = true;
-                dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
-            }else if(validationUtils.isValidDescription(descriptionArea.getText()) == false){
-                isInvalidLenght = false;
-                dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
-            }else{
-                tempDescription = descriptionArea.getText().trim();
-            }
-
-            //Money errorhandling
-            if(validationUtils.isNumericInput(amountFromField.getText()) == false){
-                dialog.add(UserFrameErrorHandling.displayAmountFromError());
-            }else{
-                tempAmountFrom = Long.parseLong(amountFromField.getText().trim());
-            }
-            if(validationUtils.isNumericInput(amountToField.getText()) == false){
-                dialog.add(UserFrameErrorHandling.displayAmountToError());
-            }else{
-                tempAmountTo = Long.parseLong(amountToField.getText().trim());
-            }
-
-            //Date
-
-
-            //Category Errorhandling
-             ArrayList<String> selectedCatagories = new ArrayList<>();
-            for(Component comp : tagPanel.getComponents()){
+        if(collaboratedCheckBox.isSelected() == true){
+            isCollaborated = true;
+            for(Component comp : collaborationContentPanel.getComponents()){
                 if(comp instanceof JCheckBox){
                     JCheckBox checkBox = (JCheckBox) comp;
                     if(checkBox.isSelected()){
-                        selectedCatagories.add(checkBox.getText());
+                        selectedCollabortion.add(checkBox.getText());
                     }
                 }
             }
+        }
 
-            //Website Errorhandling
-            if(validationUtils.isValidUrl(websiteField.getText()) == false){
-                dialog.add(UserFrameErrorHandling.displayWebsiteError());
-            }else{
-                tempWebsite = websiteField.getText().trim();
-            }
-
-            
-            //Collaborated Errorhandling
-            if(collaboratedCheckBox.isSelected() == true){
-            isCollaborated = true;
-                for(Component comp : collaborationContentPanel.getComponents()){
-                    if(comp instanceof JCheckBox){
-                        JCheckBox checkBox = (JCheckBox) comp;
-                        if(checkBox.isSelected()){
-                            selectedCollabortion.add(checkBox.getText());
-                        }
-                    }
-                }
-            }
-
-             fundClass fund = new fundClass(tempTitle, tempDescription, tempAmountFrom, tempAmountTo,
-                addedDeadlines, selectedCatagories, selectedCollabortion, contacts, tempWebsite, 
-                isCollaborated, running);
-            System.out.println(fund);
+        if (!hasError) {
+            fundClass fund = new fundClass(tempTitle, tempDescription, tempAmountFrom, tempAmountTo,
+            addedDeadlines, selectedCatagories, selectedCollabortion, contacts, tempWebsite, 
+            isCollaborated, running);
             main.fundList.add(fund);
             updateFundList();
-            
-
             dialog.dispose();
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(dialog, "Indtast venligst gyldige tal for beløb.", "Fejl", JOptionPane.ERROR_MESSAGE);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(dialog, "Der opstod en fejl: " + e.getMessage(), "Fejl", JOptionPane.ERROR_MESSAGE);
         }
     });
 

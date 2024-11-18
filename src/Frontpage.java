@@ -4,19 +4,19 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class Frontpage extends JFrame {
-    private JFrame frame = new JFrame();
+    private JFrame frame;
 
     public Frontpage() {
         initializeFrame();  // Initialize JFrame
        
 
-        frame.setLayout(new GridLayout(4, 1));
+        frame.getContentPane().setLayout(new GridLayout(4, 1));
 
         JLabel welcomeLabel = new JLabel("Velkommen! Venligst indtast kode:", SwingConstants.CENTER);
-        frame.add(welcomeLabel);
+        frame.getContentPane().add(welcomeLabel);
 
         JPasswordField passwordField = new JPasswordField();
-        frame.add(passwordField);
+        frame.getContentPane().add(passwordField);
 
         // Checkbox to toggle password visibility
         JCheckBox showPasswordCheckBox = new JCheckBox("Vis kode");
@@ -29,7 +29,7 @@ public class Frontpage extends JFrame {
                 }
             }
         });
-        frame.add(showPasswordCheckBox);
+        frame.getContentPane().add(showPasswordCheckBox);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
@@ -67,7 +67,7 @@ public class Frontpage extends JFrame {
             }
         });
 
-        frame.add(buttonPanel);
+        frame.getContentPane().add(buttonPanel);
     }
 
     public void show() {
