@@ -33,7 +33,7 @@ public class FundCsvReader {
                 List<String> data = parseCsvLine(line);
                 
                 // If the line has fewer than 8 columns, pad the remaining columns with empty strings
-                while (data.size() < 8) {
+                while (data.size() < 9) {
                     // Add empty strings for missing columns
                     data.add(""); 
                 }
@@ -73,6 +73,9 @@ public class FundCsvReader {
                 // Parsing categories (comma-separated list)
                 List<String> categories = Arrays.asList(data.get(7).replace("\"", "").split(",\\s*"));
 
+                // Parse contact information
+                List<fundContactClass> contacts = parseContactInformation(data.get(8));
+
                 // Create a new fundClass object and set its properties
                 fundClass fund = new fundClass();
                 fund.setTitle(fundName);
@@ -82,6 +85,8 @@ public class FundCsvReader {
                 fund.setBudget(budgetMin, budgetMax);
                 fund.setCollaborationHistory(collaborationHistory);
                 categories.forEach(fund::setCategories);
+
+                fund.setContacts(contacts);;
     
                 funds.add(fund);
             }
@@ -106,5 +111,29 @@ public class FundCsvReader {
         }
         
         return result;
+    }
+
+    private static List<fundContactClass> parseContactInformation(String contactColumn) {
+        List<fundContactClass> contacts = new ArrayList<>();
+    
+        if (contactColumn == null || contactColumn.trim().isEmpty() || contactColumn.equals("N/A")) {
+            return contacts;
+        }
+    
+        // Split the contact column by " - " to separate different contacts
+        String[] contactEntries = contactColumn.split("\\s+-\\s+");
+        for (String entry : contactEntries) {
+            // Split each contact entry by ", " to get individual fields
+            String[] fields = entry.split(",\\s*");
+            if (fields.length == 3) {
+                // Create a new fundContactClass with parsed fields
+                String name = fields[0].trim();
+                String phone = fields[1].trim();
+                String email = fields[2].trim();
+                contacts.add(new fundContactClass(name, phone, email));
+            }
+        }
+    
+        return contacts;
     }
 }

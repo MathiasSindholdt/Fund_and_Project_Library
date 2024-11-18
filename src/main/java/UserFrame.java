@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -15,7 +14,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.format.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -926,28 +924,58 @@ private void showProjectDetails(project project) {
     projectFullPanel.add(new JLabel("Kategori: " + project.getCategories()));
     projectFullPanel.add(new JLabel("\n"));
 
-    // Compare project categories with fund categories to find matches
-    compareProjectCatsWithFundCats comparer = new compareProjectCatsWithFundCats();
-    ArrayList<fundClass> matchingFunds = comparer.compareCategoriesWithFund(true, main.fundList, project);
+    // Checkbox to toggle "only one category needed" logic
+    JCheckBox onlyOneNeededCheckBox = new JCheckBox("Kun en kategori kræves for match", true); // Default to true
+    projectFullPanel.add(new JLabel("\n"));
+    projectFullPanel.add(new JLabel("\n"));
+    projectFullPanel.add(onlyOneNeededCheckBox);
 
-    if (!matchingFunds.isEmpty()) {
-        projectFullPanel.add(new JLabel("Fonde med matchende kategorier:"));
+    // Panel for matching funds
+    JPanel matchingFundsPanel = new JPanel();
+    matchingFundsPanel.setLayout(new BoxLayout(matchingFundsPanel, BoxLayout.Y_AXIS));
+    projectFullPanel.add(matchingFundsPanel);
 
-        // Create a clickable JButton for each matching fund
-        for (fundClass fund : matchingFunds) {
-            JButton fundButton = new JButton(fund.getTitle());
-            fundButton.addActionListener(e -> showFundDetailsDialog(fund));
-            projectFullPanel.add(fundButton);
+    // Method to update the matching funds list based on checkbox state
+    Runnable updateMatchingFunds = () -> {
+        matchingFundsPanel.removeAll();
+
+        compareProjectCatsWithFundCats comparer = new compareProjectCatsWithFundCats();
+        boolean onlyOneNeeded = onlyOneNeededCheckBox.isSelected();
+        ArrayList<fundClass> matchingFunds = comparer.compareCategoriesWithFund(onlyOneNeeded, main.fundList, project);
+
+        if (!matchingFunds.isEmpty()) {
+            matchingFundsPanel.add(new JLabel("Fonde med matchende kategorier:"));
+            projectFullPanel.add(new JLabel("\n"));
+            for (fundClass fund : matchingFunds) {
+                // Add fund title
+                matchingFundsPanel.add(new JLabel(fund.getTitle()));
+
+                // Add custom loop button
+                JButton loopButton = createLoopButton();
+                loopButton.addActionListener(e -> showFundDetailsDialog(fund));
+                matchingFundsPanel.add(loopButton);
+            }
+        } else {
+            matchingFundsPanel.add(new JLabel("Ingen fonde matcher nogle kategorier"));
+            projectFullPanel.add(new JLabel("\n"));
+
         }
-    } else {
-        projectFullPanel.add(new JLabel("Ingen fonde matcher nogle kategorier"));
-    }
+
+        matchingFundsPanel.revalidate();
+        matchingFundsPanel.repaint();
+    };
+
+    // Add listener to update the list when checkbox state changes
+    onlyOneNeededCheckBox.addActionListener(e -> updateMatchingFunds.run());
+
+    // Initial update for matching funds
+    updateMatchingFunds.run();
 
     // Archive button to archive the project
     JButton archiveButton = new JButton("Arkivér");
     Dimension buttonSize = new Dimension(150, 50);
     archiveButton.setPreferredSize(buttonSize);
-    
+
     archiveButton.addActionListener(e -> {
         // Archive the project
         archive.archiveProject(project);
@@ -958,7 +986,7 @@ private void showProjectDetails(project project) {
         projectFullPanel.revalidate();
         projectFullPanel.repaint();
     });
-    
+
     projectFullPanel.add(archiveButton);
 
     projectFullPanel.revalidate();
@@ -1362,6 +1390,22 @@ addDeadlineButton.addActionListener(e -> {
 
 private JButton createXButton() {
     ImageIcon originalIcon = new ImageIcon("X_Button.png");
+    Image scaledImage = originalIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+    ImageIcon resizedIcon = new ImageIcon(scaledImage);
+
+    JButton button = new JButton();
+        button.setPreferredSize(new Dimension(20, 20));
+        button.setIcon(resizedIcon);
+        button.setBorderPainted(false);
+        button.setContentAreaFilled(false);
+        button.setFocusPainted(false);
+        button.setOpaque(false);
+        button.addActionListener(this);
+        return button;
+}
+
+private JButton createLoopButton() {
+    ImageIcon originalIcon = new ImageIcon("Glass_loop.png");
     Image scaledImage = originalIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
     ImageIcon resizedIcon = new ImageIcon(scaledImage);
 
