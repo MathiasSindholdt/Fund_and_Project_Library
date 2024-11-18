@@ -740,6 +740,8 @@ public class UserFrame extends JFrame implements ActionListener {
         dialog.setVisible(true);
         }
 
+
+//SORT HERE
     private void updateproposalProjectList() {
         System.out.println("Updating proposal project list");
     proposalProjectListPanel.removeAll();
@@ -760,7 +762,7 @@ public class UserFrame extends JFrame implements ActionListener {
     proposalProjectListPanel.repaint();
 }
 
-private void updateProjectList() {
+private void updateProjectList() { // SORT HERE
     // Ryd panelet før opdatering
     projectListPanel.removeAll();
 
@@ -1510,7 +1512,7 @@ private void showFundDetails(fundClass fund) {
     fundListPanel.repaint();
 }
 
- // Method to update the fund list display
+ // Method to update the fund list display SORT HERE
  private void updateFundList() {
     fundListPanel.removeAll();  // Clear existing funds
 
