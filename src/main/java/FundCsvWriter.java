@@ -43,18 +43,27 @@ public class FundCsvWriter {
                     StringBuilder contactInfo = new StringBuilder();
                     for (fundContactClass contact : contacts) {
                         if (contactInfo.length() > 0) {
-                            contactInfo.append(" - ");
+                            contactInfo.append(" - "); // Separator for multiple contacts
                         }
-                        contactInfo.append("\"")
-                                   .append(escapeCsvField(contact.getContactName())).append(", ")
-                                   .append(escapeCsvField(contact.getContactPhoneNumber())).append(", ")
-                                   .append(escapeCsvField(contact.getContactEmail()))
-                                   .append("\"");
+
+                        // Handle null/empty fields in contact information
+                        String name = contact.getContactName() != null && !contact.getContactName().trim().isEmpty()
+                                ? escapeCsvField(contact.getContactName().trim())
+                                : "N/A";
+                        String phone = contact.getContactPhoneNumber() != null && !contact.getContactPhoneNumber().trim().isEmpty()
+                                ? escapeCsvField(contact.getContactPhoneNumber().trim())
+                                : "N/A";
+                        String email = contact.getContactEmail() != null && !contact.getContactEmail().trim().isEmpty()
+                                ? escapeCsvField(contact.getContactEmail().trim())
+                                : "N/A";
+
+                        // Format the contact as "name, phone, email"
+                        contactInfo.append(String.format("\"%s, %s, %s\"", name, phone, email));
                     }
-                    fundData[8] = contactInfo.toString();
+                    fundData[8] = contactInfo.toString(); // Add to the CSV data row
                 } else {
-                    fundData[8] = "N/A";
-                }                
+                    fundData[8] = "N/A"; // No contacts available
+                }
                 // Join fund data and write to file
                 String line = String.join(",", fundData);
                 writer.write(line);
