@@ -10,10 +10,12 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -355,7 +357,7 @@ public class UserFrame extends JFrame implements ActionListener {
             detailsPanel.add(new JLabel("Titel: " + fund.getTitle()));
             detailsPanel.add(new JLabel("Beskrivelse: " + fund.getDescription()));
             detailsPanel.add(new JLabel("Kategorier: " + fund.getCategories()));
-            detailsPanel.add(new JLabel("Deadline(s): " + fund.getDeadlines()));
+            detailsPanel.add(new JLabel("Ansøgningsfrist(er): " + fund.getDeadlines()));
             detailsPanel.add(new JLabel("Kontakter: " + fund.getContacts()));
             detailsPanel.add(new JLabel("Budget span: " + fund.getBudgetSpan()));
             detailsPanel.add(new JLabel("Tidligere samarbejde: " + fund.getCollaborationHistory()));
@@ -451,12 +453,15 @@ public class UserFrame extends JFrame implements ActionListener {
         System.out.println("Opening proposal project dialog...");
     
         JPanel mainPanel = new JPanel();
-        dialog.add(mainPanel);
-    
         GroupLayout layout = new GroupLayout(mainPanel);
         mainPanel.setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
+    
+        // Wrap the main panel in a scroll pane
+        JScrollPane scrollPane = new JScrollPane(mainPanel);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        dialog.add(scrollPane);
     
         JLabel nameLabel = new JLabel("Titel:");
         JTextField nameField = new JTextField();
@@ -466,7 +471,7 @@ public class UserFrame extends JFrame implements ActionListener {
     
         JLabel descriptionLabel = new JLabel("Kort beskrivelse af projektet:");
         JTextArea descriptionArea = new JTextArea(5, 20);
-        JScrollPane scrollPane = new JScrollPane(descriptionArea);
+        JScrollPane desciptionScrollPane = new JScrollPane(descriptionArea);
     
         JLabel ownerLabel = new JLabel("Ejer af idé/forslaget:");
         JTextField ownerField = new JTextField();
@@ -703,7 +708,7 @@ public class UserFrame extends JFrame implements ActionListener {
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addComponent(nameLabel).addComponent(nameField)
             .addComponent(ideaLabel).addComponent(ideaField)
-            .addComponent(descriptionLabel).addComponent(scrollPane)
+            .addComponent(descriptionLabel).addComponent(desciptionScrollPane)
             .addComponent(ownerLabel).addComponent(ownerField)
             .addComponent(targetLabel).addComponent(targetField)
             .addComponent(budgetLabel).addComponent(budgetField)
@@ -718,7 +723,7 @@ public class UserFrame extends JFrame implements ActionListener {
         layout.setVerticalGroup(layout.createSequentialGroup()
             .addComponent(nameLabel).addComponent(nameField)
             .addComponent(ideaLabel).addComponent(ideaField)
-            .addComponent(descriptionLabel).addComponent(scrollPane)
+            .addComponent(descriptionLabel).addComponent(desciptionScrollPane)
             .addComponent(ownerLabel).addComponent(ownerField)
             .addComponent(targetLabel).addComponent(targetField)
             .addComponent(budgetLabel).addComponent(budgetField)
@@ -956,12 +961,15 @@ private void showProjectDetails(project project) {
     projectFullPanel.revalidate();
     projectFullPanel.repaint();
 }
+
+
 private void openFundDialog() {
     JDialog dialog = new JDialog(frame, "Lav En Fond", true);
-    dialog.setSize(700, 950);
+    dialog.setSize(700, 600);
     
-    JPanel mainPanel = new JPanel();
-    dialog.add(mainPanel);
+ JPanel mainPanel = new JPanel();
+    mainPanel.setLayout(new GroupLayout(mainPanel));
+    mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     
     GroupLayout layout = new GroupLayout(mainPanel);
     mainPanel.setLayout(layout);
@@ -986,25 +994,27 @@ private void openFundDialog() {
     JTextField amountToField = new JTextField();
 
     // Fond Deadline
-    JLabel deadlineLabel = new JLabel("Deadline:");
+    JLabel deadlineLabel = new JLabel("Ansøgningsfrist:");
     SpinnerDateModel deadlineModel = new SpinnerDateModel(new Date(), null, null, Calendar.DAY_OF_MONTH);
     JSpinner deadlineSpinner = new JSpinner(deadlineModel);
     JSpinner.DateEditor deadlineEditor = new JSpinner.DateEditor(deadlineSpinner, "dd/MM/yyyy");
     deadlineSpinner.setEditor(deadlineEditor);
-    deadlineSpinner.setValue(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())); // Set default time to 00:00
-// Tilføjede Deadlines Panel
-JLabel addedDeadlinesLabel = new JLabel("Tilføjede Deadlines:");
-JPanel deadlineListPanel = new JPanel();
-deadlineListPanel.setLayout(new BoxLayout(deadlineListPanel, BoxLayout.Y_AXIS));
-JScrollPane deadlineScrollPane = new JScrollPane(deadlineListPanel);
-deadlineScrollPane.setPreferredSize(new Dimension(200, 100));
-JLabel isDeadLineTimeLabel = new JLabel("Er deadline med bestemt tidspunkt?:");
-JCheckBox deadLineTimeCheckBox = new JCheckBox();
-JPanel deadLineTimePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-JLabel deadLineTimeLabel = new JLabel("Tidspunkt:");
-JTextField deadLineTimeFieldHour = new JTextField(2);
-JLabel deadLineTimeLabelColon = new JLabel(":");
-JTextField deadLineTimeFieldMinute = new JTextField(2);
+    deadlineSpinner.setValue(Date.from(Instant.now())); // Set default time to 00:00
+
+    // Tilføjede Deadlines Panel
+    JLabel addedDeadlinesLabel = new JLabel("Tilføjede ansøgningsfrister:");
+    JPanel deadlineListPanel = new JPanel();
+    deadlineListPanel.setLayout(new BoxLayout(deadlineListPanel, BoxLayout.Y_AXIS));
+    JScrollPane deadlineScrollPane = new JScrollPane(deadlineListPanel);
+    deadlineScrollPane.setPreferredSize(new Dimension(200, 100));
+    JLabel isDeadLineTimeLabel = new JLabel("Er ansøgningsfrist på et bestemt tidspunkt?:");
+    JCheckBox deadLineTimeCheckBox = new JCheckBox();
+    JPanel deadLineTimePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    JLabel deadLineTimeLabel = new JLabel("Tidspunkt:");
+    JTextField deadLineTimeFieldHour = new JTextField(2);
+    JLabel deadLineTimeLabelColon = new JLabel(":");
+    JTextField deadLineTimeFieldMinute = new JTextField(2);
+
 
 deadLineTimePanel.add(deadLineTimeLabel);
 deadLineTimePanel.add(deadLineTimeFieldHour);
@@ -1018,12 +1028,12 @@ deadLineTimeCheckBox.addItemListener(e -> {
     dialog.repaint();
 });
 
-// Knap til at tilføje en ny deadline
-JButton addDeadlineButton = new JButton("Tilføj Deadline");
-
-// List til opbevaring af tilføjede deadlines
-List<LocalDateTime> addedDeadlines = new ArrayList<>();
-DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    // Knap til at tilføje en ny deadline
+    JButton addDeadlineButton = new JButton("Tilføj ansøgningsfrist");
+    
+    // List til opbevaring af tilføjede deadlines
+    List<LocalDateTime> addedDeadlines = new ArrayList<>();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
 addDeadlineButton.addActionListener(e -> {
     LocalDateTime newDeadline;
@@ -1167,7 +1177,7 @@ addDeadlineButton.addActionListener(e -> {
     });
 
     createCollaborationButton.addActionListener(e -> {
-        String newCollaboration = JOptionPane.showInputDialog(dialog, "Enter new collaboration:");
+        String newCollaboration = JOptionPane.showInputDialog(dialog, "Skriv nye tidligere samarbejdeprojekter:");
         if (newCollaboration != null && !newCollaboration.trim().isEmpty()) {
             main.userProjectList.add(newCollaboration);
             collaborationContentPanel.add(new JCheckBox(newCollaboration));
@@ -1180,7 +1190,7 @@ addDeadlineButton.addActionListener(e -> {
     mainPanel.add(collaborationPanel, BorderLayout.WEST);
 
     // Løbende deadline
-    JLabel runningLabel = new JLabel("Løbende deadline:");
+    JLabel runningLabel = new JLabel("Løbende ansøgningsfrist:");
     JCheckBox runningCheckBox = new JCheckBox();
     runningCheckBox.addItemListener(e -> {
         deadlineSpinner.setEnabled(!runningCheckBox.isSelected());
@@ -1335,6 +1345,14 @@ addDeadlineButton.addActionListener(e -> {
         .addComponent(submitButton)
     );
 
+    JScrollPane scrollPane = new JScrollPane(mainPanel);
+    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Optional: Smooth scrolling
+
+    // Add the scrollPane to the dialog
+    dialog.add(scrollPane);
+
     dialog.setLocationRelativeTo(frame);
     dialog.setVisible(true);
 }
@@ -1442,7 +1460,7 @@ private void showFundDetails(fundClass fund) {
     tempContacts = fund.getContacts();
     fundFullPanel.removeAll();
 
-    fundFullPanel.add(new JLabel("Navn: " + fund.getTitle()));
+    fundFullPanel.add(new JLabel("Titel: " + fund.getTitle()));
     fundFullPanel.add(new JLabel("Beskrivelse: " + fund.getDescription()));
     fundFullPanel.add(new JLabel("Beløb Fra: " + fund.getBudgetMin()));
     fundFullPanel.add(new JLabel("Beløb Til: " + fund.getBudgetMax()));
@@ -1451,7 +1469,7 @@ private void showFundDetails(fundClass fund) {
     for(int i = 0; i<fund.getDeadlines().size(); i++){
         tempDeadlines.add(fund.getDeadlines().get(i).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
     }
-    fundFullPanel.add(new JLabel("Deadlines: " + String.join(", ", tempDeadlines)));
+    fundFullPanel.add(new JLabel("Ansøgningsfrist: " + String.join(", ", tempDeadlines)));
     //fundFullPanel.add(new JLabel("Deadline: " + fund.getDeadlines()));
     fundFullPanel.add(new JLabel("Løbende: " + fund.getRunning()));
     fundFullPanel.add(new JLabel("Kategori: " + fund.getCategories()));
@@ -1513,14 +1531,18 @@ private void openProjectDialog() {
     JDialog dialog = new JDialog(frame, "Lav Projekt", true);
     dialog.setSize(700, 700);
 
-
+    // Main panel with layout
     JPanel mainPanel = new JPanel();
-    dialog.add(mainPanel);
-
     GroupLayout layout = new GroupLayout(mainPanel);
     mainPanel.setLayout(layout);
     layout.setAutoCreateGaps(true);
     layout.setAutoCreateContainerGaps(true);
+
+    // Wrap the main panel in a scroll pane
+    JScrollPane scrollPane = new JScrollPane(mainPanel);
+    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    dialog.add(scrollPane);
+
 
     // Components
     JLabel nameLabel = new JLabel("Titel:");
@@ -1532,7 +1554,7 @@ private void openProjectDialog() {
 
     JLabel descriptionLabel = new JLabel("Beskrivelse af projektet:");
     JTextArea descriptionArea = new JTextArea(5, 20);
-    JScrollPane scrollPane = new JScrollPane(descriptionArea);
+    JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
 
     JLabel ownerLabel = new JLabel("Ejer af projektet:");
     JTextField ownerField = new JTextField();
@@ -1729,7 +1751,7 @@ private void openProjectDialog() {
 
         .addComponent(nameLabel).addComponent(nameField)
         .addComponent(purposeLabel).addComponent(purposeField)
-        .addComponent(descriptionLabel).addComponent(scrollPane)
+        .addComponent(descriptionLabel).addComponent(descriptionScrollPane)
         .addComponent(ownerLabel).addComponent(ownerField)
         .addComponent(targetLabel).addComponent(targetField)
         .addComponent(budgetLabel).addComponent(budgetField)
@@ -1745,7 +1767,7 @@ private void openProjectDialog() {
     layout.setVerticalGroup(layout.createSequentialGroup()
         .addComponent(nameLabel).addComponent(nameField)
         .addComponent(purposeLabel).addComponent(purposeField)
-        .addComponent(descriptionLabel).addComponent(scrollPane)
+        .addComponent(descriptionLabel).addComponent(descriptionScrollPane)
         .addComponent(ownerLabel).addComponent(ownerField)
         .addComponent(targetLabel).addComponent(targetField)
         .addComponent(budgetLabel).addComponent(budgetField)
@@ -1916,6 +1938,7 @@ private void openProjectDialog() {
         CardLayout cardLayout = (CardLayout) rightSidePanel.getLayout();
         cardLayout.show(rightSidePanel, cardName);
     }
+
     private void showFundDetailsDialog(fundClass fund) {
         // Create the dialog box
         JDialog fundDialog = new JDialog(frame, fund.getTitle(), true);
