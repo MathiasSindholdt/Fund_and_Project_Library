@@ -40,7 +40,6 @@ public class main {
     private static String ProjectActivities;
     private static ArrayList<String> ProjectCategories;
     
-    
     public static boolean getCatagoryBoolean(){
         return onlyOneIsNeeded;
     }
@@ -149,10 +148,12 @@ public class main {
         // }
         
         // ----------------------------------------------------START OF MAIN FILE----------------------------------------------------------------------------
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-            new Frontpage();
-            }
-        });
+        // SwingUtilities.invokeLater(new Runnable() {
+        //     public void run() {
+        //     new Frontpage();
+        //     }
+        // });
+        Frontpage front = new Frontpage();
+        front.show();
     }
 }

@@ -32,6 +32,7 @@ public class projectAbstract extends elementFormatting {
     }
 
     public long getProjectBudget(){
+        System.out.println("Budget+++++++++++++++: " + projectBudget);
         return projectBudget;
     }
 
@@ -54,10 +55,8 @@ public class projectAbstract extends elementFormatting {
     }
 
     public void setProjectOwner(String newProjectOwner){
-        if (!validationUtils.isWithinLowerCharLimit(newProjectOwner)){
-            throw new validationUtils.WrongDataInputException("The project owner exceeds 200 characters");
-        }
-        validationUtils.validateInput(newProjectOwner, "Purpose");
+        System.out.println("Owner+++++++++++++++: " + newProjectOwner);
+        this.projectOwner = newProjectOwner;
     }
 
     public void setProjectTargetAudience(String newProjectTargetAudience){

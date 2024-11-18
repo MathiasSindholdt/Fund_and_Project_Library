@@ -3,23 +3,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
-
 public class Frontpage extends JFrame {
+    private JFrame frame;
 
     public Frontpage() {
-        setTitle("Welcome");
-        setSize(400, 200);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        initializeFrame();  // Initialize JFrame
+       
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 1));
+        frame.getContentPane().setLayout(new GridLayout(4, 1));
 
         JLabel welcomeLabel = new JLabel("Velkommen! Venligst indtast kode:", SwingConstants.CENTER);
-        panel.add(welcomeLabel);
+        frame.getContentPane().add(welcomeLabel);
 
         JPasswordField passwordField = new JPasswordField();
-        panel.add(passwordField);
+        frame.getContentPane().add(passwordField);
 
         // Checkbox to toggle password visibility
         JCheckBox showPasswordCheckBox = new JCheckBox("Vis kode");
@@ -32,7 +29,7 @@ public class Frontpage extends JFrame {
                 }
             }
         });
-        panel.add(showPasswordCheckBox);
+        frame.getContentPane().add(showPasswordCheckBox);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
@@ -70,17 +67,28 @@ public class Frontpage extends JFrame {
             }
         });
 
-        panel.add(buttonPanel);
-        add(panel);
-        setVisible(true);
+        frame.getContentPane().add(buttonPanel);
     }
-}
 
-//     // public static void main(String[] args) {
-//         SwingUtilities.invokeLater(new Runnable() {
-//             public void run() {
-//                 new Frontpage();
-//             }
-//         });
-//     // }
-// }
+    public void show() {
+        frame.setVisible(true);
+    }
+
+    private void initializeFrame() {
+        frame = new JFrame("Welcome");
+        frame.setTitle("Welcome");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 200);
+        frame.setLocationRelativeTo(null);
+
+    }
+
+
+    // public static void main(String[] args) {
+    //     SwingUtilities.invokeLater(new Runnable() {
+    //         public void run() {
+    //             new Frontpage();
+    //         }
+    //     });
+    // }
+}
