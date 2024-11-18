@@ -1249,7 +1249,7 @@ addDeadlineButton.addActionListener(e -> {
         boolean hasError = false;
 
         if (running) {
-            fundDeadlines = new LocalDateTime[]{LocalDateTime.of(1970, 1, 1, 0, 0)};
+            fundDeadlines = new LocalDateTime[]{LocalDateTime.of(3000, 1, 1, 0, 0)};
         } else {
             fundDeadlines = addedDeadlines.toArray(new LocalDateTime[0]);
         }
