@@ -104,7 +104,10 @@ public class Database {
                 tmpstr = tmpstr.replace("]", "");
                 tmpstr = tmpstr.trim();
                 for (String s : tmpstr.split(",")) {
-                    tmp.setContacts(s);
+                    String[] strarr = s.split(";");
+                    fundContactClass fcc = new fundContactClass(
+                            strarr[0], strarr[1], strarr[2]);
+                    tmp.setContacts(fcc);
                 }
                 tmpstr = rs.getString(7);
                 String[] tmpstrArr = tmpstr.split(" - ");
@@ -114,9 +117,11 @@ public class Database {
                 tmpstr = tmpstr.replace("[", "");
                 tmpstr = tmpstr.replace("]", "");
                 tmpstr = tmpstr.trim();
+                ArrayList<String> strarrlist = new ArrayList<>();
                 for (String s : tmpstr.split(",")) {
-                    tmp.setCollaborationHistory(s);
+                    strarrlist.add(s);
                 }
+                    tmp.setCollaborationHistory(strarrlist);
                 tmp.setRunning(rs.getBoolean(9));
                 tmp.setfundWebsite(rs.getString(10));
                 tmparr.add(tmp);
@@ -659,7 +664,7 @@ public class Database {
             query += "categories = '" + pp.getCategories().toString() + "' ";
             query += "description = '" + pp.getDescription() + "' ";
             query += "dateCreated = '" + pp.getDateCreated().toString() + "' ";
-            query += "deadlines = '" + pp.getDeadlines().toString() + "' ";
+            query += "deadlines = '" + pp.getFunds().toString() + "' ";
             query += "projectPurpose = '" + pp.getProjectPurpose() + "' ";
             query += "projectOwner = '" + pp.getProjectOwner() + "' ";
             query += "projectTargetAudience = '" + pp.getProjectTargetAudience() + "'";
@@ -700,7 +705,7 @@ public class Database {
             query += "categories = '" + pro.getCategories().toString() + "' ";
             query += "description = '" + pro.getDescription() + "' ";
             query += "dateCreated = '" + pro.getDateCreated().toString() + "' ";
-            query += "deadlines = '" + pro.getDeadlines().toString() + "' ";
+            query += "deadlines = '" + pro.getFunds().toString() + "' ";
             query += "projectPurpose = '" + pro.getProjectPurpose() + "' ";
             query += "projectOwner = '" + pro.getProjectOwner() + "' ";
             query += "projectTargetAudience = '" + pro.getProjectTargetAudience() + "'";
@@ -780,7 +785,7 @@ public class Database {
             query += "categories = '" + pp.getCategories().toString() + "' ";
             query += "description = '" + pp.getDescription() + "' ";
             query += "dateCreated = '" + pp.getDateCreated().toString() + "' ";
-            query += "deadlines = '" + pp.getDeadlines().toString() + "' ";
+            query += "deadlines = '" + pp.getFunds().toString() + "' ";
             query += "projectPurpose = '" + pp.getProjectPurpose() + "' ";
             query += "projectOwner = '" + pp.getProjectOwner() + "' ";
             query += "projectTargetAudience = '" + pp.getProjectTargetAudience() + "'";
@@ -822,7 +827,7 @@ public class Database {
             query += "categories = '" + pro.getCategories().toString() + "' ";
             query += "description = '" + pro.getDescription() + "' ";
             query += "dateCreated = '" + pro.getDateCreated().toString() + "' ";
-            query += "deadlines = '" + pro.getDeadlines().toString() + "' ";
+            query += "deadlines = '" + pro.getFunds().toString() + "' ";
             query += "projectPurpose = '" + pro.getProjectPurpose() + "' ";
             query += "projectOwner = '" + pro.getProjectOwner() + "' ";
             query += "projectTargetAudience = '" + pro.getProjectTargetAudience() + "'";
