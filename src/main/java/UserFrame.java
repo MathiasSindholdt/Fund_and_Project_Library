@@ -1445,10 +1445,13 @@ private void openContactsDialog(JDialog dialog){
 
     JButton submitButton = new JButton("Tilføj");
     submitButton.addActionListener(event -> {
-        String contactName = nameField.getText();
-        String contactPhone = phoneField.getText();
-        String contatctEmail = emailField.getText();
-
+        String contactName = "";
+        contactName =  nameField.getText();
+        String contactPhone = "";
+        contactPhone = phoneField.getText();
+        String contatctEmail =  "";
+        contatctEmail = emailField.getText();
+         
 
         //Function to replace empty fields with "N/A"
         if(contactName.isEmpty()){
