@@ -1,6 +1,9 @@
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 import java.time.LocalDate;
@@ -325,7 +328,7 @@ public class csvReaderExampleOne {
     public static ArrayList<String[]> readCsv(String inputFilePath) {
         ArrayList<String[]> rows = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(inputFilePath), StandardCharsets.UTF_8))) {
             String line;
 
             while ((line = br.readLine()) != null) {
