@@ -53,9 +53,11 @@ public class fundClass extends elementFormatting{
         this.deadlines.add(newDeadline);
     }
 
-    public void setContacts(fundContactClass newContact){
-        this.contacts.add(newContact);
+    public void setContacts(List<fundContactClass> newContact){
+        this.contacts.addAll(newContact);
     }
+
+    
 
     public void setBudgetMin(long newBudgetMin){
         this.budgetMin = newBudgetMin;
@@ -78,8 +80,8 @@ public class fundClass extends elementFormatting{
         this.budgetMax = newBudgetMax;
     }
 
-    public void setCollaborationHistory(ArrayList<String> newCollaboration){
-        this.collaborationHistory.addAll(newCollaboration);
+    public void setCollaborationHistory(String newCollaboration){
+        this.collaborationHistory.add(newCollaboration);
     }
 
     public void setRunning(boolean setRunning){
@@ -112,7 +114,7 @@ public class fundClass extends elementFormatting{
         for(int i = 0; i < fundContacts.size() ; i++){
             for(int j = 0; j < fundContacts.size(); j++){
             }
-            this.setContacts(fundContacts.get(i));
+            this.contacts.add(fundContacts.get(i));
         }
         if(Collaborated){
             for(int i = 0; i < fundCollaborationHistory.size() ; i++){
@@ -125,7 +127,7 @@ public class fundClass extends elementFormatting{
         //Overloaded
         public fundClass(){}
 
-    // public static void main(String[] args) {
+    public static void main(String[] args) {
     //     String[] testCatories = {"cat1","cat2","cat3"};
     //     LocalDateTime[] testDeadlines = {LocalDateTime.parse("2024-10-02T12:00:00"),LocalDateTime.parse("2024-12-04T12:00:00")};
     //     String[] testContacts = {"lucas","lundse"};
@@ -158,4 +160,28 @@ public class fundClass extends elementFormatting{
     //     System.out.println("We have previously collaborated on: " + fund.getCollaborationHistory());
     //     System.out.println("The fund website can be found at: " + fund.getFundWebsite());
     // }
+    String filepath = "output.csv";
+
+        // Read funds from the CSV
+        List<fundClass> funds = FundCsvReader.readFundCsv(filepath);
+
+        // Print all funds
+        System.out.println("Funds loaded from CSV:");
+        for (fundClass fund : funds) {
+            System.out.println("Title: " + fund.getTitle());
+            System.out.println("Website: " + fund.getFundWebsite());
+            System.out.println("Description: " + fund.getDescription());
+            System.out.println("Budget: " + fund.getBudgetSpan());
+            System.out.println("Categories: " + fund.getCategories());
+            System.out.println("Deadlines: " + fund.getDeadlines());
+            System.out.println("Collaboration History: " + fund.getCollaborationHistory());
+            for (int i = 0; i<fund.getContacts().size(); i++) {
+                System.out.println(fund.getContacts().get(i).getContactName());
+                System.out.println(fund.getContacts().get(i).getContactPhoneNumber());
+                System.out.println(fund.getContacts().get(i).getContactEmail());
+            }
+            
+            System.out.println("----------------------------------------");
+        }
+}
 }
