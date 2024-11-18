@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -799,7 +800,8 @@ proposalProjectFullPanel.add(archiveButton);
 
 private void showProjectDetails(project project) {
     projectFullPanel.removeAll();
-    
+
+    // Display project details
     projectFullPanel.add(new JLabel("Titel: " + project.getTitle()));
     projectFullPanel.add(new JLabel("Ejer: " + project.getProjectOwner()));
     projectFullPanel.add(new JLabel("Idé: " + project.getProjectPurpose()));
@@ -809,28 +811,47 @@ private void showProjectDetails(project project) {
     projectFullPanel.add(new JLabel("Fra Dato: " + project.getProjectTimeSpanFrom().toString()));
     projectFullPanel.add(new JLabel("Til Dato: " + project.getProjectTimeSpanTo().toString()));
     projectFullPanel.add(new JLabel("Aktiviteter: " + project.getProjectActivities()));
+    projectFullPanel.add(new JLabel("Kategori: " + project.getCategories()));
+    projectFullPanel.add(new JLabel("\n"));
 
+    // Compare project categories with fund categories to find matches
+    compareProjectCatsWithFundCats comparer = new compareProjectCatsWithFundCats();
+    ArrayList<fundClass> matchingFunds = comparer.compareCategoriesWithFund(true, main.fundList, project);
+
+    if (!matchingFunds.isEmpty()) {
+        projectFullPanel.add(new JLabel("Fonde med matchende kategorier:"));
+
+        // Create a clickable JButton for each matching fund
+        for (fundClass fund : matchingFunds) {
+            JButton fundButton = new JButton(fund.getTitle());
+            fundButton.addActionListener(e -> showFundDetailsDialog(fund));
+            projectFullPanel.add(fundButton);
+        }
+    } else {
+        projectFullPanel.add(new JLabel("Ingen fonde matcher nogle kategorier"));
+    }
+
+    // Archive button to archive the project
     JButton archiveButton = new JButton("Arkivér");
-    Dimension buttonSize = new Dimension(150, 50); 
+    Dimension buttonSize = new Dimension(150, 50);
     archiveButton.setPreferredSize(buttonSize);
     
     archiveButton.addActionListener(e -> {
         // Archive the project
         archive.archiveProject(project);
 
-        // Call update methods after archiving
+        // Update project list and clear details display
         updateProjectList();
-        projectFullPanel.removeAll(); 
+        projectFullPanel.removeAll();
         projectFullPanel.revalidate();
         projectFullPanel.repaint();
     });
     
     projectFullPanel.add(archiveButton);
-    
+
     projectFullPanel.revalidate();
     projectFullPanel.repaint();
 }
-
 private void openFundDialog() {
     JDialog dialog = new JDialog(frame, "Lav En Fond", true);
     dialog.setSize(700, 950);
@@ -1796,5 +1817,37 @@ private void openProjectDialog() {
         targetPanel.repaint();
         CardLayout cardLayout = (CardLayout) rightSidePanel.getLayout();
         cardLayout.show(rightSidePanel, cardName);
+    }
+    private void showFundDetailsDialog(fundClass fund) {
+        // Create the dialog box
+        JDialog fundDialog = new JDialog(frame, fund.getTitle(), true);
+        fundDialog.setLayout(new GridLayout(0, 1));
+        
+        // Add fund details to the dialog box
+        fundDialog.add(new JLabel("Titel: " + fund.getTitle()));
+        fundDialog.add(new JLabel("Beskrivelse: " + fund.getDescription()));
+        fundDialog.add(new JLabel("Kategorier: " + fund.getCategories()));
+        fundDialog.add(new JLabel("Ansøgningsfrist: " + fund.getDeadlines().toString()));
+        for(int i = 0; i<tempContacts.size(); i++){
+            fundDialog.add(new JLabel("Kontaktpersoner: " + tempContacts.get(i).getContactName() + " - " + tempContacts.get(i).getContactPhoneNumber() + " - " + tempContacts.get(i).getContactEmail()));
+        }    
+        fundDialog.add(new JLabel("Budget: " + fund.getBudgetSpan()));
+        fundDialog.add(new JLabel("Tidligere projekter: " + fund.getCollaborationHistory()));
+        fundDialog.add(new JLabel("Hjemmeside: " + fund.getFundWebsite()));
+        fundDialog.add(new JLabel("\n"));
+        fundDialog.add(new JLabel("Dato tilføjet: " + fund.getDateCreated()));
+    
+    
+    
+    
+    
+        // Button to close the dialog
+        JButton closeButton = new JButton("Luk");
+        closeButton.addActionListener(e -> fundDialog.dispose());
+        fundDialog.add(closeButton);
+    
+        fundDialog.pack();
+        fundDialog.setLocationRelativeTo(projectFullPanel);  // Center dialog relative to main panel
+        fundDialog.setVisible(true);
     }
 }
