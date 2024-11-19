@@ -282,7 +282,7 @@ public class UserFrame extends JFrame implements ActionListener {
         fundsButton.setPreferredSize(buttonSize);
     
         // Add action listeners to each button to display respective archives
-        proposalsButton.addActionListener(e -> displayArchiveList("proposalProjectsDetails", main.archiveProposalList));
+        proposalsButton.addActionListener(e -> displayArchiveList("proposalProjectsDetails", main.deniedProposalList));
         projectsButton.addActionListener(e -> displayArchiveList("ProjectDetails", main.archiveProjectList));
         fundsButton.addActionListener(e -> displayArchiveList("FundDetails", main.archiveFundList));
     
