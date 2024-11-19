@@ -813,10 +813,12 @@ private void showProjectProbDetails(proposalProject proposal) {
         approveProposal(proposal); // Approve the proposal and convert it to a project
         proposalProjectFullPanel.getParent().getParent().remove(proposalProjectFullPanel); // Close details
         updateproposalProjectList(); // Refresh proposal list
+        ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
+        ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
+        FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
         proposalProjectFullPanel.removeAll();
         proposalProjectFullPanel.repaint();
         proposalProjectFullPanel.revalidate();
-
     });
 
      // Reject button
