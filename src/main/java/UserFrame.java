@@ -2,6 +2,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -947,20 +948,22 @@ private void showProjectDetails(project project) {
 
         if (!matchingFunds.isEmpty()) {
             matchingFundsPanel.add(new JLabel("Fonde med matchende kategorier:"));
-            projectFullPanel.add(new JLabel("\n"));
+            matchingFundsPanel.add(new JLabel("\n"));
             for (fundClass fund : matchingFunds) {
-                // Add fund title
-                matchingFundsPanel.add(new JLabel(fund.getTitle()));
+                // Create a button for each matching fund
+                JButton fundButton = new JButton(fund.getTitle());
+                styleFundButton(fundButton); // Apply styling to the button
 
-                // Add custom loop button
-                JButton loopButton = createLoopButton();
-                loopButton.addActionListener(e -> showFundDetailsDialog(fund));
-                matchingFundsPanel.add(loopButton);
+                // Add action listener to open fund details dialog
+                fundButton.addActionListener(e -> showFundDetailsDialog(fund));
+
+                // Add the button to the panel
+                matchingFundsPanel.add(fundButton);
+                matchingFundsPanel.add(Box.createVerticalStrut(10)); // Add spacing between buttons
             }
         } else {
             matchingFundsPanel.add(new JLabel("Ingen fonde matcher nogle kategorier"));
-            projectFullPanel.add(new JLabel("\n"));
-
+            matchingFundsPanel.add(new JLabel("\n"));
         }
 
         matchingFundsPanel.revalidate();
@@ -994,6 +997,31 @@ private void showProjectDetails(project project) {
     projectFullPanel.revalidate();
     projectFullPanel.repaint();
 }
+
+private void styleFundButton(JButton button) {
+    button.setPreferredSize(new Dimension(300, 40)); // Set button size
+    button.setFont(new Font("SansSerif", Font.PLAIN, 14)); // Clean, modern font
+    button.setFocusPainted(false); // Remove focus border
+    button.setBackground(new Color(0, 0, 0)); // Light gray background
+    button.setForeground(Color.DARK_GRAY); // Dark gray text
+    button.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)); // Subtle border
+    button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Hand cursor
+
+    // Add hover effect
+    button.addMouseListener(new java.awt.event.MouseAdapter() {
+        @Override
+        public void mouseEntered(java.awt.event.MouseEvent evt) {
+            button.setBackground(new Color(220, 220, 220)); // Slightly darker gray on hover
+        }
+
+        @Override
+        public void mouseExited(java.awt.event.MouseEvent evt) {
+            button.setBackground(new Color(245, 245, 245)); // Revert to original color
+        }
+    });
+}
+
+
 
 
 private void openFundDialog() {
