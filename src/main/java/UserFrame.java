@@ -1087,7 +1087,8 @@ addDeadlineButton.addActionListener(e -> {
         newDeadline = ((java.util.Date) deadlineSpinner.getValue())
             .toInstant()
             .atZone(java.time.ZoneId.systemDefault())
-            .toLocalDateTime();
+            .toLocalDate()
+            .atTime(0, 0); // Set default time to 00:00
     }
     addedDeadlines.add(newDeadline);
 
@@ -1244,15 +1245,10 @@ addDeadlineButton.addActionListener(e -> {
     // Submit knap
     JButton submitButton = new JButton("Tilføj Fond");
     submitButton.addActionListener(event -> {
-        LocalDateTime[] fundDeadlines;
         boolean running = runningCheckBox.isSelected();
         boolean hasError = false;
 
-        if (running) {
-            fundDeadlines = new LocalDateTime[]{LocalDateTime.of(3000, 1, 1, 0, 0)};
-        } else {
-            fundDeadlines = addedDeadlines.toArray(new LocalDateTime[0]);
-        }
+      
 
         //FundTitle errorhandling
         if(validationUtils.isWithinLowerCharLimit(nameField.getText()) == false){
@@ -1325,6 +1321,12 @@ addDeadlineButton.addActionListener(e -> {
             }
         }
 
+
+        if(running){
+            addedDeadlines.clear();
+            addedDeadlines.add(LocalDateTime.of(3000, 1, 1, 0, 0));
+        }
+
         if (!hasError) {
             fundClass fund = new fundClass(tempTitle, tempDescription, tempAmountFrom, tempAmountTo,
             addedDeadlines, selectedCatagories, selectedCollabortion, contacts, tempWebsite, 
@@ -1389,7 +1391,7 @@ addDeadlineButton.addActionListener(e -> {
 }
 
 private JButton createXButton() {
-    ImageIcon originalIcon = new ImageIcon("X_Button.png");
+    ImageIcon originalIcon = new ImageIcon("img/X_button.png");
     Image scaledImage = originalIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
     ImageIcon resizedIcon = new ImageIcon(scaledImage);
 
