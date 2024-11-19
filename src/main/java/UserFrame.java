@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -15,7 +14,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.format.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -99,6 +97,10 @@ public class UserFrame extends JFrame implements ActionListener {
     Long tempAmountTo;
     private ArrayList<fundContactClass> tempContacts = new ArrayList<>();
     private ArrayList<fundContactClass> contacts = new ArrayList<>();
+    private List<JCheckBox> tagCheckBoxes = new ArrayList<>();
+    private List<proposalProject> proposalProjects = new ArrayList<>();
+
+
     // Constructor to set up the GUI
     public UserFrame() {
         initializeFrame();  // Initialize JFrame
@@ -136,6 +138,67 @@ public class UserFrame extends JFrame implements ActionListener {
         frame.setSize(1920, 1080);
         frame.setLayout(new BorderLayout(10, 10));
     }
+
+    private void filterProposalsByTag(String tagName) {
+        // Clear the current list on the panel
+        proposalProjectListPanel.removeAll();
+    
+        // Loop through all proposals and check if they contain the tag
+        for (proposalProject proposal : proposalProjects) {
+            if (proposal.getCategories().contains(tagName)) {
+                // If the proposal matches the tag, add it to the panel
+                JLabel proposalLabel = new JLabel(proposal.getTitle() + " - " + proposal.getProjectOwner());
+                proposalLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+                    public void mouseClicked(java.awt.event.MouseEvent evt) {
+                        showProjectProbDetails(proposal); // Show details on click
+                    }
+                });
+                proposalProjectListPanel.add(proposalLabel);
+            }
+        }
+    
+        // Refresh the panel to show the updated list
+        proposalProjectListPanel.revalidate();
+        proposalProjectListPanel.repaint();
+    }
+    
+
+    // Dynamic tag handling
+private void updateTagFilters(String tagName, boolean isSelected) {
+    if (isSelected) {
+        filterProposalsByTag(tagName);
+    } else {
+        displayAllProposals();
+    }
+}
+
+private void displayAllProposals() {
+    proposalProjectListPanel.removeAll();
+    for (proposalProject proposal : proposalProjects) {
+        JLabel proposalLabel = new JLabel(proposal.getTitle() + " - " + proposal.getProjectOwner());
+        proposalLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                showProjectProbDetails(proposal);
+            }
+        });
+        proposalProjectListPanel.add(proposalLabel);
+    }
+    proposalProjectListPanel.revalidate();
+    proposalProjectListPanel.repaint();
+}
+
+private void createAndAddTagCheckbox(String tagName) {
+    JCheckBox tagCheckBox = new JCheckBox(tagName);
+    tagCheckBox.addActionListener(e -> {
+        JCheckBox source = (JCheckBox) e.getSource();
+        updateTagFilters(source.getText(), source.isSelected());
+    });
+    tagButtonPanel.add(tagCheckBox); // Add checkbox to the UI
+    tagCheckBoxes.add(tagCheckBox); // Store checkbox in the list
+    tagButtonPanel.revalidate();
+    tagButtonPanel.repaint();
+}
+
 
     private JPanel createTopPanel() {
         JPanel panel1 = new JPanel();
@@ -518,21 +581,10 @@ public class UserFrame extends JFrame implements ActionListener {
         createTagButton.addActionListener(e -> {
             String newTag = JOptionPane.showInputDialog(dialog, "Indtast ny kategori:");
             if (newTag != null && !newTag.trim().isEmpty()) {
-                JCheckBox tagCheckBox = new JCheckBox(newTag);
-    
-                // Check for duplicate category
-                if (main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))) {
-                    tagPanel.add(UserFrameErrorHandling.displayTagError());
-                } else {
-                    main.addNewCatagory(newTag); // Add to main category list
-                    tagPanel.add(tagCheckBox); // Add checkbox for new tag
-                    tagPanel.revalidate();
-                    tagPanel.repaint();
-                }
-             
+                createAndAddTagCheckbox(newTag); // Add tag checkbox dynamically
             }
-            }
-        );
+        });
+        
     
         JButton submitButton = new JButton("Tilføj");
         submitButton.addActionListener(event -> {
