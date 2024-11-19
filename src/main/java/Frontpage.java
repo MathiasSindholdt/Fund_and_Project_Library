@@ -48,6 +48,7 @@ public class Frontpage extends JFrame {
                 // Open GuestFrame when button is clicked
                 GuestFrame guestFrame = new GuestFrame();
                 guestFrame.show();
+                frame.dispose();
             }
         });
 
@@ -61,6 +62,7 @@ public class Frontpage extends JFrame {
                     // Password is correct, open UserFrame
                     UserFrame userFrame = new UserFrame();
                     userFrame.setVisible(true);
+                    frame.dispose();
                 } else {
                     // Show an error message if the password is incorrect
                     JOptionPane.showMessageDialog(null, "Forkert kode, prøv igen", "Login Error", JOptionPane.ERROR_MESSAGE);
