@@ -1,39 +1,100 @@
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import javax.swing.*;
+import java.awt.Cursor;
 
-public class GuestFrame implements ActionListener {
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SpinnerDateModel;
+import javax.swing.SwingConstants;
+
+public class GuestFrame extends JFrame implements ActionListener {
 
     private JFrame frame;
     private JPanel cardPanel;
     private CardLayout cardLayout;
 
-    // Buttons
+    // Buttons  
     private JButton createProbButton;
-    private JButton changeProbButton;
-    private JButton backButton;
+
+    private JButton menuButton;
+    private JButton logoutButton;
     private JButton projectPropButton;
-    private JButton projectButton;
-    private JButton fundsButton;
-
+    
     // List to store project proposals
-    private List<ProjectProposal> projectProposals;
-    private JPanel projectProposalListPanel;
-    private JPanel projectProposalFullPanel;
+    private JPanel proposalProjectListPanel;
+    private JPanel proposalProjectFullPanel;
+    
+    private JPanel projectListPanel;
+    private JPanel projectFullPanel;
+    
+    
+    private JPanel fundListPanel;
+    private JPanel fundFullPanel;
+    // tag button
+    private JPanel tagButtonPanel;
 
+    private JPanel rightSidePanel;
+    
+    private boolean isInvalidLenght;
+    String tempTitle;
+    String tempDescription;
+    String tempPurpose; 
+    String tempOwner;
+    String tempTargetAudience;
+    String tempIdea;
+    Long tempBudget;
+    LocalDate tempFromDate;
+    LocalDate tempToDate;
+    LocalDateTime tempFromDateLDT;
+    LocalDateTime tempToDateLDT;
+    String tempActivities;
+    ArrayList<String> selectedCatagories;
+    ArrayList<String> selectedCollabortion = new ArrayList<>();
+    boolean isCollaborated;
+    String tempWebsite;
+    Long tempAmountFrom;
+    Long tempAmountTo;
     // Constructor to set up the GUI
     public GuestFrame() {
         initializeFrame();  // Initialize JFrame
-
-        projectProposals = new ArrayList<>();  // Initialize the project proposals list
-
+        //UserFrameErrorHandling ErrorHandling = new UserFrameErrorHandling();
         JPanel panel1 = createTopPanel();  // Top panel
         JPanel panel2 = createSidePanel();  // Left-side panel
-        JPanel panel3 = createRightSidePanel();  // Right-side panel
+        rightSidePanel = createRightSidePanel();  // Right-side panel
+        JPanel panel3 = rightSidePanel;
 
         // Card layout for switching between views
         cardLayout = new CardLayout();
@@ -41,16 +102,17 @@ public class GuestFrame implements ActionListener {
 
         // Adding different views as "cards" to cardPanel
         cardPanel.add(createCenterPanel(), "Main"); // The main view
-        cardPanel.add(createProjectProposalView(), "ProjectProposal"); // Project Proposal view
-        cardPanel.add(createProjectsView(), "Projects"); // Projects view
-        cardPanel.add(createFundsView(), "Funds"); // Funds view
+        cardPanel.add(createproposalProjectView(), "proposalProjects"); // Project Proposal view
+
 
         // Adding panels to the frame
         frame.add(panel1, BorderLayout.NORTH);
         frame.add(panel2, BorderLayout.WEST);
         frame.add(panel3, BorderLayout.EAST);
         frame.add(cardPanel, BorderLayout.CENTER);  // Use cardPanel as the center panel
+        
     }
+
 
     private void initializeFrame() {
         frame = new JFrame("Gæst");
@@ -62,25 +124,61 @@ public class GuestFrame implements ActionListener {
     private JPanel createTopPanel() {
         JPanel panel1 = new JPanel();
         panel1.setBackground(new Color(213, 213, 213, 255));
-        panel1.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
-
-        backButton = createBackButton();
-        panel1.add(backButton);
-
-        JLabel label = new JLabel("Gæst", SwingConstants.LEFT);
-        panel1.add(label);
-
+        panel1.setLayout(new BorderLayout());
+    
+        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        leftPanel.setOpaque(false); // Make it transparent to show panel1 background
+    
+        menuButton = createMenuButton();
+        menuButton.setPreferredSize(new Dimension(100, 50)); // Set preferred size
+        leftPanel.add(menuButton);
+    
+        menuButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        menuButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            }
+    
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+            }
+        });
+    
         projectPropButton = createProjectPropButton("Projekt forslag");
-        panel1.add(projectPropButton);
-
-        projectButton = createProjectButton("Projekter");
-        panel1.add(projectButton);
-
-        fundsButton = createFundsButton("Fonde");
-        panel1.add(fundsButton);
-
+        projectPropButton.setPreferredSize(new Dimension(150, 50)); // Set preferred size
+        leftPanel.add(projectPropButton);
+    
+        projectPropButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        projectPropButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            }
+    
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+            }
+        });
+    
+        panel1.add(leftPanel, BorderLayout.WEST);
+    
+        logoutButton = createLogutButton();
+        logoutButton.setPreferredSize(new Dimension(100, 50)); // Set preferred size
+        panel1.add(logoutButton, BorderLayout.EAST);
+    
+        logoutButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        logoutButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            }
+    
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+            }
+        });
+    
         return panel1;
     }
+    
 
     private JPanel createSidePanel() {
         JPanel panel2 = new JPanel();
@@ -98,16 +196,14 @@ public class GuestFrame implements ActionListener {
 
         // The button to open the project proposal dialog
         createProbButton = createButton("Lav projekt forslag");
-        changeProbButton = createButton("Ændre projekt forslag");
 
         panel5.add(createProbButton);
-        panel5.add(changeProbButton);
 
         return panel5;
     }
 
     // Separate view for "Projekt forslag"
-    private JPanel createProjectProposalView() {
+    private JPanel createproposalProjectView() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
 
@@ -115,33 +211,40 @@ public class GuestFrame implements ActionListener {
         panel.add(label, BorderLayout.NORTH);
 
         // Panel to display project proposals dynamically
-        projectProposalListPanel = new JPanel();
-        projectProposalListPanel.setLayout(new BoxLayout(projectProposalListPanel, BoxLayout.Y_AXIS));
+        proposalProjectListPanel = new JPanel();
+        proposalProjectListPanel.setLayout(new BoxLayout(proposalProjectListPanel, BoxLayout.Y_AXIS));
 
         // Scroll pane to handle multiple proposals
-        JScrollPane scrollPane = new JScrollPane(projectProposalListPanel);
+        JScrollPane scrollPane = new JScrollPane(proposalProjectListPanel);
         panel.add(scrollPane, BorderLayout.CENTER);
 
         return panel;
     }
 
-    // Separate view for "Projekter"
+    // Separate view for "ProjekterMenu"
     private JPanel createProjectsView() {
-        JPanel panel = new JPanel();
+        JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
-        JLabel label = new JLabel("Projekter");
-        panel.add(label);
-        return panel;
-    }
 
-    // Separate view for "Fonde"
-    private JPanel createFundsView() {
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.WHITE);
-        JLabel label = new JLabel("Fonde");
-        panel.add(label);
+        JLabel label = new JLabel("Projekter", SwingConstants.CENTER);
+        panel.add(label, BorderLayout.NORTH);
+    
+        // Initialize the project list panel
+        projectListPanel = new JPanel();
+        projectListPanel.setLayout(new BoxLayout(projectListPanel, BoxLayout.Y_AXIS)); // Ensure layout is set
+    
+        JScrollPane scrollPane = new JScrollPane(projectListPanel); // Add project list panel in a scroll pane
+        panel.add(scrollPane, BorderLayout.CENTER);
+
         return panel;
     }
+    
+
+    // Creates the right-side panel with different views for each archive type
+
+    // Method to update the right-side panel based on selected archive type
+
+    
 
     private JButton createButton(String text) {
         JButton button = new JButton(text);
@@ -157,22 +260,8 @@ public class GuestFrame implements ActionListener {
         return button;
     }
 
-    private JButton createProjectButton(String text) {
-        JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(130, 50));
-        button.addActionListener(this);
-        return button;
-    }
-
-    private JButton createFundsButton(String text) {
-        JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(130, 50));
-        button.addActionListener(this);
-        return button;
-    }
-
-    private JButton createBackButton() {
-        ImageIcon originalIcon = new ImageIcon("backArrow.png");
+    private JButton createMenuButton() {
+        ImageIcon originalIcon = new ImageIcon("img/Menu.png");
         Image scaledImage = originalIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         ImageIcon resizedIcon = new ImageIcon(scaledImage);
 
@@ -187,237 +276,442 @@ public class GuestFrame implements ActionListener {
         return button;
     }
 
+    private JButton createLogutButton(){
+        ImageIcon originalIcon = new ImageIcon("img/Logout.png");
+        Image scaledImage = originalIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        ImageIcon resizedIcon = new ImageIcon(scaledImage);
+
+        JButton button = new JButton();
+        button.setPreferredSize(new Dimension(50, 50));
+        button.setIcon(resizedIcon);
+        button.setBorderPainted(false);
+        button.setContentAreaFilled(false);
+        button.setFocusPainted(false);
+        button.setOpaque(false);
+        button.addActionListener(this);
+        return button;
+    }
+
+    //catagory button
+    private JButton CreateCatagoryButton(String text){
+            JButton button = new JButton(text);
+            button.setPreferredSize(new Dimension(130, 50));
+            button.addActionListener(this);
+            return button;
+    }
+
     // Show the frame
     public void show() {
         frame.setVisible(true);
     }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == projectPropButton) {
-            cardLayout.show(cardPanel, "ProjectProposal"); // Switch to Project Proposal view
-        } else if (e.getSource() == projectButton) {
-            cardLayout.show(cardPanel, "Projects"); // Switch to Projects view
-        } else if (e.getSource() == fundsButton) {
-            cardLayout.show(cardPanel, "Funds"); // Switch to Funds view
-        } else if (e.getSource() == backButton) {
-            cardLayout.show(cardPanel, "Main"); // Switch back to the main view
-        } else if (e.getSource() == createProbButton) {
-            openProjectProposalDialog(); // Opens a popup for creating a project proposal
-        }
-    }
-
-    // Restore the project proposal dialog
-    private void openProjectProposalDialog() {
+    
+    private void openproposalProjectDialog() {
         JDialog dialog = new JDialog(frame, "Lav Projekt Forslag", true);
         dialog.setSize(700, 700);
-        dialog.setLayout(new GridLayout(11, 2, 10, 10));
-
+        System.out.println("Opening proposal project dialog...");
+    
+        JPanel mainPanel = new JPanel();
+        GroupLayout layout = new GroupLayout(mainPanel);
+        mainPanel.setLayout(layout);
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+    
+        // Wrap the main panel in a scroll pane
+        JScrollPane scrollPane = new JScrollPane(mainPanel);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        dialog.add(scrollPane);
+    
         JLabel nameLabel = new JLabel("Titel:");
         JTextField nameField = new JTextField();
-        dialog.add(nameLabel);
-        dialog.add(nameField);
-
+    
         JLabel ideaLabel = new JLabel("Idé/Formål:");
         JTextField ideaField = new JTextField();
-        dialog.add(ideaLabel);
-        dialog.add(ideaField);
-
-        JLabel descriptionLabel = new JLabel("Kort beskrivelse af projektet for at danne en mening:");
+    
+        JLabel descriptionLabel = new JLabel("Kort beskrivelse af projektet:");
         JTextArea descriptionArea = new JTextArea(5, 20);
-        JScrollPane scrollPane = new JScrollPane(descriptionArea);
-        dialog.add(descriptionLabel);
-        dialog.add(scrollPane);
-
-        JLabel ideaFromLabel = new JLabel("Ideens oprindelse:");
-        JTextField ideaFromField = new JTextField();
-        dialog.add(ideaFromLabel);
-        dialog.add(ideaFromField);
-
+        JScrollPane desciptionScrollPane = new JScrollPane(descriptionArea);
+    
         JLabel ownerLabel = new JLabel("Ejer af idé/forslaget:");
         JTextField ownerField = new JTextField();
-        dialog.add(ownerLabel);
-        dialog.add(ownerField);
-
+    
         JLabel targetLabel = new JLabel("Målgruppe (hvem gavner dette forslag):");
         JTextField targetField = new JTextField();
-        dialog.add(targetLabel);
-        dialog.add(targetField);
-
+    
         JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
         JTextField budgetField = new JTextField();
-        dialog.add(budgetLabel);
-        dialog.add(budgetField);
-
+    
         JLabel fromDateLabel = new JLabel("Fra dato:");
         SpinnerDateModel fromDateModel = new SpinnerDateModel();
         JSpinner fromDateSpinner = new JSpinner(fromDateModel);
-        JSpinner.DateEditor fromDateEditor = new JSpinner.DateEditor(fromDateSpinner, "MM/dd/yyyy");
+        JSpinner.DateEditor fromDateEditor = new JSpinner.DateEditor(fromDateSpinner, "dd/MM/yyyy");
         fromDateSpinner.setEditor(fromDateEditor);
-        dialog.add(fromDateLabel);
-        dialog.add(fromDateSpinner);
-
+    
         JLabel toDateLabel = new JLabel("Til dato:");
         SpinnerDateModel toDateModel = new SpinnerDateModel();
         JSpinner toDateSpinner = new JSpinner(toDateModel);
-        JSpinner.DateEditor toDateEditor = new JSpinner.DateEditor(toDateSpinner, "MM/dd/yyyy");
+        JSpinner.DateEditor toDateEditor = new JSpinner.DateEditor(toDateSpinner, "dd/MM/yyyy");
         toDateSpinner.setEditor(toDateEditor);
-        dialog.add(toDateLabel);
-        dialog.add(toDateSpinner);
-
+    
         JLabel activitiesLabel = new JLabel("Aktiviteter:");
         JTextField activitiesField = new JTextField();
-        dialog.add(activitiesLabel);
-        dialog.add(activitiesField);
-
-        JButton submitButton = new JButton("Submit");
+    
+        // "Create Tag" label and button
+        JLabel createTagLabel = new JLabel("Opret Kategori:");
+        JButton createTagButton = new JButton("Opret Kategori");
+    
+        // Tag selection panel (scrollable)
+        JLabel selectTagLabel = new JLabel("Vælg relevante kategorier:");
+        JPanel tagPanel = new JPanel();
+        tagPanel.setLayout(new BoxLayout(tagPanel, BoxLayout.Y_AXIS));
+        JScrollPane tagScrollPane = new JScrollPane(tagPanel);
+    
+        // Populate tagPanel with existing categories as checkboxes
+        for (String category : main.categories) {
+            JCheckBox tagCheckBox = new JCheckBox(category);
+            tagPanel.add(tagCheckBox);
+        }
+    
+        // Action Listener for Create Tag button
+        createTagButton.addActionListener(e -> {
+            String newTag = JOptionPane.showInputDialog(dialog, "Indtast ny kategori:");
+            if (newTag != null && !newTag.trim().isEmpty()) {
+                JCheckBox tagCheckBox = new JCheckBox(newTag);
+    
+                // Check for duplicate category
+                if (main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))) {
+                    tagPanel.add(UserFrameErrorHandling.displayTagError());
+                } else {
+                    main.addNewCatagory(newTag); // Add to main category list
+                    tagPanel.add(tagCheckBox); // Add checkbox for new tag
+                    tagPanel.revalidate();
+                    tagPanel.repaint();
+                }
+             
+            }
+            }
+        );
+    
+        JButton submitButton = new JButton("Tilføj");
         submitButton.addActionListener(event -> {
-            String name = nameField.getText();
-            String idea = ideaField.getText();
-            String description = descriptionArea.getText();
-            String ideaFrom = ideaFromField.getText();
-            String owner = ownerField.getText();
-            String target = targetField.getText();
-            String budget = budgetField.getText();
-            Date fromDate = new Date(((java.util.Date) fromDateSpinner.getValue()).getTime());
-            Date toDate = new Date(((java.util.Date) toDateSpinner.getValue()).getTime());
-            String activities = activitiesField.getText();
+            System.out.println("Submit button clicked");
 
-            // Create a new project proposal and add it to the list
-            ProjectProposal proposal = new ProjectProposal(name, idea, description, ideaFrom, owner, target, budget, fromDate, toDate, activities);
-            projectProposals.add(proposal);
+            boolean hasError = false; // Flag to check if any validation error occurs
 
-            // Update the project proposal panel
-            updateProjectProposalList();
+            //Proposal Error Handling
 
+            //Title Error Handling
+            if(!validationUtils.isWithinLowerCharLimit(nameField.getText())){
+                isInvalidLenght = true;
+                UserFrameErrorHandling.displayTitleError(isInvalidLenght);
+                System.out.println("Title error: Length is invalid");
+                hasError = true;
+            }else if(!validationUtils.isValidInput(nameField.getText())){
+                isInvalidLenght = false;
+                dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
+                System.out.println("Title error: Invalid input");
+                hasError = true;
+            }else{
+                tempTitle = nameField.getText();
+                System.out.println("Title set: " + tempTitle);
+            }
+
+            //Ideas Error Handling
+            if(!validationUtils.isWithinLowerCharLimit(ideaField.getText())){
+                isInvalidLenght = true;
+                dialog.add(UserFrameErrorHandling.displayIdeaError(isInvalidLenght));
+                System.out.println("Idea error: Length is invalid");
+                hasError = true;
+            }else if(!validationUtils.isValidInput(ideaField.getText())){
+                isInvalidLenght = false;
+                dialog.add(UserFrameErrorHandling.displayIdeaError(isInvalidLenght));
+                System.out.println("Idea error: Invalid input");
+                hasError = true;
+            }else{
+                tempIdea = ideaField.getText();
+                System.out.println("Idea set: " + tempIdea);
+            }
+
+            //Description Error Handling
+            if(!validationUtils.isWithinUpperCharLimit(descriptionArea.getText())){
+                isInvalidLenght = true;
+                dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
+                System.out.println("Description error: Length is invalid");
+                hasError = true;
+            }else if(!validationUtils.isValidDescription(descriptionArea.getText())){
+                isInvalidLenght = false;
+                dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
+                System.out.println("Description error: Invalid input");
+                hasError = true;
+            }else{
+                tempDescription = descriptionArea.getText();
+                System.out.println("Description set: " + tempDescription);
+            }
+
+            //Owner Error Handling
+            if(!validationUtils.isWithinLowerCharLimit(ownerField.getText())){
+                isInvalidLenght = true;
+                dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
+                System.out.println("Owner error: Length is invalid");
+                hasError = true;
+            }else if(!validationUtils.isValidInput(ownerField.getText())){
+                isInvalidLenght = false;
+                dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
+                System.out.println("Owner error: Invalid input");
+                hasError = true;
+            }else{
+                tempOwner = ownerField.getText();
+                System.out.println("Owner set: " + tempOwner);
+            }
+
+            //Target Audience Error Handling
+            if(!validationUtils.isWithinLowerCharLimit(targetField.getText())){
+                isInvalidLenght = true;
+                dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
+                System.out.println("Target Audience error: Length is invalid");
+                hasError = true;
+            }else if(!validationUtils.isValidInput(targetField.getText())){
+                isInvalidLenght = false;
+                dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
+                System.out.println("Target Audience error: Invalid input");
+                hasError = true;
+            }else{
+                tempTargetAudience = targetField.getText();
+                System.out.println("Target Audience set: " + tempTargetAudience);
+            }
+
+            //Budget Error Handling
+            if(!validationUtils.isNumericInput(budgetField.getText())){
+                dialog.add(UserFrameErrorHandling.displayBudgetError());
+                System.out.println("Budget error: Invalid input");
+                hasError = true;
+            }else{
+                tempBudget = Long.parseLong(budgetField.getText());
+                System.out.println("Budget set: " + tempBudget);
+            }
+
+            //From Date Error Handling
+            //To Date Error Handling
+            //If From Date is after To Date
+            if(((Date) fromDateSpinner.getValue()).after((Date) toDateSpinner.getValue())){
+                dialog.add(UserFrameErrorHandling.displayDateSpinnerError());
+                System.out.println("Date error: From date is after To date");
+                hasError = true;
+            }else{
+                tempFromDate = ((Date) fromDateSpinner.getValue()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                tempToDate = ((Date) toDateSpinner.getValue()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                tempFromDateLDT = tempFromDate.atStartOfDay();
+                tempToDateLDT = tempToDate.atStartOfDay();
+                System.out.println("Dates set: From " + tempFromDateLDT + " To " + tempToDateLDT);
+            }
+
+            //Activities Error Handling
+            if(!validationUtils.isWithinUpperCharLimit(activitiesField.getText())){
+                isInvalidLenght = true;
+                dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
+                System.out.println("Activities error: Length is invalid");
+                hasError = true;
+            }else if(!validationUtils.isValidInput(activitiesField.getText())){
+                isInvalidLenght = false;
+                dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
+                System.out.println("Activities error: Invalid input");
+                hasError = true;
+            }else{
+                tempActivities = activitiesField.getText();
+                System.out.println("Activities set: " + tempActivities);
+            }
+
+            //Categories Error Handling
+            //If no categories are selected
+            ArrayList<String> selectedCatagories = new ArrayList<>();
+            for(Component comp : tagPanel.getComponents()){
+                if(comp instanceof JCheckBox){
+                    JCheckBox checkBox = (JCheckBox) comp;
+                    if(checkBox.isSelected()){
+                        selectedCatagories.add(checkBox.getText());
+                    }
+                }
+            }
+            System.out.println("Selected categories: " + selectedCatagories);
+
+            if (hasError) {
+                return;
+            }
+
+            // Create the proposal project instance with categories
+            proposalProject proposal = new proposalProject(
+                tempTitle,
+                selectedCatagories,
+                tempDescription,
+                tempIdea,
+                tempOwner,
+                tempTargetAudience,
+                tempBudget,
+                tempFromDateLDT,
+                tempToDateLDT,
+                tempActivities
+            );
+            
+
+            // Add the proposal to the list and update UI
+            main.proposalList.add(proposal);
+            updateproposalProjectList();
+            System.out.println("Proposal added to list and UI updated");
+
+            // Close the dialog
             dialog.dispose();
+            System.out.println("Dialog closed");
         });
 
-        dialog.add(new JLabel());
-        dialog.add(submitButton);
+        // Define layout structure
+        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addComponent(nameLabel).addComponent(nameField)
+            .addComponent(ideaLabel).addComponent(ideaField)
+            .addComponent(descriptionLabel).addComponent(desciptionScrollPane)
+            .addComponent(ownerLabel).addComponent(ownerField)
+            .addComponent(targetLabel).addComponent(targetField)
+            .addComponent(budgetLabel).addComponent(budgetField)
+            .addComponent(fromDateLabel).addComponent(fromDateSpinner)
+            .addComponent(toDateLabel).addComponent(toDateSpinner)
+            .addComponent(activitiesLabel).addComponent(activitiesField)
+            .addComponent(createTagLabel).addComponent(createTagButton)
+            .addComponent(selectTagLabel).addComponent(tagScrollPane)
+            .addComponent(submitButton)
+        );
+
+        layout.setVerticalGroup(layout.createSequentialGroup()
+            .addComponent(nameLabel).addComponent(nameField)
+            .addComponent(ideaLabel).addComponent(ideaField)
+            .addComponent(descriptionLabel).addComponent(desciptionScrollPane)
+            .addComponent(ownerLabel).addComponent(ownerField)
+            .addComponent(targetLabel).addComponent(targetField)
+            .addComponent(budgetLabel).addComponent(budgetField)
+            .addComponent(fromDateLabel).addComponent(fromDateSpinner)
+            .addComponent(toDateLabel).addComponent(toDateSpinner)
+            .addComponent(activitiesLabel).addComponent(activitiesField)
+            .addComponent(createTagLabel).addComponent(createTagButton)
+            .addComponent(selectTagLabel).addComponent(tagScrollPane)
+            .addComponent(submitButton)
+        );
 
         dialog.setLocationRelativeTo(frame);
         dialog.setVisible(true);
+        }
+
+
+//SORT HERE
+    private void updateproposalProjectList() {
+        System.out.println("Updating proposal project list");
+    proposalProjectListPanel.removeAll();
+
+    for (proposalProject proposal : main.proposalList) {
+        JLabel proposalLabel = new JLabel(proposal.getTitle() + " - " + proposal.getProjectOwner());
+
+        proposalLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                showProjectProbDetails(proposal); // Show the selected project's details
+            }
+        });
+
+        proposalProjectListPanel.add(proposalLabel);
     }
+
+    proposalProjectListPanel.revalidate();
+    proposalProjectListPanel.repaint();
+}
+private void showProjectProbDetails(proposalProject proposal) {
+    proposalProjectFullPanel.removeAll();
+
+    // Display project proposal details
+    proposalProjectFullPanel.add(new JLabel("Titel: " + proposal.getTitle()));
+    proposalProjectFullPanel.add(new JLabel("Ejer: " + proposal.getProjectOwner()));
+    proposalProjectFullPanel.add(new JLabel("Idé: " + proposal.getProjectPurpose()));
+    proposalProjectFullPanel.add(new JLabel("Beskrivelse: " + proposal.getDescription()));
+    proposalProjectFullPanel.add(new JLabel("Målgruppe: " + proposal.getProjectTargetAudience()));
+    proposalProjectFullPanel.add(new JLabel("Budget: " + proposal.getProjectBudget()));
+
+    // Display date range
+    proposalProjectFullPanel.add(new JLabel("Fra Dato: " + proposal.getProjectTimeSpanFrom().toString()));
+    proposalProjectFullPanel.add(new JLabel("Til Dato: " + proposal.getProjectTimeSpanTo().toString()));
+
+    // Display project activities
+    proposalProjectFullPanel.add(new JLabel("Aktiviteter: " + proposal.getProjectActivities()));
+
+    // Display categories as a concatenated string
+    String categories = String.join(", ", proposal.getCategories());
+    proposalProjectFullPanel.add(new JLabel("Kategorier: " + categories));
+     // Refresh the panel to reflect the changes
+     proposalProjectFullPanel.revalidate();
+     proposalProjectFullPanel.repaint();
+ }
+
 
     private JPanel createRightSidePanel() {
-        JPanel panel3 = new JPanel(new BorderLayout());
-        panel3.setBackground(new Color(213, 213, 213, 255));
-        panel3.setPreferredSize(new Dimension(900, 100));
-    
-        // Panel to show full details of selected proposal
-        projectProposalFullPanel = new JPanel();
-        projectProposalFullPanel.setLayout(new BoxLayout(projectProposalFullPanel, BoxLayout.Y_AXIS));
-    
-        JScrollPane scrollPane = new JScrollPane(projectProposalFullPanel);
-        panel3.add(scrollPane, BorderLayout.CENTER);
-    
-        return panel3;
-    }
-    
-    // Method to update the list and add mouse listeners
-    private void updateProjectProposalList() {
-        projectProposalListPanel.removeAll();
-    
-        for (ProjectProposal proposal : projectProposals) {
-            JLabel proposalLabel = new JLabel(proposal.getTitle() + " - " + proposal.getOwner());
-    
-            proposalLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseClicked(java.awt.event.MouseEvent evt) {
-                    showProjectDetails(proposal); // Show the selected project's details
-                }
-            });
-    
-            projectProposalListPanel.add(proposalLabel);
-        }
-    
-        projectProposalListPanel.revalidate();
-        projectProposalListPanel.repaint();
-    }
-    class ProjectProposal {
-        private String title;
-        private String idea;
-        private String description;
-        private String ideaFrom;
-        private String owner;
-        private String target;
-        private String budget;
-        private Date fromDate;
-        private Date toDate;
-        private String activities;
-    
-        public ProjectProposal(String title, String idea, String description, String ideaFrom, String owner, String target,
-                               String budget, Date fromDate, Date toDate, String activities) {
-            this.title = title;
-            this.idea = idea;
-            this.description = description;
-            this.ideaFrom = ideaFrom;
-            this.owner = owner;
-            this.target = target;
-            this.budget = budget;
-            this.fromDate = fromDate;
-            this.toDate = toDate;
-            this.activities = activities;
-        }
-    
-   public String getTitle() {
-            return title;
-        }
-    public String getOwner() {
-            return owner;
-        }
-    public String getIdea() {
-        return idea;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getIdeaFrom() {
-        return ideaFrom;
-    }
-    public String getTarget() {
-        return target;
-    }
-
-    public String getBudget() {
-        return budget;
-    }
-
-    public Date getFromDate() {
-        return fromDate;
-    }
-
-    public Date getToDate() {
-        return toDate;
-    }
-
-    public String getActivities() {
-        return activities;
-    }
-}  
-    // Method to display the clicked project's details
-    private void showProjectDetails(ProjectProposal proposal) {
-        projectProposalFullPanel.removeAll();
+        JPanel rightSidePanel = new JPanel(new CardLayout());
+        rightSidePanel.setBackground(new Color(213, 213, 213, 255));
+        rightSidePanel.setPreferredSize(new Dimension(900, 100));
         
-        projectProposalFullPanel.add(new JLabel("Title: " + proposal.getTitle()));
-        projectProposalFullPanel.add(new JLabel("Owner: " + proposal.getOwner()));
-        projectProposalFullPanel.add(new JLabel("Idea: " + proposal.getIdea()));
-        projectProposalFullPanel.add(new JLabel("Description: " + proposal.getDescription()));
-        projectProposalFullPanel.add(new JLabel("Idea From: " + proposal.getIdeaFrom()));
-        projectProposalFullPanel.add(new JLabel("Target: " + proposal.getTarget()));
-        projectProposalFullPanel.add(new JLabel("Budget: " + proposal.getBudget()));
-        projectProposalFullPanel.add(new JLabel("From Date: " + proposal.getFromDate().toString()));
-        projectProposalFullPanel.add(new JLabel("To Date: " + proposal.getToDate().toString()));
-        projectProposalFullPanel.add(new JLabel("Activities: " + proposal.getActivities()));
+        proposalProjectFullPanel = new JPanel();
+        proposalProjectFullPanel.setLayout(new BoxLayout(proposalProjectFullPanel, BoxLayout.Y_AXIS));
+        JScrollPane proposalScrollPane = new JScrollPane(proposalProjectFullPanel);
+        rightSidePanel.add(proposalScrollPane, "proposalProjectsDetails");
+        return rightSidePanel;
+    }
+
     
-        projectProposalFullPanel.revalidate();
-        projectProposalFullPanel.repaint();
+
+    // method to filther by tag
+    private void filterproposalProjectssByTag(String tag) {
+        proposalProjectListPanel.removeAll();
+        
+        for (proposalProject proposal : main.proposalList) {
+            if (proposal.getCategories().contains(tag)) {
+                JLabel proposalLabel = new JLabel(proposal.getTitle() + " - " + proposal.getProjectOwner());
+    
+                proposalLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+                    public void mouseClicked(java.awt.event.MouseEvent evt) {
+                        showProjectProbDetails(proposal);
+                    }
+                });
+    
+                proposalProjectListPanel.add(proposalLabel);
+            }
+        }
+    
+        proposalProjectListPanel.revalidate();
+        proposalProjectListPanel.repaint();
     }
     
-    public static void main(String[] args) {
-        GuestFrame guestFrame = new GuestFrame();
-        guestFrame.show();
+   
+    private void updateRightSidePanel(String tab) {
+        CardLayout layout = (CardLayout) rightSidePanel.getLayout();
+        System.out.println(tab);
+        switch (tab) {
+            case "proposalProjects":
+                layout.show(rightSidePanel, "proposalProjectsDetails");
+                break;
+            default:
+                layout.show(rightSidePanel, "Default"); // Sikrer standardvisning
+                break;
     }
+}
+ @Override
+    public void actionPerformed(ActionEvent e) {
+        System.out.println("Action performed");
+        System.out.println(e.getSource());
+        if (e.getSource() == projectPropButton) {
+            cardLayout.show(cardPanel, "proposalProjects");
+            updateRightSidePanel("proposalProjects");
+        } else if (e.getSource() == menuButton) {
+            cardLayout.show(cardPanel, "Main");
+        } else if (e.getSource() == createProbButton) {
+            openproposalProjectDialog();
+        }else if (e.getSource() == logoutButton) {
+            Frontpage frontpage = new Frontpage();
+            frontpage.show();
+            frame.dispose();
+        }
+ 
+
+    }
+
 }
