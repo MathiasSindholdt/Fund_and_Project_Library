@@ -2,41 +2,21 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class main {
-    static ArrayList<project> projectList = new ArrayList<>();
-    static ArrayList<String> userProjectList = new ArrayList<>();
-    static ArrayList<fundClass> fundList = new ArrayList<>();
-    static ArrayList<fundClass> runningFundList = new ArrayList<>();
-    static ArrayList<String> categories = new ArrayList<>();
-    static ArrayList<proposalProject> proposalList = new ArrayList<>();
 
-    static ArrayList<proposalProject> archiveProposalList = new ArrayList<>();
-    static ArrayList<project> archiveProjectList = new ArrayList<>();
-    static ArrayList<fundClass> archiveFundList = new ArrayList<>();
+    static ArrayList<project> projectList = ProjectCsvReader.readProjectCsv("data/projects.csv");
+
+
+    static ArrayList<String> userProjectList = new ArrayList<>(); // try read af userproject list
+    static ArrayList<fundClass> fundList = FundCsvReader.readFundCsv("data/funds.csv");
+    static ArrayList<fundClass> runningFundList = new ArrayList<>(); // remove
+    static ArrayList<String> categories = new ArrayList<>(); // try read af cats
+    static ArrayList<proposalProject> proposalList = ProposalCsvReader.readProposalCsv("data/proposals.csv");
+
+    static ArrayList<proposalProject> deniedProposalList = ProposalCsvReader.readProposalCsv("data/deniedProposals.csv");
+    static ArrayList<project> archiveProjectList = ProjectCsvReader.readProjectCsv("data/archivedProjects.csv");
+    static ArrayList<fundClass> archiveFundList = FundCsvReader.readFundCsv("data/archivedFunds.csv");
 
     static boolean onlyOneIsNeeded = true;
-    //Test of Fund constructor vvvv Remove Later
-    private static String FundTitle;
-    private static String FundDescription;
-    private static long FundAmountTo;
-    private static long FundAmountFrom;
-    private static LocalDateTime[] FundDeadline;
-    private static String[] FundCategory;
-    private static String[] FundCollaborationHistory;
-    private static String[] FundContacts;
-    private static String fundWebsite;
-    private static boolean Collaborated;
-    private static boolean FundRunning;
-    //Test of Proposal to Project constructor vvvv Remove Later
-    private static String ProjectTitle;
-    private static String ProjectDescription;
-    private static String ProjectPurpose;
-    private static String ProjectOwner;
-    private static String ProjectTargetAudience;
-    private static long ProjectBudget;
-    private static LocalDateTime ProjectTimeSpanFrom;
-    private static LocalDateTime ProjectTimeSpanTo;
-    private static String ProjectActivities;
-    private static ArrayList<String> ProjectCategories;
     
     public static boolean getCatagoryBoolean(){
         return onlyOneIsNeeded;
@@ -50,7 +30,7 @@ public class main {
     }
     
     public ArrayList<proposalProject> getArchiveProposalList(){
-        return archiveProposalList;
+        return deniedProposalList;
     }
 
     public ArrayList<project> getArchiveProjectList(){

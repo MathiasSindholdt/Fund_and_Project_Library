@@ -19,8 +19,8 @@ public class FundCsvReader {
             "(?:\"([^\"]*)\"|([^\",]*))(?:,|$)");
 
     // Method to read the fund data from a CSV file
-    public static List<fundClass> readFundCsv(String filepath) {
-        List<fundClass> funds = new ArrayList<>();
+    public static ArrayList<fundClass> readFundCsv(String filepath) {
+        ArrayList<fundClass> funds = new ArrayList<>();
         
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filepath), StandardCharsets.UTF_8))) {
 

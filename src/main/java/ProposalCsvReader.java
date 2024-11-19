@@ -13,8 +13,8 @@ import java.util.List;
 public class ProposalCsvReader {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static List<proposalProject> readPropsalCsv(String filepath) {
-        List<proposalProject> proposals = new ArrayList<>();
+    public static ArrayList<proposalProject> readProposalCsv(String filepath) {
+        ArrayList<proposalProject> proposals = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filepath), StandardCharsets.UTF_8))) {

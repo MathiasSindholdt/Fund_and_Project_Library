@@ -696,6 +696,12 @@ public class UserFrame extends JFrame implements ActionListener {
             // Add the proposal to the list and update UI
             main.proposalList.add(proposal);
             updateproposalProjectList();
+            ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
+            ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
+            FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
+            ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.proposalList);
+            ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.projectList);
+            FundCsvWriter.writeCsv("data/fundsArchive.csv",main.fundList);
             System.out.println("Proposal added to list and UI updated");
 
             // Close the dialog
@@ -816,22 +822,19 @@ private void showProjectProbDetails(proposalProject proposal) {
         ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
         ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
         FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
+        ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.proposalList);
+        ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.projectList);
+        FundCsvWriter.writeCsv("data/fundsArchive.csv",main.fundList);
         proposalProjectFullPanel.removeAll();
         proposalProjectFullPanel.repaint();
         proposalProjectFullPanel.revalidate();
     });
 
-     // Reject button
-     JButton rejectButton = new JButton("Afvis");
-     rejectButton.addActionListener(event -> {
-         proposalProjectFullPanel.getParent().getParent().remove(proposalProjectFullPanel); // Close details
-     });
  
      // Add buttons to the panel
      proposalProjectFullPanel.add(approveButton);
-     proposalProjectFullPanel.add(rejectButton);
 
-JButton archiveButton = new JButton("Arkivér");
+JButton archiveButton = new JButton("Afvis Projektforslag");
 Dimension buttonSize = new Dimension(150, 50); 
 archiveButton.setPreferredSize(buttonSize);
 
@@ -841,6 +844,12 @@ archiveButton.addActionListener(e -> {
 
     // Call update methods after archiving
     updateproposalProjectList();
+    ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
+    ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
+    FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
+    ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.proposalList);
+    ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.projectList);
+    FundCsvWriter.writeCsv("data/fundsArchive.csv",main.fundList);
     proposalProjectFullPanel.removeAll(); 
     proposalProjectFullPanel.revalidate();
     proposalProjectFullPanel.repaint();
@@ -908,6 +917,12 @@ proposalProjectFullPanel.add(archiveButton);
 
     // Update the UI to reflect the new project list
     updateProjectList();
+    ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
+    ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
+    FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
+    ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.proposalList);
+    ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.projectList);
+    FundCsvWriter.writeCsv("data/fundsArchive.csv",main.fundList);
 }
 
 private void showProjectDetails(project project) {
@@ -984,6 +999,12 @@ private void showProjectDetails(project project) {
 
         // Update project list and clear details display
         updateProjectList();
+        ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
+        ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
+        FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
+        ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.proposalList);
+        ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.projectList);
+        FundCsvWriter.writeCsv("data/fundsArchive.csv",main.fundList);
         projectFullPanel.removeAll();
         projectFullPanel.revalidate();
         projectFullPanel.repaint();
@@ -1049,17 +1070,17 @@ private void openFundDialog() {
     JTextField deadLineTimeFieldMinute = new JTextField(2);
 
 
-deadLineTimePanel.add(deadLineTimeLabel);
-deadLineTimePanel.add(deadLineTimeFieldHour);
-deadLineTimePanel.add(deadLineTimeLabelColon);
-deadLineTimePanel.add(deadLineTimeFieldMinute);
-deadLineTimePanel.setVisible(false);
+    deadLineTimePanel.add(deadLineTimeLabel);
+    deadLineTimePanel.add(deadLineTimeFieldHour);
+    deadLineTimePanel.add(deadLineTimeLabelColon);
+    deadLineTimePanel.add(deadLineTimeFieldMinute);
+    deadLineTimePanel.setVisible(false);
 
-deadLineTimeCheckBox.addItemListener(e -> {
-    deadLineTimePanel.setVisible(deadLineTimeCheckBox.isSelected());
-    dialog.revalidate();
-    dialog.repaint();
-});
+    deadLineTimeCheckBox.addItemListener(e -> {
+        deadLineTimePanel.setVisible(deadLineTimeCheckBox.isSelected());
+        dialog.revalidate();
+        dialog.repaint();
+    });
 
     // Knap til at tilføje en ny deadline
     JButton addDeadlineButton = new JButton("Tilføj ansøgningsfrist");
@@ -1068,56 +1089,56 @@ deadLineTimeCheckBox.addItemListener(e -> {
     List<LocalDateTime> addedDeadlines = new ArrayList<>();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-addDeadlineButton.addActionListener(e -> {
-    LocalDateTime newDeadline;
-    if (deadLineTimeCheckBox.isSelected()) {
-        if (!validationUtils.isValidTime(deadLineTimeFieldHour.getText(), true)) {
-            dialog.add(UserFrameErrorHandling.displayTimeError());
-            return;
+    addDeadlineButton.addActionListener(e -> {
+        LocalDateTime newDeadline;
+        if (deadLineTimeCheckBox.isSelected()) {
+            if (!validationUtils.isValidTime(deadLineTimeFieldHour.getText(), true)) {
+                dialog.add(UserFrameErrorHandling.displayTimeError());
+                return;
+            }
+            if (!validationUtils.isValidTime(deadLineTimeFieldMinute.getText(), false)) {
+                dialog.add(UserFrameErrorHandling.displayTimeError());
+                return;
+            }
+            newDeadline = ((java.util.Date) deadlineSpinner.getValue())
+                .toInstant()
+                .atZone(java.time.ZoneId.systemDefault())
+                .toLocalDateTime();
+            newDeadline = newDeadline.withHour(Integer.parseInt(deadLineTimeFieldHour.getText()));
+            newDeadline = newDeadline.withMinute(Integer.parseInt(deadLineTimeFieldMinute.getText()));
+        } else {
+            newDeadline = ((java.util.Date) deadlineSpinner.getValue())
+                .toInstant()
+                .atZone(java.time.ZoneId.systemDefault())
+                .toLocalDateTime();
         }
-        if (!validationUtils.isValidTime(deadLineTimeFieldMinute.getText(), false)) {
-            dialog.add(UserFrameErrorHandling.displayTimeError());
-            return;
-        }
-        newDeadline = ((java.util.Date) deadlineSpinner.getValue())
-            .toInstant()
-            .atZone(java.time.ZoneId.systemDefault())
-            .toLocalDateTime();
-        newDeadline = newDeadline.withHour(Integer.parseInt(deadLineTimeFieldHour.getText()));
-        newDeadline = newDeadline.withMinute(Integer.parseInt(deadLineTimeFieldMinute.getText()));
-    } else {
-        newDeadline = ((java.util.Date) deadlineSpinner.getValue())
-            .toInstant()
-            .atZone(java.time.ZoneId.systemDefault())
-            .toLocalDateTime();
-    }
-    addedDeadlines.add(newDeadline);
+        addedDeadlines.add(newDeadline);
 
-    // Create a panel to hold the deadline label and the remove button
-    JPanel deadlinePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    JLabel deadlineLabelItem = new JLabel(newDeadline.format(formatter));
-    JButton xButton = createXButton();
-    
-    
-    // Add action listener to the remove button
-    final LocalDateTime deadlineToRemove = newDeadline;
-    xButton.addActionListener(removeEvent -> {
-        addedDeadlines.remove(deadlineToRemove);
-        deadlineListPanel.remove(deadlinePanel);
+        // Create a panel to hold the deadline label and the remove button
+        JPanel deadlinePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel deadlineLabelItem = new JLabel(newDeadline.format(formatter));
+        JButton xButton = createXButton();
+        
+        
+        // Add action listener to the remove button
+        final LocalDateTime deadlineToRemove = newDeadline;
+        xButton.addActionListener(removeEvent -> {
+            addedDeadlines.remove(deadlineToRemove);
+            deadlineListPanel.remove(deadlinePanel);
+            deadlineListPanel.revalidate();
+            deadlineListPanel.repaint();
+        });
+
+
+        // Add components to the deadline panel
+        deadlinePanel.add(deadlineLabelItem);
+        deadlinePanel.add(xButton);
+
+        // Add the deadline panel to the main panel
+        deadlineListPanel.add(deadlinePanel);
         deadlineListPanel.revalidate();
         deadlineListPanel.repaint();
     });
-
-
-    // Add components to the deadline panel
-    deadlinePanel.add(deadlineLabelItem);
-    deadlinePanel.add(xButton);
-
-    // Add the deadline panel to the main panel
-    deadlineListPanel.add(deadlinePanel);
-    deadlineListPanel.revalidate();
-    deadlineListPanel.repaint();
-});
 
     // Kategori valg
     JLabel tagLabel = new JLabel("Tilføj Kategori:");
@@ -1212,7 +1233,7 @@ addDeadlineButton.addActionListener(e -> {
     createCollaborationButton.addActionListener(e -> {
         String newCollaboration = JOptionPane.showInputDialog(dialog, "Skriv nye tidligere samarbejdeprojekter:");
         if (newCollaboration != null && !newCollaboration.trim().isEmpty()) {
-            main.userProjectList.add(newCollaboration);
+            main.userProjectList.add(newCollaboration); // insert stringwrite for user project list
             collaborationContentPanel.add(new JCheckBox(newCollaboration));
             collaborationContentPanel.revalidate();
             collaborationContentPanel.repaint();
@@ -1333,6 +1354,12 @@ addDeadlineButton.addActionListener(e -> {
             isCollaborated, running);
             main.fundList.add(fund);
             updateFundList();
+            ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
+            ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
+            FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
+            ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.proposalList);
+            ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.projectList);
+            FundCsvWriter.writeCsv("data/fundsArchive.csv",main.fundList);
             dialog.dispose();
         }
     });
@@ -1541,6 +1568,12 @@ private void showFundDetails(fundClass fund) {
 
         // Call update methods after archiving
         updateFundList();
+        ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
+        ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
+        FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
+        ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.proposalList);
+        ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.projectList);
+        FundCsvWriter.writeCsv("data/fundsArchive.csv",main.fundList);
         fundFullPanel.removeAll(); 
         fundFullPanel.revalidate();
         fundFullPanel.repaint();
@@ -1792,48 +1825,54 @@ private void openProjectDialog() {
                     System.out.println(proj.getCategories());
                 }
                 updateProjectList();
+                ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
+                ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
+                FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
+                ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.proposalList);
+                ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.projectList);
+                FundCsvWriter.writeCsv("data/fundsArchive.csv",main.fundList);
                 dialog.dispose();
             }catch(Exception e){
-
+                System.err.println("Rip openProjectDialog died");
             }
         });
 
-    // Layout definition
-    layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+        // Layout definition
+        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 
-        .addComponent(nameLabel).addComponent(nameField)
-        .addComponent(purposeLabel).addComponent(purposeField)
-        .addComponent(descriptionLabel).addComponent(descriptionScrollPane)
-        .addComponent(ownerLabel).addComponent(ownerField)
-        .addComponent(targetLabel).addComponent(targetField)
-        .addComponent(budgetLabel).addComponent(budgetField)
-        .addComponent(fromDateLabel).addComponent(fromDateSpinner)
-        .addComponent(toDateLabel).addComponent(toDateSpinner)
-        .addComponent(activitiesLabel).addComponent(activitiesField)
-        .addComponent(createTagLabel).addComponent(createTagButton)
-        .addComponent(selectTagLabel).addComponent(tagScrollPane)
-        .addComponent(submitButton)
+            .addComponent(nameLabel).addComponent(nameField)
+            .addComponent(purposeLabel).addComponent(purposeField)
+            .addComponent(descriptionLabel).addComponent(descriptionScrollPane)
+            .addComponent(ownerLabel).addComponent(ownerField)
+            .addComponent(targetLabel).addComponent(targetField)
+            .addComponent(budgetLabel).addComponent(budgetField)
+            .addComponent(fromDateLabel).addComponent(fromDateSpinner)
+            .addComponent(toDateLabel).addComponent(toDateSpinner)
+            .addComponent(activitiesLabel).addComponent(activitiesField)
+            .addComponent(createTagLabel).addComponent(createTagButton)
+            .addComponent(selectTagLabel).addComponent(tagScrollPane)
+            .addComponent(submitButton)
 
-      );
+        );
 
-    layout.setVerticalGroup(layout.createSequentialGroup()
-        .addComponent(nameLabel).addComponent(nameField)
-        .addComponent(purposeLabel).addComponent(purposeField)
-        .addComponent(descriptionLabel).addComponent(descriptionScrollPane)
-        .addComponent(ownerLabel).addComponent(ownerField)
-        .addComponent(targetLabel).addComponent(targetField)
-        .addComponent(budgetLabel).addComponent(budgetField)
-        .addComponent(fromDateLabel).addComponent(fromDateSpinner)
-        .addComponent(toDateLabel).addComponent(toDateSpinner)
-        .addComponent(activitiesLabel).addComponent(activitiesField)
-        .addComponent(createTagLabel).addComponent(createTagButton)
-        .addComponent(selectTagLabel).addComponent(tagScrollPane)
-        .addComponent(submitButton)
-    );
+        layout.setVerticalGroup(layout.createSequentialGroup()
+            .addComponent(nameLabel).addComponent(nameField)
+            .addComponent(purposeLabel).addComponent(purposeField)
+            .addComponent(descriptionLabel).addComponent(descriptionScrollPane)
+            .addComponent(ownerLabel).addComponent(ownerField)
+            .addComponent(targetLabel).addComponent(targetField)
+            .addComponent(budgetLabel).addComponent(budgetField)
+            .addComponent(fromDateLabel).addComponent(fromDateSpinner)
+            .addComponent(toDateLabel).addComponent(toDateSpinner)
+            .addComponent(activitiesLabel).addComponent(activitiesField)
+            .addComponent(createTagLabel).addComponent(createTagButton)
+            .addComponent(selectTagLabel).addComponent(tagScrollPane)
+            .addComponent(submitButton)
+        );
 
-    dialog.setLocationRelativeTo(frame);
-    dialog.setVisible(true);
-}
+        dialog.setLocationRelativeTo(frame);
+        dialog.setVisible(true);
+    }
 
 
     private JPanel createRightSidePanel() {
@@ -1865,7 +1904,7 @@ private void openProjectDialog() {
     }
 
     
-
+//DEPRECATED
     // method to filther by tag
     private void filterproposalProjectssByTag(String tag) {
         proposalProjectListPanel.removeAll();
