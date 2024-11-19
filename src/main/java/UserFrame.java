@@ -1685,8 +1685,8 @@ private void openProjectDialog() {
     JTextField activitiesField = new JTextField();
 
     // Tag creation and selection
-    JLabel createTagLabel = new JLabel("Indtast Nyt Tag:");
-    JButton createTagButton = new JButton("Indtast Nyt Tag");
+    JLabel createTagLabel = new JLabel("Opret Kategori");
+    JButton createTagButton = new JButton("Opret Kategori");
     
         JLabel selectTagLabel = new JLabel("Vælg relevante kategorier:");
         JPanel tagPanel = new JPanel();
