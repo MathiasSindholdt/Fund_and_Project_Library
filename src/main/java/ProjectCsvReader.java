@@ -52,7 +52,10 @@ public class ProjectCsvReader {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        System.out.println("+++ Projects read successfull +++");
+        for (project project : projects){
+            System.out.println(project.getTitle());
+        }
         return projects;
     }
 

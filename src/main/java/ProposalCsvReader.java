@@ -51,9 +51,13 @@ public class ProposalCsvReader {
                 proposals.add(prop);
             }
         } catch (IOException e) {
+            System.out.println("!!! Proposal read unsuccessfull !!!");
             e.printStackTrace();
         }
-
+        System.out.println("+++ Proposal read successfull +++");
+        for (proposalProject proposal : proposals){
+            System.out.println(proposal.getTitle());
+        }
         return proposals;
     }
 }

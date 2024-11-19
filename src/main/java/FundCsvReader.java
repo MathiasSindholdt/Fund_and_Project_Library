@@ -93,7 +93,10 @@ public class FundCsvReader {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+        System.out.println("+++ Funds read successfull +++");
+        for (fundClass fund : funds){
+            System.out.println(fund.getTitle());
+        }
         return funds;
     }
 

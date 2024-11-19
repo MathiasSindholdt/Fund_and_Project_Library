@@ -261,9 +261,6 @@ public class UserFrame extends JFrame implements ActionListener {
         panel.setBackground(Color.WHITE);
     
         // Title label
-
-    
-        // Title label
         JLabel label = new JLabel("Arkiv");
         label.setFont(new Font("Arial", Font.BOLD, 18));
         label.setFont(new Font("Arial", Font.BOLD, 18));
@@ -271,7 +268,7 @@ public class UserFrame extends JFrame implements ActionListener {
         panel.add(label);
     
         // Buttons for "Proposals," "Projects," and "Funds"
-        JButton proposalsButton = new JButton("Arkiveret projektforslag");
+        JButton proposalsButton = new JButton("Afviste projektforslag");
         JButton projectsButton = new JButton("Arkiveret projekter");
         JButton fundsButton = new JButton("Arkiveret fonde");
     
@@ -440,6 +437,10 @@ public class UserFrame extends JFrame implements ActionListener {
 
     // Show the frame
     public void show() {
+        main.initializeLists();
+        updateproposalProjectList();
+        updateProjectList();
+        updateFundList();
         frame.setVisible(true);
     }
 
@@ -692,16 +693,17 @@ public class UserFrame extends JFrame implements ActionListener {
                 tempActivities
             );
             
-
             // Add the proposal to the list and update UI
             main.proposalList.add(proposal);
             updateproposalProjectList();
+            CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
+            CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
             ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
             ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
             FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
-            ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.proposalList);
-            ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.projectList);
-            FundCsvWriter.writeCsv("data/fundsArchive.csv",main.fundList);
+            ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.deniedProposalList);
+            ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.archiveProjectList);
+            FundCsvWriter.writeCsv("data/fundsArchive.csv",main.archiveFundList);
             System.out.println("Proposal added to list and UI updated");
 
             // Close the dialog
@@ -819,12 +821,15 @@ private void showProjectProbDetails(proposalProject proposal) {
         approveProposal(proposal); // Approve the proposal and convert it to a project
         proposalProjectFullPanel.getParent().getParent().remove(proposalProjectFullPanel); // Close details
         updateproposalProjectList(); // Refresh proposal list
+        CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
+        CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
         ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
         ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
         FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
-        ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.proposalList);
-        ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.projectList);
-        FundCsvWriter.writeCsv("data/fundsArchive.csv",main.fundList);
+        ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.deniedProposalList);
+        ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.archiveProjectList);
+        FundCsvWriter.writeCsv("data/fundsArchive.csv",main.archiveFundList);
+        System.out.println("Proposal added to list and UI updated");
         proposalProjectFullPanel.removeAll();
         proposalProjectFullPanel.repaint();
         proposalProjectFullPanel.revalidate();
@@ -844,12 +849,15 @@ archiveButton.addActionListener(e -> {
 
     // Call update methods after archiving
     updateproposalProjectList();
+    CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
+    CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
     ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
     ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
     FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
-    ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.proposalList);
-    ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.projectList);
-    FundCsvWriter.writeCsv("data/fundsArchive.csv",main.fundList);
+    ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.deniedProposalList);
+    ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.archiveProjectList);
+    FundCsvWriter.writeCsv("data/fundsArchive.csv",main.archiveFundList);
+    System.out.println("Proposal added to list and UI updated");
     proposalProjectFullPanel.removeAll(); 
     proposalProjectFullPanel.revalidate();
     proposalProjectFullPanel.repaint();
@@ -917,12 +925,14 @@ proposalProjectFullPanel.add(archiveButton);
 
     // Update the UI to reflect the new project list
     updateProjectList();
+    CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
+    CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
     ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
     ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
     FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
-    ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.proposalList);
-    ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.projectList);
-    FundCsvWriter.writeCsv("data/fundsArchive.csv",main.fundList);
+    ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.deniedProposalList);
+    ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.archiveProjectList);
+    FundCsvWriter.writeCsv("data/fundsArchive.csv",main.archiveFundList);
 }
 
 private void showProjectDetails(project project) {
@@ -999,12 +1009,14 @@ private void showProjectDetails(project project) {
 
         // Update project list and clear details display
         updateProjectList();
+        CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
+        CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
         ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
         ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
         FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
-        ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.proposalList);
-        ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.projectList);
-        FundCsvWriter.writeCsv("data/fundsArchive.csv",main.fundList);
+        ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.deniedProposalList);
+        ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.archiveProjectList);
+        FundCsvWriter.writeCsv("data/fundsArchive.csv",main.archiveFundList);
         projectFullPanel.removeAll();
         projectFullPanel.revalidate();
         projectFullPanel.repaint();
@@ -1089,30 +1101,31 @@ private void openFundDialog() {
     List<LocalDateTime> addedDeadlines = new ArrayList<>();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    addDeadlineButton.addActionListener(e -> {
-        LocalDateTime newDeadline;
-        if (deadLineTimeCheckBox.isSelected()) {
-            if (!validationUtils.isValidTime(deadLineTimeFieldHour.getText(), true)) {
-                dialog.add(UserFrameErrorHandling.displayTimeError());
-                return;
-            }
-            if (!validationUtils.isValidTime(deadLineTimeFieldMinute.getText(), false)) {
-                dialog.add(UserFrameErrorHandling.displayTimeError());
-                return;
-            }
-            newDeadline = ((java.util.Date) deadlineSpinner.getValue())
-                .toInstant()
-                .atZone(java.time.ZoneId.systemDefault())
-                .toLocalDateTime();
-            newDeadline = newDeadline.withHour(Integer.parseInt(deadLineTimeFieldHour.getText()));
-            newDeadline = newDeadline.withMinute(Integer.parseInt(deadLineTimeFieldMinute.getText()));
-        } else {
-            newDeadline = ((java.util.Date) deadlineSpinner.getValue())
-                .toInstant()
-                .atZone(java.time.ZoneId.systemDefault())
-                .toLocalDateTime();
+addDeadlineButton.addActionListener(e -> {
+    LocalDateTime newDeadline;
+    if (deadLineTimeCheckBox.isSelected()) {
+        if (!validationUtils.isValidTime(deadLineTimeFieldHour.getText(), true)) {
+            dialog.add(UserFrameErrorHandling.displayTimeError());
+            return;
         }
-        addedDeadlines.add(newDeadline);
+        if (!validationUtils.isValidTime(deadLineTimeFieldMinute.getText(), false)) {
+            dialog.add(UserFrameErrorHandling.displayTimeError());
+            return;
+        }
+        newDeadline = ((java.util.Date) deadlineSpinner.getValue())
+            .toInstant()
+            .atZone(java.time.ZoneId.systemDefault())
+            .toLocalDateTime();
+        newDeadline = newDeadline.withHour(Integer.parseInt(deadLineTimeFieldHour.getText()));
+        newDeadline = newDeadline.withMinute(Integer.parseInt(deadLineTimeFieldMinute.getText()));
+    } else {
+        newDeadline = ((java.util.Date) deadlineSpinner.getValue())
+            .toInstant()
+            .atZone(java.time.ZoneId.systemDefault())
+            .toLocalDate()
+            .atTime(0, 0); // Set default time to 00:00
+    }
+    addedDeadlines.add(newDeadline);
 
         // Create a panel to hold the deadline label and the remove button
         JPanel deadlinePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -1151,7 +1164,7 @@ private void openFundDialog() {
 
     // Action Listener for Create Tag knap
     createTagButton.addActionListener(e -> {
-        String newTag = JOptionPane.showInputDialog(dialog, "Enter new tag:");
+        String newTag = JOptionPane.showInputDialog(dialog, "Indtast Ny Kategori:");
         if (newTag != null && !newTag.trim().isEmpty()) {
             JCheckBox tagCheckBox = new JCheckBox(newTag);
 
@@ -1267,15 +1280,10 @@ private void openFundDialog() {
     // Submit knap
     JButton submitButton = new JButton("Tilføj Fond");
     submitButton.addActionListener(event -> {
-        LocalDateTime[] fundDeadlines;
         boolean running = runningCheckBox.isSelected();
         boolean hasError = false;
 
-        if (running) {
-            fundDeadlines = new LocalDateTime[]{LocalDateTime.of(3000, 1, 1, 0, 0)};
-        } else {
-            fundDeadlines = addedDeadlines.toArray(new LocalDateTime[0]);
-        }
+      
 
         //FundTitle errorhandling
         if(validationUtils.isWithinLowerCharLimit(nameField.getText()) == false){
@@ -1348,18 +1356,26 @@ private void openFundDialog() {
             }
         }
 
+
+        if(running){
+            addedDeadlines.clear();
+            addedDeadlines.add(LocalDateTime.of(3000, 1, 1, 0, 0));
+        }
+
         if (!hasError) {
             fundClass fund = new fundClass(tempTitle, tempDescription, tempAmountFrom, tempAmountTo,
             addedDeadlines, selectedCatagories, selectedCollabortion, contacts, tempWebsite, 
             isCollaborated, running);
             main.fundList.add(fund);
             updateFundList();
+            CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
+            CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
             ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
             ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
             FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
-            ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.proposalList);
-            ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.projectList);
-            FundCsvWriter.writeCsv("data/fundsArchive.csv",main.fundList);
+            ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.deniedProposalList);
+            ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.archiveProjectList);
+            FundCsvWriter.writeCsv("data/fundsArchive.csv",main.archiveFundList);
             dialog.dispose();
         }
     });
@@ -1418,7 +1434,7 @@ private void openFundDialog() {
 }
 
 private JButton createXButton() {
-    ImageIcon originalIcon = new ImageIcon("X_Button.png");
+    ImageIcon originalIcon = new ImageIcon("img/X_button.png");
     Image scaledImage = originalIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
     ImageIcon resizedIcon = new ImageIcon(scaledImage);
 
@@ -1568,12 +1584,14 @@ private void showFundDetails(fundClass fund) {
 
         // Call update methods after archiving
         updateFundList();
+        CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
+        CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
         ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
         ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
         FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
-        ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.proposalList);
-        ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.projectList);
-        FundCsvWriter.writeCsv("data/fundsArchive.csv",main.fundList);
+        ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.deniedProposalList);
+        ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.archiveProjectList);
+        FundCsvWriter.writeCsv("data/fundsArchive.csv",main.archiveFundList);
         fundFullPanel.removeAll(); 
         fundFullPanel.revalidate();
         fundFullPanel.repaint();
@@ -1667,8 +1685,8 @@ private void openProjectDialog() {
     JTextField activitiesField = new JTextField();
 
     // Tag creation and selection
-    JLabel createTagLabel = new JLabel("Create Tag:");
-    JButton createTagButton = new JButton("Create Tag");
+    JLabel createTagLabel = new JLabel("Indtast Nyt Tag:");
+    JButton createTagButton = new JButton("Indtast Nyt Tag");
     
         JLabel selectTagLabel = new JLabel("Vælg relevante kategorier:");
         JPanel tagPanel = new JPanel();
@@ -1697,7 +1715,7 @@ private void openProjectDialog() {
 
     // Event for create tag button
     createTagButton.addActionListener(e -> {
-        String newTag = JOptionPane.showInputDialog(dialog, "Enter new tag:");
+        String newTag = JOptionPane.showInputDialog(dialog, "Indtast Nyt Kategori:");
         if (newTag != null && !newTag.trim().isEmpty()) {
             JCheckBox tagCheckBox = new JCheckBox(newTag);
             if (main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))) {
@@ -1825,12 +1843,14 @@ private void openProjectDialog() {
                     System.out.println(proj.getCategories());
                 }
                 updateProjectList();
+                CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
+                CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
                 ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
                 ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
                 FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
-                ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.proposalList);
-                ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.projectList);
-                FundCsvWriter.writeCsv("data/fundsArchive.csv",main.fundList);
+                ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.deniedProposalList);
+                ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.archiveProjectList);
+                FundCsvWriter.writeCsv("data/fundsArchive.csv",main.archiveFundList);
                 dialog.dispose();
             }catch(Exception e){
                 System.err.println("Rip openProjectDialog died");
