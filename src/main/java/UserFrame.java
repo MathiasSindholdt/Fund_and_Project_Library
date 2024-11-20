@@ -53,6 +53,8 @@ public class UserFrame extends JFrame implements ActionListener {
     private JButton createFundButton;
     private JButton changeFundButton;
 
+    private JButton menuButton;
+    private JButton logoutButton;
     private JButton backButton;
     private JButton xButton;
     private JButton xButtonHover;
@@ -136,25 +138,102 @@ public class UserFrame extends JFrame implements ActionListener {
     private JPanel createTopPanel() {
         JPanel panel1 = new JPanel();
         panel1.setBackground(new Color(213, 213, 213, 255));
-        panel1.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        panel1.setLayout(new BorderLayout());
 
-        backButton = createBackButton();
-        panel1.add(backButton);
-
-        JLabel label = new JLabel("Bruger", SwingConstants.LEFT);
-        panel1.add(label);
+        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        leftPanel.setOpaque(false); // Make it transparent to show panel1 background
+    
+        menuButton = createMenuButton();
+        menuButton.setPreferredSize(new Dimension(100, 50)); // Set preferred size
+        leftPanel.add(menuButton);
+        menuButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        menuButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            }
+    
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+            }
+        });
 
         projectPropButton = createProjectPropButton("Projekt forslag");
         panel1.add(projectPropButton);
+        leftPanel.add(projectPropButton);
+
+        projectPropButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        projectPropButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            }
+    
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+            }
+        });
 
         projectButton = createProjectButton("Projekter");
         panel1.add(projectButton);
+        leftPanel.add(projectButton);
+
+        projectButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        projectButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            }
+    
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+            }
+        });
 
         fundsButton = createFundsButton("Fonde");
         panel1.add(fundsButton);
+        leftPanel.add(fundsButton);
+
+        fundsButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        fundsButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            }
+    
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+            }
+        });
 
         archiveButton = createArchiveButton("Arkiv");
         panel1.add(archiveButton);
+        leftPanel.add(archiveButton);
+
+        archiveButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        archiveButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            }
+    
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+            }
+        });
+        panel1.add(leftPanel, BorderLayout.WEST);
+
+
+        logoutButton = createLogutButton();
+        logoutButton.setPreferredSize(new Dimension(100, 50)); // Set preferred size
+        panel1.add(logoutButton, BorderLayout.EAST);
+    
+        logoutButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        logoutButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            }
+    
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+            }
+        });
+
 
         return panel1;
     }
@@ -386,8 +465,8 @@ public class UserFrame extends JFrame implements ActionListener {
         return button;
     }
 
-    private JButton createBackButton() {
-        ImageIcon originalIcon = new ImageIcon("backArrow.png");
+    private JButton createMenuButton() {
+        ImageIcon originalIcon = new ImageIcon("img/Menu.png");
         Image scaledImage = originalIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         ImageIcon resizedIcon = new ImageIcon(scaledImage);
 
@@ -401,6 +480,23 @@ public class UserFrame extends JFrame implements ActionListener {
         button.addActionListener(this);
         return button;
     }
+
+    private JButton createLogutButton(){
+        ImageIcon originalIcon = new ImageIcon("img/Logout.png");
+        Image scaledImage = originalIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        ImageIcon resizedIcon = new ImageIcon(scaledImage);
+
+        JButton button = new JButton();
+        button.setPreferredSize(new Dimension(50, 50));
+        button.setIcon(resizedIcon);
+        button.setBorderPainted(false);
+        button.setContentAreaFilled(false);
+        button.setFocusPainted(false);
+        button.setOpaque(false);
+        button.addActionListener(this);
+        return button;
+    }
+
 
     // catagory button
     private JButton CreateCatagoryButton(String text) {
@@ -2065,7 +2161,7 @@ private JButton createXButton() {
         } else if (e.getSource() == archiveButton) {
             cardLayout.show(cardPanel, "Archive");
             updateRightSidePanel("Archive");
-        } else if (e.getSource() == backButton) {
+        } else if (e.getSource() == menuButton) {
             cardLayout.show(cardPanel, "Main");
         } else if (e.getSource() == createProbButton) {
             openproposalProjectDialog();
@@ -2073,6 +2169,10 @@ private JButton createXButton() {
             openFundDialog();
         } else if (e.getSource() == createProjectButton) {
             openProjectDialog();
+        }else if (e.getSource() == logoutButton) {
+            Frontpage frontpage = new Frontpage();
+            frontpage.show();
+            frame.dispose();
 
         }
 
