@@ -283,9 +283,7 @@ public class UserFrame extends JFrame implements ActionListener {
     private JPanel createArchiveView() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
-
-        // Title label
-
+    
         // Title label
         JLabel label = new JLabel("Arkiv");
         label.setFont(new Font("Arial", Font.BOLD, 18));
@@ -294,7 +292,7 @@ public class UserFrame extends JFrame implements ActionListener {
         panel.add(label);
 
         // Buttons for "Proposals," "Projects," and "Funds"
-        JButton proposalsButton = new JButton("Arkiveret projektforslag");
+        JButton proposalsButton = new JButton("Afviste projektforslag");
         JButton projectsButton = new JButton("Arkiveret projekter");
         JButton fundsButton = new JButton("Arkiveret fonde");
 
@@ -305,7 +303,7 @@ public class UserFrame extends JFrame implements ActionListener {
         fundsButton.setPreferredSize(buttonSize);
 
         // Add action listeners to each button to display respective archives
-        proposalsButton.addActionListener(e -> displayArchiveList("proposalProjectsDetails", main.archiveProposalList));
+        proposalsButton.addActionListener(e -> displayArchiveList("proposalProjectsDetails", main.deniedProposalList));
         projectsButton.addActionListener(e -> displayArchiveList("ProjectDetails", main.archiveProjectList));
         fundsButton.addActionListener(e -> displayArchiveList("FundDetails", main.archiveFundList));
 
@@ -464,6 +462,10 @@ public class UserFrame extends JFrame implements ActionListener {
 
     // Show the frame
     public void show() {
+        main.initializeLists();
+        updateproposalProjectList();
+        updateProjectList();
+        updateFundList();
         frame.setVisible(true);
     }
 
@@ -701,20 +703,29 @@ public class UserFrame extends JFrame implements ActionListener {
 
             // Create the proposal project instance with categories
             proposalProject proposal = new proposalProject(
-                    tempTitle,
-                    selectedCatagories,
-                    tempDescription,
-                    tempIdea,
-                    tempOwner,
-                    tempTargetAudience,
-                    tempBudget,
-                    tempFromDateLDT,
-                    tempToDateLDT,
-                    tempActivities);
-
+                tempTitle,
+                selectedCatagories,
+                tempDescription,
+                tempIdea,
+                tempOwner,
+                tempTargetAudience,
+                tempBudget,
+                tempFromDateLDT,
+                tempToDateLDT,
+                tempActivities
+            );
+            
             // Add the proposal to the list and update UI
             main.proposalList.add(proposal);
             updateproposalProjectList();
+            CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
+            CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
+            ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
+            ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
+            FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
+            ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.deniedProposalList);
+            ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.archiveProjectList);
+            FundCsvWriter.writeCsv("data/fundsArchive.csv",main.archiveFundList);
             System.out.println("Proposal added to list and UI updated");
 
             // Close the dialog
@@ -819,35 +830,52 @@ public class UserFrame extends JFrame implements ActionListener {
                 project.setFundList(comparer.compareCategoriesWithFund(true, main.fundList, project));
             }
             JLabel projectLabel;
-            if (project.getTitle().length() < 20) {
-                projectLabel = new JLabel(
-                        String.format("%-30s %-30s %-30s %-30s %-30s",
-                                project.getTitle(),
-                                project.getProjectOwner(),
-                                project.getDateCreated().toString().split("T")[0],
-                                project.getFunds().get(0).getDeadlines().get(0).toString(),
-                                project.getCategories().toString()));
-            } else {
-                projectLabel = new JLabel(
-                        String.format("%-30s %-30s %-30s %-30s %-30s",
-                                project.getTitle().substring(0, 17) + "...",
-                                project.getProjectOwner(),
-                                project.getDateCreated().toString().split("T")[0],
-                                project.getFunds().get(0).getDeadlines().get(0).toString(),
-                                project.getCategories().toString()));
-            }
-            // Brug en endelig variabel for at undgå problemer med closures
-            final project currentProject = project;
-
-            projectLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseClicked(java.awt.event.MouseEvent evt) {
-                    showProjectDetails(currentProject); // Vis detaljer for det valgte projekt
+            if (project.getFunds().isEmpty()){
+                if (project.getTitle().length() < 20) {
+                    projectLabel = new JLabel(
+                            String.format("%-30s %-30s %-30s %-30s %-30s",
+                                    project.getTitle(),
+                                    project.getProjectOwner(),
+                                    project.getDateCreated().toString().split("T")[0],
+                                    "No Categories",
+                                    "No Categories"));
+                } else {
+                    projectLabel = new JLabel(
+                            String.format("%-30s %-30s %-30s %-30s %-30s",
+                                    project.getTitle().substring(0, 17) + "...",
+                                    project.getProjectOwner(),
+                                    project.getDateCreated().toString().split("T")[0],
+                                    "Ingen Ansøgningsfrist ",
+                                    project.getCategories().toString()));
                 }
-            });
-
-            projectListPanel.add(projectLabel);
-        }
-
+            } else {
+                if (project.getTitle().length() < 20) {
+                    projectLabel = new JLabel(
+                            String.format("%-30s %-30s %-30s %-30s %-30s",
+                                    project.getTitle(),
+                                    project.getProjectOwner(),
+                                    project.getDateCreated().toString().split("T")[0],
+                                    project.getFunds().get(0).getDeadlines().get(0).toString(),
+                                    project.getCategories().toString()));
+                } else {
+                    projectLabel = new JLabel(
+                            String.format("%-30s %-30s %-30s %-30s %-30s",
+                                    project.getTitle().substring(0, 17) + "...",
+                                    project.getProjectOwner(),
+                                    project.getDateCreated().toString().split("T")[0],
+                                    project.getFunds().get(0).getDeadlines().get(0).toString(),
+                                    project.getCategories().toString()));
+                }
+                // Brug en endelig variabel for at undgå problemer med closures
+                final project currentProject = project;
+            
+                projectLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+                    public void mouseClicked(java.awt.event.MouseEvent evt) {
+                        showProjectDetails(currentProject); // Vis detaljer for det valgte projekt
+                    }
+                });
+                projectListPanel.add(projectLabel);
+            }}
         // Opdater visningen
         projectListPanel.revalidate();
         projectListPanel.repaint();
@@ -875,16 +903,24 @@ public class UserFrame extends JFrame implements ActionListener {
         String categories = String.join(", ", proposal.getCategories());
         proposalProjectFullPanel.add(new JLabel("Kategorier: " + categories));
 
-        JButton approveButton = new JButton("Godkend");
-        approveButton.addActionListener(event -> {
-            approveProposal(proposal); // Approve the proposal and convert it to a project
-            proposalProjectFullPanel.getParent().getParent().remove(proposalProjectFullPanel); // Close details
-            updateproposalProjectList(); // Refresh proposal list
-            proposalProjectFullPanel.removeAll();
-            proposalProjectFullPanel.repaint();
-            proposalProjectFullPanel.revalidate();
-
-        });
+    JButton approveButton = new JButton("Godkend");
+    approveButton.addActionListener(event -> {
+        approveProposal(proposal); // Approve the proposal and convert it to a project
+        proposalProjectFullPanel.getParent().getParent().remove(proposalProjectFullPanel); // Close details
+        updateproposalProjectList(); // Refresh proposal list
+        FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
+        CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
+        CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
+        ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
+        ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
+        ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.deniedProposalList);
+        ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.archiveProjectList);
+        FundCsvWriter.writeCsv("data/fundsArchive.csv",main.archiveFundList);
+        System.out.println("Proposal added to list and UI updated");
+        proposalProjectFullPanel.removeAll();
+        proposalProjectFullPanel.repaint();
+        proposalProjectFullPanel.revalidate();
+    });
 
         // Reject button
         JButton rejectButton = new JButton("Afvis");
@@ -896,20 +932,29 @@ public class UserFrame extends JFrame implements ActionListener {
         proposalProjectFullPanel.add(approveButton);
         proposalProjectFullPanel.add(rejectButton);
 
-        JButton archiveButton = new JButton("Arkivér");
-        Dimension buttonSize = new Dimension(150, 50);
-        archiveButton.setPreferredSize(buttonSize);
+JButton archiveButton = new JButton("Afvis Projektforslag");
+Dimension buttonSize = new Dimension(150, 50); 
+archiveButton.setPreferredSize(buttonSize);
 
         archiveButton.addActionListener(e -> {
             // Archive the project
             archive.archiveProposal(proposal);
 
-            // Call update methods after archiving
-            updateproposalProjectList();
-            proposalProjectFullPanel.removeAll();
-            proposalProjectFullPanel.revalidate();
-            proposalProjectFullPanel.repaint();
-        });
+    // Call update methods after archiving
+    updateproposalProjectList();
+    CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
+    CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
+    ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
+    ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
+    FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
+    ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.deniedProposalList);
+    ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.archiveProjectList);
+    FundCsvWriter.writeCsv("data/fundsArchive.csv",main.archiveFundList);
+    System.out.println("Proposal added to list and UI updated");
+    proposalProjectFullPanel.removeAll(); 
+    proposalProjectFullPanel.revalidate();
+    proposalProjectFullPanel.repaint();
+});
 
         proposalProjectFullPanel.add(archiveButton);
 
@@ -981,9 +1026,17 @@ public class UserFrame extends JFrame implements ActionListener {
             System.out.println("Error: Unexpected issue while approving proposal - " + e.getMessage());
         }
 
-        // Update the UI to reflect the new project list
-        updateProjectList();
-    }
+    // Update the UI to reflect the new project list
+    updateProjectList();
+    CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
+    CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
+    ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
+    ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
+    FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
+    ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.deniedProposalList);
+    ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.archiveProjectList);
+    FundCsvWriter.writeCsv("data/fundsArchive.csv",main.archiveFundList);
+}
 
     private void showProjectDetails(project project) {
         projectFullPanel.removeAll();
@@ -1058,12 +1111,20 @@ public class UserFrame extends JFrame implements ActionListener {
             // Archive the project
             archive.archiveProject(project);
 
-            // Update project list and clear details display
-            updateProjectList();
-            projectFullPanel.removeAll();
-            projectFullPanel.revalidate();
-            projectFullPanel.repaint();
-        });
+        // Update project list and clear details display
+        updateProjectList();
+        CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
+        CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
+        ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
+        ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
+        FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
+        ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.deniedProposalList);
+        ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.archiveProjectList);
+        FundCsvWriter.writeCsv("data/fundsArchive.csv",main.archiveFundList);
+        projectFullPanel.removeAll();
+        projectFullPanel.revalidate();
+        projectFullPanel.repaint();
+    });
 
         projectFullPanel.add(archiveButton);
 
@@ -1148,17 +1209,17 @@ private void openFundDialog() {
     JTextField deadLineTimeFieldMinute = new JTextField(2);
 
 
-deadLineTimePanel.add(deadLineTimeLabel);
-deadLineTimePanel.add(deadLineTimeFieldHour);
-deadLineTimePanel.add(deadLineTimeLabelColon);
-deadLineTimePanel.add(deadLineTimeFieldMinute);
-deadLineTimePanel.setVisible(false);
+    deadLineTimePanel.add(deadLineTimeLabel);
+    deadLineTimePanel.add(deadLineTimeFieldHour);
+    deadLineTimePanel.add(deadLineTimeLabelColon);
+    deadLineTimePanel.add(deadLineTimeFieldMinute);
+    deadLineTimePanel.setVisible(false);
 
-deadLineTimeCheckBox.addItemListener(e -> {
-    deadLineTimePanel.setVisible(deadLineTimeCheckBox.isSelected());
-    dialog.revalidate();
-    dialog.repaint();
-});
+    deadLineTimeCheckBox.addItemListener(e -> {
+        deadLineTimePanel.setVisible(deadLineTimeCheckBox.isSelected());
+        dialog.revalidate();
+        dialog.repaint();
+    });
 
     // Knap til at tilføje en ny deadline
     JButton addDeadlineButton = new JButton("Tilføj ansøgningsfrist");
@@ -1193,31 +1254,31 @@ addDeadlineButton.addActionListener(e -> {
     }
     addedDeadlines.add(newDeadline);
 
-    // Create a panel to hold the deadline label and the remove button
-    JPanel deadlinePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    JLabel deadlineLabelItem = new JLabel(newDeadline.format(formatter));
-    JButton xButton = createXButton();
-    
-    
-    // Add action listener to the remove button
-    final LocalDateTime deadlineToRemove = newDeadline;
-    xButton.addActionListener(removeEvent -> {
-        addedDeadlines.remove(deadlineToRemove);
-        deadlineListPanel.remove(deadlinePanel);
+        // Create a panel to hold the deadline label and the remove button
+        JPanel deadlinePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel deadlineLabelItem = new JLabel(newDeadline.format(formatter));
+        JButton xButton = createXButton();
+        
+        
+        // Add action listener to the remove button
+        final LocalDateTime deadlineToRemove = newDeadline;
+        xButton.addActionListener(removeEvent -> {
+            addedDeadlines.remove(deadlineToRemove);
+            deadlineListPanel.remove(deadlinePanel);
+            deadlineListPanel.revalidate();
+            deadlineListPanel.repaint();
+        });
+
+
+        // Add components to the deadline panel
+        deadlinePanel.add(deadlineLabelItem);
+        deadlinePanel.add(xButton);
+
+        // Add the deadline panel to the main panel
+        deadlineListPanel.add(deadlinePanel);
         deadlineListPanel.revalidate();
         deadlineListPanel.repaint();
     });
-
-
-    // Add components to the deadline panel
-    deadlinePanel.add(deadlineLabelItem);
-    deadlinePanel.add(xButton);
-
-    // Add the deadline panel to the main panel
-    deadlineListPanel.add(deadlinePanel);
-    deadlineListPanel.revalidate();
-    deadlineListPanel.repaint();
-});
 
     // Kategori valg
     JLabel tagLabel = new JLabel("Tilføj Kategori:");
@@ -1230,7 +1291,7 @@ addDeadlineButton.addActionListener(e -> {
 
     // Action Listener for Create Tag knap
     createTagButton.addActionListener(e -> {
-        String newTag = JOptionPane.showInputDialog(dialog, "Enter new tag:");
+        String newTag = JOptionPane.showInputDialog(dialog, "Indtast Ny Kategori:");
         if (newTag != null && !newTag.trim().isEmpty()) {
             JCheckBox tagCheckBox = new JCheckBox(newTag);
 
@@ -1312,7 +1373,7 @@ addDeadlineButton.addActionListener(e -> {
     createCollaborationButton.addActionListener(e -> {
         String newCollaboration = JOptionPane.showInputDialog(dialog, "Skriv nye tidligere samarbejdeprojekter:");
         if (newCollaboration != null && !newCollaboration.trim().isEmpty()) {
-            main.userProjectList.add(newCollaboration);
+            main.userProjectList.add(newCollaboration); // insert stringwrite for user project list
             collaborationContentPanel.add(new JCheckBox(newCollaboration));
             collaborationContentPanel.revalidate();
             collaborationContentPanel.repaint();
@@ -1434,6 +1495,14 @@ addDeadlineButton.addActionListener(e -> {
             isCollaborated, running);
             main.fundList.add(fund);
             updateFundList();
+            CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
+            CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
+            ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
+            ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
+            FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
+            ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.deniedProposalList);
+            ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.archiveProjectList);
+            FundCsvWriter.writeCsv("data/fundsArchive.csv",main.archiveFundList);
             dialog.dispose();
         }
     });
@@ -1634,15 +1703,23 @@ private JButton createXButton() {
 
             archive.archiveFund(fund);
 
-            // Call update methods after archiving
-            updateFundList();
-            fundFullPanel.removeAll();
-            fundFullPanel.revalidate();
-            fundFullPanel.repaint();
-
-        });
-
-        fundFullPanel.add(archiveButton);
+        // Call update methods after archiving
+        updateFundList();
+        CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
+        CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
+        ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
+        ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
+        FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
+        ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.deniedProposalList);
+        ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.archiveProjectList);
+        FundCsvWriter.writeCsv("data/fundsArchive.csv",main.archiveFundList);
+        fundFullPanel.removeAll(); 
+        fundFullPanel.revalidate();
+        fundFullPanel.repaint();
+      
+    });
+    
+    fundFullPanel.add(archiveButton);
 
         /*
          * JButton archiveButton = new JButton("Arkivér");
@@ -1978,9 +2055,17 @@ private JButton createXButton() {
                         System.out.println(proj.getCategories());
                     }
                     updateProjectList();
+                    CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
+                    CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
+                    ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
+                    ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
+                    FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
+                    ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.deniedProposalList);
+                    ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.archiveProjectList);
+                    FundCsvWriter.writeCsv("data/fundsArchive.csv",main.archiveFundList);
                     dialog.dispose();
                 }catch(Exception e){
-    
+                    System.err.println("Rip openProjectDialog died");
                 }
             });
 
@@ -2057,6 +2142,8 @@ private JButton createXButton() {
         return rightSidePanel;
     }
 
+    
+//DEPRECATED
     // method to filther by tag
     private void filterproposalProjectssByTag(String tag) {
         proposalProjectListPanel.removeAll();
