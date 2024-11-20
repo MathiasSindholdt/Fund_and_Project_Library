@@ -214,12 +214,28 @@ public class UserFrame extends JFrame implements ActionListener {
         createFundButton = createButton("Lav en ny fond");
         changeFundButton = createButton("Redigér en fond");
 
+
+
+        EditProjectButton editProjectButton = new EditProjectButton(this, main.projectList);
+        // EditFundButton editFundButton = new EditFundButton(this, main.fundList);
+
         panel5.add(createProbButton);
         panel5.add(changeProbButton);
         panel5.add(createProjectButton);
         panel5.add(changeProjectButton);
         panel5.add(createFundButton);
         panel5.add(changeFundButton);
+
+
+        /*  changeFundButton.addActionListener(e -> {
+            editFundButton.openEditFundDialog();
+        });
+        */
+        
+
+        changeProjectButton.addActionListener(e -> {
+            editProjectButton.openEditProjectDialog();
+        });
 
         return panel5;
     }
@@ -1160,7 +1176,7 @@ private void openFundDialog() {
     JDialog dialog = new JDialog(frame, "Lav En Fond", true);
     dialog.setSize(700, 600);
     
- JPanel mainPanel = new JPanel();
+    JPanel mainPanel = new JPanel();
     mainPanel.setLayout(new GroupLayout(mainPanel));
     mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     
