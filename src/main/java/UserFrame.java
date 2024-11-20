@@ -778,48 +778,57 @@ public class UserFrame extends JFrame implements ActionListener {
     }
 
     // SORT HERE
-    private void updateproposalProjectList() {
+    private void updateProposalProjectList() {
         System.out.println("Updating proposal project list");
         proposalProjectListPanel.removeAll();
-
+    
         JLabel infoLabel = new JLabel(
                 String.format("%-30s %-30s %-30s %-30s",
                         "Title",
-                        "Project ejer",
-                        "Dato oprettet",
-                        "Kategori(er)"));
+                        "Project Owner",
+                        "Date Created",
+                        "Categories"));
         proposalProjectListPanel.add(infoLabel);
-        // Tilføj labels for hvert projekt
-        JLabel proposalLabel;
+    
+        // Add labels for each proposal project
         for (proposalProject proposal : main.proposalList) {
+            JLabel proposalLabel;
+    
+            // Check if the categories list is empty and set a default value
+            String categoriesDisplay = proposal.getCategories().isEmpty() ? "No Categories" : proposal.getCategories().toString();
+    
             if (proposal.getTitle().length() < 20) {
                 proposalLabel = new JLabel(
                         String.format("%-30s %-30s %-30s %-30s",
                                 proposal.getTitle(),
                                 proposal.getProjectOwner(),
                                 proposal.getDateCreated().toString().split("T")[0],
-                                proposal.getCategories().toString()));
+                                categoriesDisplay));
             } else {
                 proposalLabel = new JLabel(
                         String.format("%-30s %-30s %-30s %-30s",
                                 proposal.getTitle().substring(0, 17) + "...",
                                 proposal.getProjectOwner(),
                                 proposal.getDateCreated().toString().split("T")[0],
-                                proposal.getCategories().toString()));
+                                categoriesDisplay));
             }
-
+    
+            // Add a mouse listener for proposal project details
             proposalLabel.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     showProjectProbDetails(proposal); // Show the selected project's details
                 }
             });
-
+    
+            // Add the proposal label to the panel
             proposalProjectListPanel.add(proposalLabel);
         }
-
+    
+        // Update the view
         proposalProjectListPanel.revalidate();
         proposalProjectListPanel.repaint();
     }
+    
 
     private void updateProjectList() { // SORT HERE
         // Ryd panelet før opdatering
