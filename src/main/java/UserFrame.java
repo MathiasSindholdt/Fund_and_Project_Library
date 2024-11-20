@@ -2,6 +2,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -43,6 +44,8 @@ public class UserFrame extends JFrame implements ActionListener {
     private JFrame frame;
     private JPanel cardPanel;
     private CardLayout cardLayout;
+    JPanel panel2 = new JPanel();
+
 
     // Buttons
     private JButton createProbButton;
@@ -75,6 +78,7 @@ public class UserFrame extends JFrame implements ActionListener {
     private JPanel tagButtonPanel;
 
     private JPanel rightSidePanel;
+    JButton tagButton;
     
     private boolean isInvalidLenght;
     String tempTitle;
@@ -97,20 +101,29 @@ public class UserFrame extends JFrame implements ActionListener {
     Long tempAmountTo;
     private ArrayList<fundContactClass> tempContacts = new ArrayList<>();
     private ArrayList<fundContactClass> contacts = new ArrayList<>();
-    private List<JCheckBox> tagCheckBoxes = new ArrayList<>();
-    private List<proposalProject> proposalProjects = new ArrayList<>();
-
-
     // Constructor to set up the GUI
     public UserFrame() {
         initializeFrame();  // Initialize JFrame
         //UserFrameErrorHandling ErrorHandling = new UserFrameErrorHandling();
 
         JPanel panel1 = createTopPanel();  // Top panel
+                // Create a top panel to hold the label
+                JPanel topPanel = new JPanel();
+                topPanel.setBackground(Color.WHITE);
+                topPanel.setPreferredSize(new Dimension(100, 30)); // Set height for the top panel
+                JLabel label = new JLabel("Katagorier");
+                label.setHorizontalAlignment(SwingConstants.CENTER); // Center the text
+                topPanel.add(label);
+        
+                // Add the top panel to the main panel
+                panel2.add(topPanel, BorderLayout.NORTH);
+                JScrollPane scrollPane = new JScrollPane();
+        
+                panel2.add(scrollPane, BorderLayout.CENTER);
+        
         JPanel panel2 = createSidePanel();  // Left-side panel
         rightSidePanel = createRightSidePanel();  // Right-side panel
         JPanel panel3 = rightSidePanel;
-
         // Card layout for switching between views
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
@@ -131,74 +144,12 @@ public class UserFrame extends JFrame implements ActionListener {
         
     }
 
-
     private void initializeFrame() {
         frame = new JFrame("Bruger");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1920, 1080);
         frame.setLayout(new BorderLayout(10, 10));
     }
-
-    private void filterProposalsByTag(String tagName) {
-        // Clear the current list on the panel
-        proposalProjectListPanel.removeAll();
-    
-        // Loop through all proposals and check if they contain the tag
-        for (proposalProject proposal : proposalProjects) {
-            if (proposal.getCategories().contains(tagName)) {
-                // If the proposal matches the tag, add it to the panel
-                JLabel proposalLabel = new JLabel(proposal.getTitle() + " - " + proposal.getProjectOwner());
-                proposalLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-                    public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        showProjectProbDetails(proposal); // Show details on click
-                    }
-                });
-                proposalProjectListPanel.add(proposalLabel);
-            }
-        }
-    
-        // Refresh the panel to show the updated list
-        proposalProjectListPanel.revalidate();
-        proposalProjectListPanel.repaint();
-    }
-    
-
-    // Dynamic tag handling
-private void updateTagFilters(String tagName, boolean isSelected) {
-    if (isSelected) {
-        filterProposalsByTag(tagName);
-    } else {
-        displayAllProposals();
-    }
-}
-
-private void displayAllProposals() {
-    proposalProjectListPanel.removeAll();
-    for (proposalProject proposal : proposalProjects) {
-        JLabel proposalLabel = new JLabel(proposal.getTitle() + " - " + proposal.getProjectOwner());
-        proposalLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                showProjectProbDetails(proposal);
-            }
-        });
-        proposalProjectListPanel.add(proposalLabel);
-    }
-    proposalProjectListPanel.revalidate();
-    proposalProjectListPanel.repaint();
-}
-
-private void createAndAddTagCheckbox(String tagName) {
-    JCheckBox tagCheckBox = new JCheckBox(tagName);
-    tagCheckBox.addActionListener(e -> {
-        JCheckBox source = (JCheckBox) e.getSource();
-        updateTagFilters(source.getText(), source.isSelected());
-    });
-    tagButtonPanel.add(tagCheckBox); // Add checkbox to the UI
-    tagCheckBoxes.add(tagCheckBox); // Store checkbox in the list
-    tagButtonPanel.revalidate();
-    tagButtonPanel.repaint();
-}
-
 
     private JPanel createTopPanel() {
         JPanel panel1 = new JPanel();
@@ -227,13 +178,28 @@ private void createAndAddTagCheckbox(String tagName) {
     }
 
     private JPanel createSidePanel() {
-        JPanel panel2 = new JPanel();
+        // Create the main panel
         panel2.setBackground(new Color(213, 213, 213, 255));
         panel2.setPreferredSize(new Dimension(100, 100));
+        //panel2.setLayout(new BorderLayout()); // Use BorderLayout for better organization
+    
+    
         return panel2;
     }
+    
 
 
+    private void createTagButton(String newTag) {
+        tagButton = new JButton(newTag);
+        tagButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "You clicked tag: " + newTag);
+            }
+        });
+        panel2.add(tagButton);  // Now panel2 is available here
+        panel2.revalidate();  // To make sure the layout updates
+        panel2.repaint();  // To re-render the panel
+    }
 
     // Center panel for the main view (like before)
     private JPanel createCenterPanel() {
@@ -321,6 +287,7 @@ private void createAndAddTagCheckbox(String tagName) {
         
         return panel;
     }
+
     private JPanel createArchiveView() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -441,8 +408,8 @@ private void createAndAddTagCheckbox(String tagName) {
         // Show details in a dialog box
         JOptionPane.showMessageDialog(null, detailsPanel, "Item Details", JOptionPane.INFORMATION_MESSAGE);
     }
-    
-    
+
+
 
     private JButton createButton(String text) {
         JButton button = new JButton(text);
@@ -508,10 +475,23 @@ private void createAndAddTagCheckbox(String tagName) {
         frame.setVisible(true);
     }
 
-    
+    private void updateCategoryPanel(){
+        Component[] compArr = panel2.getComponents();
+        for (Component c : compArr){
+            if (c instanceof JButton){
+                panel2.remove(c);
+            }
+
+        }
+        for (String s : main.categories){
+            createTagButton(s);
+        }
+
+    }
 
     
     private void openproposalProjectDialog() {
+        
         JDialog dialog = new JDialog(frame, "Lav Projekt Forslag", true);
         dialog.setSize(700, 700);
         System.out.println("Opening proposal project dialog...");
@@ -564,6 +544,8 @@ private void createAndAddTagCheckbox(String tagName) {
         // "Create Tag" label and button
         JLabel createTagLabel = new JLabel("Opret Kategori:");
         JButton createTagButton = new JButton("Opret Kategori");
+        //panel2.add(new JLabel("liukjgajfgakjgaksgfkasgfkjsagfkjsagfkjasfkajsgfkgfkajsgfkajsgakjsgfkafhg"));
+
     
         // Tag selection panel (scrollable)
         JLabel selectTagLabel = new JLabel("Vælg relevante kategorier:");
@@ -581,10 +563,25 @@ private void createAndAddTagCheckbox(String tagName) {
         createTagButton.addActionListener(e -> {
             String newTag = JOptionPane.showInputDialog(dialog, "Indtast ny kategori:");
             if (newTag != null && !newTag.trim().isEmpty()) {
-                createAndAddTagCheckbox(newTag); // Add tag checkbox dynamically
+                // Check for duplicate category
+                if (main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))) {
+                    tagPanel.add(UserFrameErrorHandling.displayTagError());
+                } else {
+                    JCheckBox tagCheckBox = new JCheckBox(newTag);
+                    main.addNewCatagory(newTag); // Add to main category list
+                    tagPanel.add(tagCheckBox);   // Add checkbox for new tag
+                    updateCategoryPanel(); // Call your desired method
+                    
+                    // Add ItemListener to the checkbox
+                    
+                    
+        
+                    tagPanel.revalidate();
+                    tagPanel.repaint();
+                }
             }
         });
-        
+
     
         JButton submitButton = new JButton("Tilføj");
         submitButton.addActionListener(event -> {
@@ -792,6 +789,8 @@ private void createAndAddTagCheckbox(String tagName) {
         dialog.setVisible(true);
         }
 
+
+//SORT HERE
     private void updateproposalProjectList() {
         System.out.println("Updating proposal project list");
     proposalProjectListPanel.removeAll();
@@ -812,7 +811,7 @@ private void createAndAddTagCheckbox(String tagName) {
     proposalProjectListPanel.repaint();
 }
 
-private void updateProjectList() {
+private void updateProjectList() { // SORT HERE
     // Ryd panelet før opdatering
     projectListPanel.removeAll();
 
@@ -865,10 +864,12 @@ private void showProjectProbDetails(proposalProject proposal) {
         approveProposal(proposal); // Approve the proposal and convert it to a project
         proposalProjectFullPanel.getParent().getParent().remove(proposalProjectFullPanel); // Close details
         updateproposalProjectList(); // Refresh proposal list
+        ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
+        ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
+        FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
         proposalProjectFullPanel.removeAll();
         proposalProjectFullPanel.repaint();
         proposalProjectFullPanel.revalidate();
-
     });
 
      // Reject button
