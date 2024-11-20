@@ -814,18 +814,11 @@ public class UserFrame extends JFrame implements ActionListener {
                                 proposal.getDateCreated().toString().split("T")[0],
                                 categoriesDisplay));
             }
-    
-            // Add a mouse listener for proposal project details
-            proposalLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseClicked(java.awt.event.MouseEvent evt) {
-                    showProjectProbDetails(proposal); // Show the selected project's details
-                }
-            });
-    
-            // Add the proposal label to the panel
-            proposalProjectListPanel.add(proposalLabel);
+            JButton proposalButton = createNewListButton(proposalLabel);
+            proposalButton.addActionListener(e -> 
+                showProjectProbDetails(proposal));
+            proposalProjectListPanel.add(proposalButton);
         }
-    
         // Update the view
         proposalProjectListPanel.revalidate();
         proposalProjectListPanel.repaint();
@@ -893,18 +886,13 @@ public class UserFrame extends JFrame implements ActionListener {
                                     categoriesDisplay));
                 }
             }
-    
-            // Add a mouse listener for project details
-            final project currentProject = project;
-            projectLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseClicked(java.awt.event.MouseEvent evt) {
-                    showProjectDetails(currentProject); // Show details for the selected project
-                }
-            });
-    
-            // Add the project label to the panel
-            projectListPanel.add(projectLabel);
+            JButton projectButton = createNewListButton(projectLabel);
+            projectButton.addActionListener(e -> 
+                showProjectDetails(project));
+                projectListPanel.add(projectButton);
         }
+            
+        
     
         // Update the view
         projectListPanel.revalidate();
@@ -2000,19 +1988,43 @@ public class UserFrame extends JFrame implements ActionListener {
                                     deadlineDisplay));
                 }
             }
-    
-            fundLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseClicked(java.awt.event.MouseEvent evt) {
-                    showFundDetails(fund); // Display details on click
-                }
-            });
-            fundListPanel.add(fundLabel);
-        }
-    
+            JButton fundButton = createNewListButton(fundLabel);
+            fundButton.addActionListener(e -> 
+                showFundDetails(fund));
+            fundListPanel.add(fundButton);
+        }    
         fundListPanel.revalidate();
         fundListPanel.repaint();
     }
     
+    
+    private JButton createNewListButton(JLabel infoLabel) {
+        JButton listButton = new JButton(infoLabel.getText());
+        listButton.setPreferredSize(new Dimension(300, 30)); // Set button size
+        listButton.setFont(new Font("SansSerif", Font.PLAIN, 14)); // Set font
+        listButton.setMaximumSize(new Dimension(850, 40)); // Set maximum size
+        listButton.setFocusPainted(false); // Remove focus border
+        listButton.setBackground(new Color(245, 245, 245)); // Set background color
+        listButton.setForeground(Color.DARK_GRAY); // Set text color
+        listButton.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)); // Set border
+        listButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Set cursor
+    
+        // Add hover effect
+        listButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                listButton.setBackground(new Color(220, 220, 220)); // Change background on hover
+            }
+    
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                listButton.setBackground(new Color(245, 245, 245)); // Revert background on exit
+            }
+        });
+
+        return listButton;
+    }
+
 
     private void openProjectDialog() {
         JDialog dialog = new JDialog(frame, "Lav Projekt", true);
