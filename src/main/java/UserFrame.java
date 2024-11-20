@@ -2,6 +2,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -52,7 +53,6 @@ public class UserFrame extends JFrame implements ActionListener {
     private JButton createFundButton;
     private JButton changeFundButton;
 
-
     private JButton backButton;
     private JButton xButton;
     private JButton xButtonHover;
@@ -60,26 +60,25 @@ public class UserFrame extends JFrame implements ActionListener {
     private JButton projectButton;
     private JButton fundsButton;
     private JButton archiveButton;
-    
+
     // List to store project proposals
     private JPanel proposalProjectListPanel;
     private JPanel proposalProjectFullPanel;
-    
+
     private JPanel projectListPanel;
     private JPanel projectFullPanel;
-    
-    
+
     private JPanel fundListPanel;
     private JPanel fundFullPanel;
     // tag button
     private JPanel tagButtonPanel;
 
     private JPanel rightSidePanel;
-    
+
     private boolean isInvalidLenght;
     String tempTitle;
     String tempDescription;
-    String tempPurpose; 
+    String tempPurpose;
     String tempOwner;
     String tempTargetAudience;
     String tempIdea;
@@ -97,14 +96,15 @@ public class UserFrame extends JFrame implements ActionListener {
     Long tempAmountTo;
     private ArrayList<fundContactClass> tempContacts = new ArrayList<>();
     private ArrayList<fundContactClass> contacts = new ArrayList<>();
+
     // Constructor to set up the GUI
     public UserFrame() {
-        initializeFrame();  // Initialize JFrame
-        //UserFrameErrorHandling ErrorHandling = new UserFrameErrorHandling();
+        initializeFrame(); // Initialize JFrame
+        // UserFrameErrorHandling ErrorHandling = new UserFrameErrorHandling();
 
-        JPanel panel1 = createTopPanel();  // Top panel
-        JPanel panel2 = createSidePanel();  // Left-side panel
-        rightSidePanel = createRightSidePanel();  // Right-side panel
+        JPanel panel1 = createTopPanel(); // Top panel
+        JPanel panel2 = createSidePanel(); // Left-side panel
+        rightSidePanel = createRightSidePanel(); // Right-side panel
         JPanel panel3 = rightSidePanel;
 
         // Card layout for switching between views
@@ -118,15 +118,13 @@ public class UserFrame extends JFrame implements ActionListener {
         cardPanel.add(createFundsView(), "Funds"); // Funds view
         cardPanel.add(createArchiveView(), "Archive"); // Archive view
 
-
         // Adding panels to the frame
         frame.add(panel1, BorderLayout.NORTH);
         frame.add(panel2, BorderLayout.WEST);
         frame.add(panel3, BorderLayout.EAST);
-        frame.add(cardPanel, BorderLayout.CENTER);  // Use cardPanel as the center panel
-        
-    }
+        frame.add(cardPanel, BorderLayout.CENTER); // Use cardPanel as the center panel
 
+    }
 
     private void initializeFrame() {
         frame = new JFrame("Bruger");
@@ -168,8 +166,6 @@ public class UserFrame extends JFrame implements ActionListener {
         return panel2;
     }
 
-
-
     // Center panel for the main view (like before)
     private JPanel createCenterPanel() {
         JPanel panel5 = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -183,18 +179,12 @@ public class UserFrame extends JFrame implements ActionListener {
         createFundButton = createButton("Lav en ny fond");
         changeFundButton = createButton("Redigér en fond");
 
-
-        
-
         panel5.add(createProbButton);
         panel5.add(changeProbButton);
         panel5.add(createProjectButton);
         panel5.add(changeProjectButton);
         panel5.add(createFundButton);
         panel5.add(changeFundButton);
-
-
-
 
         return panel5;
     }
@@ -225,17 +215,16 @@ public class UserFrame extends JFrame implements ActionListener {
 
         JLabel label = new JLabel("Projekter", SwingConstants.CENTER);
         panel.add(label, BorderLayout.NORTH);
-    
+
         // Initialize the project list panel
         projectListPanel = new JPanel();
         projectListPanel.setLayout(new BoxLayout(projectListPanel, BoxLayout.Y_AXIS)); // Ensure layout is set
-    
+
         JScrollPane scrollPane = new JScrollPane(projectListPanel); // Add project list panel in a scroll pane
         panel.add(scrollPane, BorderLayout.CENTER);
 
         return panel;
     }
-    
 
     // Separate view for "Fonde"
     private JPanel createFundsView() {
@@ -244,18 +233,18 @@ public class UserFrame extends JFrame implements ActionListener {
 
         JLabel label = new JLabel("Fonde", SwingConstants.CENTER);
         panel.add(label, BorderLayout.NORTH);
-    
-        
+
         // Initialize fund list panel
         fundListPanel = new JPanel();
         fundListPanel.setLayout(new BoxLayout(fundListPanel, BoxLayout.Y_AXIS));
-        
+
         // Create a scroll pane for the fund list
         JScrollPane scrollPane = new JScrollPane(fundListPanel);
         panel.add(scrollPane, BorderLayout.CENTER);
-        
+
         return panel;
     }
+
     private JPanel createArchiveView() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
@@ -266,32 +255,32 @@ public class UserFrame extends JFrame implements ActionListener {
         label.setFont(new Font("Arial", Font.BOLD, 18));
 
         panel.add(label);
-    
+
         // Buttons for "Proposals," "Projects," and "Funds"
         JButton proposalsButton = new JButton("Afviste projektforslag");
         JButton projectsButton = new JButton("Arkiveret projekter");
         JButton fundsButton = new JButton("Arkiveret fonde");
-    
+
         // Set button sizes (optional, adjust as needed)
         Dimension buttonSize = new Dimension(150, 50);
         proposalsButton.setPreferredSize(buttonSize);
         projectsButton.setPreferredSize(buttonSize);
         fundsButton.setPreferredSize(buttonSize);
-    
+
         // Add action listeners to each button to display respective archives
         proposalsButton.addActionListener(e -> displayArchiveList("proposalProjectsDetails", main.deniedProposalList));
         projectsButton.addActionListener(e -> displayArchiveList("ProjectDetails", main.archiveProjectList));
         fundsButton.addActionListener(e -> displayArchiveList("FundDetails", main.archiveFundList));
-    
+
         // Layout buttons in a single row
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));  // Spacer
+        panel.add(Box.createRigidArea(new Dimension(0, 10))); // Spacer
         panel.add(proposalsButton);
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));  // Spacer
+        panel.add(Box.createRigidArea(new Dimension(0, 10))); // Spacer
         panel.add(projectsButton);
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));  // Spacer
+        panel.add(Box.createRigidArea(new Dimension(0, 10))); // Spacer
         panel.add(fundsButton);
-    
+
         return panel;
     }
 
@@ -303,7 +292,7 @@ public class UserFrame extends JFrame implements ActionListener {
         // Create a new panel or dialog to show item details
         JPanel detailsPanel = new JPanel();
         detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
-    
+
         // Display details based on the type of item
         if (item instanceof project) {
             project proj = (project) item;
@@ -322,11 +311,6 @@ public class UserFrame extends JFrame implements ActionListener {
 
             detailsPanel.add(new JLabel("Dato lavet: " + proj.getDateCreated()));
 
-
-
-
-
-
         } else if (item instanceof proposalProject) {
             proposalProject proposal = (proposalProject) item;
             detailsPanel.add(new JLabel("Titel: " + proposal.getTitle()));
@@ -344,10 +328,6 @@ public class UserFrame extends JFrame implements ActionListener {
 
             detailsPanel.add(new JLabel("Dato lavet: " + proposal.getDateCreated()));
 
-
-
-
-
         } else if (item instanceof fundClass) {
             fundClass fund = (fundClass) item;
             detailsPanel.add(new JLabel("Titel: " + fund.getTitle()));
@@ -361,20 +341,13 @@ public class UserFrame extends JFrame implements ActionListener {
             detailsPanel.add(new JLabel("\n"));
             detailsPanel.add(new JLabel("Dato lavet: " + fund.getDateCreated()));
 
-
-
-
-
-
         } else {
             detailsPanel.add(new JLabel("Details: " + item.toString()));
         }
-    
+
         // Show details in a dialog box
         JOptionPane.showMessageDialog(null, detailsPanel, "Item Details", JOptionPane.INFORMATION_MESSAGE);
     }
-    
-    
 
     private JButton createButton(String text) {
         JButton button = new JButton(text);
@@ -427,12 +400,12 @@ public class UserFrame extends JFrame implements ActionListener {
         return button;
     }
 
-    //catagory button
-    private JButton CreateCatagoryButton(String text){
-            JButton button = new JButton(text);
-            button.setPreferredSize(new Dimension(130, 50));
-            button.addActionListener(this);
-            return button;
+    // catagory button
+    private JButton CreateCatagoryButton(String text) {
+        JButton button = new JButton(text);
+        button.setPreferredSize(new Dimension(130, 50));
+        button.addActionListener(this);
+        return button;
     }
 
     // Show the frame
@@ -444,81 +417,78 @@ public class UserFrame extends JFrame implements ActionListener {
         frame.setVisible(true);
     }
 
-    
-
-    
     private void openproposalProjectDialog() {
         JDialog dialog = new JDialog(frame, "Lav Projekt Forslag", true);
         dialog.setSize(700, 700);
         System.out.println("Opening proposal project dialog...");
-    
+
         JPanel mainPanel = new JPanel();
         GroupLayout layout = new GroupLayout(mainPanel);
         mainPanel.setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
-    
+
         // Wrap the main panel in a scroll pane
         JScrollPane scrollPane = new JScrollPane(mainPanel);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         dialog.add(scrollPane);
-    
+
         JLabel nameLabel = new JLabel("Titel:");
         JTextField nameField = new JTextField();
-    
+
         JLabel ideaLabel = new JLabel("Idé/Formål:");
         JTextField ideaField = new JTextField();
-    
+
         JLabel descriptionLabel = new JLabel("Kort beskrivelse af projektet:");
         JTextArea descriptionArea = new JTextArea(5, 20);
         JScrollPane desciptionScrollPane = new JScrollPane(descriptionArea);
-    
+
         JLabel ownerLabel = new JLabel("Ejer af idé/forslaget:");
         JTextField ownerField = new JTextField();
-    
+
         JLabel targetLabel = new JLabel("Målgruppe (hvem gavner dette forslag):");
         JTextField targetField = new JTextField();
-    
+
         JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
         JTextField budgetField = new JTextField();
-    
+
         JLabel fromDateLabel = new JLabel("Fra dato:");
         SpinnerDateModel fromDateModel = new SpinnerDateModel();
         JSpinner fromDateSpinner = new JSpinner(fromDateModel);
         JSpinner.DateEditor fromDateEditor = new JSpinner.DateEditor(fromDateSpinner, "dd/MM/yyyy");
         fromDateSpinner.setEditor(fromDateEditor);
-    
+
         JLabel toDateLabel = new JLabel("Til dato:");
         SpinnerDateModel toDateModel = new SpinnerDateModel();
         JSpinner toDateSpinner = new JSpinner(toDateModel);
         JSpinner.DateEditor toDateEditor = new JSpinner.DateEditor(toDateSpinner, "dd/MM/yyyy");
         toDateSpinner.setEditor(toDateEditor);
-    
+
         JLabel activitiesLabel = new JLabel("Aktiviteter:");
         JTextField activitiesField = new JTextField();
-    
+
         // "Create Tag" label and button
         JLabel createTagLabel = new JLabel("Opret Kategori:");
         JButton createTagButton = new JButton("Opret Kategori");
-    
+
         // Tag selection panel (scrollable)
         JLabel selectTagLabel = new JLabel("Vælg relevante kategorier:");
         JPanel tagPanel = new JPanel();
         tagPanel.setLayout(new BoxLayout(tagPanel, BoxLayout.Y_AXIS));
         JScrollPane tagScrollPane = new JScrollPane(tagPanel);
-    
+
         // Populate tagPanel with existing categories as checkboxes
         for (String category : main.categories) {
             JCheckBox tagCheckBox = new JCheckBox(category);
             tagPanel.add(tagCheckBox);
         }
-    
+
         // Action Listener for Create Tag button
         createTagButton.addActionListener(e -> {
             String newTag = JOptionPane.showInputDialog(dialog, "Indtast ny kategori:");
             if (newTag != null && !newTag.trim().isEmpty()) {
                 JCheckBox tagCheckBox = new JCheckBox(newTag);
-    
+
                 // Check for duplicate category
                 if (main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))) {
                     tagPanel.add(UserFrameErrorHandling.displayTagError());
@@ -528,147 +498,147 @@ public class UserFrame extends JFrame implements ActionListener {
                     tagPanel.revalidate();
                     tagPanel.repaint();
                 }
-             
+
             }
-            }
-        );
-    
+        });
+
         JButton submitButton = new JButton("Tilføj");
         submitButton.addActionListener(event -> {
             System.out.println("Submit button clicked");
 
             boolean hasError = false; // Flag to check if any validation error occurs
 
-            //Proposal Error Handling
+            // Proposal Error Handling
 
-            //Title Error Handling
-            if(!validationUtils.isWithinLowerCharLimit(nameField.getText())){
+            // Title Error Handling
+            if (!validationUtils.isWithinLowerCharLimit(nameField.getText())) {
                 isInvalidLenght = true;
                 UserFrameErrorHandling.displayTitleError(isInvalidLenght);
                 System.out.println("Title error: Length is invalid");
                 hasError = true;
-            }else if(!validationUtils.isValidInput(nameField.getText())){
+            } else if (!validationUtils.isValidInput(nameField.getText())) {
                 isInvalidLenght = false;
                 dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
                 System.out.println("Title error: Invalid input");
                 hasError = true;
-            }else{
+            } else {
                 tempTitle = nameField.getText();
                 System.out.println("Title set: " + tempTitle);
             }
 
-            //Ideas Error Handling
-            if(!validationUtils.isWithinLowerCharLimit(ideaField.getText())){
+            // Ideas Error Handling
+            if (!validationUtils.isWithinLowerCharLimit(ideaField.getText())) {
                 isInvalidLenght = true;
                 dialog.add(UserFrameErrorHandling.displayIdeaError(isInvalidLenght));
                 System.out.println("Idea error: Length is invalid");
                 hasError = true;
-            }else if(!validationUtils.isValidInput(ideaField.getText())){
+            } else if (!validationUtils.isValidInput(ideaField.getText())) {
                 isInvalidLenght = false;
                 dialog.add(UserFrameErrorHandling.displayIdeaError(isInvalidLenght));
                 System.out.println("Idea error: Invalid input");
                 hasError = true;
-            }else{
+            } else {
                 tempIdea = ideaField.getText();
                 System.out.println("Idea set: " + tempIdea);
             }
 
-            //Description Error Handling
-            if(!validationUtils.isWithinUpperCharLimit(descriptionArea.getText())){
+            // Description Error Handling
+            if (!validationUtils.isWithinUpperCharLimit(descriptionArea.getText())) {
                 isInvalidLenght = true;
                 dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
                 System.out.println("Description error: Length is invalid");
                 hasError = true;
-            }else if(!validationUtils.isValidDescription(descriptionArea.getText())){
+            } else if (!validationUtils.isValidDescription(descriptionArea.getText())) {
                 isInvalidLenght = false;
                 dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
                 System.out.println("Description error: Invalid input");
                 hasError = true;
-            }else{
+            } else {
                 tempDescription = descriptionArea.getText();
                 System.out.println("Description set: " + tempDescription);
             }
 
-            //Owner Error Handling
-            if(!validationUtils.isWithinLowerCharLimit(ownerField.getText())){
+            // Owner Error Handling
+            if (!validationUtils.isWithinLowerCharLimit(ownerField.getText())) {
                 isInvalidLenght = true;
                 dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
                 System.out.println("Owner error: Length is invalid");
                 hasError = true;
-            }else if(!validationUtils.isValidInput(ownerField.getText())){
+            } else if (!validationUtils.isValidInput(ownerField.getText())) {
                 isInvalidLenght = false;
                 dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
                 System.out.println("Owner error: Invalid input");
                 hasError = true;
-            }else{
+            } else {
                 tempOwner = ownerField.getText();
                 System.out.println("Owner set: " + tempOwner);
             }
 
-            //Target Audience Error Handling
-            if(!validationUtils.isWithinLowerCharLimit(targetField.getText())){
+            // Target Audience Error Handling
+            if (!validationUtils.isWithinLowerCharLimit(targetField.getText())) {
                 isInvalidLenght = true;
                 dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
                 System.out.println("Target Audience error: Length is invalid");
                 hasError = true;
-            }else if(!validationUtils.isValidInput(targetField.getText())){
+            } else if (!validationUtils.isValidInput(targetField.getText())) {
                 isInvalidLenght = false;
                 dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
                 System.out.println("Target Audience error: Invalid input");
                 hasError = true;
-            }else{
+            } else {
                 tempTargetAudience = targetField.getText();
                 System.out.println("Target Audience set: " + tempTargetAudience);
             }
 
-            //Budget Error Handling
-            if(!validationUtils.isNumericInput(budgetField.getText())){
+            // Budget Error Handling
+            if (!validationUtils.isNumericInput(budgetField.getText())) {
                 dialog.add(UserFrameErrorHandling.displayBudgetError());
                 System.out.println("Budget error: Invalid input");
                 hasError = true;
-            }else{
+            } else {
                 tempBudget = Long.parseLong(budgetField.getText());
                 System.out.println("Budget set: " + tempBudget);
             }
 
-            //From Date Error Handling
-            //To Date Error Handling
-            //If From Date is after To Date
-            if(((Date) fromDateSpinner.getValue()).after((Date) toDateSpinner.getValue())){
+            // From Date Error Handling
+            // To Date Error Handling
+            // If From Date is after To Date
+            if (((Date) fromDateSpinner.getValue()).after((Date) toDateSpinner.getValue())) {
                 dialog.add(UserFrameErrorHandling.displayDateSpinnerError());
                 System.out.println("Date error: From date is after To date");
                 hasError = true;
-            }else{
-                tempFromDate = ((Date) fromDateSpinner.getValue()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            } else {
+                tempFromDate = ((Date) fromDateSpinner.getValue()).toInstant().atZone(ZoneId.systemDefault())
+                        .toLocalDate();
                 tempToDate = ((Date) toDateSpinner.getValue()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 tempFromDateLDT = tempFromDate.atStartOfDay();
                 tempToDateLDT = tempToDate.atStartOfDay();
                 System.out.println("Dates set: From " + tempFromDateLDT + " To " + tempToDateLDT);
             }
 
-            //Activities Error Handling
-            if(!validationUtils.isWithinUpperCharLimit(activitiesField.getText())){
+            // Activities Error Handling
+            if (!validationUtils.isWithinUpperCharLimit(activitiesField.getText())) {
                 isInvalidLenght = true;
                 dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
                 System.out.println("Activities error: Length is invalid");
                 hasError = true;
-            }else if(!validationUtils.isValidInput(activitiesField.getText())){
+            } else if (!validationUtils.isValidInput(activitiesField.getText())) {
                 isInvalidLenght = false;
                 dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
                 System.out.println("Activities error: Invalid input");
                 hasError = true;
-            }else{
+            } else {
                 tempActivities = activitiesField.getText();
                 System.out.println("Activities set: " + tempActivities);
             }
 
-            //Categories Error Handling
-            //If no categories are selected
+            // Categories Error Handling
+            // If no categories are selected
             ArrayList<String> selectedCatagories = new ArrayList<>();
-            for(Component comp : tagPanel.getComponents()){
-                if(comp instanceof JCheckBox){
+            for (Component comp : tagPanel.getComponents()) {
+                if (comp instanceof JCheckBox) {
                     JCheckBox checkBox = (JCheckBox) comp;
-                    if(checkBox.isSelected()){
+                    if (checkBox.isSelected()) {
                         selectedCatagories.add(checkBox.getText());
                     }
                 }
@@ -713,119 +683,184 @@ public class UserFrame extends JFrame implements ActionListener {
 
         // Define layout structure
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(nameLabel).addComponent(nameField)
-            .addComponent(ideaLabel).addComponent(ideaField)
-            .addComponent(descriptionLabel).addComponent(desciptionScrollPane)
-            .addComponent(ownerLabel).addComponent(ownerField)
-            .addComponent(targetLabel).addComponent(targetField)
-            .addComponent(budgetLabel).addComponent(budgetField)
-            .addComponent(fromDateLabel).addComponent(fromDateSpinner)
-            .addComponent(toDateLabel).addComponent(toDateSpinner)
-            .addComponent(activitiesLabel).addComponent(activitiesField)
-            .addComponent(createTagLabel).addComponent(createTagButton)
-            .addComponent(selectTagLabel).addComponent(tagScrollPane)
-            .addComponent(submitButton)
-        );
+                .addComponent(nameLabel).addComponent(nameField)
+                .addComponent(ideaLabel).addComponent(ideaField)
+                .addComponent(descriptionLabel).addComponent(desciptionScrollPane)
+                .addComponent(ownerLabel).addComponent(ownerField)
+                .addComponent(targetLabel).addComponent(targetField)
+                .addComponent(budgetLabel).addComponent(budgetField)
+                .addComponent(fromDateLabel).addComponent(fromDateSpinner)
+                .addComponent(toDateLabel).addComponent(toDateSpinner)
+                .addComponent(activitiesLabel).addComponent(activitiesField)
+                .addComponent(createTagLabel).addComponent(createTagButton)
+                .addComponent(selectTagLabel).addComponent(tagScrollPane)
+                .addComponent(submitButton));
 
         layout.setVerticalGroup(layout.createSequentialGroup()
-            .addComponent(nameLabel).addComponent(nameField)
-            .addComponent(ideaLabel).addComponent(ideaField)
-            .addComponent(descriptionLabel).addComponent(desciptionScrollPane)
-            .addComponent(ownerLabel).addComponent(ownerField)
-            .addComponent(targetLabel).addComponent(targetField)
-            .addComponent(budgetLabel).addComponent(budgetField)
-            .addComponent(fromDateLabel).addComponent(fromDateSpinner)
-            .addComponent(toDateLabel).addComponent(toDateSpinner)
-            .addComponent(activitiesLabel).addComponent(activitiesField)
-            .addComponent(createTagLabel).addComponent(createTagButton)
-            .addComponent(selectTagLabel).addComponent(tagScrollPane)
-            .addComponent(submitButton)
-        );
+                .addComponent(nameLabel).addComponent(nameField)
+                .addComponent(ideaLabel).addComponent(ideaField)
+                .addComponent(descriptionLabel).addComponent(desciptionScrollPane)
+                .addComponent(ownerLabel).addComponent(ownerField)
+                .addComponent(targetLabel).addComponent(targetField)
+                .addComponent(budgetLabel).addComponent(budgetField)
+                .addComponent(fromDateLabel).addComponent(fromDateSpinner)
+                .addComponent(toDateLabel).addComponent(toDateSpinner)
+                .addComponent(activitiesLabel).addComponent(activitiesField)
+                .addComponent(createTagLabel).addComponent(createTagButton)
+                .addComponent(selectTagLabel).addComponent(tagScrollPane)
+                .addComponent(submitButton));
 
         dialog.setLocationRelativeTo(frame);
         dialog.setVisible(true);
-        }
+    }
 
-
-//SORT HERE
+    // SORT HERE
     private void updateproposalProjectList() {
         System.out.println("Updating proposal project list");
-    proposalProjectListPanel.removeAll();
+        proposalProjectListPanel.removeAll();
 
-    for (proposalProject proposal : main.proposalList) {
-        JLabel proposalLabel = new JLabel(proposal.getTitle() + " - " + proposal.getProjectOwner());
-
-        proposalLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                showProjectProbDetails(proposal); // Show the selected project's details
+        JLabel infoLabel = new JLabel(
+                String.format("%-30s %-30s %-30s %-30s",
+                        "Title",
+                        "Project ejer",
+                        "Dato oprettet",
+                        "Kategori(er)"));
+        proposalProjectListPanel.add(infoLabel);
+        // Tilføj labels for hvert projekt
+            JLabel proposalLabel;
+        for (proposalProject proposal : main.proposalList) {
+            if (proposal.getTitle().length() < 20) {
+                proposalLabel = new JLabel(
+                        String.format("%-30s %-30s %-30s %-30s",
+                                proposal.getTitle(),
+                                proposal.getProjectOwner(),
+                                proposal.getDateCreated().toString().split("T")[0],
+                                proposal.getCategories().toString()));
+            } else {
+                proposalLabel = new JLabel(
+                        String.format("%-30s %-30s %-30s %-30s",
+                                proposal.getTitle().substring(0, 17) + "...",
+                                proposal.getProjectOwner(),
+                                proposal.getDateCreated().toString().split("T")[0],
+                                proposal.getCategories().toString()));
             }
-        });
 
-        proposalProjectListPanel.add(proposalLabel);
+            proposalLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    showProjectProbDetails(proposal); // Show the selected project's details
+                }
+            });
+
+            proposalProjectListPanel.add(proposalLabel);
+        }
+
+        proposalProjectListPanel.revalidate();
+        proposalProjectListPanel.repaint();
     }
 
-    proposalProjectListPanel.revalidate();
-    proposalProjectListPanel.repaint();
-}
-
-private void updateProjectList() { // SORT HERE
-    // Ryd panelet før opdatering
-    projectListPanel.removeAll();
-
-    // Tilføj labels for hvert projekt
-    for (project project : main.projectList) {
-        JLabel projectLabel = new JLabel(project.getTitle() + " - " + project.getProjectOwner());
-
-        // Brug en endelig variabel for at undgå problemer med closures
-        final project currentProject = project;
+    private void updateProjectList() { // SORT HERE
+        // Ryd panelet før opdatering
+        System.out.println("Updating project list");
+        projectListPanel.removeAll();
         
-        projectLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                showProjectDetails(currentProject); // Vis detaljer for det valgte projekt
+        JLabel infoLabel = new JLabel(
+                String.format("%-30s %-30s %-30s %-30s %-30s",
+                        "Title",
+                        "Project ejer",
+                        "Dato oprettet",
+                        "Næste deadline",
+                        "Kategori(er)"));
+        projectListPanel.add(infoLabel);
+        // Tilføj labels for hvert projekt
+        for (project project : main.projectList) {
+            if (project.getFunds().isEmpty()) {
+                compareProjectCatsWithFundCats comparer = new compareProjectCatsWithFundCats();
+                project.setFundList(comparer.compareCategoriesWithFund(true, main.fundList, project));
             }
-        });
-
-        projectListPanel.add(projectLabel);
+            JLabel projectLabel;
+            if (project.getFunds().isEmpty()){
+                if (project.getTitle().length() < 20) {
+                    projectLabel = new JLabel(
+                            String.format("%-30s %-30s %-30s %-30s %-30s",
+                                    project.getTitle(),
+                                    project.getProjectOwner(),
+                                    project.getDateCreated().toString().split("T")[0],
+                                    "No Categories",
+                                    "No Categories"));
+                } else {
+                    projectLabel = new JLabel(
+                            String.format("%-30s %-30s %-30s %-30s %-30s",
+                                    project.getTitle().substring(0, 17) + "...",
+                                    project.getProjectOwner(),
+                                    project.getDateCreated().toString().split("T")[0],
+                                    "Ingen Ansøgningsfrist ",
+                                    project.getCategories().toString()));
+                }
+            } else {
+                if (project.getTitle().length() < 20) {
+                    projectLabel = new JLabel(
+                            String.format("%-30s %-30s %-30s %-30s %-30s",
+                                    project.getTitle(),
+                                    project.getProjectOwner(),
+                                    project.getDateCreated().toString().split("T")[0],
+                                    project.getFunds().get(0).getDeadlines().get(0).toString(),
+                                    project.getCategories().toString()));
+                } else {
+                    projectLabel = new JLabel(
+                            String.format("%-30s %-30s %-30s %-30s %-30s",
+                                    project.getTitle().substring(0, 17) + "...",
+                                    project.getProjectOwner(),
+                                    project.getDateCreated().toString().split("T")[0],
+                                    project.getFunds().get(0).getDeadlines().get(0).toString(),
+                                    project.getCategories().toString()));
+                }
+                // Brug en endelig variabel for at undgå problemer med closures
+                final project currentProject = project;
+            
+                projectLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+                    public void mouseClicked(java.awt.event.MouseEvent evt) {
+                        showProjectDetails(currentProject); // Vis detaljer for det valgte projekt
+                    }
+                });
+                projectListPanel.add(projectLabel);
+            }}
+        // Opdater visningen
+        projectListPanel.revalidate();
+        projectListPanel.repaint();
     }
 
-    // Opdater visningen
-    projectListPanel.revalidate();
-    projectListPanel.repaint();
-}
+    private void showProjectProbDetails(proposalProject proposal) {
+        proposalProjectFullPanel.removeAll();
 
+        // Display project proposal details
+        proposalProjectFullPanel.add(new JLabel("Titel: " + proposal.getTitle()));
+        proposalProjectFullPanel.add(new JLabel("Ejer: " + proposal.getProjectOwner()));
+        proposalProjectFullPanel.add(new JLabel("Idé: " + proposal.getProjectPurpose()));
+        proposalProjectFullPanel.add(new JLabel("Beskrivelse: " + proposal.getDescription()));
+        proposalProjectFullPanel.add(new JLabel("Målgruppe: " + proposal.getProjectTargetAudience()));
+        proposalProjectFullPanel.add(new JLabel("Budget: " + proposal.getProjectBudget()));
 
-private void showProjectProbDetails(proposalProject proposal) {
-    proposalProjectFullPanel.removeAll();
+        // Display date range
+        proposalProjectFullPanel.add(new JLabel("Fra Dato: " + proposal.getProjectTimeSpanFrom().toString()));
+        proposalProjectFullPanel.add(new JLabel("Til Dato: " + proposal.getProjectTimeSpanTo().toString()));
 
-    // Display project proposal details
-    proposalProjectFullPanel.add(new JLabel("Titel: " + proposal.getTitle()));
-    proposalProjectFullPanel.add(new JLabel("Ejer: " + proposal.getProjectOwner()));
-    proposalProjectFullPanel.add(new JLabel("Idé: " + proposal.getProjectPurpose()));
-    proposalProjectFullPanel.add(new JLabel("Beskrivelse: " + proposal.getDescription()));
-    proposalProjectFullPanel.add(new JLabel("Målgruppe: " + proposal.getProjectTargetAudience()));
-    proposalProjectFullPanel.add(new JLabel("Budget: " + proposal.getProjectBudget()));
+        // Display project activities
+        proposalProjectFullPanel.add(new JLabel("Aktiviteter: " + proposal.getProjectActivities()));
 
-    // Display date range
-    proposalProjectFullPanel.add(new JLabel("Fra Dato: " + proposal.getProjectTimeSpanFrom().toString()));
-    proposalProjectFullPanel.add(new JLabel("Til Dato: " + proposal.getProjectTimeSpanTo().toString()));
-
-    // Display project activities
-    proposalProjectFullPanel.add(new JLabel("Aktiviteter: " + proposal.getProjectActivities()));
-
-    // Display categories as a concatenated string
-    String categories = String.join(", ", proposal.getCategories());
-    proposalProjectFullPanel.add(new JLabel("Kategorier: " + categories));
+        // Display categories as a concatenated string
+        String categories = String.join(", ", proposal.getCategories());
+        proposalProjectFullPanel.add(new JLabel("Kategorier: " + categories));
 
     JButton approveButton = new JButton("Godkend");
     approveButton.addActionListener(event -> {
         approveProposal(proposal); // Approve the proposal and convert it to a project
         proposalProjectFullPanel.getParent().getParent().remove(proposalProjectFullPanel); // Close details
         updateproposalProjectList(); // Refresh proposal list
+        FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
         CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
         CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
         ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
         ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
-        FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
         ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.deniedProposalList);
         ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.archiveProjectList);
         FundCsvWriter.writeCsv("data/fundsArchive.csv",main.archiveFundList);
@@ -835,17 +870,23 @@ private void showProjectProbDetails(proposalProject proposal) {
         proposalProjectFullPanel.revalidate();
     });
 
- 
-     // Add buttons to the panel
-     proposalProjectFullPanel.add(approveButton);
+        // Reject button
+        JButton rejectButton = new JButton("Afvis");
+        rejectButton.addActionListener(event -> {
+            proposalProjectFullPanel.getParent().getParent().remove(proposalProjectFullPanel); // Close details
+        });
+
+        // Add buttons to the panel
+        proposalProjectFullPanel.add(approveButton);
+        proposalProjectFullPanel.add(rejectButton);
 
 JButton archiveButton = new JButton("Afvis Projektforslag");
 Dimension buttonSize = new Dimension(150, 50); 
 archiveButton.setPreferredSize(buttonSize);
 
-archiveButton.addActionListener(e -> {
-    // Archive the project
-    archive.archiveProposal(proposal);
+        archiveButton.addActionListener(e -> {
+            // Archive the project
+            archive.archiveProposal(proposal);
 
     // Call update methods after archiving
     updateproposalProjectList();
@@ -863,65 +904,75 @@ archiveButton.addActionListener(e -> {
     proposalProjectFullPanel.repaint();
 });
 
-proposalProjectFullPanel.add(archiveButton);
+        proposalProjectFullPanel.add(archiveButton);
 
- 
-     // Refresh the panel to reflect the changes
-     proposalProjectFullPanel.revalidate();
-     proposalProjectFullPanel.repaint();
- }
-
-
-
-
- private void approveProposal(proposalProject proposal) {
-    System.out.println("Approving proposal: " + proposal.getTitle());
-
-    // Check if proposalProjects list is initialized
-    if (main.proposalList == null) {
-        System.out.println("Error: proposalProjects list is not initialized.");
-        return;
+        // Refresh the panel to reflect the changes
+        proposalProjectFullPanel.revalidate();
+        proposalProjectFullPanel.repaint();
     }
 
-    // Remove the proposal from the proposalProjects list
-    if (main.proposalList.remove(proposal)) {
-        System.out.println("Proposal removed: " + proposal.getTitle());
-    } else {
-        System.out.println("Proposal not found in proposalProjects list: " + proposal.getTitle());
-    }
+    private void approveProposal(proposalProject proposal) {
+        System.out.println("Approving proposal: " + proposal.getTitle());
 
-    // Create a new project instance using proposal details
-    project project = new project();
+    JButton approveButton = new JButton("Godkend");
+    approveButton.addActionListener(event -> {
+        approveProposal(proposal); // Approve the proposal and convert it to a project
+        proposalProjectFullPanel.getParent().getParent().remove(proposalProjectFullPanel); // Close details
+        updateproposalProjectList(); // Refresh proposal list
+        ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
+        ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
+        FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
+        proposalProjectFullPanel.removeAll();
+        proposalProjectFullPanel.repaint();
+        proposalProjectFullPanel.revalidate();
+    });
 
-    // Set project details based on proposal details
-    try {
-        project.setTitle(proposal.getTitle());
-        project.setProjectPurpose(proposal.getProjectPurpose());
-        project.setDescription(proposal.getDescription());
-        project.setProjectOwner(proposal.getProjectOwner());
-        project.setProjectTargetAudience(proposal.getProjectTargetAudience());
-        project.setProjectBudget(proposal.getProjectBudget());
-        project.setTimeSpan(proposal.getProjectTimeSpanFrom(), proposal.getProjectTimeSpanTo());
-        project.setProjectActivities(proposal.getProjectActivities());
-
-        // Set categories from the proposal, ensuring the project has the same categories
-        for (String category : proposal.getCategories()) {
-            project.setCategories(category); // Assuming setCategories handles adding categories to the project
+        // Check if proposalProjects list is initialized
+        if (main.proposalList == null) {
+            System.out.println("Error: proposalProjects list is not initialized.");
+            return;
         }
 
-        // Add the new project to the projects list if initialized
-        if (main.projectList != null) {
-            main.projectList.add(project);
-            System.out.println("New project added: " + project.getTitle());
+        // Remove the proposal from the proposalProjects list
+        if (main.proposalList.remove(proposal)) {
+            System.out.println("Proposal removed: " + proposal.getTitle());
         } else {
-            System.out.println("Error: projects list is not initialized.");
+            System.out.println("Proposal not found in proposalProjects list: " + proposal.getTitle());
         }
 
-    } catch (NullPointerException e) {
-        System.out.println("Error: One of the proposal properties is null - " + e.getMessage());
-    } catch (Exception e) {
-        System.out.println("Error: Unexpected issue while approving proposal - " + e.getMessage());
-    }
+        // Create a new project instance using proposal details
+        project project = new project();
+
+        // Set project details based on proposal details
+        try {
+            project.setTitle(proposal.getTitle());
+            project.setProjectPurpose(proposal.getProjectPurpose());
+            project.setDescription(proposal.getDescription());
+            project.setProjectOwner(proposal.getProjectOwner());
+            project.setProjectTargetAudience(proposal.getProjectTargetAudience());
+            project.setProjectBudget(proposal.getProjectBudget());
+            project.setTimeSpan(proposal.getProjectTimeSpanFrom(), proposal.getProjectTimeSpanTo());
+            project.setProjectActivities(proposal.getProjectActivities());
+
+            // Set categories from the proposal, ensuring the project has the same
+            // categories
+            for (String category : proposal.getCategories()) {
+                project.setCategories(category); // Assuming setCategories handles adding categories to the project
+            }
+
+            // Add the new project to the projects list if initialized
+            if (main.projectList != null) {
+                main.projectList.add(project);
+                System.out.println("New project added: " + project.getTitle());
+            } else {
+                System.out.println("Error: projects list is not initialized.");
+            }
+
+        } catch (NullPointerException e) {
+            System.out.println("Error: One of the proposal properties is null - " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error: Unexpected issue while approving proposal - " + e.getMessage());
+        }
 
     // Update the UI to reflect the new project list
     updateProjectList();
@@ -935,77 +986,78 @@ proposalProjectFullPanel.add(archiveButton);
     FundCsvWriter.writeCsv("data/fundsArchive.csv",main.archiveFundList);
 }
 
-private void showProjectDetails(project project) {
-    projectFullPanel.removeAll();
+    private void showProjectDetails(project project) {
+        projectFullPanel.removeAll();
 
-    // Display project details
-    projectFullPanel.add(new JLabel("Titel: " + project.getTitle()));
-    projectFullPanel.add(new JLabel("Ejer: " + project.getProjectOwner()));
-    projectFullPanel.add(new JLabel("Idé: " + project.getProjectPurpose()));
-    projectFullPanel.add(new JLabel("Beskrivelse: " + project.getDescription()));
-    projectFullPanel.add(new JLabel("Målgruppe: " + project.getProjectTargetAudience()));
-    projectFullPanel.add(new JLabel("Budget: " + project.getProjectBudget()));
-    projectFullPanel.add(new JLabel("Fra Dato: " + project.getProjectTimeSpanFrom().toString()));
-    projectFullPanel.add(new JLabel("Til Dato: " + project.getProjectTimeSpanTo().toString()));
-    projectFullPanel.add(new JLabel("Aktiviteter: " + project.getProjectActivities()));
-    projectFullPanel.add(new JLabel("Kategori: " + project.getCategories()));
-    projectFullPanel.add(new JLabel("\n"));
+        // Display project details
+        projectFullPanel.add(new JLabel("Titel: " + project.getTitle()));
+        projectFullPanel.add(new JLabel("Ejer: " + project.getProjectOwner()));
+        projectFullPanel.add(new JLabel("Idé: " + project.getProjectPurpose()));
+        projectFullPanel.add(new JLabel("Beskrivelse: " + project.getDescription()));
+        projectFullPanel.add(new JLabel("Målgruppe: " + project.getProjectTargetAudience()));
+        projectFullPanel.add(new JLabel("Budget: " + project.getProjectBudget()));
+        projectFullPanel.add(new JLabel("Fra Dato: " + project.getProjectTimeSpanFrom().toString()));
+        projectFullPanel.add(new JLabel("Til Dato: " + project.getProjectTimeSpanTo().toString()));
+        projectFullPanel.add(new JLabel("Aktiviteter: " + project.getProjectActivities()));
+        projectFullPanel.add(new JLabel("Kategori: " + project.getCategories()));
+        projectFullPanel.add(new JLabel("\n"));
 
-    // Checkbox to toggle "only one category needed" logic
-    JCheckBox onlyOneNeededCheckBox = new JCheckBox("Kun en kategori kræves for match", true); // Default to true
-    projectFullPanel.add(new JLabel("\n"));
-    projectFullPanel.add(new JLabel("\n"));
-    projectFullPanel.add(onlyOneNeededCheckBox);
+        // Checkbox to toggle "only one category needed" logic
+        JCheckBox onlyOneNeededCheckBox = new JCheckBox("Kun en kategori kræves for match", true); // Default to true
+        projectFullPanel.add(new JLabel("\n"));
+        projectFullPanel.add(new JLabel("\n"));
+        projectFullPanel.add(onlyOneNeededCheckBox);
 
-    // Panel for matching funds
-    JPanel matchingFundsPanel = new JPanel();
-    matchingFundsPanel.setLayout(new BoxLayout(matchingFundsPanel, BoxLayout.Y_AXIS));
-    projectFullPanel.add(matchingFundsPanel);
+        // Panel for matching funds
+        JPanel matchingFundsPanel = new JPanel();
+        matchingFundsPanel.setLayout(new BoxLayout(matchingFundsPanel, BoxLayout.Y_AXIS));
+        projectFullPanel.add(matchingFundsPanel);
 
-    // Method to update the matching funds list based on checkbox state
-    Runnable updateMatchingFunds = () -> {
-        matchingFundsPanel.removeAll();
+        // Method to update the matching funds list based on checkbox state
+        Runnable updateMatchingFunds = () -> {
+            matchingFundsPanel.removeAll();
 
-        compareProjectCatsWithFundCats comparer = new compareProjectCatsWithFundCats();
-        boolean onlyOneNeeded = onlyOneNeededCheckBox.isSelected();
-        ArrayList<fundClass> matchingFunds = comparer.compareCategoriesWithFund(onlyOneNeeded, main.fundList, project);
+            compareProjectCatsWithFundCats comparer = new compareProjectCatsWithFundCats();
+            boolean onlyOneNeeded = onlyOneNeededCheckBox.isSelected();
+            ArrayList<fundClass> matchingFunds = comparer.compareCategoriesWithFund(onlyOneNeeded, main.fundList,
+                    project);
 
-        if (!matchingFunds.isEmpty()) {
-            matchingFundsPanel.add(new JLabel("Fonde med matchende kategorier:"));
-            projectFullPanel.add(new JLabel("\n"));
-            for (fundClass fund : matchingFunds) {
-                // Add fund title
-                matchingFundsPanel.add(new JLabel(fund.getTitle()));
+            if (!matchingFunds.isEmpty()) {
+                matchingFundsPanel.add(new JLabel("Fonde med matchende kategorier:"));
+                projectFullPanel.add(new JLabel("\n"));
+                for (fundClass fund : matchingFunds) {
+                    // Add fund title
+                    matchingFundsPanel.add(new JLabel(fund.getTitle()));
 
-                // Add custom loop button
-                JButton loopButton = createLoopButton();
-                loopButton.addActionListener(e -> showFundDetailsDialog(fund));
-                matchingFundsPanel.add(loopButton);
+                    // Add custom loop button
+                    JButton loopButton = createLoopButton();
+                    loopButton.addActionListener(e -> showFundDetailsDialog(fund));
+                    matchingFundsPanel.add(loopButton);
+                }
+            } else {
+                matchingFundsPanel.add(new JLabel("Ingen fonde matcher nogle kategorier"));
+                projectFullPanel.add(new JLabel("\n"));
+
             }
-        } else {
-            matchingFundsPanel.add(new JLabel("Ingen fonde matcher nogle kategorier"));
-            projectFullPanel.add(new JLabel("\n"));
 
-        }
+            matchingFundsPanel.revalidate();
+            matchingFundsPanel.repaint();
+        };
 
-        matchingFundsPanel.revalidate();
-        matchingFundsPanel.repaint();
-    };
+        // Add listener to update the list when checkbox state changes
+        onlyOneNeededCheckBox.addActionListener(e -> updateMatchingFunds.run());
 
-    // Add listener to update the list when checkbox state changes
-    onlyOneNeededCheckBox.addActionListener(e -> updateMatchingFunds.run());
+        // Initial update for matching funds
+        updateMatchingFunds.run();
 
-    // Initial update for matching funds
-    updateMatchingFunds.run();
+        // Archive button to archive the project
+        JButton archiveButton = new JButton("Arkivér");
+        Dimension buttonSize = new Dimension(150, 50);
+        archiveButton.setPreferredSize(buttonSize);
 
-    // Archive button to archive the project
-    JButton archiveButton = new JButton("Arkivér");
-    Dimension buttonSize = new Dimension(150, 50);
-    archiveButton.setPreferredSize(buttonSize);
-
-    archiveButton.addActionListener(e -> {
-        // Archive the project
-        archive.archiveProject(project);
+        archiveButton.addActionListener(e -> {
+            // Archive the project
+            archive.archiveProject(project);
 
         // Update project list and clear details display
         updateProjectList();
@@ -1022,10 +1074,33 @@ private void showProjectDetails(project project) {
         projectFullPanel.repaint();
     });
 
-    projectFullPanel.add(archiveButton);
+        projectFullPanel.add(archiveButton);
 
-    projectFullPanel.revalidate();
-    projectFullPanel.repaint();
+        projectFullPanel.revalidate();
+        projectFullPanel.repaint();
+    }
+
+    private void styleFundButton(JButton button) {
+    button.setPreferredSize(new Dimension(300, 40)); // Set button size
+    button.setFont(new Font("SansSerif", Font.PLAIN, 14)); // Clean, modern font
+    button.setFocusPainted(false); // Remove focus border
+    button.setBackground(new Color(0, 0, 0)); // Light gray background
+    button.setForeground(Color.DARK_GRAY); // Dark gray text
+    button.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)); // Subtle border
+    button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Hand cursor
+
+    // Add hover effect
+    button.addMouseListener(new java.awt.event.MouseAdapter() {
+        @Override
+        public void mouseEntered(java.awt.event.MouseEvent evt) {
+            button.setBackground(new Color(220, 220, 220)); // Slightly darker gray on hover
+        }
+
+        @Override
+        public void mouseExited(java.awt.event.MouseEvent evt) {
+            button.setBackground(new Color(245, 245, 245)); // Revert to original color
+        }
+    });
 }
 
 
@@ -1438,7 +1513,7 @@ private JButton createXButton() {
     Image scaledImage = originalIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
     ImageIcon resizedIcon = new ImageIcon(scaledImage);
 
-    JButton button = new JButton();
+        JButton button = new JButton();
         button.setPreferredSize(new Dimension(20, 20));
         button.setIcon(resizedIcon);
         button.setBorderPainted(false);
@@ -1447,14 +1522,14 @@ private JButton createXButton() {
         button.setOpaque(false);
         button.addActionListener(this);
         return button;
-}
+    }
 
-private JButton createLoopButton() {
-    ImageIcon originalIcon = new ImageIcon("Glass_loop.png");
-    Image scaledImage = originalIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-    ImageIcon resizedIcon = new ImageIcon(scaledImage);
+    private JButton createLoopButton() {
+        ImageIcon originalIcon = new ImageIcon("Glass_loop.png");
+        Image scaledImage = originalIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        ImageIcon resizedIcon = new ImageIcon(scaledImage);
 
-    JButton button = new JButton();
+        JButton button = new JButton();
         button.setPreferredSize(new Dimension(20, 20));
         button.setIcon(resizedIcon);
         button.setBorderPainted(false);
@@ -1463,124 +1538,118 @@ private JButton createLoopButton() {
         button.setOpaque(false);
         button.addActionListener(this);
         return button;
-}
-
-
-
-
-private void openContactsDialog(JDialog dialog){
-    JDialog contactDialog = new JDialog(dialog, "Tilføj Kontakt Person", true);
-    contactDialog.setSize(300, 200);
-    JPanel mainPanel = new JPanel();
-    contactDialog.add(mainPanel);
-    
-    GroupLayout layout = new GroupLayout(mainPanel);
-    mainPanel.setLayout(layout);
-    layout.setAutoCreateGaps(true);
-    layout.setAutoCreateContainerGaps(true);
-    
-    JLabel nameLabel = new JLabel("Navn:");
-    JTextField nameField = new JTextField();
-
-    JLabel phoneLabel = new JLabel("Telefon:");
-    JTextField phoneField = new JTextField();
-
-    JLabel emailLabel = new JLabel("Email:");
-    JTextField emailField = new JTextField();
-
-    JButton submitButton = new JButton("Tilføj");
-    submitButton.addActionListener(event -> {
-        String contactName = "";
-        contactName =  nameField.getText();
-        String contactPhone = "";
-        contactPhone = phoneField.getText();
-        String contatctEmail =  "";
-        contatctEmail = emailField.getText();
-         
-
-        //Function to replace empty fields with "N/A"
-        if(contactName.isEmpty()){
-            contactName = "N/A";
-        }
-        if(contactPhone.isEmpty()){
-            contactPhone = "N/A";
-        }
-        if(contatctEmail.isEmpty()){
-            contatctEmail = "N/A";
-        }
-
-        // Validate phone number
-        // Trimming of phone number to remove "+landcode and spaces"
-        if(contactPhone != "N/A"){
-        String trimmedContactPhone = contactPhone.trim().replaceAll("\\s+", "").replaceAll("^\\+\\d{2}", "");
-        System.out.println(trimmedContactPhone);
-        if (!validationUtils.isValidPhoneNumber(trimmedContactPhone)) {
-            UserFrameErrorHandling.displayPhoneError();
-            return;
-        }
     }
-    if(contatctEmail != "N/A"){
-        if (!validationUtils.validateEmailInput(contatctEmail)) {
-            UserFrameErrorHandling.displayEmailError();
-            return;
+
+    private void openContactsDialog(JDialog dialog) {
+        JDialog contactDialog = new JDialog(dialog, "Tilføj Kontakt Person", true);
+        contactDialog.setSize(300, 200);
+        JPanel mainPanel = new JPanel();
+        contactDialog.add(mainPanel);
+
+        GroupLayout layout = new GroupLayout(mainPanel);
+        mainPanel.setLayout(layout);
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+
+        JLabel nameLabel = new JLabel("Navn:");
+        JTextField nameField = new JTextField();
+
+        JLabel phoneLabel = new JLabel("Telefon:");
+        JTextField phoneField = new JTextField();
+
+        JLabel emailLabel = new JLabel("Email:");
+        JTextField emailField = new JTextField();
+
+        JButton submitButton = new JButton("Tilføj");
+        submitButton.addActionListener(event -> {
+            String contactName = "";
+            contactName = nameField.getText();
+            String contactPhone = "";
+            contactPhone = phoneField.getText();
+            String contatctEmail = "";
+            contatctEmail = emailField.getText();
+
+            // Function to replace empty fields with "N/A"
+            if (contactName.isEmpty()) {
+                contactName = "N/A";
+            }
+            if (contactPhone.isEmpty()) {
+                contactPhone = "N/A";
+            }
+            if (contatctEmail.isEmpty()) {
+                contatctEmail = "N/A";
+            }
+
+            // Validate phone number
+            // Trimming of phone number to remove "+landcode and spaces"
+            if (contactPhone != "N/A") {
+                String trimmedContactPhone = contactPhone.trim().replaceAll("\\s+", "").replaceAll("^\\+\\d{2}", "");
+                System.out.println(trimmedContactPhone);
+                if (!validationUtils.isValidPhoneNumber(trimmedContactPhone)) {
+                    UserFrameErrorHandling.displayPhoneError();
+                    return;
+                }
+            }
+            if (contatctEmail != "N/A") {
+                if (!validationUtils.validateEmailInput(contatctEmail)) {
+                    UserFrameErrorHandling.displayEmailError();
+                    return;
+                }
+            }
+            fundContactClass contact = new fundContactClass(contactName, contactPhone, contatctEmail);
+            tempContacts.add(contact);
+            contactDialog.dispose();
+
+        });
+
+        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addComponent(nameLabel).addComponent(nameField)
+                .addComponent(phoneLabel).addComponent(phoneField)
+                .addComponent(emailLabel).addComponent(emailField)
+                .addComponent(submitButton));
+
+        layout.setVerticalGroup(layout.createSequentialGroup()
+                .addComponent(nameLabel).addComponent(nameField)
+                .addComponent(phoneLabel).addComponent(phoneField)
+                .addComponent(emailLabel).addComponent(emailField)
+                .addComponent(submitButton));
+
+        contactDialog.setLocationRelativeTo(dialog);
+        contactDialog.setVisible(true);
+    }
+
+    private void showFundDetails(fundClass fund) {
+
+        tempContacts = fund.getContacts();
+        fundFullPanel.removeAll();
+
+        fundFullPanel.add(new JLabel("Titel: " + fund.getTitle()));
+        fundFullPanel.add(new JLabel("Beskrivelse: " + fund.getDescription()));
+        fundFullPanel.add(new JLabel("Beløb Fra: " + fund.getBudgetMin()));
+        fundFullPanel.add(new JLabel("Beløb Til: " + fund.getBudgetMax()));
+        // Make deadline readable for humans
+        List<String> tempDeadlines = new ArrayList<>();
+        for (int i = 0; i < fund.getDeadlines().size(); i++) {
+            tempDeadlines.add(fund.getDeadlines().get(i).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
         }
-    }
-        fundContactClass contact = new fundContactClass(contactName, contactPhone, contatctEmail);
-        tempContacts.add(contact);
-        contactDialog.dispose();
+        fundFullPanel.add(new JLabel("Ansøgningsfrist: " + String.join(", ", tempDeadlines)));
+        // fundFullPanel.add(new JLabel("Deadline: " + fund.getDeadlines()));
+        fundFullPanel.add(new JLabel("Løbende: " + fund.getRunning()));
+        fundFullPanel.add(new JLabel("Kategori: " + fund.getCategories()));
+        fundFullPanel.add(new JLabel("Tidligere samarbejde: " + String.join(", ", fund.getCollaborationHistory())));
+        fundFullPanel.add(new JLabel("Kontaktperson(er): "));
+        for (int i = 0; i < tempContacts.size(); i++) {
+            fundFullPanel.add(new JLabel(tempContacts.get(i).getContactName() + " - "
+                    + tempContacts.get(i).getContactPhoneNumber() + " - " + tempContacts.get(i).getContactEmail()));
+        }
+        fundFullPanel.add(new JLabel("Hjemmeside: " + fund.getFundWebsite()));
+        JButton archiveButton = new JButton("Arkivér");
+        Dimension buttonSize = new Dimension(150, 50);
+        archiveButton.setPreferredSize(buttonSize);
 
-    });
-    
-    layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-    .addComponent(nameLabel).addComponent(nameField)
-    .addComponent(phoneLabel).addComponent(phoneField)
-    .addComponent(emailLabel).addComponent(emailField)
-    .addComponent(submitButton)
-    );
+        archiveButton.addActionListener(e -> {
 
-    layout.setVerticalGroup(layout.createSequentialGroup()
-    .addComponent(nameLabel).addComponent(nameField)
-        .addComponent(phoneLabel).addComponent(phoneField)
-        .addComponent(emailLabel).addComponent(emailField)
-        .addComponent(submitButton)
-    );
-    
-    contactDialog.setLocationRelativeTo(dialog);
-    contactDialog.setVisible(true);
-}
-
-
-private void showFundDetails(fundClass fund) {
-
-    tempContacts = fund.getContacts();
-    fundFullPanel.removeAll();
-
-    fundFullPanel.add(new JLabel("Titel: " + fund.getTitle()));
-    fundFullPanel.add(new JLabel("Beskrivelse: " + fund.getDescription()));
-    fundFullPanel.add(new JLabel("Beløb Fra: " + fund.getBudgetMin()));
-    fundFullPanel.add(new JLabel("Beløb Til: " + fund.getBudgetMax()));
-    //Make deadline readable for humans
-    List<String> tempDeadlines = new ArrayList<>();
-    for(int i = 0; i<fund.getDeadlines().size(); i++){
-        tempDeadlines.add(fund.getDeadlines().get(i).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
-    }
-    fundFullPanel.add(new JLabel("Ansøgningsfrist: " + String.join(", ", tempDeadlines)));
-    //fundFullPanel.add(new JLabel("Deadline: " + fund.getDeadlines()));
-    fundFullPanel.add(new JLabel("Løbende: " + fund.getRunning()));
-    fundFullPanel.add(new JLabel("Kategori: " + fund.getCategories()));
-    fundFullPanel.add(new JLabel("Tidligere samarbejde: " + String.join(", ", fund.getCollaborationHistory())));
-    fundFullPanel.add(new JLabel("Kontaktperson(er): "));
-    for(int i = 0; i<tempContacts.size(); i++){
-        fundFullPanel.add(new JLabel(tempContacts.get(i).getContactName() + " - " + tempContacts.get(i).getContactPhoneNumber() + " - " + tempContacts.get(i).getContactEmail()));
-    }
-    fundFullPanel.add(new JLabel("Hjemmeside: " + fund.getFundWebsite()));
-    JButton archiveButton = new JButton("Arkivér");
-    Dimension buttonSize = new Dimension(150, 50); 
-    archiveButton.setPreferredSize(buttonSize);
-    
-    archiveButton.addActionListener(e -> {
-
-        archive.archiveFund(fund);
+            archive.archiveFund(fund);
 
         // Call update methods after archiving
         updateFundList();
@@ -1600,326 +1669,424 @@ private void showFundDetails(fundClass fund) {
     
     fundFullPanel.add(archiveButton);
 
-    /*JButton archiveButton = new JButton("Arkivér");
-    Dimension buttonSize = new Dimension(150, 50); */
+        /*
+         * JButton archiveButton = new JButton("Arkivér");
+         * Dimension buttonSize = new Dimension(150, 50);
+         */
 
-    fundFullPanel.add(archiveButton);
+        fundFullPanel.add(archiveButton);
 
-    fundFullPanel.revalidate();
-    fundFullPanel.repaint();
+        fundFullPanel.revalidate();
+        fundFullPanel.repaint();
 
-    fundListPanel.revalidate();
-    fundListPanel.repaint();
-}
+        fundListPanel.revalidate();
+        fundListPanel.repaint();
+    }
 
- // Method to update the fund list display SORT HERE
- private void updateFundList() {
-    fundListPanel.removeAll();  // Clear existing funds
+    /*
+     * formatNumber() - shortens number to be at most 4 chars
+     * 
+     * @arg string
+     * Return: string
+     *
+     * This function takes a number in string form and converts it into a
+     * shortened version that contains the 3 first numbers and a letter
+     * representing the magnitude of the number i.e. 823746 would become
+     * 823k and 876238576 would become 876m
+     */
+    private String formatNumber(String number) {
 
-    for (fundClass fund : main.fundList) {
-        JLabel fundLabel = new JLabel(fund.getTitle() + " - " + fund.getCategories());
-        fundLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                showFundDetails(fund);  // Display details on click
+        String newnumber = number.substring(0, number.length() % 3);
+        if (number.length() % 3 != 0) {
+            switch (((number.length() - number.length() % 3) / 3) ) {
+                case 0:
+                    newnumber += " ";
+                    break;
+                case 1:
+                    newnumber += "k";
+                    break;
+                case 2:
+                    newnumber += "m";
+                    break;
+                case 3:
+                    newnumber += "b";
+                    break;
+                case 4:
+                    newnumber += "t";
+                    break;
+                case 5:
+                    newnumber += "q";
+                    break;
+
+            }
+        } else if (number.length() % 3 == 0) {
+            newnumber = number.substring(0, (number.length() % 3) + 3);
+            switch (((number.length() - number.length() % 3) / 3) - 1) {
+                case 0:
+                    newnumber += " ";
+                    break;
+                case 1:
+                    newnumber += "k";
+                    break;
+                case 2:
+                    newnumber += "m";
+                    break;
+                case 3:
+                    newnumber += "b";
+                    break;
+                case 4:
+                    newnumber += "t";
+                    break;
+                case 5:
+                    newnumber += "q";
+                    break;
+
+            }
+        }
+        return newnumber;
+
+    }
+
+    // Method to update the fund list display SORT HERE
+    private void updateFundList() {
+        fundListPanel.removeAll(); // Clear existing funds
+        JLabel infoLabel = new JLabel(
+                String.format("%-30s %-30s %-30s %-30s",
+                        "Title",
+                        "Budget",
+                        "Kategori(er)",
+                        "Ansøgningsfrist"));
+        fundListPanel.add(infoLabel);
+
+        for (fundClass fund : main.fundList) {
+            JLabel fundLabel;
+            if (fund.getTitle().length() < 20) {
+                if (fund.getCategories().toString().length() < 20) {
+                    fundLabel = new JLabel(
+                            String.format("%-30s %-30s %-30s %-30s",
+                                    fund.getTitle(),
+                                    formatNumber(fund.getBudgetMin() + "") + " - "
+                                            + formatNumber(fund.getBudgetMax() + ""),
+                                    fund.getCategories().toString(),
+                                    fund.getDeadlines().toString()));
+                } else {
+                    fundLabel = new JLabel(
+                            String.format("%-30s %-30s %-30s %-30s",
+                                    fund.getTitle(),
+                                    formatNumber(fund.getBudgetMin() + "") + " - "
+                                            + formatNumber(fund.getBudgetMax() + ""),
+                                    fund.getCategories().toString().substring(0, 17) + "...",
+                                    fund.getDeadlines().toString()));
+                }
+            } else {
+                if (fund.getCategories().toString().length() < 20) {
+                    fundLabel = new JLabel(
+                            String.format("%-30s %-30s %-30s %-30s",
+                                    fund.getTitle().substring(0, 17) + "...",
+                                    formatNumber(fund.getBudgetMin() + "") + " "
+                                            + formatNumber(fund.getBudgetMax() + ""),
+                                    fund.getCategories().toString(),
+                                    fund.getDeadlines().toString()));
+                } else {
+                    fundLabel = new JLabel(
+                            String.format("%-30s %-30s %-30s %-30s",
+                                    fund.getTitle().substring(0, 17) + "...",
+                                    formatNumber(fund.getBudgetMin() + "") + " - "
+                                            + formatNumber(fund.getBudgetMax() + ""),
+                                    fund.getCategories().toString().substring(0, 17),
+                                    fund.getDeadlines().toString()));
+                }
+            }
+            fundLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    showFundDetails(fund); // Display details on click
+                }
+            });
+            fundListPanel.add(fundLabel);
+        }
+
+        fundListPanel.revalidate();
+        fundListPanel.repaint();
+    }
+
+    private void openProjectDialog() {
+        JDialog dialog = new JDialog(frame, "Lav Projekt", true);
+        dialog.setSize(700, 700);
+    
+        // Main panel with layout
+        JPanel mainPanel = new JPanel();
+        GroupLayout layout = new GroupLayout(mainPanel);
+        mainPanel.setLayout(layout);
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+    
+        // Wrap the main panel in a scroll pane
+
+    
+    
+        // Components
+        JLabel nameLabel = new JLabel("Titel:");
+        JTextField nameField = new JTextField();
+    
+        JLabel purposeLabel = new JLabel("Formål:");
+        JTextField purposeField = new JTextField();
+        
+    
+        JLabel descriptionLabel = new JLabel("Beskrivelse af projektet:");
+        JTextArea descriptionArea = new JTextArea(5, 20);
+        JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
+    
+        JLabel ownerLabel = new JLabel("Ejer af projektet:");
+        JTextField ownerField = new JTextField();
+    
+        JLabel targetLabel = new JLabel("Målgruppe (hvem gavner dette projekt):");
+        JTextField targetField = new JTextField();
+    
+    
+        JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
+        JTextField budgetField = new JTextField();
+    
+        JLabel fromDateLabel = new JLabel("Fra dato:");
+        SpinnerDateModel fromDateModel = new SpinnerDateModel();
+        JSpinner fromDateSpinner = new JSpinner(fromDateModel);
+        JSpinner.DateEditor fromDateEditor = new JSpinner.DateEditor(fromDateSpinner, "dd/MM/yyyy");
+        fromDateSpinner.setEditor(fromDateEditor);
+    
+        JLabel toDateLabel = new JLabel("Til dato:");
+        SpinnerDateModel toDateModel = new SpinnerDateModel();
+        JSpinner toDateSpinner = new JSpinner(toDateModel);
+        JSpinner.DateEditor toDateEditor = new JSpinner.DateEditor(toDateSpinner, "dd/MM/yyyy");
+        toDateSpinner.setEditor(toDateEditor);
+      
+      JLabel activitiesLabel = new JLabel("Aktiviteter:");
+        JTextField activitiesField = new JTextField();
+    
+        // Tag creation and selection
+        JLabel createTagLabel = new JLabel("Create Tag:");
+        JButton createTagButton = new JButton("Create Tag");
+        
+            JLabel selectTagLabel = new JLabel("Vælg relevante kategorier:");
+            JPanel tagPanel = new JPanel();
+            tagPanel.setLayout(new BoxLayout(tagPanel, BoxLayout.Y_AXIS));
+            JScrollPane tagScrollPane = new JScrollPane(tagPanel);
+    
+        createTagButton.addActionListener(e -> {
+            String newTag = JOptionPane.showInputDialog(dialog, "Enter new tag:");
+            if (newTag != null && !newTag.trim().isEmpty()) {
+                JCheckBox tagCheckBox = new JCheckBox(newTag);
+                if (main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))) {
+                    tagPanel.add(UserFrameErrorHandling.displayTagError());
+                } else {
+                    main.addNewCatagory(newTag);
+                    tagPanel.add(tagCheckBox);
+                    tagPanel.revalidate();
+                    tagPanel.repaint();
+                }
             }
         });
-        fundListPanel.add(fundLabel);
-    }
     
-    fundListPanel.revalidate();
-    fundListPanel.repaint();
-}
-
-private void openProjectDialog() {
-    JDialog dialog = new JDialog(frame, "Lav Projekt", true);
-    dialog.setSize(700, 700);
-
-    // Main panel with layout
-    JPanel mainPanel = new JPanel();
-    GroupLayout layout = new GroupLayout(mainPanel);
-    mainPanel.setLayout(layout);
-    layout.setAutoCreateGaps(true);
-    layout.setAutoCreateContainerGaps(true);
-
-    // Wrap the main panel in a scroll pane
-    JScrollPane scrollPane = new JScrollPane(mainPanel);
-    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    dialog.add(scrollPane);
-
-
-    // Components
-    JLabel nameLabel = new JLabel("Titel:");
-    JTextField nameField = new JTextField();
-
-    JLabel purposeLabel = new JLabel("Formål:");
-    JTextField purposeField = new JTextField();
-    
-
-    JLabel descriptionLabel = new JLabel("Beskrivelse af projektet:");
-    JTextArea descriptionArea = new JTextArea(5, 20);
-    JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
-
-    JLabel ownerLabel = new JLabel("Ejer af projektet:");
-    JTextField ownerField = new JTextField();
-
-    JLabel targetLabel = new JLabel("Målgruppe (hvem gavner dette projekt):");
-    JTextField targetField = new JTextField();
-
-
-    JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
-    JTextField budgetField = new JTextField();
-
-    JLabel fromDateLabel = new JLabel("Fra dato:");
-    SpinnerDateModel fromDateModel = new SpinnerDateModel();
-    JSpinner fromDateSpinner = new JSpinner(fromDateModel);
-    JSpinner.DateEditor fromDateEditor = new JSpinner.DateEditor(fromDateSpinner, "dd/MM/yyyy");
-    fromDateSpinner.setEditor(fromDateEditor);
-
-    JLabel toDateLabel = new JLabel("Til dato:");
-    SpinnerDateModel toDateModel = new SpinnerDateModel();
-    JSpinner toDateSpinner = new JSpinner(toDateModel);
-    JSpinner.DateEditor toDateEditor = new JSpinner.DateEditor(toDateSpinner, "dd/MM/yyyy");
-    toDateSpinner.setEditor(toDateEditor);
-  
-  JLabel activitiesLabel = new JLabel("Aktiviteter:");
-    JTextField activitiesField = new JTextField();
-
-    // Tag creation and selection
-    JLabel createTagLabel = new JLabel("Opret Kategori");
-    JButton createTagButton = new JButton("Opret Kategori");
-    
-        JLabel selectTagLabel = new JLabel("Vælg relevante kategorier:");
-        JPanel tagPanel = new JPanel();
-        tagPanel.setLayout(new BoxLayout(tagPanel, BoxLayout.Y_AXIS));
-        JScrollPane tagScrollPane = new JScrollPane(tagPanel);
-
-    createTagButton.addActionListener(e -> {
-        String newTag = JOptionPane.showInputDialog(dialog, "Enter new tag:");
-        if (newTag != null && !newTag.trim().isEmpty()) {
-            JCheckBox tagCheckBox = new JCheckBox(newTag);
-            if (main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))) {
-                tagPanel.add(UserFrameErrorHandling.displayTagError());
-            } else {
-                main.addNewCatagory(newTag);
-                tagPanel.add(tagCheckBox);
-                tagPanel.revalidate();
-                tagPanel.repaint();
-            }
+        for (String category : main.categories) {
+            JCheckBox tagCheckBox = new JCheckBox(category);
+            tagPanel.add(tagCheckBox);
         }
-    });
-
-    for (String category : main.categories) {
-        JCheckBox tagCheckBox = new JCheckBox(category);
-        tagPanel.add(tagCheckBox);
-    }
-
-    // Event for create tag button
-    createTagButton.addActionListener(e -> {
-        String newTag = JOptionPane.showInputDialog(dialog, "Indtast Nyt Kategori:");
-        if (newTag != null && !newTag.trim().isEmpty()) {
-            JCheckBox tagCheckBox = new JCheckBox(newTag);
-            if (main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))) {
-                tagPanel.add(UserFrameErrorHandling.displayTagError());
-            } else {
-                main.addNewCatagory(newTag);
-                tagPanel.add(tagCheckBox);
-                tagPanel.revalidate();
-                tagPanel.repaint();
-            }
-        }
-    });
-
-     
-        JButton submitButton = new JButton("Tilføj");
-        submitButton.addActionListener((ActionEvent ae) -> {
-            try{
-                // Get the values from the input fields
-                if(validationUtils.isWithinLowerCharLimit(nameField.getText()) == false){
-                    isInvalidLenght = true;
-                    dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
-                }else if(validationUtils.isValidInput(nameField.getText()) == false){
-                    isInvalidLenght = false;
-                    dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
-                }else{
-                    tempTitle = nameField.getText();
-                }
-             
-                if(validationUtils.isWithinLowerCharLimit(purposeField.getText()) == false){
-                    isInvalidLenght = true;
-                    dialog.add(UserFrameErrorHandling.displayPurposeError(isInvalidLenght));
-                }else if(validationUtils.isValidInput(purposeField.getText()) == false){
-                    isInvalidLenght = false;
-                    dialog.add(UserFrameErrorHandling.displayPurposeError(isInvalidLenght));
-                }else{
-                    tempPurpose = purposeField.getText();
-                }
+         
+            JButton submitButton = new JButton("Tilføj");
+            submitButton.addActionListener((ActionEvent ae) -> {
+                try{
+                    // Get the values from the input fields
+                    if(validationUtils.isWithinLowerCharLimit(nameField.getText()) == false){
+                        isInvalidLenght = true;
+                        dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
+                    }else if(validationUtils.isValidInput(nameField.getText()) == false){
+                        isInvalidLenght = false;
+                        dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
+                    }else{
+                        tempTitle = nameField.getText();
+                    }
+                 
+                    if(validationUtils.isWithinLowerCharLimit(purposeField.getText()) == false){
+                        isInvalidLenght = true;
+                        dialog.add(UserFrameErrorHandling.displayPurposeError(isInvalidLenght));
+                    }else if(validationUtils.isValidInput(purposeField.getText()) == false){
+                        isInvalidLenght = false;
+                        dialog.add(UserFrameErrorHandling.displayPurposeError(isInvalidLenght));
+                    }else{
+                        tempPurpose = purposeField.getText();
+                    }
+                    
+                    if(validationUtils.isWithinUpperCharLimit(descriptionArea.getText()) == false){
+                        isInvalidLenght = true;
+                        dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
+                    }else if(validationUtils.isValidDescription(descriptionArea.getText()) == false){
+                        isInvalidLenght = false;
+                        dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
+                    }else{
+                        tempDescription = descriptionArea.getText();
+                    }
+    
+                    if(validationUtils.isWithinLowerCharLimit(ownerField.getText()) == false){
+                        isInvalidLenght = true;
+                        dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
+                    }else if(validationUtils.isValidInput(ownerField.getText()) == false){
+                        isInvalidLenght = false;
+                        dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
+                    }else{
+                        tempOwner = ownerField.getText();
+                    }
+    
+                    if(validationUtils.isWithinLowerCharLimit(targetField.getText()) == false){
+                        isInvalidLenght = true;
+                        dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
+                    }else if(validationUtils.isValidInput(targetField.getText()) == false){
+                        isInvalidLenght = false;
+                        dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
+                    }else{
+                        tempTargetAudience = targetField.getText();
+                    }
+    
+                    if(validationUtils.isNumericInput(budgetField.getText()) == false){
+                        dialog.add(UserFrameErrorHandling.displayBudgetError());
+                    }else{
+                        tempBudget = Long.parseLong(budgetField.getText());
+                    }
+    
+    
+       
+                    LocalDate fromDate = ((Date) ((fromDateSpinner.getValue()))).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    LocalDate toDate = ((Date) (toDateSpinner.getValue())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    LocalDateTime projectFromDate = fromDate.atStartOfDay();
+                    LocalDateTime projectToDate = toDate.atStartOfDay();
+                   
+                    if(validationUtils.isWithinLowerCharLimit(activitiesField.getText()) == false){
+                        isInvalidLenght = true;
+                        dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
+                    } else if(validationUtils.isValidInput(activitiesField.getText()) == false){
+                        isInvalidLenght = false; 
+                        dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
+                    }else{
+                        tempActivities = activitiesField.getText();
+    
+                    }
                 
-                if(validationUtils.isWithinUpperCharLimit(descriptionArea.getText()) == false){
-                    isInvalidLenght = true;
-                    dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
-                }else if(validationUtils.isValidDescription(descriptionArea.getText()) == false){
-                    isInvalidLenght = false;
-                    dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
-                }else{
-                    tempDescription = descriptionArea.getText();
-                }
-
-                if(validationUtils.isWithinLowerCharLimit(ownerField.getText()) == false){
-                    isInvalidLenght = true;
-                    dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
-                }else if(validationUtils.isValidInput(ownerField.getText()) == false){
-                    isInvalidLenght = false;
-                    dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
-                }else{
-                    tempOwner = ownerField.getText();
-                }
-
-                if(validationUtils.isWithinLowerCharLimit(targetField.getText()) == false){
-                    isInvalidLenght = true;
-                    dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
-                }else if(validationUtils.isValidInput(targetField.getText()) == false){
-                    isInvalidLenght = false;
-                    dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
-                }else{
-                    tempTargetAudience = targetField.getText();
-                }
-
-                if(validationUtils.isNumericInput(budgetField.getText()) == false){
-                    dialog.add(UserFrameErrorHandling.displayBudgetError());
-                }else{
-                    tempBudget = Long.parseLong(budgetField.getText());
-                }
-
-
-   
-                LocalDate fromDate = ((Date) ((fromDateSpinner.getValue()))).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                LocalDate toDate = ((Date) (toDateSpinner.getValue())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                LocalDateTime projectFromDate = fromDate.atStartOfDay();
-                LocalDateTime projectToDate = toDate.atStartOfDay();
-               
-                if(validationUtils.isWithinLowerCharLimit(activitiesField.getText()) == false){
-                    isInvalidLenght = true;
-                    dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
-                } else if(validationUtils.isValidInput(activitiesField.getText()) == false){
-                    isInvalidLenght = false; 
-                    dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
-                }else{
-                    tempActivities = activitiesField.getText();
-
-                }
-            
-
-                ArrayList<String> selectedCatagories = new ArrayList<>();
-                for(Component comp : tagPanel.getComponents()){
-                    if(comp instanceof JCheckBox){
-                        JCheckBox checkBox = (JCheckBox) comp;
-                        if(checkBox.isSelected()){
-                            selectedCatagories.add(checkBox.getText());
+    
+                    ArrayList<String> selectedCatagories = new ArrayList<>();
+                    for(Component comp : tagPanel.getComponents()){
+                        if(comp instanceof JCheckBox){
+                            JCheckBox checkBox = (JCheckBox) comp;
+                            if(checkBox.isSelected()){
+                                selectedCatagories.add(checkBox.getText());
+                            }
                         }
                     }
-                }
-                
-                System.out.println(projectFromDate);
-                System.out.println(projectToDate);
-                // Create a new project proposal and add it to the list
+                    
+                    System.out.println(projectFromDate);
+                    System.out.println(projectToDate);
+                    // Create a new project proposal and add it to the list
+        
+                    project project = new project(tempTitle, selectedCatagories, tempDescription, tempPurpose ,tempOwner, tempTargetAudience, tempBudget, projectFromDate, projectToDate, tempActivities, main.getFundList(), main.getCatagoryBoolean());
+                    main.projectList.add(project);
     
-                project project = new project(tempTitle, selectedCatagories, tempDescription, tempPurpose ,tempOwner, tempTargetAudience, tempBudget, projectFromDate, projectToDate, tempActivities, main.getFundList(), main.getCatagoryBoolean());
-                main.projectList.add(project);
-
-                System.out.println("------------");
-                System.out.println("adding project");
-                for(project proj : main.projectList){
-                    System.out.println(proj.getTitle());
-                    System.out.println(proj.getCategories());
-                    System.out.println(proj.getDescription());
-                    System.out.println(proj.getProjectPurpose());
-                    System.out.println(proj.getProjectOwner());
-                    System.out.println(proj.getProjectTargetAudience());
-                    System.out.println(proj.getProjectBudget());
-                    System.out.println(proj.getProjectTimeSpanFrom());
-                    System.out.println(proj.getProjectTimeSpanTo());
-                    System.out.println(proj.getProjectActivities());
-                    System.out.println(proj.getClosestDeadlineFunds());
-                    System.out.println(proj.getCategories());
+                    System.out.println("------------");
+                    System.out.println("adding project");
+                    for(project proj : main.projectList){
+                        System.out.println(proj.getTitle());
+                        System.out.println(proj.getCategories());
+                        System.out.println(proj.getDescription());
+                        System.out.println(proj.getProjectPurpose());
+                        System.out.println(proj.getProjectOwner());
+                        System.out.println(proj.getProjectTargetAudience());
+                        System.out.println(proj.getProjectBudget());
+                        System.out.println(proj.getProjectTimeSpanFrom());
+                        System.out.println(proj.getProjectTimeSpanTo());
+                        System.out.println(proj.getProjectActivities());
+                        System.out.println(proj.getClosestDeadlineFunds());
+                        System.out.println(proj.getCategories());
+                    }
+                    updateProjectList();
+                    CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
+                    CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
+                    ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
+                    ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
+                    FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
+                    ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.deniedProposalList);
+                    ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.archiveProjectList);
+                    FundCsvWriter.writeCsv("data/fundsArchive.csv",main.archiveFundList);
+                    dialog.dispose();
+                }catch(Exception e){
+                    System.err.println("Rip openProjectDialog died");
                 }
-                updateProjectList();
-                CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
-                CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
-                ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
-                ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
-                FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
-                ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.deniedProposalList);
-                ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.archiveProjectList);
-                FundCsvWriter.writeCsv("data/fundsArchive.csv",main.archiveFundList);
-                dialog.dispose();
-            }catch(Exception e){
-                System.err.println("Rip openProjectDialog died");
-            }
-        });
+            });
 
-        // Layout definition
-        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            // Layout definition
+            layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+        
+                .addComponent(nameLabel).addComponent(nameField)
+                .addComponent(purposeLabel).addComponent(purposeField)
+                .addComponent(descriptionLabel).addComponent(descriptionScrollPane)
+                .addComponent(ownerLabel).addComponent(ownerField)
+                .addComponent(targetLabel).addComponent(targetField)
+                .addComponent(budgetLabel).addComponent(budgetField)
+                .addComponent(fromDateLabel).addComponent(fromDateSpinner)
+                .addComponent(toDateLabel).addComponent(toDateSpinner)
+                .addComponent(activitiesLabel).addComponent(activitiesField)
+                .addComponent(createTagLabel).addComponent(createTagButton)
+                .addComponent(selectTagLabel).addComponent(tagScrollPane)
+                .addComponent(submitButton)
+        
+              );
+        
+            layout.setVerticalGroup(layout.createSequentialGroup()
+                .addComponent(nameLabel).addComponent(nameField)
+                .addComponent(purposeLabel).addComponent(purposeField)
+                .addComponent(descriptionLabel).addComponent(descriptionScrollPane)
+                .addComponent(ownerLabel).addComponent(ownerField)
+                .addComponent(targetLabel).addComponent(targetField)
+                .addComponent(budgetLabel).addComponent(budgetField)
+                .addComponent(fromDateLabel).addComponent(fromDateSpinner)
+                .addComponent(toDateLabel).addComponent(toDateSpinner)
+                .addComponent(activitiesLabel).addComponent(activitiesField)
+                .addComponent(createTagLabel).addComponent(createTagButton)
+                .addComponent(selectTagLabel).addComponent(tagScrollPane)
+                .addComponent(submitButton)
+            );
 
-            .addComponent(nameLabel).addComponent(nameField)
-            .addComponent(purposeLabel).addComponent(purposeField)
-            .addComponent(descriptionLabel).addComponent(descriptionScrollPane)
-            .addComponent(ownerLabel).addComponent(ownerField)
-            .addComponent(targetLabel).addComponent(targetField)
-            .addComponent(budgetLabel).addComponent(budgetField)
-            .addComponent(fromDateLabel).addComponent(fromDateSpinner)
-            .addComponent(toDateLabel).addComponent(toDateSpinner)
-            .addComponent(activitiesLabel).addComponent(activitiesField)
-            .addComponent(createTagLabel).addComponent(createTagButton)
-            .addComponent(selectTagLabel).addComponent(tagScrollPane)
-            .addComponent(submitButton)
+            JScrollPane FramescrollPane = new JScrollPane(mainPanel);
+            FramescrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            FramescrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            FramescrollPane.getVerticalScrollBar().setUnitIncrement(16); // Optional: Smooth scrolling
 
-        );
-
-        layout.setVerticalGroup(layout.createSequentialGroup()
-            .addComponent(nameLabel).addComponent(nameField)
-            .addComponent(purposeLabel).addComponent(purposeField)
-            .addComponent(descriptionLabel).addComponent(descriptionScrollPane)
-            .addComponent(ownerLabel).addComponent(ownerField)
-            .addComponent(targetLabel).addComponent(targetField)
-            .addComponent(budgetLabel).addComponent(budgetField)
-            .addComponent(fromDateLabel).addComponent(fromDateSpinner)
-            .addComponent(toDateLabel).addComponent(toDateSpinner)
-            .addComponent(activitiesLabel).addComponent(activitiesField)
-            .addComponent(createTagLabel).addComponent(createTagButton)
-            .addComponent(selectTagLabel).addComponent(tagScrollPane)
-            .addComponent(submitButton)
-        );
-
-        dialog.setLocationRelativeTo(frame);
-        dialog.setVisible(true);
-    }
-
+    // Add the scrollPane to the dialog
+    dialog.add(FramescrollPane);
+        
+            dialog.setLocationRelativeTo(frame);
+            dialog.setVisible(true);
+        }
 
     private JPanel createRightSidePanel() {
         JPanel rightSidePanel = new JPanel(new CardLayout());
         rightSidePanel.setBackground(new Color(213, 213, 213, 255));
         rightSidePanel.setPreferredSize(new Dimension(900, 100));
-        
+
         proposalProjectFullPanel = new JPanel();
         proposalProjectFullPanel.setLayout(new BoxLayout(proposalProjectFullPanel, BoxLayout.Y_AXIS));
         JScrollPane proposalScrollPane = new JScrollPane(proposalProjectFullPanel);
         rightSidePanel.add(proposalScrollPane, "proposalProjectsDetails");
-        
+
         projectFullPanel = new JPanel();
         projectFullPanel.setLayout(new BoxLayout(projectFullPanel, BoxLayout.Y_AXIS));
         JScrollPane projectScrollPane = new JScrollPane(projectFullPanel);
         rightSidePanel.add(projectScrollPane, "ProjectDetails");
-        
+
         fundFullPanel = new JPanel();
         fundFullPanel.setLayout(new BoxLayout(fundFullPanel, BoxLayout.Y_AXIS));
         JScrollPane fundScrollPane = new JScrollPane(fundFullPanel);
         rightSidePanel.add(fundScrollPane, "FundDetails");
-        
+
         JPanel archivePanel = new JPanel();
         archivePanel.setLayout(new BoxLayout(archivePanel, BoxLayout.Y_AXIS));
         JScrollPane archiveScrollPane = new JScrollPane(archivePanel);
         rightSidePanel.add(archiveScrollPane, "Arkiv");
-        
+
         return rightSidePanel;
     }
 
@@ -1928,26 +2095,25 @@ private void openProjectDialog() {
     // method to filther by tag
     private void filterproposalProjectssByTag(String tag) {
         proposalProjectListPanel.removeAll();
-        
+
         for (proposalProject proposal : main.proposalList) {
             if (proposal.getCategories().contains(tag)) {
                 JLabel proposalLabel = new JLabel(proposal.getTitle() + " - " + proposal.getProjectOwner());
-    
+
                 proposalLabel.addMouseListener(new java.awt.event.MouseAdapter() {
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
                         showProjectProbDetails(proposal);
                     }
                 });
-    
+
                 proposalProjectListPanel.add(proposalLabel);
             }
         }
-    
+
         proposalProjectListPanel.revalidate();
         proposalProjectListPanel.repaint();
     }
-    
-   
+
     private void updateRightSidePanel(String tab) {
         CardLayout layout = (CardLayout) rightSidePanel.getLayout();
         System.out.println(tab);
@@ -1959,7 +2125,7 @@ private void openProjectDialog() {
                 layout.show(rightSidePanel, "ProjectDetails");
                 break;
             case "Funds":
-            layout.show(rightSidePanel, "FundDetails");
+                layout.show(rightSidePanel, "FundDetails");
                 break;
             case "Archive":
                 layout.show(rightSidePanel, "ArchiveDetails");
@@ -1967,9 +2133,10 @@ private void openProjectDialog() {
             default:
                 layout.show(rightSidePanel, "Default"); // Sikrer standardvisning
                 break;
+        }
     }
-}
- @Override
+
+    @Override
     public void actionPerformed(ActionEvent e) {
         System.out.println("Action performed");
         System.out.println(e.getSource());
@@ -1989,19 +2156,18 @@ private void openProjectDialog() {
             cardLayout.show(cardPanel, "Main");
         } else if (e.getSource() == createProbButton) {
             openproposalProjectDialog();
-        }else if (e.getSource() == createFundButton) {
+        } else if (e.getSource() == createFundButton) {
             openFundDialog();
-        }else if(e.getSource() == createProjectButton){
+        } else if (e.getSource() == createProjectButton) {
             openProjectDialog();
-            
+
         }
- 
 
     }
 
- private <T> void displayArchiveList(String cardName, List<T> archiveList) {
+    private <T> void displayArchiveList(String cardName, List<T> archiveList) {
         JPanel targetPanel;
-    
+
         // Determine which panel to update based on card name
         switch (cardName) {
             case "proposalProjectsDetails":
@@ -2016,12 +2182,12 @@ private void openProjectDialog() {
             default:
                 throw new IllegalArgumentException("Invalid card name");
         }
-    
+
         // Clear the panel and populate it with clickable items from the archive list
         targetPanel.removeAll();
-        for (int i =0; i < archiveList.size() && archiveList.size()!=0; i++) {
+        for (int i = 0; i < archiveList.size() && archiveList.size() != 0; i++) {
             String displayText;
-            
+
             // Get the title of each item
             if (archiveList.get(i) instanceof project) {
                 displayText = ((project) archiveList.get(i)).getTitle();
@@ -2032,17 +2198,17 @@ private void openProjectDialog() {
             } else {
                 displayText = archiveList.get(i).toString();
             }
-    
+
             // Create a JButton for each item to make it clickable
             JButton itemButton = new JButton(displayText);
             T item = archiveList.get(i);
             // Add an ActionListener to display item details when clicked
-            itemButton.addActionListener(e->displayItemDetails(item));
-            
+            itemButton.addActionListener(e -> displayItemDetails(item));
+
             targetPanel.add(itemButton);
             targetPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Spacer between items
         }
-        
+
         // Refresh the panel and switch to the selected archive view
         targetPanel.revalidate();
         targetPanel.repaint();
@@ -2054,32 +2220,29 @@ private void openProjectDialog() {
         // Create the dialog box
         JDialog fundDialog = new JDialog(frame, fund.getTitle(), true);
         fundDialog.setLayout(new GridLayout(0, 1));
-        
+
         // Add fund details to the dialog box
         fundDialog.add(new JLabel("Titel: " + fund.getTitle()));
         fundDialog.add(new JLabel("Beskrivelse: " + fund.getDescription()));
         fundDialog.add(new JLabel("Kategorier: " + fund.getCategories()));
         fundDialog.add(new JLabel("Ansøgningsfrist: " + fund.getDeadlines().toString()));
-        for(int i = 0; i<tempContacts.size(); i++){
-            fundDialog.add(new JLabel("Kontaktpersoner: " + tempContacts.get(i).getContactName() + " - " + tempContacts.get(i).getContactPhoneNumber() + " - " + tempContacts.get(i).getContactEmail()));
-        }    
+        for (int i = 0; i < tempContacts.size(); i++) {
+            fundDialog.add(new JLabel("Kontaktpersoner: " + tempContacts.get(i).getContactName() + " - "
+                    + tempContacts.get(i).getContactPhoneNumber() + " - " + tempContacts.get(i).getContactEmail()));
+        }
         fundDialog.add(new JLabel("Budget: " + fund.getBudgetSpan()));
         fundDialog.add(new JLabel("Tidligere projekter: " + fund.getCollaborationHistory()));
         fundDialog.add(new JLabel("Hjemmeside: " + fund.getFundWebsite()));
         fundDialog.add(new JLabel("\n"));
         fundDialog.add(new JLabel("Dato tilføjet: " + fund.getDateCreated()));
-    
-    
-    
-    
-    
+
         // Button to close the dialog
         JButton closeButton = new JButton("Luk");
         closeButton.addActionListener(e -> fundDialog.dispose());
         fundDialog.add(closeButton);
-    
+
         fundDialog.pack();
-        fundDialog.setLocationRelativeTo(projectFullPanel);  // Center dialog relative to main panel
+        fundDialog.setLocationRelativeTo(projectFullPanel); // Center dialog relative to main panel
         fundDialog.setVisible(true);
     }
 }

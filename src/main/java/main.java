@@ -16,8 +16,8 @@ public class main {
     public static void initializeLists() {
         categories.addAll(CsvStringReader.readStringCsv("data/categories.csv"));
         userProjectList.addAll(CsvStringReader.readStringCsv("data/nonSystemProjects.csv"));
-        projectList.addAll(ProjectCsvReader.readProjectCsv("data/projects.csv"));
         fundList.addAll(FundCsvReader.readFundCsv("data/funds.csv"));
+        projectList.addAll(ProjectCsvReader.readProjectCsv("data/projects.csv"));
         proposalList.addAll(ProposalCsvReader.readProposalCsv("data/proposals.csv"));
         deniedProposalList.addAll(ProposalCsvReader.readProposalCsv("data/deniedProposals.csv"));
         archiveProjectList.addAll(ProjectCsvReader.readProjectCsv("data/projectsArchive.csv"));
