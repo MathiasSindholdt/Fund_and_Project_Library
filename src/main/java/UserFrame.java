@@ -70,6 +70,7 @@ public class UserFrame extends JFrame implements ActionListener {
     private JPanel projectFullPanel;
     
     
+    
     private JPanel fundListPanel;
     private JPanel fundFullPanel;
     // tag button
@@ -185,7 +186,9 @@ public class UserFrame extends JFrame implements ActionListener {
         changeFundButton = createButton("Redigér en fond");
 
 
-        
+        EditProjectButton editProjectButton = new EditProjectButton(this, main.projectList);
+        // EditFundButton editFundButton = new EditFundButton(this, main.fundList);
+
 
         panel5.add(createProbButton);
         panel5.add(changeProbButton);
@@ -194,6 +197,15 @@ public class UserFrame extends JFrame implements ActionListener {
         panel5.add(createFundButton);
         panel5.add(changeFundButton);
 
+        /*  changeFundButton.addActionListener(e -> {
+            editFundButton.openEditFundDialog();
+        });
+        */
+        
+
+        changeProjectButton.addActionListener(e -> {
+            editProjectButton.openEditProjectDialog();
+        });
 
 
 
@@ -1028,7 +1040,7 @@ private void openFundDialog() {
     JDialog dialog = new JDialog(frame, "Lav En Fond", true);
     dialog.setSize(700, 600);
     
- JPanel mainPanel = new JPanel();
+    JPanel mainPanel = new JPanel();
     mainPanel.setLayout(new GroupLayout(mainPanel));
     mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     
