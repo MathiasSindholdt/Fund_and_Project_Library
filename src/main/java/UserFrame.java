@@ -838,35 +838,39 @@ public class UserFrame extends JFrame implements ActionListener {
         JLabel infoLabel = new JLabel(
                 String.format("%-30s %-30s %-30s %-30s %-30s",
                         "Title",
-                        "Project ejer",
-                        "Dato oprettet",
-                        "Næste deadline",
-                        "Kategori(er)"));
+                        "Project Owner",
+                        "Date Created",
+                        "Next Deadline",
+                        "Categories"));
         projectListPanel.add(infoLabel);
-        // Tilføj labels for hvert projekt
+    
+        // Add labels for each project
         for (project project : main.projectList) {
             if (project.getFunds().isEmpty()) {
                 compareProjectCatsWithFundCats comparer = new compareProjectCatsWithFundCats();
                 project.setFundList(comparer.compareCategoriesWithFund(true, main.fundList, project));
             }
+    
             JLabel projectLabel;
-            if (project.getFunds().isEmpty()){
+            String categoriesDisplay = project.getCategories().isEmpty() ? "No Categories" : project.getCategories().toString();
+    
+            if (project.getFunds().isEmpty()) {
                 if (project.getTitle().length() < 20) {
                     projectLabel = new JLabel(
                             String.format("%-30s %-30s %-30s %-30s %-30s",
                                     project.getTitle(),
                                     project.getProjectOwner(),
                                     project.getDateCreated().toString().split("T")[0],
-                                    "No Categories",
-                                    "No Categories"));
+                                    "No Deadlines",
+                                    categoriesDisplay));
                 } else {
                     projectLabel = new JLabel(
                             String.format("%-30s %-30s %-30s %-30s %-30s",
                                     project.getTitle().substring(0, 17) + "...",
                                     project.getProjectOwner(),
                                     project.getDateCreated().toString().split("T")[0],
-                                    "Ingen Ansøgningsfrist ",
-                                    project.getCategories().toString()));
+                                    "No Deadlines",
+                                    categoriesDisplay));
                 }
             } else {
                 if (project.getTitle().length() < 20) {
@@ -876,7 +880,7 @@ public class UserFrame extends JFrame implements ActionListener {
                                     project.getProjectOwner(),
                                     project.getDateCreated().toString().split("T")[0],
                                     project.getFunds().get(0).getDeadlines().get(0).toString(),
-                                    project.getCategories().toString()));
+                                    categoriesDisplay));
                 } else {
                     projectLabel = new JLabel(
                             String.format("%-30s %-30s %-30s %-30s %-30s",
@@ -884,22 +888,27 @@ public class UserFrame extends JFrame implements ActionListener {
                                     project.getProjectOwner(),
                                     project.getDateCreated().toString().split("T")[0],
                                     project.getFunds().get(0).getDeadlines().get(0).toString(),
-                                    project.getCategories().toString()));
+                                    categoriesDisplay));
                 }
-                // Brug en endelig variabel for at undgå problemer med closures
-                final project currentProject = project;
-            
-                projectLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-                    public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        showProjectDetails(currentProject); // Vis detaljer for det valgte projekt
-                    }
-                });
-                projectListPanel.add(projectLabel);
-            }}
-        // Opdater visningen
+            }
+    
+            // Add a mouse listener for project details
+            final project currentProject = project;
+            projectLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    showProjectDetails(currentProject); // Show details for the selected project
+                }
+            });
+    
+            // Add the project label to the panel
+            projectListPanel.add(projectLabel);
+        }
+    
+        // Update the view
         projectListPanel.revalidate();
         projectListPanel.repaint();
     }
+    
 
     private void showProjectProbDetails(proposalProject proposal) {
         proposalProjectFullPanel.removeAll();
