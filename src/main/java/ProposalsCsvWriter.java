@@ -23,7 +23,7 @@ public class ProposalsCsvWriter {
 
                 List<String> categories = proposal.getCategories();
                 proposalData[1] = categories != null ? "\"" + String.join(", ", categories) + "\"" : "N/A";
-
+                proposalData[2] = proposal.getDescription();
                 proposalData[3] = proposal.getProjectPurpose();
                 proposalData[4] = proposal.getProjectOwner();
                 proposalData[5] = proposal.getProjectTargetAudience();

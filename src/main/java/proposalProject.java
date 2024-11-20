@@ -78,7 +78,7 @@ public class proposalProject extends projectAbstract {
 
         System.out.println("CSV file created at: " + filepath);
 
-        List<proposalProject> readProposalProjects = ProposalCsvReader.readPropsalCsv(filepath);
+        List<proposalProject> readProposalProjects = ProposalCsvReader.readProposalCsv(filepath);
         for (proposalProject prop : readProposalProjects) {
             System.out.println("Title: " + prop.getTitle());
             System.out.println("Categories: " + String.join(", ", prop.getCategories()));
