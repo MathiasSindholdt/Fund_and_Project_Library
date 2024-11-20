@@ -146,85 +146,43 @@ public class UserFrame extends JFrame implements ActionListener {
         menuButton = createMenuButton();
         menuButton.setPreferredSize(new Dimension(100, 50)); // Set preferred size
         leftPanel.add(menuButton);
-        menuButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        menuButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-            }
-    
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-            }
-        });
+        changeCursor(menuButton);
 
         projectPropButton = createProjectPropButton("Projekt forslag");
         panel1.add(projectPropButton);
         leftPanel.add(projectPropButton);
-
-        projectPropButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        projectPropButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-            }
-    
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-            }
-        });
+        changeCursor(projectPropButton);
 
         projectButton = createProjectButton("Projekter");
         panel1.add(projectButton);
         leftPanel.add(projectButton);
-
-        projectButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        projectButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-            }
-    
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-            }
-        });
+        changeCursor(projectButton);
 
         fundsButton = createFundsButton("Fonde");
         panel1.add(fundsButton);
         leftPanel.add(fundsButton);
-
-        fundsButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        fundsButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-            }
-    
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-            }
-        });
+        changeCursor(fundsButton);
 
         archiveButton = createArchiveButton("Arkiv");
         panel1.add(archiveButton);
         leftPanel.add(archiveButton);
-
-        archiveButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        archiveButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-            }
-    
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-            }
-        });
+        changeCursor(archiveButton);
         panel1.add(leftPanel, BorderLayout.WEST);
 
 
         logoutButton = createLogutButton();
         logoutButton.setPreferredSize(new Dimension(100, 50)); // Set preferred size
         panel1.add(logoutButton, BorderLayout.EAST);
+        changeCursor(logoutButton);
     
-        logoutButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        logoutButton.addMouseListener(new java.awt.event.MouseAdapter() {
+
+
+        return panel1;
+    }
+
+    public static void changeCursor(JButton button) {
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
             }
@@ -233,10 +191,8 @@ public class UserFrame extends JFrame implements ActionListener {
             public void mouseExited(java.awt.event.MouseEvent evt) {
             }
         });
-
-
-        return panel1;
     }
+    
 
     private JPanel createSidePanel() {
         JPanel panel2 = new JPanel();

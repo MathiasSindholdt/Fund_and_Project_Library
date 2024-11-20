@@ -132,32 +132,14 @@ public class GuestFrame extends JFrame implements ActionListener {
         menuButton = createMenuButton();
         menuButton.setPreferredSize(new Dimension(100, 50)); // Set preferred size
         leftPanel.add(menuButton);
-    
-        menuButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        menuButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-            }
-    
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-            }
-        });
+        UserFrame.changeCursor(menuButton);
     
         projectPropButton = createProjectPropButton("Projekt forslag");
         projectPropButton.setPreferredSize(new Dimension(150, 50)); // Set preferred size
         leftPanel.add(projectPropButton);
     
-        projectPropButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        projectPropButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-            }
-    
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-            }
-        });
+        UserFrame.changeCursor(projectPropButton);
+
     
         panel1.add(leftPanel, BorderLayout.WEST);
     
@@ -165,16 +147,7 @@ public class GuestFrame extends JFrame implements ActionListener {
         logoutButton.setPreferredSize(new Dimension(100, 50)); // Set preferred size
         panel1.add(logoutButton, BorderLayout.EAST);
     
-        logoutButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        logoutButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-            }
-    
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-            }
-        });
+        UserFrame.changeCursor(logoutButton);
     
         return panel1;
     }
@@ -196,7 +169,7 @@ public class GuestFrame extends JFrame implements ActionListener {
 
         // The button to open the project proposal dialog
         createProbButton = createButton("Lav projekt forslag");
-
+        UserFrame.changeCursor(createProbButton);
         panel5.add(createProbButton);
 
         return panel5;
