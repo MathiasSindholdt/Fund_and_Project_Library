@@ -1,3 +1,4 @@
+import java.awt.List;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -107,7 +108,9 @@ public class Database {
                     String[] strarr = s.split(";");
                     fundContactClass fcc = new fundContactClass(
                             strarr[0], strarr[1], strarr[2]);
-                    tmp.setContacts(fcc);
+                    ArrayList<fundContactClass> fccl = new ArrayList<>();
+                    fccl.add(fcc);
+                    tmp.setContacts(fccl);
                 }
                 tmpstr = rs.getString(7);
                 String[] tmpstrArr = tmpstr.split(" - ");
@@ -117,11 +120,9 @@ public class Database {
                 tmpstr = tmpstr.replace("[", "");
                 tmpstr = tmpstr.replace("]", "");
                 tmpstr = tmpstr.trim();
-                ArrayList<String> strarrlist = new ArrayList<>();
                 for (String s : tmpstr.split(",")) {
-                    strarrlist.add(s);
+                    tmp.setCollaborationHistory(s);
                 }
-                    tmp.setCollaborationHistory(strarrlist);
                 tmp.setRunning(rs.getBoolean(9));
                 tmp.setfundWebsite(rs.getString(10));
                 tmparr.add(tmp);

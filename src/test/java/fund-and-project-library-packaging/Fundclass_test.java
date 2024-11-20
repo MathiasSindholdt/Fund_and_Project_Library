@@ -1,4 +1,6 @@
+import java.util.List;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Fundclass_test extends testTemplate {
@@ -23,15 +25,25 @@ public class Fundclass_test extends testTemplate {
         String description = "Example description";
         long amountFrom = 666;
         long amountTo = 999;
-        LocalDateTime[] deadlines = { LocalDateTime.now(), LocalDateTime.now().plusDays(2) };
-        String[] categories = { "cat1", "cat2", "cat3" };
+        List<LocalDateTime> deadlines = new ArrayList<LocalDateTime>();
+        deadlines.add(LocalDateTime.now());
+        deadlines.add(LocalDateTime.now().plusDays(2));
+        ArrayList<String> categories = new ArrayList<>();
+        categories.add("Cat1");
+        categories.add("Cat2");
+        categories.add("Cat3");
         String[] history = { "example history" };
-        String[] contacts = { "person:nummer" };
+        fundContactClass fcc = new fundContactClass("name", "phone", "email");
+        ArrayList<fundContactClass> contacts = new ArrayList<>();
+        contacts.add(fcc);
         String website = "aau.dk";
+        ArrayList<String> collaborationHistory = new ArrayList<>();
+        collaborationHistory.add("exmaple collaborationHistory");
         Boolean collaborated = true;
         Boolean running = false;
 
-        fundClass fc = new fundClass(name, description, amountFrom, amountTo, deadlines, categories, history, contacts,
+        fundClass fc = new fundClass(name, description, amountFrom, amountTo,
+                deadlines, categories, collaborationHistory, contacts,
                 website, collaborated, running);
         if (!name.equals(fc.getTitle())) {
             ErrDump += name + " != " + fc.getTitle() + "\n";
@@ -49,32 +61,32 @@ public class Fundclass_test extends testTemplate {
             ErrDump += amountTo + " != " + fc.getBudgetMax() + "\n";
             passed = false;
         }
-        for (int i = 0; i < deadlines.length; i++) {
-            if (!Objects.equals(deadlines[i], fc.getDeadlines().get(i))) {
-                ErrDump += deadlines[i] + " != " + fc.getDeadlines().get(i) + "\n";
+        for (int i = 0; i < deadlines.size(); i++) {
+            if (!Objects.equals(deadlines.get(i), fc.getDeadlines().get(i))) {
+                ErrDump += deadlines.get(i) + " != " + fc.getDeadlines().get(i) + "\n";
                 passed = false;
             }
         }
-        for (int i = 0; i < categories.length; i++) {
-            if (!Objects.equals(categories[i], fc.getCategories().get(i))) {
-                ErrDump += categories[i] + " != " + fc.getCategories().get(i) + "\n";
+        for (int i = 0; i < categories.size(); i++) {
+            if (!Objects.equals(categories.get(i), fc.getCategories().get(i))) {
+                ErrDump += categories.get(i) + " != " + fc.getCategories().get(i) + "\n";
                 passed = false;
             }
         }
-        for(int i = 0; i < history.length; i++){
-        if (!Objects.equals(history[i], fc.getCollaborationHistory().get(i))) {
-            ErrDump += history[i] + " != " + fc.getCollaborationHistory().get(i) + "\n";
-            passed = false;
+        for (int i = 0; i < history.length; i++) {
+            if (!Objects.equals(history[i], fc.getCollaborationHistory().get(i))) {
+                ErrDump += history[i] + " != " + fc.getCollaborationHistory().get(i) + "\n";
+                passed = false;
+            }
         }
+
+        for (int i = 0; i < contacts.size(); i++) {
+            if (!Objects.equals(contacts.get(i), fc.getContacts().get(i))) {
+                ErrDump += contacts.get(i) + " != " + fc.getContacts().get(i) + "\n";
+                passed = false;
+            }
         }
-        
-        for(int i = 0; i < contacts.length; i++){
-        if (!Objects.equals(contacts[i], fc.getContacts().get(i))) {
-            ErrDump += contacts[i] + " != " + fc.getContacts().get(i) + "\n";
-            passed = false;
-        }
-        }
-        
+
         if (!website.equals(fc.getFundWebsite())) {
             ErrDump += website + " != " + fc.getFundWebsite() + "\n";
             passed = false;
