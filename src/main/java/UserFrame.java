@@ -96,7 +96,9 @@ public class UserFrame extends JFrame implements ActionListener {
     String tempWebsite;
     Long tempAmountFrom;
     Long tempAmountTo;
-    private ArrayList<fundContactClass> tempContacts = new ArrayList<>();
+    public static fundContactClass tempContact;
+    public ArrayList<fundContactClass> tempContacts = new ArrayList<>();
+    private ArrayList<fundContactClass> removeContactArray = new ArrayList<>();
     private ArrayList<fundContactClass> contacts = new ArrayList<>();
 
     // Constructor to set up the GUI
@@ -1331,18 +1333,34 @@ addDeadlineButton.addActionListener(e -> {
     contactsScrollPane.setPreferredSize(new Dimension(200, 100));
     createContactsButton.addActionListener(e->{
     openContactsDialog(dialog);
-    for(int i = 0; i < tempContacts.size(); i++){
-        System.out.println(tempContacts.get(i).getContactName());
-    }
+    System.out.println(tempContact.getContactName());
+    System.out.println(tempContact.getContactPhoneNumber());
+    System.out.println(tempContact.getContactEmail());
 
-    contactsPanel.add(new JLabel(tempContacts.get(0).getContactName() + " - " + tempContacts.get(0).getContactPhoneNumber() + " - " + tempContacts.get(0).getContactEmail()));
-    //resets the tempContacts arraylist
+    JButton removeContactButton = createXButton();
+    JPanel removeContactPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    JLabel contactInfo = new JLabel(tempContact.getContactName() + " - " + tempContact.getContactPhoneNumber() + " - " + tempContact.getContactEmail());
+    contactsPanel.add(removeContactButton);
     contactsPanel.revalidate();
     contactsPanel.repaint();
-    contacts.add(tempContacts.get(0));
-    tempContacts.clear();
+    contacts.add(tempContact);
+
+    final fundContactClass contactToRemove = tempContact;
+    removeContactButton.addActionListener(removeEvent -> {
+        System.out.println("Removing contact: " + contactToRemove.getContactName());
+        contacts.remove(contactToRemove);
+        contactsPanel.remove(removeContactPanel);
+        contactsPanel.revalidate();
+        contactsPanel.repaint();
     });
-    JTextField contactsField = new JTextField();
+    removeContactPanel.add(contactInfo);
+    removeContactPanel.add(removeContactButton);
+
+    contactsPanel.add(removeContactPanel);
+    contactsPanel.revalidate();
+    contactsPanel.repaint();
+    });
+
 
 
     // Hjemmeside
@@ -1509,6 +1527,7 @@ addDeadlineButton.addActionListener(e -> {
             fundClass fund = new fundClass(tempTitle, tempDescription, tempAmountFrom, tempAmountTo,
             addedDeadlines, selectedCatagories, selectedCollabortion, contacts, tempWebsite, 
             isCollaborated, running);
+            contacts.clear();
             main.fundList.add(fund);
             updateFundList();
             CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
@@ -1664,8 +1683,7 @@ private JButton createXButton() {
                     return;
                 }
             }
-            fundContactClass contact = new fundContactClass(contactName, contactPhone, contatctEmail);
-            tempContacts.add(contact);
+            tempContact = new fundContactClass(contactName, contactPhone, contatctEmail);
             contactDialog.dispose();
 
         });
