@@ -55,7 +55,10 @@ public class PDFGen_test extends testTemplate {
             for (int j = 0; j < 3; j++) {
                 fc.setDeadlines(LocalDateTime.now().plusDays(j));
             }
-            fc.setContacts("Hans Erik:23435363");
+            fundContactClass fcc = new fundContactClass("Hans Erik", "23435363","");
+            ArrayList<fundContactClass> fccl = new ArrayList<>();
+            fccl.add(fcc);
+            fc.setContacts(fccl);
             for (int j = 0; j < 4; j++) {
                 fc.setCollaborationHistory("collab " + (j + 1));
             }
