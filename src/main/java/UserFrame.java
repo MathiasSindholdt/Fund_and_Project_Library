@@ -384,7 +384,11 @@ public class UserFrame extends JFrame implements ActionListener {
             detailsPanel.add(new JLabel("Titel: " + fund.getTitle()));
             detailsPanel.add(new JLabel("Beskrivelse: " + fund.getDescription()));
             detailsPanel.add(new JLabel("Kategorier: " + fund.getCategories()));
-            detailsPanel.add(new JLabel("Ansøgningsfrist(er): " + fund.getDeadlines()));
+            if(fund.getDeadlines().get(0)==LocalDateTime.of(3000, 1, 1, 0, 0)){
+                detailsPanel.add(new JLabel("Ansøgningsfrist(er): Løbende"));
+            } else {
+                detailsPanel.add(new JLabel("Ansøgningsfrist(er): " + fund.getDeadlines()));
+            }
             detailsPanel.add(new JLabel("Kontakter: " + fund.getContacts()));
             detailsPanel.add(new JLabel("Budget span: " + fund.getBudgetSpan()));
             detailsPanel.add(new JLabel("Tidligere samarbejde: " + fund.getCollaborationHistory()));
@@ -1825,9 +1829,18 @@ private JButton createXButton() {
                         "Kategori(er)",
                         "Ansøgningsfrist"));
         fundListPanel.add(infoLabel);
-
+    
         for (fundClass fund : main.fundList) {
             JLabel fundLabel;
+    
+            // Determine the deadline display
+            String deadlineDisplay;
+            if (fund.getDeadlines().contains(LocalDateTime.of(3000, 1, 1, 0, 0))) {
+                deadlineDisplay = "[Løbende Ansøgningsfrist]";
+            } else {
+                deadlineDisplay = fund.getDeadlines().toString();
+            }
+    
             if (fund.getTitle().length() < 20) {
                 if (fund.getCategories().toString().length() < 20) {
                     fundLabel = new JLabel(
@@ -1836,7 +1849,7 @@ private JButton createXButton() {
                                     formatNumber(fund.getBudgetMin() + "") + " - "
                                             + formatNumber(fund.getBudgetMax() + ""),
                                     fund.getCategories().toString(),
-                                    fund.getDeadlines().toString()));
+                                    deadlineDisplay));
                 } else {
                     fundLabel = new JLabel(
                             String.format("%-30s %-30s %-30s %-30s",
@@ -1844,17 +1857,17 @@ private JButton createXButton() {
                                     formatNumber(fund.getBudgetMin() + "") + " - "
                                             + formatNumber(fund.getBudgetMax() + ""),
                                     fund.getCategories().toString().substring(0, 17) + "...",
-                                    fund.getDeadlines().toString()));
+                                    deadlineDisplay));
                 }
             } else {
                 if (fund.getCategories().toString().length() < 20) {
                     fundLabel = new JLabel(
                             String.format("%-30s %-30s %-30s %-30s",
                                     fund.getTitle().substring(0, 17) + "...",
-                                    formatNumber(fund.getBudgetMin() + "") + " "
+                                    formatNumber(fund.getBudgetMin() + "") + " - "
                                             + formatNumber(fund.getBudgetMax() + ""),
                                     fund.getCategories().toString(),
-                                    fund.getDeadlines().toString()));
+                                    deadlineDisplay));
                 } else {
                     fundLabel = new JLabel(
                             String.format("%-30s %-30s %-30s %-30s",
@@ -1862,9 +1875,10 @@ private JButton createXButton() {
                                     formatNumber(fund.getBudgetMin() + "") + " - "
                                             + formatNumber(fund.getBudgetMax() + ""),
                                     fund.getCategories().toString().substring(0, 17),
-                                    fund.getDeadlines().toString()));
+                                    deadlineDisplay));
                 }
             }
+    
             fundLabel.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     showFundDetails(fund); // Display details on click
@@ -1872,10 +1886,11 @@ private JButton createXButton() {
             });
             fundListPanel.add(fundLabel);
         }
-
+    
         fundListPanel.revalidate();
         fundListPanel.repaint();
     }
+    
 
     private void openProjectDialog() {
         JDialog dialog = new JDialog(frame, "Lav Projekt", true);
