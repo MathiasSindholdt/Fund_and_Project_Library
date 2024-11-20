@@ -475,7 +475,7 @@ public class UserFrame extends JFrame implements ActionListener {
     // Show the frame
     public void show() {
         main.initializeLists();
-        updateproposalProjectList();
+        updateProposalProjectList();
         updateProjectList();
         updateFundList();
         frame.setVisible(true);
@@ -728,7 +728,7 @@ public class UserFrame extends JFrame implements ActionListener {
 
             // Add the proposal to the list and update UI
             main.proposalList.add(proposal);
-            updateproposalProjectList();
+            updateProposalProjectList();
             CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
             CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
             ProposalsCsvWriter.writeProposalCsv("data/proposals.csv", main.proposalList);
@@ -969,7 +969,7 @@ public class UserFrame extends JFrame implements ActionListener {
         approveButton.addActionListener(event -> {
             approveProposal(proposal); // Approve the proposal and convert it to a project
             proposalProjectFullPanel.getParent().getParent().remove(proposalProjectFullPanel); // Close details
-            updateproposalProjectList(); // Refresh proposal list
+            updateProposalProjectList(); // Refresh proposal list
             FundCsvWriter.writeCsv("data/funds.csv", main.fundList);
             CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
             CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
@@ -1003,7 +1003,7 @@ public class UserFrame extends JFrame implements ActionListener {
             archive.archiveProposal(proposal);
 
             // Call update methods after archiving
-            updateproposalProjectList();
+            updateProposalProjectList();
             CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
             CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
             ProposalsCsvWriter.writeProposalCsv("data/proposals.csv", main.proposalList);
@@ -1032,7 +1032,7 @@ public class UserFrame extends JFrame implements ActionListener {
         approveButton.addActionListener(event -> {
             approveProposal(proposal); // Approve the proposal and convert it to a project
             proposalProjectFullPanel.getParent().getParent().remove(proposalProjectFullPanel); // Close details
-            updateproposalProjectList(); // Refresh proposal list
+            updateProposalProjectList(); // Refresh proposal list
             ProposalsCsvWriter.writeProposalCsv("data/proposals.csv", main.proposalList);
             ProjectCsvWriter.writeProjectCsv("data/projects.csv", main.projectList);
             FundCsvWriter.writeCsv("data/funds.csv", main.fundList);
