@@ -96,7 +96,9 @@ public class UserFrame extends JFrame implements ActionListener {
     String tempWebsite;
     Long tempAmountFrom;
     Long tempAmountTo;
-    private ArrayList<fundContactClass> tempContacts = new ArrayList<>();
+    public static fundContactClass tempContact;
+    public ArrayList<fundContactClass> tempContacts = new ArrayList<>();
+    private ArrayList<fundContactClass> removeContactArray = new ArrayList<>();
     private ArrayList<fundContactClass> contacts = new ArrayList<>();
 
     // Constructor to set up the GUI
@@ -1249,32 +1251,33 @@ public class UserFrame extends JFrame implements ActionListener {
     private void openFundDialog() {
         JDialog dialog = new JDialog(frame, "Lav En Fond", true);
         dialog.setSize(700, 600);
-
+        
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new GroupLayout(mainPanel));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
+        
         GroupLayout layout = new GroupLayout(mainPanel);
         mainPanel.setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
-
+        
         // Fond Titel
         JLabel nameLabel = new JLabel("Fond Titel:");
         JTextField nameField = new JTextField();
-
+    
         // Fond Beskrivelse
         JLabel descriptionLabel = new JLabel("Beskrivelse:");
         JTextArea descriptionArea = new JTextArea(7, 20);
         JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
         descriptionArea.setLineWrap(true);
-
+    
+        
         // Fond Beløb Fra og Til
         JLabel amountFromLabel = new JLabel("Beløb fra:");
         JTextField amountFromField = new JTextField();
         JLabel amountToLabel = new JLabel("Beløb til:");
         JTextField amountToField = new JTextField();
-
+    
         // Fond Deadline
         JLabel deadlineLabel = new JLabel("Ansøgningsfrist:");
         SpinnerDateModel deadlineModel = new SpinnerDateModel(new Date(), null, null, Calendar.DAY_OF_MONTH);
@@ -1282,7 +1285,7 @@ public class UserFrame extends JFrame implements ActionListener {
         JSpinner.DateEditor deadlineEditor = new JSpinner.DateEditor(deadlineSpinner, "dd/MM/yyyy");
         deadlineSpinner.setEditor(deadlineEditor);
         deadlineSpinner.setValue(Date.from(Instant.now())); // Set default time to 00:00
-
+    
         // Tilføjede Deadlines Panel
         JLabel addedDeadlinesLabel = new JLabel("Tilføjede ansøgningsfrister:");
         JPanel deadlineListPanel = new JPanel();
@@ -1296,57 +1299,59 @@ public class UserFrame extends JFrame implements ActionListener {
         JTextField deadLineTimeFieldHour = new JTextField(2);
         JLabel deadLineTimeLabelColon = new JLabel(":");
         JTextField deadLineTimeFieldMinute = new JTextField(2);
-
+    
+    
         deadLineTimePanel.add(deadLineTimeLabel);
         deadLineTimePanel.add(deadLineTimeFieldHour);
         deadLineTimePanel.add(deadLineTimeLabelColon);
         deadLineTimePanel.add(deadLineTimeFieldMinute);
         deadLineTimePanel.setVisible(false);
-
+    
         deadLineTimeCheckBox.addItemListener(e -> {
             deadLineTimePanel.setVisible(deadLineTimeCheckBox.isSelected());
             dialog.revalidate();
             dialog.repaint();
         });
-
+    
         // Knap til at tilføje en ny deadline
         JButton addDeadlineButton = new JButton("Tilføj ansøgningsfrist");
-
+        
         // List til opbevaring af tilføjede deadlines
         List<LocalDateTime> addedDeadlines = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
-        addDeadlineButton.addActionListener(e -> {
-            LocalDateTime newDeadline;
-            if (deadLineTimeCheckBox.isSelected()) {
-                if (!validationUtils.isValidTime(deadLineTimeFieldHour.getText(), true)) {
-                    dialog.add(UserFrameErrorHandling.displayTimeError());
-                    return;
-                }
-                if (!validationUtils.isValidTime(deadLineTimeFieldMinute.getText(), false)) {
-                    dialog.add(UserFrameErrorHandling.displayTimeError());
-                    return;
-                }
-                newDeadline = ((java.util.Date) deadlineSpinner.getValue())
-                        .toInstant()
-                        .atZone(java.time.ZoneId.systemDefault())
-                        .toLocalDateTime();
-                newDeadline = newDeadline.withHour(Integer.parseInt(deadLineTimeFieldHour.getText()));
-                newDeadline = newDeadline.withMinute(Integer.parseInt(deadLineTimeFieldMinute.getText()));
-            } else {
-                newDeadline = ((java.util.Date) deadlineSpinner.getValue())
-                        .toInstant()
-                        .atZone(java.time.ZoneId.systemDefault())
-                        .toLocalDate()
-                        .atTime(0, 0); // Set default time to 00:00
+    
+    addDeadlineButton.addActionListener(e -> {
+        LocalDateTime newDeadline;
+        if (deadLineTimeCheckBox.isSelected()) {
+            if (!validationUtils.isValidTime(deadLineTimeFieldHour.getText(), true)) {
+                dialog.add(UserFrameErrorHandling.displayTimeError());
+                return;
             }
-            addedDeadlines.add(newDeadline);
-
+            if (!validationUtils.isValidTime(deadLineTimeFieldMinute.getText(), false)) {
+                dialog.add(UserFrameErrorHandling.displayTimeError());
+                return;
+            }
+            newDeadline = ((java.util.Date) deadlineSpinner.getValue())
+                .toInstant()
+                .atZone(java.time.ZoneId.systemDefault())
+                .toLocalDateTime();
+            newDeadline = newDeadline.withHour(Integer.parseInt(deadLineTimeFieldHour.getText()));
+            newDeadline = newDeadline.withMinute(Integer.parseInt(deadLineTimeFieldMinute.getText()));
+        } else {
+            newDeadline = ((java.util.Date) deadlineSpinner.getValue())
+                .toInstant()
+                .atZone(java.time.ZoneId.systemDefault())
+                .toLocalDate()
+                .atTime(0, 0); // Set default time to 00:00
+        }
+        addedDeadlines.add(newDeadline);
+    
             // Create a panel to hold the deadline label and the remove button
             JPanel deadlinePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             JLabel deadlineLabelItem = new JLabel(newDeadline.format(formatter));
             JButton xButton = createXButton();
-
+            
+            
             // Add action listener to the remove button
             final LocalDateTime deadlineToRemove = newDeadline;
             xButton.addActionListener(removeEvent -> {
@@ -1355,17 +1360,18 @@ public class UserFrame extends JFrame implements ActionListener {
                 deadlineListPanel.revalidate();
                 deadlineListPanel.repaint();
             });
-
+    
+    
             // Add components to the deadline panel
             deadlinePanel.add(deadlineLabelItem);
             deadlinePanel.add(xButton);
-
+    
             // Add the deadline panel to the main panel
             deadlineListPanel.add(deadlinePanel);
             deadlineListPanel.revalidate();
             deadlineListPanel.repaint();
         });
-
+    
         // Kategori valg
         JLabel tagLabel = new JLabel("Tilføj Kategori:");
         JButton createTagButton = new JButton("Lav Kategori");
@@ -1374,13 +1380,13 @@ public class UserFrame extends JFrame implements ActionListener {
         JScrollPane tagScrollPane = new JScrollPane(tagPanel);
         tagScrollPane.setPreferredSize(new Dimension(200, 100));
         getCurrentCheckboxes.getAllCurrentCatagories(tagPanel);
-
+    
         // Action Listener for Create Tag knap
         createTagButton.addActionListener(e -> {
             String newTag = JOptionPane.showInputDialog(dialog, "Indtast Ny Kategori:");
             if (newTag != null && !newTag.trim().isEmpty()) {
                 JCheckBox tagCheckBox = new JCheckBox(newTag);
-
+    
                 if (main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))) {
                     tagPanel.add(UserFrameErrorHandling.displayTagError());
                 } else {
@@ -1391,7 +1397,7 @@ public class UserFrame extends JFrame implements ActionListener {
                 }
             }
         });
-
+        
         // Kontakt person(er)
         JLabel contactsLabel = new JLabel("Kontakt person(er):");
         JButton createContactsButton = new JButton("Tilføj Kontakt person(er)");
@@ -1399,33 +1405,48 @@ public class UserFrame extends JFrame implements ActionListener {
         contactsPanel.setLayout(new BoxLayout(contactsPanel, BoxLayout.Y_AXIS));
         JScrollPane contactsScrollPane = new JScrollPane(contactsPanel);
         contactsScrollPane.setPreferredSize(new Dimension(200, 100));
-        createContactsButton.addActionListener(e -> {
-            openContactsDialog(dialog);
-            for (int i = 0; i < tempContacts.size(); i++) {
-                System.out.println(tempContacts.get(i).getContactName());
-            }
-
-            contactsPanel.add(new JLabel(tempContacts.get(0).getContactName() + " - "
-                    + tempContacts.get(0).getContactPhoneNumber() + " - " + tempContacts.get(0).getContactEmail()));
-            // resets the tempContacts arraylist
+        createContactsButton.addActionListener(e->{
+        openContactsDialog(dialog);
+        System.out.println(tempContact.getContactName());
+        System.out.println(tempContact.getContactPhoneNumber());
+        System.out.println(tempContact.getContactEmail());
+    
+        JButton removeContactButton = createXButton();
+        JPanel removeContactPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel contactInfo = new JLabel(tempContact.getContactName() + " - " + tempContact.getContactPhoneNumber() + " - " + tempContact.getContactEmail());
+        contactsPanel.add(removeContactButton);
+        contactsPanel.revalidate();
+        contactsPanel.repaint();
+        contacts.add(tempContact);
+    
+        final fundContactClass contactToRemove = tempContact;
+        removeContactButton.addActionListener(removeEvent -> {
+            System.out.println("Removing contact: " + contactToRemove.getContactName());
+            contacts.remove(contactToRemove);
+            contactsPanel.remove(removeContactPanel);
             contactsPanel.revalidate();
             contactsPanel.repaint();
-            contacts.add(tempContacts.get(0));
-            tempContacts.clear();
         });
-        JTextField contactsField = new JTextField();
-
+        removeContactPanel.add(contactInfo);
+        removeContactPanel.add(removeContactButton);
+    
+        contactsPanel.add(removeContactPanel);
+        contactsPanel.revalidate();
+        contactsPanel.repaint();
+        });
+    
+    
+    
         // Hjemmeside
         JLabel websiteLabel = new JLabel("Hjemmeside?:");
         JCheckBox websiteCheckBox = new JCheckBox();
-        JPanel websitePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        new GridLayout(1, 2);
+        JPanel websitePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));new GridLayout(1, 2);
         JLabel websiteLabel2 = new JLabel("Hjemmeside:");
         JTextField websiteField = new JTextField(30);
         websitePanel.add(websiteLabel2);
         websitePanel.add(websiteField);
         websitePanel.setVisible(false);
-
+    
         websiteCheckBox.addItemListener(e -> {
             websitePanel.setVisible(websiteCheckBox.isSelected());
             dialog.revalidate();
@@ -1441,22 +1462,22 @@ public class UserFrame extends JFrame implements ActionListener {
         JPanel collaborationContentPanel = new JPanel();
         collaborationContentPanel.setLayout(new BoxLayout(collaborationContentPanel, BoxLayout.Y_AXIS));
         JScrollPane collaborationScrollPane = new JScrollPane(collaborationContentPanel);
-        collaborationScrollPane.setPreferredSize(new Dimension(200, 100));
-
+        collaborationScrollPane.setPreferredSize(new Dimension(200,100));
+        
         JPanel collaborationLabelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         collaborationLabelPanel.add(collaborationLabel);
         collaborationLabelPanel.add(createCollaborationButton);
         collaborationPanel.add(collaborationLabelPanel);
         collaborationPanel.add(collaborationScrollPane);
         collaborationPanel.setVisible(false);
-
+    
         collaboratedCheckBox.addItemListener(e -> {
             getCurrentCheckboxes.getAllProjects(collaborationContentPanel);
             collaborationPanel.setVisible(collaboratedCheckBox.isSelected());
             dialog.revalidate();
             dialog.repaint();
         });
-
+    
         createCollaborationButton.addActionListener(e -> {
             String newCollaboration = JOptionPane.showInputDialog(dialog, "Skriv nye tidligere samarbejdeprojekter:");
             if (newCollaboration != null && !newCollaboration.trim().isEmpty()) {
@@ -1466,10 +1487,10 @@ public class UserFrame extends JFrame implements ActionListener {
                 collaborationContentPanel.repaint();
             }
         });
-
+    
         // Add the collaboration panel to the main panel
         mainPanel.add(collaborationPanel, BorderLayout.WEST);
-
+    
         // Løbende deadline
         JLabel runningLabel = new JLabel("Løbende ansøgningsfrist:");
         JCheckBox runningCheckBox = new JCheckBox();
@@ -1490,154 +1511,160 @@ public class UserFrame extends JFrame implements ActionListener {
             deadlineListPanel.revalidate();
             deadlineListPanel.repaint();
         });
-
+    
         // Submit knap
         JButton submitButton = new JButton("Tilføj Fond");
         submitButton.addActionListener(event -> {
             boolean running = runningCheckBox.isSelected();
             boolean hasError = false;
-
-            // FundTitle errorhandling
-            if (validationUtils.isWithinLowerCharLimit(nameField.getText()) == false) {
+    
+          
+    
+            //FundTitle errorhandling
+            if(validationUtils.isWithinLowerCharLimit(nameField.getText()) == false){
                 isInvalidLenght = true;
                 dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
                 hasError = true;
-            } else if (validationUtils.isValidInput(nameField.getText()) == false) {
+            }else if(validationUtils.isValidInput(nameField.getText()) == false){
                 isInvalidLenght = false;
                 dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
                 hasError = true;
-            } else {
+            }else{
                 tempTitle = nameField.getText().trim();
             }
-
-            // FundDescription errorhandling
-            if (validationUtils.isWithinUpperCharLimit(descriptionArea.getText()) == false) {
+    
+            //FundDescription errorhandling
+            if(validationUtils.isWithinUpperCharLimit(descriptionArea.getText()) == false){
                 isInvalidLenght = true;
                 dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
                 hasError = true;
-            } else if (validationUtils.isValidDescription(descriptionArea.getText()) == false) {
+            }else if(validationUtils.isValidDescription(descriptionArea.getText()) == false){
                 isInvalidLenght = false;
                 dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
                 hasError = true;
-            } else {
+            }else{
                 tempDescription = descriptionArea.getText().trim();
             }
-
-            // Money errorhandling
-            if (validationUtils.isNumericInput(amountFromField.getText()) == false) {
+    
+            //Money errorhandling
+            if(validationUtils.isNumericInput(amountFromField.getText()) == false){
                 dialog.add(UserFrameErrorHandling.displayAmountFromError());
                 hasError = true;
-            } else {
+            }else{
                 tempAmountFrom = Long.parseLong(amountFromField.getText().trim());
             }
-            if (validationUtils.isNumericInput(amountToField.getText()) == false) {
+            if(validationUtils.isNumericInput(amountToField.getText()) == false){
                 dialog.add(UserFrameErrorHandling.displayAmountToError());
                 hasError = true;
-            } else {
+            }else{
                 tempAmountTo = Long.parseLong(amountToField.getText().trim());
             }
-
-            // Category Errorhandling
+    
+            //Category Errorhandling
             ArrayList<String> selectedCatagories = new ArrayList<>();
-            for (Component comp : tagPanel.getComponents()) {
-                if (comp instanceof JCheckBox) {
+            for(Component comp : tagPanel.getComponents()){
+                if(comp instanceof JCheckBox){
                     JCheckBox checkBox = (JCheckBox) comp;
-                    if (checkBox.isSelected()) {
+                    if(checkBox.isSelected()){
                         selectedCatagories.add(checkBox.getText());
                     }
                 }
             }
-
-            // Website Errorhandling
-            if (validationUtils.isValidUrl(websiteField.getText()) == false) {
+    
+            //Website Errorhandling
+            if(validationUtils.isValidUrl(websiteField.getText()) == false){
                 dialog.add(UserFrameErrorHandling.displayWebsiteError());
                 hasError = true;
-            } else {
+            }else{
                 tempWebsite = websiteField.getText().trim();
             }
-
-            if (collaboratedCheckBox.isSelected() == true) {
+    
+            if(collaboratedCheckBox.isSelected() == true){
                 isCollaborated = true;
-                for (Component comp : collaborationContentPanel.getComponents()) {
-                    if (comp instanceof JCheckBox) {
+                for(Component comp : collaborationContentPanel.getComponents()){
+                    if(comp instanceof JCheckBox){
                         JCheckBox checkBox = (JCheckBox) comp;
-                        if (checkBox.isSelected()) {
+                        if(checkBox.isSelected()){
                             selectedCollabortion.add(checkBox.getText());
                         }
                     }
                 }
             }
-
-            if (running) {
+    
+    
+            if(running){
                 addedDeadlines.clear();
                 addedDeadlines.add(LocalDateTime.of(3000, 1, 1, 0, 0));
             }
-
+    
             if (!hasError) {
                 fundClass fund = new fundClass(tempTitle, tempDescription, tempAmountFrom, tempAmountTo,
-                        addedDeadlines, selectedCatagories, selectedCollabortion, contacts, tempWebsite,
-                        isCollaborated, running);
+                addedDeadlines, selectedCatagories, selectedCollabortion, contacts, tempWebsite, 
+                isCollaborated, running);
+                contacts.clear();
                 main.fundList.add(fund);
                 updateFundList();
                 CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
                 CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
-                ProposalsCsvWriter.writeProposalCsv("data/proposals.csv", main.proposalList);
-                ProjectCsvWriter.writeProjectCsv("data/projects.csv", main.projectList);
-                FundCsvWriter.writeCsv("data/funds.csv", main.fundList);
-                ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv", main.deniedProposalList);
-                ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv", main.archiveProjectList);
-                FundCsvWriter.writeCsv("data/fundsArchive.csv", main.archiveFundList);
+                ProposalsCsvWriter.writeProposalCsv("data/proposals.csv",main.proposalList);
+                ProjectCsvWriter.writeProjectCsv("data/projects.csv",main.projectList);
+                FundCsvWriter.writeCsv("data/funds.csv",main.fundList);
+                ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv",main.deniedProposalList);
+                ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv",main.archiveProjectList);
+                FundCsvWriter.writeCsv("data/fundsArchive.csv",main.archiveFundList);
                 dialog.dispose();
             }
         });
-
+    
         // GroupLayout struktur
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addComponent(nameLabel).addComponent(nameField)
-                .addComponent(descriptionLabel).addComponent(descriptionScrollPane)
-                .addComponent(amountFromLabel).addComponent(amountFromField)
-                .addComponent(amountToLabel).addComponent(amountToField)
-                .addComponent(deadlineLabel).addComponent(deadlineSpinner)
-                .addComponent(isDeadLineTimeLabel)
-                .addComponent(deadLineTimeCheckBox).addComponent(deadLineTimePanel)
-                .addComponent(addDeadlineButton)
-                .addComponent(addedDeadlinesLabel).addComponent(deadlineScrollPane)
-                .addComponent(tagLabel).addComponent(createTagButton).addComponent(tagScrollPane)
-                .addComponent(contactsLabel).addComponent(createContactsButton)
-                .addComponent(contactsScrollPane)
-                .addComponent(websiteLabel).addComponent(websiteCheckBox).addComponent(websitePanel)
-                .addComponent(collaboratedLabel).addComponent(collaboratedCheckBox)
-                .addComponent(collaborationPanel)
-                .addComponent(runningLabel).addComponent(runningCheckBox)
-                .addComponent(submitButton));
-
+            .addComponent(nameLabel).addComponent(nameField)
+            .addComponent(descriptionLabel).addComponent(descriptionScrollPane)
+            .addComponent(amountFromLabel).addComponent(amountFromField)
+            .addComponent(amountToLabel).addComponent(amountToField)
+            .addComponent(deadlineLabel).addComponent(deadlineSpinner)
+            .addComponent(isDeadLineTimeLabel)
+            .addComponent(deadLineTimeCheckBox).addComponent(deadLineTimePanel)
+            .addComponent(addDeadlineButton)
+            .addComponent(addedDeadlinesLabel).addComponent(deadlineScrollPane)
+            .addComponent(tagLabel).addComponent(createTagButton).addComponent(tagScrollPane)
+            .addComponent(contactsLabel).addComponent(createContactsButton)
+            .addComponent(contactsScrollPane)
+            .addComponent(websiteLabel).addComponent(websiteCheckBox).addComponent(websitePanel)
+            .addComponent(collaboratedLabel).addComponent(collaboratedCheckBox)
+            .addComponent(collaborationPanel)
+            .addComponent(runningLabel).addComponent(runningCheckBox)
+            .addComponent(submitButton)
+        );
+    
         layout.setVerticalGroup(layout.createSequentialGroup()
-                .addComponent(nameLabel).addComponent(nameField)
-                .addComponent(descriptionLabel).addComponent(descriptionScrollPane)
-                .addComponent(amountFromLabel).addComponent(amountFromField)
-                .addComponent(amountToLabel).addComponent(amountToField)
-                .addComponent(deadlineLabel).addComponent(deadlineSpinner)
-                .addComponent(isDeadLineTimeLabel)
-                .addComponent(deadLineTimeCheckBox).addComponent(deadLineTimePanel)
-                .addComponent(addDeadlineButton)
-                .addComponent(addedDeadlinesLabel).addComponent(deadlineScrollPane)
-                .addComponent(tagLabel).addComponent(createTagButton).addComponent(tagScrollPane)
-                .addComponent(contactsLabel).addComponent(createContactsButton)
-                .addComponent(contactsScrollPane)
-                .addComponent(websiteLabel).addComponent(websiteCheckBox).addComponent(websitePanel)
-                .addComponent(collaboratedLabel).addComponent(collaboratedCheckBox)
-                .addComponent(collaborationPanel)
-                .addComponent(runningLabel).addComponent(runningCheckBox)
-                .addComponent(submitButton));
-
+            .addComponent(nameLabel).addComponent(nameField)
+            .addComponent(descriptionLabel).addComponent(descriptionScrollPane)
+            .addComponent(amountFromLabel).addComponent(amountFromField)
+            .addComponent(amountToLabel).addComponent(amountToField)
+            .addComponent(deadlineLabel).addComponent(deadlineSpinner)
+            .addComponent(isDeadLineTimeLabel)
+            .addComponent(deadLineTimeCheckBox).addComponent(deadLineTimePanel)
+            .addComponent(addDeadlineButton)
+            .addComponent(addedDeadlinesLabel).addComponent(deadlineScrollPane)
+            .addComponent(tagLabel).addComponent(createTagButton).addComponent(tagScrollPane)
+            .addComponent(contactsLabel).addComponent(createContactsButton)
+            .addComponent(contactsScrollPane)
+            .addComponent(websiteLabel).addComponent(websiteCheckBox).addComponent(websitePanel)
+            .addComponent(collaboratedLabel).addComponent(collaboratedCheckBox)
+            .addComponent(collaborationPanel)
+            .addComponent(runningLabel).addComponent(runningCheckBox)
+            .addComponent(submitButton)
+        );
+    
         JScrollPane scrollPane = new JScrollPane(mainPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Optional: Smooth scrolling
-
+    
         // Add the scrollPane to the dialog
         dialog.add(scrollPane);
-
+    
         dialog.setLocationRelativeTo(frame);
         dialog.setVisible(true);
     }
@@ -1730,8 +1757,7 @@ public class UserFrame extends JFrame implements ActionListener {
                     return;
                 }
             }
-            fundContactClass contact = new fundContactClass(contactName, contactPhone, contatctEmail);
-            tempContacts.add(contact);
+            tempContact = new fundContactClass(contactName, contactPhone, contatctEmail);
             contactDialog.dispose();
 
         });
