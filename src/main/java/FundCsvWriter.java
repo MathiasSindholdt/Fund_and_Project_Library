@@ -14,7 +14,7 @@ public class FundCsvWriter {
             // Writing the header row
             String[] header = {
                 "Fund Name", "Website", "Description", "Application Deadline", 
-                "Budget Min", "Budget Max", "Collaboration History", "Categories"
+                "Budget Min", "Budget Max", "Collaboration History", "Categories", "Contact Information"
             };
             writer.write(String.join(",", header));
             writer.newLine();
@@ -22,7 +22,7 @@ public class FundCsvWriter {
             // Process each fund and create rows of data
             for (fundClass fund : fundList) {
                 // Extract data from the fundClass object
-                String[] fundData = new String[8];
+                String[] fundData = new String[9];
                 fundData[0] = escapeCsvField(fund.getTitle());  
                 fundData[1] = escapeCsvField(fund.getFundWebsite());  
                 fundData[2] = escapeCsvField(fund.getDescription());  
@@ -38,6 +38,32 @@ public class FundCsvWriter {
                 List<String> categories = fund.getCategories();
                 fundData[7] = categories != null ? "\"" + String.join(", ", categories) + "\"" : "N/A";
                 
+                List<fundContactClass> contacts = fund.getContacts();
+                if (contacts != null && !contacts.isEmpty()) {
+                    StringBuilder contactInfo = new StringBuilder();
+                    for (fundContactClass contact : contacts) {
+                        if (contactInfo.length() > 0) {
+                            contactInfo.append(" - "); // Separator for multiple contacts
+                        }
+
+                        // Handle null/empty fields in contact information
+                        String name = contact.getContactName() != null && !contact.getContactName().trim().isEmpty()
+                                ? escapeCsvField(contact.getContactName().trim())
+                                : "N/A";
+                        String phone = contact.getContactPhoneNumber() != null && !contact.getContactPhoneNumber().trim().isEmpty()
+                                ? escapeCsvField(contact.getContactPhoneNumber().trim())
+                                : "N/A";
+                        String email = contact.getContactEmail() != null && !contact.getContactEmail().trim().isEmpty()
+                                ? escapeCsvField(contact.getContactEmail().trim())
+                                : "N/A";
+
+                        // Format the contact as "name, phone, email"
+                        contactInfo.append(String.format("\"%s, %s, %s\"", name, phone, email));
+                    }
+                    fundData[8] = contactInfo.toString(); // Add to the CSV data row
+                } else {
+                    fundData[8] = "N/A"; // No contacts available
+                }
                 // Join fund data and write to file
                 String line = String.join(",", fundData);
                 writer.write(line);

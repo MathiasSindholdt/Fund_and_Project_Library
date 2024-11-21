@@ -24,7 +24,7 @@ public class archive {
      */
     public static void archiveProposal(proposalProject proposalProject) {
         main.proposalList.remove(proposalProject);
-        main.archiveProposalList.add(proposalProject);
+        main.deniedProposalList.add(proposalProject);
     }
 
 }

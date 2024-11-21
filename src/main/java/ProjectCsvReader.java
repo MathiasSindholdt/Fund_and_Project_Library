@@ -13,8 +13,8 @@ import java.util.List;
 public class ProjectCsvReader {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static List<project> readProjectCsv(String filepath) {
-        List<project> projects = new ArrayList<>();
+    public static ArrayList<project> readProjectCsv(String filepath) {
+        ArrayList<project> projects = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filepath), StandardCharsets.UTF_8))) {
@@ -52,7 +52,10 @@ public class ProjectCsvReader {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        System.out.println("+++ Projects read successfull +++");
+        for (project project : projects){
+            System.out.println(project.getTitle());
+        }
         return projects;
     }
 

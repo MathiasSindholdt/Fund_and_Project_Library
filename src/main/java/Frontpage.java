@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import javax.swing.*;
 
 public class Frontpage extends JFrame {
@@ -8,7 +10,6 @@ public class Frontpage extends JFrame {
 
     public Frontpage() {
         initializeFrame();  // Initialize JFrame
-       
 
         frame.getContentPane().setLayout(new GridLayout(4, 1));
 
@@ -47,11 +48,12 @@ public class Frontpage extends JFrame {
                 // Open GuestFrame when button is clicked
                 GuestFrame guestFrame = new GuestFrame();
                 guestFrame.show();
+                frame.dispose();
             }
         });
 
-        // User login action with password verification
-        submitButton.addActionListener(new ActionListener() {
+        // Define the login action logic in a method for reuse
+        ActionListener loginAction = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 char[] password = passwordField.getPassword();
                 String enteredPassword = new String(password);
@@ -60,16 +62,33 @@ public class Frontpage extends JFrame {
                     // Password is correct, open UserFrame
                     UserFrame userFrame = new UserFrame();
                     userFrame.setVisible(true);
-                } else {
+                    frame.dispose();
+                } else if(enteredPassword.length() == 0) {
+                    GuestFrame guestFrame = new GuestFrame();
+                    guestFrame.show();
+                    frame.dispose();
+                }else {
                     // Show an error message if the password is incorrect
                     JOptionPane.showMessageDialog(null, "Forkert kode, prøv igen", "Login Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        };
+
+        // User login action with password verification
+        submitButton.addActionListener(loginAction);
+
+        // Add KeyListener to passwordField to handle Enter key
+        passwordField.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    loginAction.actionPerformed(null);
                 }
             }
         });
 
         frame.getContentPane().add(buttonPanel);
     }
-
+  
     public void show() {
         frame.setVisible(true);
     }
@@ -80,9 +99,7 @@ public class Frontpage extends JFrame {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 200);
         frame.setLocationRelativeTo(null);
-
     }
-
 
     // public static void main(String[] args) {
     //     SwingUtilities.invokeLater(new Runnable() {

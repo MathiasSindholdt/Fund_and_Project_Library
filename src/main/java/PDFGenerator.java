@@ -281,8 +281,10 @@ public class PDFGenerator {
             textOffset += 18;
             textStreamObject.add("F1", 16, 30, pageTop - textOffset, "Kontaktperson(er)");
             textOffset += 18;
-            for (String s : fc.getContacts()) {
-                textStreamObject.add("F1", 11, 30, pageTop - textOffset, s);
+            for (fundContactClass fcc : fc.getContacts()) {
+                textStreamObject.add("F1", 11, 30, pageTop - textOffset, 
+                        fcc.getContactName() + " - " + fcc.getContactEmail() + 
+                        " - " + fcc.getContactPhoneNumber());
                 textOffset += 14;
             }
             textOffset += 18;
