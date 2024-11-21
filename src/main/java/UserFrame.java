@@ -575,6 +575,7 @@ public class UserFrame extends JFrame implements ActionListener {
         updateProjectList();
         updateFundList();
         frame.setVisible(true);
+        updateCategoryPanel();
     }
 
     private void updateCategoryPanel(){
@@ -669,7 +670,6 @@ public class UserFrame extends JFrame implements ActionListener {
                 if (main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))) {
                     tagPanel.add(UserFrameErrorHandling.displayTagError());
                 } else {
-                    JCheckBox tagCheckBox = new JCheckBox(newTag);
                     main.addNewCatagory(newTag); // Add to main category list
                     tagPanel.add(tagCheckBox);   // Add checkbox for new tag
                     updateCategoryPanel(); // Call your desired method
@@ -898,7 +898,7 @@ public class UserFrame extends JFrame implements ActionListener {
 
 
 //SORT HERE
-    private void updateproposalProjectList() {
+    private void updateProposalProjectList() {
         System.out.println("Updating proposal project list");
         proposalProjectListPanel.removeAll();
     
@@ -2396,7 +2396,7 @@ public class UserFrame extends JFrame implements ActionListener {
     private JPanel createRightSidePanel() {
         JPanel rightSidePanel = new JPanel(new CardLayout());
         rightSidePanel.setBackground(new Color(213, 213, 213, 255));
-        rightSidePanel.setPreferredSize(new Dimension(900, 100));
+        rightSidePanel.setPreferredSize(new Dimension(500, 100));
 
         proposalProjectFullPanel = new JPanel();
         proposalProjectFullPanel.setLayout(new BoxLayout(proposalProjectFullPanel, BoxLayout.Y_AXIS));
@@ -2613,4 +2613,13 @@ public class UserFrame extends JFrame implements ActionListener {
         fundDialog.setLocationRelativeTo(projectFullPanel); // Center dialog relative to main panel
         fundDialog.setVisible(true);
     }
+
+    private JButton deleteButton(String text){
+        JButton button = new JButton(text);
+        button.setPreferredSize(new Dimension(150,50));
+        button.addActionListener(this);
+        return button;
+
+    }
+
 }
