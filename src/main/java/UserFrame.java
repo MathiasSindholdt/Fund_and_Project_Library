@@ -215,6 +215,13 @@ public class UserFrame extends JFrame implements ActionListener {
         changeFundButton = createButton("Redigér en fond");
 
         EditProjectButton editProjectButton = new EditProjectButton(this, main.projectList);
+
+        EditFundButton editFundButton = new EditFundButton(this, main.fundList);
+
+        changeFundButton.addActionListener(e -> {
+            editFundButton.editFundDialog(); // Call the method on the instance
+        });
+        
         // EditFundButton editFundButton = new EditFundButton(this, main.fundList);
 
         panel5.add(createProbButton);
@@ -224,16 +231,16 @@ public class UserFrame extends JFrame implements ActionListener {
         panel5.add(createFundButton);
         panel5.add(changeFundButton);
 
-        /*
-         * changeFundButton.addActionListener(e -> {
-         * editFundButton.openEditFundDialog();
-         * });
-         */
 
         changeProjectButton.addActionListener(e -> {
             editProjectButton.openEditProjectDialog();
         });
+        
 
+       
+
+        
+        
         return panel5;
     }
 
@@ -1696,10 +1703,11 @@ public class UserFrame extends JFrame implements ActionListener {
         dialog.setVisible(true);
     }
 
-    private JButton createXButton() {
-        ImageIcon originalIcon = new ImageIcon("img/X_button.png");
-        Image scaledImage = originalIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-        ImageIcon resizedIcon = new ImageIcon(scaledImage);
+public JButton createXButton() {
+    ImageIcon originalIcon = new ImageIcon("img/X_button.png");
+    Image scaledImage = originalIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+    ImageIcon resizedIcon = new ImageIcon(scaledImage);
+
 
         JButton button = new JButton();
         button.setPreferredSize(new Dimension(20, 20));
