@@ -395,6 +395,40 @@ public class UserFrame extends JFrame implements ActionListener {
             detailsPanel.add(new JLabel("Details: " + item.toString()));
         }
 
+        deleteButton = deleteButton("Slet");
+        deleteButton.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(
+                null,
+                "Er du sikker på, at du vil slette dette element?",
+                "Bekræft Sletning",
+                JOptionPane.YES_NO_OPTION
+            );
+            if (confirm == JOptionPane.YES_OPTION) {
+                if (item instanceof project) {
+                    main.archiveProjectList.remove((project) item);
+                    displayArchiveList("ProjectDetails", main.archiveProjectList);
+                } else if (item instanceof proposalProject) {
+                    main.deniedProposalList.remove((proposalProject) item);
+                    displayArchiveList("proposalProjectsDetails", main.deniedProposalList);
+                } else if (item instanceof fundClass) {
+                    main.archiveFundList.remove((fundClass)  item);
+                    displayArchiveList("FundDetails", main.archiveFundList);
+                }
+                System.out.println("Deleting item: " + item);
+                System.out.println(main.deniedProposalList);
+
+                JOptionPane.showMessageDialog(
+                    null,
+                    "Elementet er blevet slettet.",
+                    "Sletning fuldført",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        });
+
+        detailsPanel.add(Box.createVerticalStrut(10)); // Add spacing before the button
+        detailsPanel.add(deleteButton);
+        
         // Show details in a dialog box
         JOptionPane.showMessageDialog(null, detailsPanel, "Item Details", JOptionPane.INFORMATION_MESSAGE);
     }
