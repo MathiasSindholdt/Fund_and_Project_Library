@@ -62,6 +62,7 @@ public class UserFrame extends JFrame implements ActionListener {
     private JButton projectButton;
     private JButton fundsButton;
     private JButton archiveButton;
+    private JButton deleteButton;
 
     // List to store project proposals
     private JPanel proposalProjectListPanel;
@@ -2528,5 +2529,11 @@ public class UserFrame extends JFrame implements ActionListener {
         fundDialog.pack();
         fundDialog.setLocationRelativeTo(projectFullPanel); // Center dialog relative to main panel
         fundDialog.setVisible(true);
+    }
+    private JButton deleteButton(String text) {
+        JButton button = new JButton(text);
+        button.setPreferredSize(new Dimension(150, 50));
+        button.addActionListener(this);
+        return button;
     }
 }
