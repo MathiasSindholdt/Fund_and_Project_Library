@@ -791,7 +791,17 @@ public class UserFrame extends JFrame implements ActionListener {
         proposalProjectListPanel.add(infoLabel);
     
         // Add labels for each proposal project
-        for (proposalProject proposal : main.proposalList) {
+        globalListSorting sorter = new globalListSorting();
+        // Call the sortProposalList method
+        System.out.println("Unsorted List: " + main.proposalList);
+
+        ArrayList<proposalProject> sortedProposalList = sorter.sortProposalList(
+            false, false, false, main.proposalList
+        );
+
+        System.out.println("Sorted List: " + sortedProposalList);
+
+        for (proposalProject proposal : sortedProposalList) {
             JLabel proposalLabel;
     
             // Check if the categories list is empty and set a default value
@@ -843,9 +853,22 @@ public class UserFrame extends JFrame implements ActionListener {
                         "Next Deadline",
                         "Categories"));
         projectListPanel.add(infoLabel);
+
+
+        // Add labels for each proposal project
+        globalListSorting sorter = new globalListSorting();
+        // Call the sortProposalList method
+        System.out.println("Unsorted List: " + main.projectList);
+
+        ArrayList<project> sortedProjectList = sorter.sortProjectList(
+            false, false, false, false, main.projectList
+        );
+
+        System.out.println("Sorted List: " + sortedProjectList);
+
     
         // Add labels for each project
-        for (project project : main.projectList) {
+        for (project project : sortedProjectList) {
             if (project.getFunds().isEmpty()) {
                 compareProjectCatsWithFundCats comparer = new compareProjectCatsWithFundCats();
                 project.setFundList(comparer.compareCategoriesWithFund(true, main.fundList, project));
@@ -899,7 +922,7 @@ public class UserFrame extends JFrame implements ActionListener {
                     showProjectDetails(currentProject); // Show details for the selected project
                 }
             });
-    
+
             // Add the project label to the panel
             projectListPanel.add(projectLabel);
         }

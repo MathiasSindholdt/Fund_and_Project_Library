@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,12 +21,15 @@ public class FundCsvReader {
 
     // Method to read the fund data from a CSV file
     public static ArrayList<fundClass> readFundCsv(String filepath) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         ArrayList<fundClass> funds = new ArrayList<>();
+        long lineCounter = 0;
         
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filepath), StandardCharsets.UTF_8))) {
 
             String line;
             while ((line = br.readLine()) != null) {
+                lineCounter++;
                 // Skip the header row
                 if (line.startsWith("Fund Name")) continue;
 
@@ -76,6 +80,15 @@ public class FundCsvReader {
                 // Parse contact information
                 List<fundContactClass> contacts = parseContactInformation(data.get(8));
 
+                LocalDateTime dateCreated;
+                try{
+                    dateCreated = LocalDateTime.parse(data.get(10).replace("\"", ""), formatter);
+                } catch (Exception e) {
+                    dateCreated = LocalDateTime.now().minusDays(lineCounter);
+                }
+
+                
+
                 // Create a new fundClass object and set its properties
                 fundClass fund = new fundClass();
                 fund.setTitle(fundName);
@@ -85,8 +98,9 @@ public class FundCsvReader {
                 fund.setBudget(budgetMin, budgetMax);
                 fund.setCollaborationHistory(collaborationHistory);
                 categories.forEach(fund::setCategories);
+                fund.setContacts(contacts);
+                fund.setDateCreated(dateCreated);
 
-                fund.setContacts(contacts);;
     
                 funds.add(fund);
             }
