@@ -76,7 +76,7 @@ public class UserFrame extends JFrame implements ActionListener {
     private JPanel tagButtonPanel;
 
     private JPanel rightSidePanel;
-
+    
     private boolean isInvalidLenght;
     String tempTitle;
     String tempDescription;
@@ -100,7 +100,8 @@ public class UserFrame extends JFrame implements ActionListener {
     public ArrayList<fundContactClass> tempContacts = new ArrayList<>();
     private ArrayList<fundContactClass> removeContactArray = new ArrayList<>();
     private ArrayList<fundContactClass> contacts = new ArrayList<>();
-
+    UIButtons UIButtons = new UIButtons();
+    
     // Constructor to set up the GUI
     public UserFrame() {
         initializeFrame(); // Initialize JFrame
@@ -135,8 +136,9 @@ public class UserFrame extends JFrame implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1920, 1080);
         frame.setLayout(new BorderLayout(10, 10));
-    }
 
+    }
+    
     private JPanel createTopPanel() {
         JPanel panel1 = new JPanel();
         panel1.setBackground(new Color(213, 213, 213, 255));
@@ -145,52 +147,46 @@ public class UserFrame extends JFrame implements ActionListener {
         JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
         leftPanel.setOpaque(false); // Make it transparent to show panel1 background
 
-        menuButton = createMenuButton();
+        menuButton = UIButtons.createMenuButton();
+        menuButton.addActionListener(this);
         menuButton.setPreferredSize(new Dimension(100, 50)); // Set preferred size
         leftPanel.add(menuButton);
-        changeCursor(menuButton);
+        UIButtons.changeCursor(menuButton);
 
-        projectPropButton = createProjectPropButton("Projekt forslag");
+        projectPropButton = UIButtons.createProjectPropButton("Projekt forslag");
+        projectPropButton.addActionListener(this);
         panel1.add(projectPropButton);
         leftPanel.add(projectPropButton);
-        changeCursor(projectPropButton);
+        UIButtons.changeCursor(projectPropButton);
 
-        projectButton = createProjectButton("Projekter");
+        projectButton = UIButtons.createProjectButton("Projekter");
+        projectButton.addActionListener(this);
         panel1.add(projectButton);
         leftPanel.add(projectButton);
-        changeCursor(projectButton);
+        UIButtons.changeCursor(projectButton);
 
-        fundsButton = createFundsButton("Fonde");
+        fundsButton = UIButtons.createFundsButton("Fonde");
+        fundsButton.addActionListener(this);
         panel1.add(fundsButton);
         leftPanel.add(fundsButton);
-        changeCursor(fundsButton);
+        UIButtons.changeCursor(fundsButton);
 
-        archiveButton = createArchiveButton("Arkiv");
+        archiveButton = UIButtons.createArchiveButton("Arkiv");
+        archiveButton.addActionListener(this);
         panel1.add(archiveButton);
         leftPanel.add(archiveButton);
-        changeCursor(archiveButton);
+        UIButtons.changeCursor(archiveButton);
         panel1.add(leftPanel, BorderLayout.WEST);
 
-        logoutButton = createLogutButton();
+        logoutButton = UIButtons.createLogutButton();
+        logoutButton.addActionListener(this);
         logoutButton.setPreferredSize(new Dimension(100, 50)); // Set preferred size
         panel1.add(logoutButton, BorderLayout.EAST);
-        changeCursor(logoutButton);
+        UIButtons.changeCursor(logoutButton);
 
         return panel1;
     }
 
-    public static void changeCursor(JButton button) {
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-            }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-            }
-        });
-    }
 
     private JPanel createSidePanel() {
         JPanel panel2 = new JPanel();
@@ -205,12 +201,18 @@ public class UserFrame extends JFrame implements ActionListener {
         panel5.setBackground(new Color(213, 213, 213, 255));
 
         // The button to open the project proposal dialog
-        createProbButton = createButton("Lav projekt forslag");
-        changeProbButton = createButton("Redigér projekt forslag");
-        createProjectButton = createButton("Lav et nyt projekt");
-        changeProjectButton = createButton("Redigér et projekt");
-        createFundButton = createButton("Lav en ny fond");
-        changeFundButton = createButton("Redigér en fond");
+        createProbButton = UIButtons.createButton("Lav projekt forslag");
+        createProbButton.addActionListener(this);
+        changeProbButton = UIButtons.createButton("Redigér projekt forslag");
+        changeProbButton.addActionListener(this);
+        createProjectButton = UIButtons.createButton("Lav et nyt projekt");
+        createProjectButton.addActionListener(this);
+        changeProjectButton = UIButtons.createButton("Redigér et projekt");
+        changeProbButton.addActionListener(this);
+        createFundButton = UIButtons.createButton("Lav en ny fond");
+        createFundButton.addActionListener(this);
+        changeFundButton = UIButtons.createButton("Redigér en fond");
+        changeFundButton.addActionListener(this);
 
         EditProjectButton editProjectButton = new EditProjectButton(this, main.projectList);
         // EditFundButton editFundButton = new EditFundButton(this, main.fundList);
@@ -399,80 +401,9 @@ public class UserFrame extends JFrame implements ActionListener {
         JOptionPane.showMessageDialog(null, detailsPanel, "Item Details", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    private JButton createButton(String text) {
-        JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(150, 50));
-        button.addActionListener(this);
-        return button;
-    }
+    
 
-    private JButton createProjectPropButton(String text) {
-        JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(130, 50));
-        button.addActionListener(this);
-        return button;
-    }
-
-    private JButton createProjectButton(String text) {
-        JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(130, 50));
-        button.addActionListener(this);
-        return button;
-    }
-
-    private JButton createFundsButton(String text) {
-        JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(130, 50));
-        button.addActionListener(this);
-        return button;
-    }
-
-    private JButton createArchiveButton(String text) {
-        JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(130, 50));
-        button.addActionListener(this);
-        return button;
-    }
-
-    private JButton createMenuButton() {
-        ImageIcon originalIcon = new ImageIcon("img/Menu.png");
-        Image scaledImage = originalIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        ImageIcon resizedIcon = new ImageIcon(scaledImage);
-
-        JButton button = new JButton();
-        button.setPreferredSize(new Dimension(50, 50));
-        button.setIcon(resizedIcon);
-        button.setBorderPainted(false);
-        button.setContentAreaFilled(false);
-        button.setFocusPainted(false);
-        button.setOpaque(false);
-        button.addActionListener(this);
-        return button;
-    }
-
-    private JButton createLogutButton() {
-        ImageIcon originalIcon = new ImageIcon("img/Logout.png");
-        Image scaledImage = originalIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        ImageIcon resizedIcon = new ImageIcon(scaledImage);
-
-        JButton button = new JButton();
-        button.setPreferredSize(new Dimension(50, 50));
-        button.setIcon(resizedIcon);
-        button.setBorderPainted(false);
-        button.setContentAreaFilled(false);
-        button.setFocusPainted(false);
-        button.setOpaque(false);
-        button.addActionListener(this);
-        return button;
-    }
-
-    // catagory button
-    private JButton CreateCatagoryButton(String text) {
-        JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(130, 50));
-        button.addActionListener(this);
-        return button;
-    }
+    
 
     // Show the frame
     public void show() {
@@ -483,7 +414,7 @@ public class UserFrame extends JFrame implements ActionListener {
         frame.setVisible(true);
     }
 
-    private void openproposalProjectDialog() {
+    public void openproposalProjectDialog() {
         JDialog dialog = new JDialog(frame, "Lav Projekt Forslag", true);
         dialog.setSize(700, 700);
         System.out.println("Opening proposal project dialog...");
@@ -814,7 +745,7 @@ public class UserFrame extends JFrame implements ActionListener {
                                 proposal.getDateCreated().toString().split("T")[0],
                                 categoriesDisplay));
             }
-            JButton proposalButton = createNewListButton(proposalLabel);
+            JButton proposalButton = UIButtons.createNewListButton(proposalLabel);
             proposalButton.addActionListener(e -> 
                 showProjectProbDetails(proposal));
             proposalProjectListPanel.add(proposalButton);
@@ -886,7 +817,7 @@ public class UserFrame extends JFrame implements ActionListener {
                                     categoriesDisplay));
                 }
             }
-            JButton projectButton = createNewListButton(projectLabel);
+            JButton projectButton = UIButtons.createNewListButton(projectLabel);
             projectButton.addActionListener(e -> 
                 showProjectDetails(project));
                 projectListPanel.add(projectButton);
@@ -1159,13 +1090,9 @@ public class UserFrame extends JFrame implements ActionListener {
                 matchingFundsPanel.add(new JLabel("Fonde med matchende kategorier:"));
                 projectFullPanel.add(new JLabel("\n"));
                 for (fundClass fund : matchingFunds) {
-                    // Add fund title
-                    matchingFundsPanel.add(new JLabel(fund.getTitle()));
-
-                    // Add custom loop button
-                    JButton loopButton = createLoopButton();
-                    loopButton.addActionListener(e -> showFundDetailsDialog(fund));
-                    matchingFundsPanel.add(loopButton);
+                    JButton recommendButton = UIButtons.createNewListButton(new JLabel(fund.getTitle()));
+                    recommendButton.addActionListener(e -> showFundDetailsDialog(fund));
+                    matchingFundsPanel.add(recommendButton);
                 }
             } else {
                 matchingFundsPanel.add(new JLabel("Ingen fonde matcher nogle kategorier"));
@@ -1236,7 +1163,7 @@ public class UserFrame extends JFrame implements ActionListener {
         });
     }
 
-    private void openFundDialog() {
+    public void openFundDialog() {
         JDialog dialog = new JDialog(frame, "Lav En Fond", true);
         dialog.setSize(700, 600);
         
@@ -1337,7 +1264,8 @@ public class UserFrame extends JFrame implements ActionListener {
             // Create a panel to hold the deadline label and the remove button
             JPanel deadlinePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             JLabel deadlineLabelItem = new JLabel(newDeadline.format(formatter));
-            JButton xButton = createXButton();
+            JButton xButton = UIButtons.createXButton();
+            xButton.addActionListener(this);
             
             
             // Add action listener to the remove button
@@ -1399,7 +1327,7 @@ public class UserFrame extends JFrame implements ActionListener {
         System.out.println(tempContact.getContactPhoneNumber());
         System.out.println(tempContact.getContactEmail());
     
-        JButton removeContactButton = createXButton();
+        JButton removeContactButton = UIButtons.createXButton();
         JPanel removeContactPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel contactInfo = new JLabel(tempContact.getContactName() + " - " + tempContact.getContactPhoneNumber() + " - " + tempContact.getContactEmail());
         contactsPanel.add(removeContactButton);
@@ -1657,37 +1585,7 @@ public class UserFrame extends JFrame implements ActionListener {
         dialog.setVisible(true);
     }
 
-    private JButton createXButton() {
-        ImageIcon originalIcon = new ImageIcon("img/X_button.png");
-        Image scaledImage = originalIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-        ImageIcon resizedIcon = new ImageIcon(scaledImage);
-
-        JButton button = new JButton();
-        button.setPreferredSize(new Dimension(20, 20));
-        button.setIcon(resizedIcon);
-        button.setBorderPainted(false);
-        button.setContentAreaFilled(false);
-        button.setFocusPainted(false);
-        button.setOpaque(false);
-        button.addActionListener(this);
-        return button;
-    }
-
-    private JButton createLoopButton() {
-        ImageIcon originalIcon = new ImageIcon("Glass_loop.png");
-        Image scaledImage = originalIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-        ImageIcon resizedIcon = new ImageIcon(scaledImage);
-
-        JButton button = new JButton();
-        button.setPreferredSize(new Dimension(20, 20));
-        button.setIcon(resizedIcon);
-        button.setBorderPainted(false);
-        button.setContentAreaFilled(false);
-        button.setFocusPainted(false);
-        button.setOpaque(false);
-        button.addActionListener(this);
-        return button;
-    }
+    
 
     private void openContactsDialog(JDialog dialog) {
         JDialog contactDialog = new JDialog(dialog, "Tilføj Kontakt Person", true);
@@ -1988,7 +1886,7 @@ public class UserFrame extends JFrame implements ActionListener {
                                     deadlineDisplay));
                 }
             }
-            JButton fundButton = createNewListButton(fundLabel);
+            JButton fundButton = UIButtons.createNewListButton(fundLabel);
             fundButton.addActionListener(e -> 
                 showFundDetails(fund));
             fundListPanel.add(fundButton);
@@ -1998,35 +1896,9 @@ public class UserFrame extends JFrame implements ActionListener {
     }
     
     
-    private JButton createNewListButton(JLabel infoLabel) {
-        JButton listButton = new JButton(infoLabel.getText());
-        listButton.setPreferredSize(new Dimension(300, 30)); // Set button size
-        listButton.setFont(new Font("SansSerif", Font.PLAIN, 14)); // Set font
-        listButton.setMaximumSize(new Dimension(850, 40)); // Set maximum size
-        listButton.setFocusPainted(false); // Remove focus border
-        listButton.setBackground(new Color(245, 245, 245)); // Set background color
-        listButton.setForeground(Color.DARK_GRAY); // Set text color
-        listButton.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)); // Set border
-        listButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Set cursor
-    
-        // Add hover effect
-        listButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                listButton.setBackground(new Color(220, 220, 220)); // Change background on hover
-            }
-    
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                listButton.setBackground(new Color(245, 245, 245)); // Revert background on exit
-            }
-        });
-
-        return listButton;
-    }
 
 
-    private void openProjectDialog() {
+    public void openProjectDialog() {
         JDialog dialog = new JDialog(frame, "Lav Projekt", true);
         dialog.setSize(700, 700);
 
@@ -2326,7 +2198,7 @@ public class UserFrame extends JFrame implements ActionListener {
         proposalProjectListPanel.repaint();
     }
 
-    private void updateRightSidePanel(String tab) {
+    public void updateRightSidePanel(String tab) {
         CardLayout layout = (CardLayout) rightSidePanel.getLayout();
         System.out.println(tab);
         switch (tab) {
