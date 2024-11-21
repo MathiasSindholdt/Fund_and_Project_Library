@@ -73,6 +73,7 @@ public class UserFrame extends JFrame implements ActionListener {
 
     private JPanel fundListPanel;
     private JPanel fundFullPanel;
+    private JPanel archivePanel;
     // tag button
     private JPanel tagButtonPanel;
 
@@ -408,12 +409,15 @@ public class UserFrame extends JFrame implements ActionListener {
                 if (item instanceof project) {
                     main.archiveProjectList.remove((project) item);
                     displayArchiveList("ProjectDetails", main.archiveProjectList);
+                    ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv", main.archiveProjectList);
                 } else if (item instanceof proposalProject) {
                     main.deniedProposalList.remove((proposalProject) item);
                     displayArchiveList("proposalProjectsDetails", main.deniedProposalList);
+                    ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv", main.deniedProposalList);
                 } else if (item instanceof fundClass) {
                     main.archiveFundList.remove((fundClass)  item);
                     displayArchiveList("FundDetails", main.archiveFundList);
+                    FundCsvWriter.writeCsv("data/fundsArchive.csv", main.archiveFundList);
                 }
                 System.out.println("Deleting item: " + item);
                 System.out.println(main.deniedProposalList);
@@ -2333,7 +2337,7 @@ public class UserFrame extends JFrame implements ActionListener {
         JPanel archivePanel = new JPanel();
         archivePanel.setLayout(new BoxLayout(archivePanel, BoxLayout.Y_AXIS));
         JScrollPane archiveScrollPane = new JScrollPane(archivePanel);
-        rightSidePanel.add(archiveScrollPane, "Arkiv");
+        rightSidePanel.add(archiveScrollPane, "ArchiveDetails");
 
         return rightSidePanel;
     }
