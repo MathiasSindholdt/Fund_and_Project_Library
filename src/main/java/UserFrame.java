@@ -186,14 +186,38 @@ public class UserFrame extends JFrame implements ActionListener {
     
         return panel2;
     }
-    
 
+    private void filterProjectProposalsByTag(String newTag) {
+        System.out.println("Filtering project proposals by tag: " + newTag);
+    
+        // Clear the panel before adding filtered proposals
+        proposalProjectListPanel.removeAll();
+    
+        // Loop through proposals and add only those matching the tag
+        for (proposalProject proposal : main.proposalList) {
+            if (proposal.getCategories().contains(newTag)) { // Assuming getTags() returns a list of tags
+                JLabel proposalLabel = new JLabel(proposal.getTitle() + " + " + proposal.getProjectOwner());
+    
+                proposalLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+                    public void mouseClicked(java.awt.event.MouseEvent evt) {
+                        showProjectProbDetails(proposal); // Show the selected project's details
+                    }
+                });
+    
+                proposalProjectListPanel.add(proposalLabel);
+            }
+        }
+    
+        // Refresh the panel to show the filtered list
+        proposalProjectListPanel.revalidate();
+        proposalProjectListPanel.repaint();
+    }
 
     private void createTagButton(String newTag) {
         tagButton = new JButton(newTag);
         tagButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "You clicked tag: " + newTag);
+                filterProjectProposalsByTag(newTag);
             }
         });
         panel2.add(tagButton);  // Now panel2 is available here
@@ -796,7 +820,7 @@ public class UserFrame extends JFrame implements ActionListener {
     proposalProjectListPanel.removeAll();
 
     for (proposalProject proposal : main.proposalList) {
-        JLabel proposalLabel = new JLabel(proposal.getTitle() + " - " + proposal.getProjectOwner());
+        JLabel proposalLabel = new JLabel(proposal.getTitle() + " + " + proposal.getProjectOwner());
 
         proposalLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
