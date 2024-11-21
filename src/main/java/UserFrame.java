@@ -217,6 +217,13 @@ public class UserFrame extends JFrame implements ActionListener {
 
 
         EditProjectButton editProjectButton = new EditProjectButton(this, main.projectList);
+
+        EditFundButton editFundButton = new EditFundButton(this, main.fundList);
+
+        changeFundButton.addActionListener(e -> {
+            editFundButton.editFundDialog(); // Call the method on the instance
+        });
+        
         // EditFundButton editFundButton = new EditFundButton(this, main.fundList);
 
         panel5.add(createProbButton);
@@ -227,16 +234,15 @@ public class UserFrame extends JFrame implements ActionListener {
         panel5.add(changeFundButton);
 
 
-        /*  changeFundButton.addActionListener(e -> {
-            editFundButton.openEditFundDialog();
-        });
-        */
-        
-
         changeProjectButton.addActionListener(e -> {
             editProjectButton.openEditProjectDialog();
         });
+        
 
+       
+
+        
+        
         return panel5;
     }
 
@@ -1576,7 +1582,7 @@ addDeadlineButton.addActionListener(e -> {
     dialog.setVisible(true);
 }
 
-private JButton createXButton() {
+public JButton createXButton() {
     ImageIcon originalIcon = new ImageIcon("img/X_button.png");
     Image scaledImage = originalIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
     ImageIcon resizedIcon = new ImageIcon(scaledImage);
