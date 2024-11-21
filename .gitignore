@@ -25,3 +25,6 @@ replay_pid*
 
 # vscode made files
 tempCodeRunnerFile.java
+
+# maven generated files
+target/*
