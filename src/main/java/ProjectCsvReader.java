@@ -38,12 +38,16 @@ public class ProjectCsvReader {
                 LocalDateTime timeSpanTo = LocalDateTime.parse(values[8].replace("\"", ""), formatter);
                 String activities = values[9].replace("\"", "");
                 LocalDateTime dateCreated;
+                String assignedFund = null;
                 try{
                     dateCreated = LocalDateTime.parse(values[10].replace("\"", ""), formatter);
                 } catch (Exception e) {
                     dateCreated = LocalDateTime.now().minusDays(lineCounter);
                 }
-
+                if (!(values.length < 12)){
+                    assignedFund = values[11];
+                }
+                
                 project proj = new project();
                 proj.setTitle(title);
                 categories.forEach(proj::setCategories);
@@ -55,6 +59,7 @@ public class ProjectCsvReader {
                 proj.setTimeSpan(timeSpanFrom, timeSpanTo);
                 proj.setProjectActivities(activities);
                 proj.setDateCreated(dateCreated);
+                proj.assignFundFromName(assignedFund);
 
                 projects.add(proj);
             }

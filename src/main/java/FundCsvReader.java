@@ -48,14 +48,16 @@ public class FundCsvReader {
                 String description = data.get(2).trim();
                 
                 // Parsing the application deadline (format: "yyyy-MM-dd HH:mm")
-                LocalDateTime deadline = null;
+                ArrayList<LocalDateTime> deadline = new ArrayList<>();
+                for (String s : data.get(3).split(";")){
                 try {
-                    if (!data.get(3).equals("N/A") && !data.get(3).isEmpty()) {
-                        deadline = LocalDateTime.parse(data.get(3).replace(" ", "T"));
+                    if (!s.equals("N/A") && !s.isEmpty()) {
+                        deadline.add(LocalDateTime.parse(s.replace(" ", "T")));
                     }
                 } catch (DateTimeParseException e) {
                     System.out.println("Skipping invalid date line: " + line);
                 }
+            }
 
                 // Handle Budget Min and Max (if not empty, parse them as longs)
                 long budgetMin = 0;
@@ -94,7 +96,9 @@ public class FundCsvReader {
                 fund.setTitle(fundName);
                 fund.setfundWebsite(website);
                 fund.setDescription(description);
-                fund.setDeadlines(deadline);
+                for (LocalDateTime lDT : deadline){
+                    fund.setDeadlines(lDT);
+                }
                 fund.setBudget(budgetMin, budgetMax);
                 fund.setCollaborationHistory(collaborationHistory);
                 categories.forEach(fund::setCategories);

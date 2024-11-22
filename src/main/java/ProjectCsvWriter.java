@@ -14,13 +14,13 @@ public class ProjectCsvWriter {
 
             String[] header = {
                 "Project Title", "Categories", "Description", "Purpose", "Owner", 
-                "Target Audience", "Budget", "TimeSpan From", "TimeSpan To", "Activities","Date Created"};
+                "Target Audience", "Budget", "TimeSpan From", "TimeSpan To", "Activities","Date Created","Assigned Fund"};
 
             writer.write(String.join(",", header));
             writer.newLine();
             
             for (project myProject : projects) {
-                String[] rowData = new String[11];
+                String[] rowData = new String[12];
                 // Specific project
                 rowData[0] = myProject.getTitle();
                 List<String> categories = myProject.getCategories();
@@ -34,6 +34,12 @@ public class ProjectCsvWriter {
                 rowData[8] = formatDateTime(myProject.getProjectTimeSpanTo());
                 rowData[9] = myProject.getProjectActivities();
                 rowData[10] = formatDateTime(myProject.getDateCreated());
+                if (myProject.getFund() != null){
+                    rowData[11] = myProject.getFund().getTitle();
+                } else {
+                    rowData[11] = "Ingen Beviling";
+                }
+                
                 
                 writer.write(String.join(",", rowData));
                 writer.newLine();

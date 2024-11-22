@@ -26,7 +26,7 @@ public class FundCsvWriter {
                 fundData[0] = escapeCsvField(fund.getTitle());  
                 fundData[1] = escapeCsvField(fund.getFundWebsite());  
                 fundData[2] = escapeCsvField(fund.getDescription());  
-                fundData[3] = formatApplicationDeadline(fund.getDeadlines());  
+                fundData[3] = formatApplicationDeadline(fund.getDeadlines());
                 fundData[4] = String.valueOf(fund.getBudgetMin()); 
                 fundData[5] = String.valueOf(fund.getBudgetMax());  
                 
@@ -93,12 +93,15 @@ public class FundCsvWriter {
         } else if (deadline instanceof List<?>) {
             List<?> dateList = (List<?>) deadline;
             if (!dateList.isEmpty()) {
-                Object firstDate = dateList.get(0);
-                if (firstDate instanceof LocalDate) {
-                    return ((LocalDate) firstDate).format(dateFormatter);
-                } else if (firstDate instanceof LocalDateTime) {
-                    return ((LocalDateTime) firstDate).format(dateTimeFormatter);
+                String deadlines = new String();
+                for (Object o : dateList){
+                    if (o instanceof LocalDate) {
+                        deadlines += ((LocalDate) o).format(dateFormatter);
+                    } else if (o instanceof LocalDateTime) {
+                        deadlines += ((LocalDateTime) o).format(dateTimeFormatter) + ";";
+                    }
                 }
+                return deadlines;
             }
         }
         return "N/A";
