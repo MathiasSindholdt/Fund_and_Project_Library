@@ -217,11 +217,17 @@ public class UserFrame extends JFrame implements ActionListener {
 
         EditFundButton editFundButton = new EditFundButton(this, main.fundList);
 
+        EditProjectProposal editProjectProposal = new EditProjectProposal(this, main.proposalList);
+
+
         changeFundButton.addActionListener(e -> {
             editFundButton.editFundDialog(); // Call the method on the instance
         });
 
-        // EditFundButton editFundButton = new EditFundButton(this, main.fundList);
+
+        changeProbButton.addActionListener(e -> {
+            editProjectProposal.openEditProjectPropDialog(); // Call the method on the instance
+        });
 
 
         panel5.add(createProbButton);
@@ -2228,7 +2234,7 @@ public class UserFrame extends JFrame implements ActionListener {
         JPanel archivePanel = new JPanel();
         archivePanel.setLayout(new BoxLayout(archivePanel, BoxLayout.Y_AXIS));
         JScrollPane archiveScrollPane = new JScrollPane(archivePanel);
-        rightSidePanel.add(archiveScrollPane, "Arkiv");
+        rightSidePanel.add(archiveScrollPane, "ArchiveDetails");
 
         return rightSidePanel;
     }
