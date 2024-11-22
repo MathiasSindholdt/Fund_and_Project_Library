@@ -920,7 +920,7 @@ public class UserFrame extends JFrame implements ActionListener {
                                     project.getTitle(),
                                     project.getProjectOwner(),
                                     project.getDateCreated().toString().split("T")[0],
-                                    project.getFunds().get(0).getDeadlines().get(0).toString(),
+                                    project.getFunds().get(0).getDeadlines().toString(),
                                     categoriesDisplay));
                 } else {
                     projectLabel = new JLabel(
@@ -928,7 +928,7 @@ public class UserFrame extends JFrame implements ActionListener {
                                     project.getTitle().substring(0, 17) + "...",
                                     project.getProjectOwner(),
                                     project.getDateCreated().toString().split("T")[0],
-                                    project.getFunds().get(0).getDeadlines().get(0).toString(),
+                                    project.getFunds().get(0).getDeadlines().toString(),
                                     categoriesDisplay));
                 }
             }
@@ -962,7 +962,7 @@ public class UserFrame extends JFrame implements ActionListener {
 
         ArrayList<proposalProject> sortedProposalList = sorter.sortProposalList(
 
-            false, false, false, true, false, main.proposalList);
+                false, false, false, true, false, main.proposalList);
 
         System.out.println("Sorted List: " + sortedProposalList);
 
@@ -1020,7 +1020,7 @@ public class UserFrame extends JFrame implements ActionListener {
 
         ArrayList<project> sortedProjectList = sorter.sortProjectList(
 
-            false, false, false, false, false, false, main.projectList);
+                false, false, false, false, false, false, main.projectList);
 
         System.out.println("Sorted List: " + sortedProjectList);
 
@@ -2042,7 +2042,7 @@ public class UserFrame extends JFrame implements ActionListener {
                         "Ansøgningsfrist"));
         fundListPanel.add(infoLabel);
 
-        for (fundClass fund : main.fundList) {
+        for (fundClass fund : smallerList) {
             JLabel fundLabel;
 
             // Determine the deadline display
@@ -2050,7 +2050,17 @@ public class UserFrame extends JFrame implements ActionListener {
             if (fund.getDeadlines().contains(LocalDateTime.of(3000, 1, 1, 0, 0))) {
                 deadlineDisplay = "[Løbende Ansøgningsfrist]";
             } else {
-                deadlineDisplay = fund.getDeadlines().toString();
+                if (fundQSort.allDeadlinesPassed(fund)) {
+                    deadlineDisplay = "Alle frister Overskredet";
+                } else {
+                    for (LocalDateTime dL : fund.getDeadlines()) {
+                        if (dL.isBefore(LocalDateTime.now())) {
+                            fund.getDeadlines().remove(dL);
+                        }
+                    }
+                    deadlineDisplay = fund.getDeadlines().get(0).toString().replace("T", " ").replace("[", "")
+                            .replace("]", "");
+                }
             }
 
             if (fund.getTitle().length() < 20) {
@@ -2090,8 +2100,10 @@ public class UserFrame extends JFrame implements ActionListener {
                                     deadlineDisplay));
                 }
             }
+
             JButton fundButton = UIButtons.createNewListButton(fundLabel, false);
             fundButton.addActionListener(e -> showFundDetails(fund));
+
             fundListPanel.add(fundButton);
         }
         fundListPanel.revalidate();
