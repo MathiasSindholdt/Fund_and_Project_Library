@@ -1,3 +1,8 @@
-?Project Title,Categories,Description,Purpose,Owner,Target Audience,Budget,TimeSpan From,TimeSpan To,Activities
-Test 2,"STEM, Teknologi, digitalisering og markedsf?ring",Vi tester programmet,At teste,Lucas,Gruppe2,1000,2024-11-20 00:00,2028-11-20 00:00,test
-Test 3,"",test af en bug,test 3,Lucas,Gruppe,1000,2024-11-20 00:00,2024-11-20 00:00,Test
+Project Title,Categories,Description,Purpose,Owner,Target Audience,Budget,TimeSpan From,TimeSpan To,Activities,Date Created,Assigned Fund
+Test projekt 2,"Teknologi",Vi tester loaklt storage,test af projekt loading,Lucas,Gruppe,123,2024-11-19 00:00,2027-11-19 00:00,test,2024-11-20 11:14,Tryg Fonden (Regional)
+Test 2,"STEM, Teknologi, digitalisering og markedsføring",Vi tester programmet,At teste,Lucas,Gruppe2,1000,2024-11-20 00:00,2028-11-20 00:00,test,2024-11-19 11:14,Trepartsmidler Pulje til rekruttering og fastholdelse 18-25 �rige
+Test 3,"",test af en bug,test 3,Lucas,Gruppe,1000,2024-11-20 00:00,2024-11-20 00:00,Test,2024-11-18 11:14,Ingen Beviling
+Test af full creation date,"Trivsel",test,test,Lucas,Gruppe 2,12345,2024-11-21 00:00,2027-11-21 00:00,test,2024-11-21 11:15,Ingen Beviling
+a,"Trivsel",test,test,lucas,gruppe,1346,2024-11-21 00:00,2027-11-21 00:00,test,2024-11-21 12:40,Ingen Beviling
+Test 69,"Trivsel, Bæredygtighed, Demokrati",Test,Test,Lucas,Gruppe2,57987,2024-11-22 00:00,+20245-11-22 00:00,test,2024-11-22 10:21,Ingen Beviling
+Test 5,"Attraktive EUD",Test 5,Test 5,Lucas,Gruppe 2,1234,2024-11-22 00:00,2027-11-22 00:00,null,2024-11-22 10:42,2 Deadlines test 3

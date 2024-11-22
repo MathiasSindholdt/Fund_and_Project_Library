@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,12 +21,15 @@ public class FundCsvReader {
 
     // Method to read the fund data from a CSV file
     public static ArrayList<fundClass> readFundCsv(String filepath) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         ArrayList<fundClass> funds = new ArrayList<>();
+        long lineCounter = 0;
         
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filepath), StandardCharsets.UTF_8))) {
 
             String line;
             while ((line = br.readLine()) != null) {
+                lineCounter++;
                 // Skip the header row
                 if (line.startsWith("Fund Name")) continue;
 
@@ -44,14 +48,16 @@ public class FundCsvReader {
                 String description = data.get(2).trim();
                 
                 // Parsing the application deadline (format: "yyyy-MM-dd HH:mm")
-                LocalDateTime deadline = null;
+                ArrayList<LocalDateTime> deadline = new ArrayList<>();
+                for (String s : data.get(3).split(";")){
                 try {
-                    if (!data.get(3).equals("N/A") && !data.get(3).isEmpty()) {
-                        deadline = LocalDateTime.parse(data.get(3).replace(" ", "T"));
+                    if (!s.equals("N/A") && !s.isEmpty()) {
+                        deadline.add(LocalDateTime.parse(s.replace(" ", "T")));
                     }
                 } catch (DateTimeParseException e) {
                     System.out.println("Skipping invalid date line: " + line);
                 }
+            }
 
                 // Handle Budget Min and Max (if not empty, parse them as longs)
                 long budgetMin = 0;
@@ -76,17 +82,29 @@ public class FundCsvReader {
                 // Parse contact information
                 List<fundContactClass> contacts = parseContactInformation(data.get(8));
 
+                LocalDateTime dateCreated;
+                try{
+                    dateCreated = LocalDateTime.parse(data.get(10).replace("\"", ""), formatter);
+                } catch (Exception e) {
+                    dateCreated = LocalDateTime.now().minusDays(lineCounter);
+                }
+
+                
+
                 // Create a new fundClass object and set its properties
                 fundClass fund = new fundClass();
                 fund.setTitle(fundName);
                 fund.setfundWebsite(website);
                 fund.setDescription(description);
-                fund.setDeadlines(deadline);
+                for (LocalDateTime lDT : deadline){
+                    fund.setDeadlines(lDT);
+                }
                 fund.setBudget(budgetMin, budgetMax);
                 fund.setCollaborationHistory(collaborationHistory);
                 categories.forEach(fund::setCategories);
+                fund.setContacts(contacts);
+                fund.setDateCreated(dateCreated);
 
-                fund.setContacts(contacts);;
     
                 funds.add(fund);
             }

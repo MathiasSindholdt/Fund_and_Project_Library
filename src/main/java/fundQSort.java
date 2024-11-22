@@ -13,7 +13,7 @@ public class fundQSort {
     }
 
     // Helper method to check if all deadlines have passed
-    private static boolean allDeadlinesPassed(fundClass fund) {
+    public static boolean allDeadlinesPassed(fundClass fund) {
         LocalDateTime now = LocalDateTime.now();
         for (LocalDateTime deadline : fund.getDeadlines()) {
             if (deadline.isAfter(now)) {
