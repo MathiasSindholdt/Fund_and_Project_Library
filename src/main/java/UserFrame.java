@@ -222,11 +222,18 @@ public class UserFrame extends JFrame implements ActionListener {
 
         changeFundButton.addActionListener(e -> {
             editFundButton.editFundDialog(); // Call the method on the instance
+            updateFundList();
         });
 
 
         changeProbButton.addActionListener(e -> {
             editProjectProposal.openEditProjectPropDialog(); // Call the method on the instance
+            updateProposalProjectList();
+        });
+
+        changeProjectButton.addActionListener(e -> {
+            editProjectButton.openEditProjectDialog();
+            updateProjectList();
         });
 
 
@@ -236,10 +243,6 @@ public class UserFrame extends JFrame implements ActionListener {
         panel5.add(changeProjectButton);
         panel5.add(createFundButton);
         panel5.add(changeFundButton);
-
-        changeProjectButton.addActionListener(e -> {
-            editProjectButton.openEditProjectDialog();
-        });
 
         return panel5;
     }
