@@ -251,6 +251,10 @@ public class UIButtons extends JPanel {
                 arrow = clickCount[4] % 3 == 1 ? "↑" : clickCount[4] % 3 == 2 ? "↓" : "";
                 button.setText("Budget " + arrow);
                 break;
+            // case "fundDeadline":
+            //     arrow = clickCount[5] % 3 == 1 ? "↑" : "";
+            //     button.setText("Deadline " + arrow);
+            //     break;
             default:
                 System.out.println("Error in sortingButtons");
                 break;
