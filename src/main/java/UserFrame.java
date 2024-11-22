@@ -961,7 +961,8 @@ public class UserFrame extends JFrame implements ActionListener {
         System.out.println("Unsorted List: " + main.proposalList);
 
         ArrayList<proposalProject> sortedProposalList = sorter.sortProposalList(
-                false, false, false, main.proposalList);
+
+            false, false, false, true, false, main.proposalList);
 
         System.out.println("Sorted List: " + sortedProposalList);
 
@@ -1014,11 +1015,12 @@ public class UserFrame extends JFrame implements ActionListener {
 
         // Add labels for each proposal project
         globalListSorting sorter = new globalListSorting();
-        // Call the sortProposalList method
+        // Call the sortProjectList method
         System.out.println("Unsorted List: " + main.projectList);
 
         ArrayList<project> sortedProjectList = sorter.sortProjectList(
-                false, false, false, false, main.projectList);
+
+            false, false, false, false, false, false, main.projectList);
 
         System.out.println("Sorted List: " + sortedProjectList);
 
