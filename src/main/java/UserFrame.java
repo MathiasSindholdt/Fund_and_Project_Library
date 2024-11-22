@@ -39,6 +39,8 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SwingConstants;
 
+import org.checkerframework.checker.units.qual.s;
+
 public class UserFrame extends JFrame implements ActionListener {
 
     private JFrame frame;
@@ -62,6 +64,7 @@ public class UserFrame extends JFrame implements ActionListener {
     private JButton projectButton;
     private JButton fundsButton;
     private JButton archiveButton;
+    
 
     // List to store project proposals
     private JPanel proposalProjectListPanel;
@@ -101,6 +104,9 @@ public class UserFrame extends JFrame implements ActionListener {
     private ArrayList<fundContactClass> removeContactArray = new ArrayList<>();
     private ArrayList<fundContactClass> contacts = new ArrayList<>();
     UIButtons UIButtons = new UIButtons();
+
+    int[] clickCounts = {0,0,0,0}; // Initialize the clickCounts array
+
 
     // Constructor to set up the GUI
     public UserFrame() {
@@ -784,15 +790,84 @@ public class UserFrame extends JFrame implements ActionListener {
     private void updateProposalProjectList() {
         System.out.println("Updating proposal project list");
         proposalProjectListPanel.removeAll();
-    
-        JLabel infoLabel = new JLabel(
-                String.format("%-30s %-30s %-30s %-30s",
-                        "Title",
-                        "Project Owner",
-                        "Date Created",
-                        "Categories"));
-        proposalProjectListPanel.add(infoLabel);
-    
+        int[] clickCounts = {0, 0, 0, 0}; // Array to keep track of click counts for each button
+        JButton proposalTitleSortButton = UIButtons.sortingButtons("title", clickCounts);
+        JButton proposalOwnerSortButton = UIButtons.sortingButtons("owner", clickCounts);
+        JButton proposalDateButton = UIButtons.sortingButtons("date", clickCounts);
+        JButton catagoriesButton = UIButtons.createListCatagoryButton("Kategorier");
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+        buttonPanel.setAlignmentX(LEFT_ALIGNMENT);
+        buttonPanel.add(Box.createRigidArea(new Dimension(30, 0))); // Add space between buttons
+        buttonPanel.add(proposalTitleSortButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(60, 0))); // Add space between buttons
+        buttonPanel.add(proposalOwnerSortButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(60, 0))); // Add space between buttons
+        buttonPanel.add(proposalDateButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(60, 0))); // Add space between buttons
+        buttonPanel.add(catagoriesButton);
+        proposalProjectListPanel.add(buttonPanel);
+
+       // proposalProjectListPanel.add(buttonPanel);
+        proposalTitleSortButton.addActionListener(e -> {
+            System.out.println("Title button clicked");
+            clickCounts[0]++;
+            clickCounts[1] = 0;
+            clickCounts[2] = 0;
+            clickCounts[3] = 0;
+
+            JButton newButton = UIButtons.sortingButtons("title", clickCounts);
+            proposalTitleSortButton.setText(newButton.getText());
+            proposalTitleSortButton.setIcon(newButton.getIcon());
+
+            proposalOwnerSortButton.setText("Ejer");
+            proposalOwnerSortButton.setIcon(null);
+            proposalDateButton.setText("Oprettelsesdato");
+            proposalDateButton.setIcon(null);
+
+            proposalProjectListPanel.revalidate();
+            proposalProjectListPanel.repaint();
+        });
+
+        proposalOwnerSortButton.addActionListener(e -> {
+            System.out.println("Owner button clicked");
+            clickCounts[0] = 0;
+            clickCounts[1]++;
+            clickCounts[2] = 0;
+            clickCounts[3] = 0;
+
+            JButton newButton = UIButtons.sortingButtons("owner", clickCounts);
+            proposalOwnerSortButton.setText(newButton.getText());
+            proposalOwnerSortButton.setIcon(newButton.getIcon());
+
+            proposalTitleSortButton.setText("Titel");
+            proposalTitleSortButton.setIcon(null);
+            proposalDateButton.setText("Oprettelsesdato");
+            proposalDateButton.setIcon(null);
+
+            proposalProjectListPanel.revalidate();
+            proposalProjectListPanel.repaint();
+        });
+
+        proposalDateButton.addActionListener(e -> {
+            System.out.println("deadline button clicked");
+            clickCounts[0] = 0;
+            clickCounts[1] = 0;
+            clickCounts[3]++;
+
+            JButton newButton = UIButtons.sortingButtons("date", clickCounts);
+            proposalDateButton.setText(newButton.getText());
+            proposalDateButton.setIcon(newButton.getIcon());
+
+            proposalTitleSortButton.setText("Titel");
+            proposalTitleSortButton.setIcon(null);
+            proposalOwnerSortButton.setText("Ejer");
+            proposalOwnerSortButton.setIcon(null);
+
+            proposalProjectListPanel.revalidate();
+            proposalProjectListPanel.repaint();
+        });
+
         // Add labels for each proposal project
         for (proposalProject proposal : main.proposalList) {
             JLabel proposalLabel;
@@ -810,35 +885,107 @@ public class UserFrame extends JFrame implements ActionListener {
             } else {
                 proposalLabel = new JLabel(
                         String.format("%-30s %-30s %-30s %-30s",
-                                proposal.getTitle().substring(0, 17) + "...",
-                                proposal.getProjectOwner(),
-                                proposal.getDateCreated().toString().split("T")[0],
-                                categoriesDisplay));
+                        proposal.getTitle().substring(0, 17) + "...",
+                        proposal.getProjectOwner(),
+                        proposal.getDateCreated().toString().split("T")[0],
+                        categoriesDisplay));
+                    }
+                    JButton proposalButton = UIButtons.createNewListButton(proposalLabel, false);
+                    proposalButton.addActionListener(e -> 
+                    showProjectProbDetails(proposal));
+                    proposalProjectListPanel.add(proposalButton);
+                    proposalProjectListPanel.add(Box.createHorizontalGlue()); 
+                    proposalProjectListPanel.add(Box.createRigidArea(new Dimension(20, 0))); // Add space to the left of the buttons
+                }
+                // Update the view
+                proposalProjectListPanel.revalidate();
+                proposalProjectListPanel.repaint();
             }
-            JButton proposalButton = UIButtons.createNewListButton(proposalLabel, false);
-            proposalButton.addActionListener(e -> 
-                showProjectProbDetails(proposal));
-            proposalProjectListPanel.add(proposalButton);
-        }
-        // Update the view
-        proposalProjectListPanel.revalidate();
-        proposalProjectListPanel.repaint();
-    }
-    
-
+            
+            
     private void updateProjectList() { // SORT HERE
-        // Ryd panelet før opdatering
+         // Ryd panelet før opdatering
         System.out.println("Updating project list");
         projectListPanel.removeAll();
+        JButton projectTitleSortButton = UIButtons.sortingButtons("title", clickCounts);
+        JButton projectOwnerSortButton = UIButtons.sortingButtons("owner", clickCounts);
+        JButton projectDeadlineSortButton = UIButtons.sortingButtons("deadline", clickCounts);
+        int[] clickCounts = {0, 0, 0, 0}; // Array to keep track of click counts for each button
+        JButton catagoriesButton = UIButtons.createListCatagoryButton("Kategorier");
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+        buttonPanel.setAlignmentX(LEFT_ALIGNMENT);
+        buttonPanel.add(Box.createRigidArea(new Dimension(30, 0))); // Add space between buttons
+        buttonPanel.add(projectTitleSortButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(60, 0))); // Add space between buttons
+        buttonPanel.add(projectOwnerSortButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(60, 0))); // Add space between buttons
+        buttonPanel.add(projectDeadlineSortButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(60, 0))); // Add space between buttons
+        buttonPanel.add(catagoriesButton);
+        projectListPanel.add(buttonPanel);
+        projectTitleSortButton.addActionListener(e -> {
+            System.out.println("Title button clicked");
+            clickCounts[0]++;
+            clickCounts[1] = 0;
+            clickCounts[2] = 0;
+            clickCounts[3] = 0;
 
-        JLabel infoLabel = new JLabel(
-                String.format("%-30s %-30s %-30s %-30s %-30s",
-                        "Title",
-                        "Project Owner",
-                        "Date Created",
-                        "Next Deadline",
-                        "Categories"));
-        projectListPanel.add(infoLabel);
+            JButton newButton = UIButtons.sortingButtons("title", clickCounts);
+            projectTitleSortButton.setText(newButton.getText());
+            projectTitleSortButton.setIcon(newButton.getIcon());
+
+            projectOwnerSortButton.setText("Ejer");
+            projectOwnerSortButton.setIcon(null);
+            projectDeadlineSortButton.setText("Deadline");
+            projectDeadlineSortButton.setIcon(null);
+
+            projectListPanel.revalidate();
+            projectListPanel.repaint();
+        });
+
+        projectOwnerSortButton.addActionListener(e -> {
+            System.out.println("Owner button clicked");
+            clickCounts[0] = 0;
+            clickCounts[1]++;
+            clickCounts[2] = 0;
+            clickCounts[3] = 0;
+
+            JButton newButton = UIButtons.sortingButtons("owner", clickCounts);
+            projectOwnerSortButton.setText(newButton.getText());
+            projectOwnerSortButton.setIcon(newButton.getIcon());
+
+            projectTitleSortButton.setText("Titel");
+            projectTitleSortButton.setIcon(null);
+            projectDeadlineSortButton.setText("Deadline");
+            projectDeadlineSortButton.setIcon(null);
+
+            projectListPanel.revalidate();
+            projectListPanel.repaint();
+        });
+
+        projectDeadlineSortButton.addActionListener(e -> {
+            System.out.println("deadline button clicked");
+            clickCounts[0] = 0;
+            clickCounts[1] = 0;
+            clickCounts[2]++;
+            clickCounts[3] = 0;
+
+            JButton newButton = UIButtons.sortingButtons("deadline", clickCounts);
+            projectDeadlineSortButton.setText(newButton.getText());
+            projectDeadlineSortButton.setIcon(newButton.getIcon());
+
+            projectTitleSortButton.setText("Titel");
+            projectTitleSortButton.setIcon(null);
+            projectOwnerSortButton.setText("Ejer");
+            projectOwnerSortButton.setIcon(null);
+
+            projectListPanel.revalidate();
+            projectListPanel.repaint();
+        });
+
+   
+
     
         // Add labels for each project
         for (project project : main.projectList) {
@@ -891,9 +1038,11 @@ public class UserFrame extends JFrame implements ActionListener {
             projectButton.addActionListener(e -> 
                 showProjectDetails(project));
                 projectListPanel.add(projectButton);
-        }
+                projectListPanel.add(Box.createHorizontalGlue()); 
+                projectListPanel.add(Box.createRigidArea(new Dimension(30, 0))); // Add space to the left of the buttons
+            }
             
-        
+            
     
         // Update the view
         projectListPanel.revalidate();
@@ -1914,14 +2063,89 @@ public class UserFrame extends JFrame implements ActionListener {
     // Method to update the fund list display SORT HERE
     private void updateFundList() {
         fundListPanel.removeAll(); // Clear existing funds
-        JLabel infoLabel = new JLabel(
-                String.format("%-30s %-30s %-30s %-30s",
-                        "Title",
-                        "Budget",
-                        "Kategori(er)",
-                        "Ansøgningsfrist"));
-        fundListPanel.add(infoLabel);
-    
+        // JLabel infoLabel = new JLabel(
+        //         String.format("%-30s %-30s %-30s %-30s",
+        //                 "Title",
+        //                 "Budget",
+        //                 "Kategori(er)",
+        //                 "Ansøgningsfrist"));
+        // fundListPanel.add(infoLabel);
+        int[] clickCounts = {0, 0, 0, 0, 0};
+        JButton fundTitlButton = UIButtons.sortingButtons("title", clickCounts);
+        JButton fundBudgetButton = UIButtons.sortingButtons("budget", clickCounts);
+        JButton catagoriesButton = UIButtons.createListCatagoryButton("Katagorier");
+        JButton deadlineButton = UIButtons.sortingButtons("deadline", clickCounts);
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+        buttonPanel.setAlignmentX(LEFT_ALIGNMENT);
+        buttonPanel.add(Box.createRigidArea(new Dimension(30, 0))); // Add space between buttons
+        buttonPanel.add(fundTitlButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(60, 0))); // Add space between buttons
+        buttonPanel.add(fundBudgetButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(60, 0))); // Add space between buttons
+        buttonPanel.add(catagoriesButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(60, 0))); // Add space between buttons
+        buttonPanel.add(deadlineButton);
+        fundListPanel.add(buttonPanel);
+
+        fundTitlButton.addActionListener(e -> {
+            System.out.println("Title button clicked");
+            clickCounts[0]++;
+            clickCounts[2] = 0;
+            clickCounts[4] = 0;
+
+            JButton newButton = UIButtons.sortingButtons("title", clickCounts);
+            fundTitlButton.setText(newButton.getText());
+            fundTitlButton.setIcon(newButton.getIcon());
+
+            fundBudgetButton.setText("Budget");
+            fundBudgetButton.setIcon(null);
+            deadlineButton.setText("Deadline");
+            deadlineButton.setIcon(null);
+
+            fundListPanel.revalidate();
+            fundListPanel.repaint();
+        });
+
+        fundBudgetButton.addActionListener(e -> {
+            System.out.println("Owner button clicked");
+            clickCounts[0] = 0;
+            clickCounts[2] = 0;
+            clickCounts[4]++;
+
+            JButton newButton = UIButtons.sortingButtons("budget", clickCounts);
+            fundBudgetButton.setText(newButton.getText());
+            fundBudgetButton.setIcon(newButton.getIcon());
+
+            fundTitlButton.setText("Titel");
+            fundTitlButton.setIcon(null);
+            deadlineButton.setText("Deadline");
+            deadlineButton.setIcon(null);
+
+            projectListPanel.revalidate();
+            projectListPanel.repaint();
+        });
+
+        deadlineButton.addActionListener(e -> {
+            System.out.println("deadline button clicked");
+            clickCounts[0] = 0;
+            clickCounts[2]++;
+            clickCounts[4] = 0;
+
+            JButton newButton = UIButtons.sortingButtons("deadline", clickCounts);
+            deadlineButton.setText(newButton.getText());
+            deadlineButton.setIcon(newButton.getIcon());
+
+            fundTitlButton.setText("Titel");
+            fundTitlButton.setIcon(null);
+            fundBudgetButton.setText("Budget");
+            fundBudgetButton.setIcon(null);
+
+            fundListPanel.revalidate();
+            fundListPanel.repaint();
+        });
+
+        
         for (fundClass fund : main.fundList) {
             JLabel fundLabel;
     
@@ -1974,6 +2198,8 @@ public class UserFrame extends JFrame implements ActionListener {
             fundButton.addActionListener(e -> 
                 showFundDetails(fund));
             fundListPanel.add(fundButton);
+            fundListPanel.add(Box.createHorizontalGlue()); 
+            fundListPanel.add(Box.createRigidArea(new Dimension(20, 0))); // Add space to the left of the buttons
         }    
         fundListPanel.revalidate();
         fundListPanel.repaint();
