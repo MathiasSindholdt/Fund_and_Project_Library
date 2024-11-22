@@ -146,11 +146,15 @@ public class UIButtons extends JPanel{
         return button;
     }
 
-    public JButton createNewListButton(JLabel infoLabel) {
+    public JButton createNewListButton(JLabel infoLabel, Boolean rightSide) {
         JButton listButton = new JButton(infoLabel.getText());
-        listButton.setPreferredSize(new Dimension(300, 30)); // Set button size
+        if(rightSide) {
+            listButton.setMaximumSize(new Dimension(1000, 40)); // Set maximum size
+        } else {
+            listButton.setMaximumSize(new Dimension(850, 40)); // Set maximum size
+        }
         listButton.setFont(new Font("SansSerif", Font.PLAIN, 14)); // Set font
-        listButton.setMaximumSize(new Dimension(850, 40)); // Set maximum size
+        listButton.setPreferredSize(new Dimension(300, 30));
         listButton.setFocusPainted(false); // Remove focus border
         listButton.setBackground(new Color(245, 245, 245)); // Set background color
         listButton.setForeground(Color.DARK_GRAY); // Set text color
