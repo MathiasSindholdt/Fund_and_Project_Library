@@ -87,7 +87,6 @@ public class GuestFrame extends JFrame implements ActionListener {
     String tempWebsite;
     Long tempAmountFrom;
     Long tempAmountTo;
-    UIButtons UIButtons = new UIButtons();
     // Constructor to set up the GUI
     public GuestFrame() {
         initializeFrame();  // Initialize JFrame
@@ -133,13 +132,13 @@ public class GuestFrame extends JFrame implements ActionListener {
         menuButton = createMenuButton();
         menuButton.setPreferredSize(new Dimension(100, 50)); // Set preferred size
         leftPanel.add(menuButton);
-        UIButtons.changeCursor(menuButton);
+        UserFrame.changeCursor(menuButton);
     
         projectPropButton = createProjectPropButton("Projekt forslag");
         projectPropButton.setPreferredSize(new Dimension(150, 50)); // Set preferred size
         leftPanel.add(projectPropButton);
     
-        UIButtons.changeCursor(projectPropButton);
+        UserFrame.changeCursor(projectPropButton);
 
     
         panel1.add(leftPanel, BorderLayout.WEST);
@@ -148,7 +147,7 @@ public class GuestFrame extends JFrame implements ActionListener {
         logoutButton.setPreferredSize(new Dimension(100, 50)); // Set preferred size
         panel1.add(logoutButton, BorderLayout.EAST);
     
-        UIButtons.changeCursor(logoutButton);
+        UserFrame.changeCursor(logoutButton);
     
         return panel1;
     }
@@ -170,7 +169,7 @@ public class GuestFrame extends JFrame implements ActionListener {
 
         // The button to open the project proposal dialog
         createProbButton = createButton("Lav projekt forslag");
-        UIButtons.changeCursor(createProbButton);
+        UserFrame.changeCursor(createProbButton);
         panel5.add(createProbButton);
 
         return panel5;
