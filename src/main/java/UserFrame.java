@@ -304,15 +304,15 @@ public class UserFrame extends JFrame implements ActionListener {
         createProbButton = UIButtons.createButton("Lav projekt forslag");
         createProbButton.addActionListener(this);
         changeProbButton = UIButtons.createButton("Redigér projekt forslag");
-        createProbButton.addActionListener(this);
+        changeProbButton.addActionListener(this);
         createProjectButton = UIButtons.createButton("Lav et nyt projekt");
         createProjectButton.addActionListener(this);
         changeProjectButton = UIButtons.createButton("Redigér et projekt");
-        createProjectButton.addActionListener(this);
+        changeProjectButton.addActionListener(this);
         createFundButton = UIButtons.createButton("Lav en ny fond");
         createFundButton.addActionListener(this);
         changeFundButton = UIButtons.createButton("Redigér en fond");
-        createFundButton.addActionListener(this);
+        changeFundButton.addActionListener(this);
 
         EditProjectButton editProjectButton = new EditProjectButton(this, main.projectList);
 
