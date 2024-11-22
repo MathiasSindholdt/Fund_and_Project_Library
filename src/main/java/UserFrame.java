@@ -1571,179 +1571,179 @@ public class UserFrame extends JFrame implements ActionListener {
                 contactsPanel.repaint();
             });
 
-            });
-            // Hjemmeside
-            JLabel websiteLabel = new JLabel("Hjemmeside?:");
-            JCheckBox websiteCheckBox = new JCheckBox();
-            JPanel websitePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            new GridLayout(1, 2);
-            JLabel websiteLabel2 = new JLabel("Hjemmeside:");
-            JTextField websiteField = new JTextField(30);
-            websitePanel.add(websiteLabel2);
-            websitePanel.add(websiteField);
-            websitePanel.setVisible(false);
+        });
+        // Hjemmeside
+        JLabel websiteLabel = new JLabel("Hjemmeside?:");
+        JCheckBox websiteCheckBox = new JCheckBox();
+        JPanel websitePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        new GridLayout(1, 2);
+        JLabel websiteLabel2 = new JLabel("Hjemmeside:");
+        JTextField websiteField = new JTextField(30);
+        websitePanel.add(websiteLabel2);
+        websitePanel.add(websiteField);
+        websitePanel.setVisible(false);
 
-            websiteCheckBox.addItemListener(e2 -> {
-                websitePanel.setVisible(websiteCheckBox.isSelected());
-                dialog.revalidate();
-                dialog.repaint();
-            });
-            // Tidligere samarbejde
-            JLabel collaboratedLabel = new JLabel("Tidligere samarbejde?:");
-            JCheckBox collaboratedCheckBox = new JCheckBox();
-            JPanel collaborationPanel = new JPanel();
-            collaborationPanel.setLayout(new BoxLayout(collaborationPanel, BoxLayout.Y_AXIS));
-            JLabel collaborationLabel = new JLabel("Tilføj tidligere samarbejdsprojekter:");
-            JButton createCollaborationButton = new JButton("Tilføj Projekter");
-            JPanel collaborationContentPanel = new JPanel();
-            collaborationContentPanel.setLayout(new BoxLayout(collaborationContentPanel, BoxLayout.Y_AXIS));
-            JScrollPane collaborationScrollPane = new JScrollPane(collaborationContentPanel);
-            collaborationScrollPane.setPreferredSize(new Dimension(200, 100));
+        websiteCheckBox.addItemListener(e2 -> {
+            websitePanel.setVisible(websiteCheckBox.isSelected());
+            dialog.revalidate();
+            dialog.repaint();
+        });
+        // Tidligere samarbejde
+        JLabel collaboratedLabel = new JLabel("Tidligere samarbejde?:");
+        JCheckBox collaboratedCheckBox = new JCheckBox();
+        JPanel collaborationPanel = new JPanel();
+        collaborationPanel.setLayout(new BoxLayout(collaborationPanel, BoxLayout.Y_AXIS));
+        JLabel collaborationLabel = new JLabel("Tilføj tidligere samarbejdsprojekter:");
+        JButton createCollaborationButton = new JButton("Tilføj Projekter");
+        JPanel collaborationContentPanel = new JPanel();
+        collaborationContentPanel.setLayout(new BoxLayout(collaborationContentPanel, BoxLayout.Y_AXIS));
+        JScrollPane collaborationScrollPane = new JScrollPane(collaborationContentPanel);
+        collaborationScrollPane.setPreferredSize(new Dimension(200, 100));
 
-            JPanel collaborationLabelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            collaborationLabelPanel.add(collaborationLabel);
-            collaborationLabelPanel.add(createCollaborationButton);
-            collaborationPanel.add(collaborationLabelPanel);
-            collaborationPanel.add(collaborationScrollPane);
-            collaborationPanel.setVisible(false);
+        JPanel collaborationLabelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        collaborationLabelPanel.add(collaborationLabel);
+        collaborationLabelPanel.add(createCollaborationButton);
+        collaborationPanel.add(collaborationLabelPanel);
+        collaborationPanel.add(collaborationScrollPane);
+        collaborationPanel.setVisible(false);
 
-            collaboratedCheckBox.addItemListener(e -> {
-                getCurrentCheckboxes.getAllProjects(collaborationContentPanel);
-                collaborationPanel.setVisible(collaboratedCheckBox.isSelected());
-                dialog.revalidate();
-                dialog.repaint();
+        collaboratedCheckBox.addItemListener(e -> {
+            getCurrentCheckboxes.getAllProjects(collaborationContentPanel);
+            collaborationPanel.setVisible(collaboratedCheckBox.isSelected());
+            dialog.revalidate();
+            dialog.repaint();
 
-            });
-            createCollaborationButton.addActionListener(e -> {
-                String newCollaboration = JOptionPane.showInputDialog(dialog,
-                        "Skriv nye tidligere samarbejdeprojekter:");
-                if (newCollaboration != null && !newCollaboration.trim().isEmpty()) {
-                    main.userProjectList.add(newCollaboration); // insert stringwrite for user project list
-                    collaborationContentPanel.add(new JCheckBox(newCollaboration));
-                    collaborationContentPanel.revalidate();
-                    collaborationContentPanel.repaint();
+        });
+        createCollaborationButton.addActionListener(e -> {
+            String newCollaboration = JOptionPane.showInputDialog(dialog,
+                    "Skriv nye tidligere samarbejdeprojekter:");
+            if (newCollaboration != null && !newCollaboration.trim().isEmpty()) {
+                main.userProjectList.add(newCollaboration); // insert stringwrite for user project list
+                collaborationContentPanel.add(new JCheckBox(newCollaboration));
+                collaborationContentPanel.revalidate();
+                collaborationContentPanel.repaint();
+            }
+        });
+
+        // Add the collaboration panel to the main panel
+        mainPanel.add(collaborationPanel, BorderLayout.WEST);
+
+        // Løbende deadline
+        JLabel runningLabel = new JLabel("Løbende ansøgningsfrist:");
+        JCheckBox runningCheckBox = new JCheckBox();
+        runningCheckBox.addItemListener(e -> {
+            deadlineSpinner.setEnabled(!runningCheckBox.isSelected());
+            addDeadlineButton.setEnabled(!runningCheckBox.isSelected());
+            deadLineTimeCheckBox.setEnabled(!runningCheckBox.isSelected());
+            // Save all the current deadlines and remove them from the UI when checked
+            if (runningCheckBox.isSelected()) {
+                deadlineListPanel.removeAll();
+            } else {
+                // Restore the deadlines when unchecked
+                for (LocalDateTime deadline : addedDeadlines) {
+                    JLabel deadlineLabelItem = new JLabel(deadline.format(formatter));
+                    deadlineListPanel.add(deadlineLabelItem);
                 }
-            });
+            }
+            deadlineListPanel.revalidate();
+            deadlineListPanel.repaint();
+        });
 
-            // Add the collaboration panel to the main panel
-            mainPanel.add(collaborationPanel, BorderLayout.WEST);
+        // Submit knap
+        JButton submitButton = new JButton("Tilføj Fond");
+        submitButton.addActionListener(event -> {
+            boolean running = runningCheckBox.isSelected();
+            boolean hasError = false;
 
-            // Løbende deadline
-            JLabel runningLabel = new JLabel("Løbende ansøgningsfrist:");
-            JCheckBox runningCheckBox = new JCheckBox();
-            runningCheckBox.addItemListener(e -> {
-                deadlineSpinner.setEnabled(!runningCheckBox.isSelected());
-                addDeadlineButton.setEnabled(!runningCheckBox.isSelected());
-                deadLineTimeCheckBox.setEnabled(!runningCheckBox.isSelected());
-                // Save all the current deadlines and remove them from the UI when checked
-                if (runningCheckBox.isSelected()) {
-                    deadlineListPanel.removeAll();
-                } else {
-                    // Restore the deadlines when unchecked
-                    for (LocalDateTime deadline : addedDeadlines) {
-                        JLabel deadlineLabelItem = new JLabel(deadline.format(formatter));
-                        deadlineListPanel.add(deadlineLabelItem);
+            // FundTitle errorhandling
+            if (validationUtils.isWithinLowerCharLimit(nameField.getText()) == false) {
+                isInvalidLenght = true;
+                dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
+                hasError = true;
+            } else if (validationUtils.isValidInput(nameField.getText()) == false) {
+                isInvalidLenght = false;
+                dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
+                hasError = true;
+            } else {
+                tempTitle = nameField.getText().trim();
+            }
+
+            // FundDescription errorhandling
+            if (validationUtils.isWithinUpperCharLimit(descriptionArea.getText()) == false) {
+                isInvalidLenght = true;
+                dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
+                hasError = true;
+            } else if (validationUtils.isValidDescription(descriptionArea.getText()) == false) {
+                isInvalidLenght = false;
+                dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
+                hasError = true;
+            } else {
+                tempDescription = descriptionArea.getText().trim();
+            }
+
+            // Money errorhandling
+            if (validationUtils.isNumericInput(amountFromField.getText()) == false) {
+                dialog.add(UserFrameErrorHandling.displayAmountFromError());
+                hasError = true;
+            } else {
+                tempAmountFrom = Long.parseLong(amountFromField.getText().trim());
+            }
+            if (validationUtils.isNumericInput(amountToField.getText()) == false) {
+                dialog.add(UserFrameErrorHandling.displayAmountToError());
+                hasError = true;
+            } else {
+                tempAmountTo = Long.parseLong(amountToField.getText().trim());
+            }
+
+            // Category Errorhandling
+            ArrayList<String> selectedCatagories = new ArrayList<>();
+            for (Component comp : tagPanel.getComponents()) {
+                if (comp instanceof JCheckBox) {
+                    JCheckBox checkBox = (JCheckBox) comp;
+                    if (checkBox.isSelected()) {
+                        selectedCatagories.add(checkBox.getText());
                     }
                 }
-                deadlineListPanel.revalidate();
-                deadlineListPanel.repaint();
-            });
+            }
 
-            // Submit knap
-            JButton submitButton = new JButton("Tilføj Fond");
-            submitButton.addActionListener(event -> {
-                boolean running = runningCheckBox.isSelected();
-                boolean hasError = false;
+            // Website Errorhandling
+            if (validationUtils.isValidUrl(websiteField.getText()) == false) {
+                dialog.add(UserFrameErrorHandling.displayWebsiteError());
+                hasError = true;
+            } else {
+                tempWebsite = websiteField.getText().trim();
+            }
 
-                // FundTitle errorhandling
-                if (validationUtils.isWithinLowerCharLimit(nameField.getText()) == false) {
-                    isInvalidLenght = true;
-                    dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
-                    hasError = true;
-                } else if (validationUtils.isValidInput(nameField.getText()) == false) {
-                    isInvalidLenght = false;
-                    dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
-                    hasError = true;
-                } else {
-                    tempTitle = nameField.getText().trim();
-                }
-
-                // FundDescription errorhandling
-                if (validationUtils.isWithinUpperCharLimit(descriptionArea.getText()) == false) {
-                    isInvalidLenght = true;
-                    dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
-                    hasError = true;
-                } else if (validationUtils.isValidDescription(descriptionArea.getText()) == false) {
-                    isInvalidLenght = false;
-                    dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
-                    hasError = true;
-                } else {
-                    tempDescription = descriptionArea.getText().trim();
-                }
-
-                // Money errorhandling
-                if (validationUtils.isNumericInput(amountFromField.getText()) == false) {
-                    dialog.add(UserFrameErrorHandling.displayAmountFromError());
-                    hasError = true;
-                } else {
-                    tempAmountFrom = Long.parseLong(amountFromField.getText().trim());
-                }
-                if (validationUtils.isNumericInput(amountToField.getText()) == false) {
-                    dialog.add(UserFrameErrorHandling.displayAmountToError());
-                    hasError = true;
-                } else {
-                    tempAmountTo = Long.parseLong(amountToField.getText().trim());
-                }
-
-                // Category Errorhandling
-                ArrayList<String> selectedCatagories = new ArrayList<>();
-                for (Component comp : tagPanel.getComponents()) {
+            if (collaboratedCheckBox.isSelected() == true) {
+                isCollaborated = true;
+                for (Component comp : collaborationContentPanel.getComponents()) {
                     if (comp instanceof JCheckBox) {
                         JCheckBox checkBox = (JCheckBox) comp;
                         if (checkBox.isSelected()) {
-                            selectedCatagories.add(checkBox.getText());
+                            selectedCollabortion.add(checkBox.getText());
                         }
                     }
                 }
+            }
 
-                // Website Errorhandling
-                if (validationUtils.isValidUrl(websiteField.getText()) == false) {
-                    dialog.add(UserFrameErrorHandling.displayWebsiteError());
-                    hasError = true;
-                } else {
-                    tempWebsite = websiteField.getText().trim();
-                }
+            if (running) {
+                addedDeadlines.clear();
+                addedDeadlines.add(LocalDateTime.of(3000, 1, 1, 0, 0));
+            }
 
-                if (collaboratedCheckBox.isSelected() == true) {
-                    isCollaborated = true;
-                    for (Component comp : collaborationContentPanel.getComponents()) {
-                        if (comp instanceof JCheckBox) {
-                            JCheckBox checkBox = (JCheckBox) comp;
-                            if (checkBox.isSelected()) {
-                                selectedCollabortion.add(checkBox.getText());
-                            }
-                        }
-                    }
-                }
+            if (!hasError) {
+                fundClass fund = new fundClass(tempTitle, tempDescription, tempAmountFrom, tempAmountTo,
+                        addedDeadlines, selectedCatagories, selectedCollabortion, contacts, tempWebsite,
+                        isCollaborated, running);
+                contacts.clear();
+                main.fundList.add(fund);
+                updateFundList();
 
-                if (running) {
-                    addedDeadlines.clear();
-                    addedDeadlines.add(LocalDateTime.of(3000, 1, 1, 0, 0));
-                }
+                writeAll();
 
-                if (!hasError) {
-                    fundClass fund = new fundClass(tempTitle, tempDescription, tempAmountFrom, tempAmountTo,
-                            addedDeadlines, selectedCatagories, selectedCollabortion, contacts, tempWebsite,
-                            isCollaborated, running);
-                    contacts.clear();
-                    main.fundList.add(fund);
-                    updateFundList();
-
-                    writeAll();
-
-                    dialog.dispose();
-                }
-            });
+                dialog.dispose();
+            }
+        });
 
         // GroupLayout struktur
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -2030,8 +2030,6 @@ public class UserFrame extends JFrame implements ActionListener {
 
     }
 
-    
-
     private void updateFundList(ArrayList<fundClass> smallerList) {
         fundListPanel.removeAll(); // Clear existing funds
         JLabel infoLabel = new JLabel(
@@ -2117,16 +2115,17 @@ public class UserFrame extends JFrame implements ActionListener {
             if (fund.getDeadlines().contains(LocalDateTime.of(3000, 1, 1, 0, 0))) {
                 deadlineDisplay = "[Løbende Ansøgningsfrist]";
             } else {
-                if(fundQSort.allDeadlinesPassed(fund)){
+                if (fundQSort.allDeadlinesPassed(fund)) {
                     deadlineDisplay = "Alle frister Overskredet";
                 } else {
-                        for (LocalDateTime dL : fund.getDeadlines()){
-                            if (dL.isBefore(LocalDateTime.now())){
-                                fund.getDeadlines().remove(dL);
-                            } 
+                    for (LocalDateTime dL : fund.getDeadlines()) {
+                        if (dL.isBefore(LocalDateTime.now())) {
+                            fund.getDeadlines().remove(dL);
                         }
-                        deadlineDisplay = fund.getDeadlines().get(0).toString().replace("T"," ").replace("[","").replace("]","");
                     }
+                    deadlineDisplay = fund.getDeadlines().get(0).toString().replace("T", " ").replace("[", "")
+                            .replace("]", "");
+                }
             }
 
             if (fund.getTitle().length() < 20) {
@@ -2168,18 +2167,13 @@ public class UserFrame extends JFrame implements ActionListener {
             }
 
             JButton fundButton = UIButtons.createNewListButton(fundLabel, false);
-            fundButton.addActionListener(e -> 
-                showFundDetails(fund));
+            fundButton.addActionListener(e -> showFundDetails(fund));
 
             fundListPanel.add(fundButton);
         }
         fundListPanel.revalidate();
         fundListPanel.repaint();
     }
-
-    
-    
-
 
     public void openProjectDialog() {
 
@@ -2581,7 +2575,7 @@ public class UserFrame extends JFrame implements ActionListener {
         cardLayout.show(rightSidePanel, cardName);
     }
 
-       private void showFundDetailsDialog(fundClass fund, project project) {
+    private void showFundDetailsDialog(fundClass fund, project project) {
         // Create the dialog box
         JDialog fundDialog = new JDialog(frame, fund.getTitle(), true);
         fundDialog.setLayout(new GridLayout(0, 1));
@@ -2662,7 +2656,7 @@ public class UserFrame extends JFrame implements ActionListener {
 
     }
 
-    public static void writeAll(){
+    public static void writeAll() {
         FundCsvWriter.writeCsv("data/funds.csv", main.fundList);
         CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
         CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
