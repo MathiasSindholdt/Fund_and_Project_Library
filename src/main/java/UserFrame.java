@@ -240,13 +240,11 @@ public class UserFrame extends JFrame implements ActionListener {
     }
 
     private void filterByTag() {
+        updateBeforeFilter();
 
         ArrayList<fundClass> fundList = new ArrayList<>();
         ArrayList<project> projectList = new ArrayList<>();
         ArrayList<proposalProject> proposalList = new ArrayList<>();
-        if (selectedTags.isEmpty()) {
-            selectedTags.addAll(main.categories);
-        }
 
         for (String s : selectedTags) {
             // Loop through proposals and add only those matching the tag
@@ -266,12 +264,20 @@ public class UserFrame extends JFrame implements ActionListener {
                 }
             }
         }
-        updateAfterFilter(fundList, projectList, proposalList);
+        
+        if (selectedTags.isEmpty()){
+            updateFundList();
+            updateProposalProjectList();
+            updateProjectList();
+        }else {
+        updateFundList(fundList);
+        updateProposalProjectList(proposalList);
+        updateProjectList(projectList);
+        }
 
     }
 
-    private void updateAfterFilter(ArrayList<fundClass> fundList,
-            ArrayList<project> projectList, ArrayList<proposalProject> proposalList) {
+    private void updateBeforeFilter() {
 
         if (clickCounts[0] % 3 == 1) {
             sortedProposalList = sorter.compareTitleProposal(sortedProposalList);
@@ -285,6 +291,8 @@ public class UserFrame extends JFrame implements ActionListener {
 
         } else {
             sortedProposalList = main.proposalList;
+            sortedProjectList = main.projectList;
+            sortedFundList = main.fundList;
         }
         if (clickCounts[1] % 3 == 1) {
             sortedProposalList = sorter.compareOwnerProposal(sortedProposalList);
@@ -296,10 +304,12 @@ public class UserFrame extends JFrame implements ActionListener {
 
         } else {
             sortedProposalList = main.proposalList;
+            sortedProjectList = main.projectList;
+            sortedFundList = main.fundList;
         }
         if (clickCounts[2] % 3 == 1) {
             sortedProjectList = sorter.sortByClosestDateProject(sortedProjectList);
-            sortedFundList = sorter.sortByClosestDateFund(sortedFundList);
+            sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
             sortedProjectList = sorter.sortByClosestDateProject(sortedProjectList);
 
         } else if (clickCounts[2] % 3 == 2) {
@@ -309,15 +319,8 @@ public class UserFrame extends JFrame implements ActionListener {
 
         } else {
             sortedProjectList = main.projectList;
-        }
-        if (clickCounts[3] % 3 == 1) {
-            sortedProposalList = sorter.sortByClosestDateProposal(sortedProposalList);
-
-        } else if (clickCounts[3] % 3 == 2) {
-            sortedProposalList = sorter.sortByFurthestDateProposal(sortedProposalList);
-
-        } else {
-            sortedProposalList = main.proposalList;
+            sortedProjectList = main.projectList;
+            sortedFundList = main.fundList;
         }
         if (clickCounts[3] % 3 == 1) {
             // TODO sort by budget
@@ -327,11 +330,10 @@ public class UserFrame extends JFrame implements ActionListener {
 
         } else {
             sortedFundList = main.fundList;
+            sortedProjectList = main.projectList;
+            sortedFundList = main.fundList;
         }
 
-        updateFundList(fundList);
-        updateProposalProjectList(proposalList);
-        updateProjectList(projectList);
     }
 
     private void filterByTag(String newTag) {
@@ -373,8 +375,7 @@ public class UserFrame extends JFrame implements ActionListener {
         tagButtonInstance.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (tagButtonInstance.isSelected()&&selectedTags.contains(newTag)) {
-                    selectedTags.clear();
+                if (tagButtonInstance.isSelected()) {
                     selectedTags.add(newTag);
                 } else {
                     selectedTags.remove(newTag);
