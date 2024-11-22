@@ -214,7 +214,12 @@ public class UserFrame extends JFrame implements ActionListener {
         changeFundButton = createButton("Redigér en fond");
 
         EditProjectButton editProjectButton = new EditProjectButton(this, main.projectList);
-        // EditFundButton editFundButton = new EditFundButton(this, main.fundList);
+
+        EditFundButton editFundButton = new EditFundButton(this, main.fundList);
+
+        changeFundButton.addActionListener(e -> {
+            editFundButton.editFundDialog(); // Call the method on the instance
+        });
 
         panel5.add(createProbButton);
         panel5.add(changeProbButton);
@@ -223,11 +228,6 @@ public class UserFrame extends JFrame implements ActionListener {
         panel5.add(createFundButton);
         panel5.add(changeFundButton);
 
-        /*
-         * changeFundButton.addActionListener(e -> {
-         * editFundButton.openEditFundDialog();
-         * });
-         */
 
         changeProjectButton.addActionListener(e -> {
             editProjectButton.openEditProjectDialog();
