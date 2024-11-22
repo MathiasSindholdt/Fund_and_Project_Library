@@ -64,15 +64,8 @@ public class fundClass extends elementFormatting{
     }
 
 
-    public void setBudgetMax(long newBudgetMax, long newBudgetMin){
-        if (newBudgetMax < 0){
-            throw new validationUtils.WrongDataInputException("The maximum fund budget cannot be negative");
-        }
-        if (newBudgetMin > newBudgetMax){
-            throw new validationUtils.WrongDataInputException("The maximum budget cannot be smaller than the minimum budget");
-        }
-        
-        this.budgetMin = newBudgetMax;
+    public void setBudgetMax(long newBudgetMax){        
+        this.budgetMax = newBudgetMax;
     }
 
     public void setBudget(long newBudgetMin,long newBudgetMax){
@@ -86,6 +79,10 @@ public class fundClass extends elementFormatting{
 
     public void setRunning(boolean setRunning){
         this.running = setRunning;
+    }
+
+    public void clearDeadlines(){
+        deadlines.clear();
     }
 
     //Constructor

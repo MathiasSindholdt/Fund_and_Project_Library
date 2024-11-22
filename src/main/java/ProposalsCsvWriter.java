@@ -1,6 +1,8 @@
 import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -8,17 +10,17 @@ import java.util.List;
 public class ProposalsCsvWriter {
     
     public static void writeProposalCsv(String filepath, List<proposalProject> proposalList) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath))){
-
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filepath), "UTF-8"))) {
+            writer.write('\ufeff'); // Write BOM to support UTF-8 encoding
             String[] header = {
                 "Project Title", "Categories", "Description", "Purpose",
-                "Owner", "Target Audience", "Budget", "TimeSpan From", "TimeSpan To", "Activities"};
+                "Owner", "Target Audience", "Budget", "TimeSpan From", "TimeSpan To", "Activities","Date Created"};
 
             writer.write(String.join(",", header));
             writer.newLine();
 
             for (proposalProject proposal : proposalList) {
-                String[] proposalData = new String[10];
+                String[] proposalData = new String[11];
                 proposalData[0] = proposal.getTitle();
 
                 List<String> categories = proposal.getCategories();
@@ -31,6 +33,7 @@ public class ProposalsCsvWriter {
                 proposalData[7] = formatDateTime(proposal.getProjectTimeSpanFrom());
                 proposalData[8] = formatDateTime(proposal.getProjectTimeSpanTo());
                 proposalData[9] = proposal.getProjectActivities();
+                proposalData[10] = formatDateTime(proposal.getDateCreated());
 
                 String line = String.join(",", proposalData);
                 writer.write(line);

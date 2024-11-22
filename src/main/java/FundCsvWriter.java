@@ -1,6 +1,8 @@
 import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,12 +11,13 @@ import java.time.format.DateTimeFormatter;
 public class FundCsvWriter {
 
     public static void writeCsv(String filepath, List<fundClass> fundList) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath))) {
-            
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filepath), "UTF-8"))) {
+            writer.write('\ufeff'); // Write BOM to support UTF-8 encoding
+
             // Writing the header row
             String[] header = {
                 "Fund Name", "Website", "Description", "Application Deadline", 
-                "Budget Min", "Budget Max", "Collaboration History", "Categories", "Contact Information"
+                "Budget Min", "Budget Max", "Collaboration History", "Categories", "Contact Information","Date Created"
             };
             writer.write(String.join(",", header));
             writer.newLine();
@@ -22,11 +25,11 @@ public class FundCsvWriter {
             // Process each fund and create rows of data
             for (fundClass fund : fundList) {
                 // Extract data from the fundClass object
-                String[] fundData = new String[9];
+                String[] fundData = new String[10];
                 fundData[0] = escapeCsvField(fund.getTitle());  
                 fundData[1] = escapeCsvField(fund.getFundWebsite());  
                 fundData[2] = escapeCsvField(fund.getDescription());  
-                fundData[3] = formatApplicationDeadline(fund.getDeadlines());  
+                fundData[3] = formatApplicationDeadline(fund.getDeadlines());
                 fundData[4] = String.valueOf(fund.getBudgetMin()); 
                 fundData[5] = String.valueOf(fund.getBudgetMax());  
                 
@@ -64,6 +67,7 @@ public class FundCsvWriter {
                 } else {
                     fundData[8] = "N/A"; // No contacts available
                 }
+                fundData[9] = formatDateTime(fund.getDateCreated());
                 // Join fund data and write to file
                 String line = String.join(",", fundData);
                 writer.write(line);
@@ -92,12 +96,15 @@ public class FundCsvWriter {
         } else if (deadline instanceof List<?>) {
             List<?> dateList = (List<?>) deadline;
             if (!dateList.isEmpty()) {
-                Object firstDate = dateList.get(0);
-                if (firstDate instanceof LocalDate) {
-                    return ((LocalDate) firstDate).format(dateFormatter);
-                } else if (firstDate instanceof LocalDateTime) {
-                    return ((LocalDateTime) firstDate).format(dateTimeFormatter);
+                String deadlines = new String();
+                for (Object o : dateList){
+                    if (o instanceof LocalDate) {
+                        deadlines += ((LocalDate) o).format(dateFormatter);
+                    } else if (o instanceof LocalDateTime) {
+                        deadlines += ((LocalDateTime) o).format(dateTimeFormatter) + ";";
+                    }
                 }
+                return deadlines;
             }
         }
         return "N/A";
@@ -115,4 +122,13 @@ public class FundCsvWriter {
         
         return field;
     }
+
+    private static String formatDateTime(LocalDateTime dateTime) {
+        if (dateTime == null) {
+            return "N/A";
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return dateTime.format(formatter);
+    }
+
 }

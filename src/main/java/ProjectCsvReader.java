@@ -16,12 +16,14 @@ public class ProjectCsvReader {
     public static ArrayList<project> readProjectCsv(String filepath) {
         ArrayList<project> projects = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        long lineCounter = 0;
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filepath), StandardCharsets.UTF_8))) {
             String headerLine = br.readLine();  // Skip header line
             String line;
 
             while ((line = br.readLine()) != null) {
+                lineCounter++;
                 // Split CSV, handling quoted fields
                 String[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
@@ -35,7 +37,17 @@ public class ProjectCsvReader {
                 LocalDateTime timeSpanFrom = LocalDateTime.parse(values[7].replace("\"", ""), formatter);
                 LocalDateTime timeSpanTo = LocalDateTime.parse(values[8].replace("\"", ""), formatter);
                 String activities = values[9].replace("\"", "");
-
+                LocalDateTime dateCreated;
+                String assignedFund = null;
+                try{
+                    dateCreated = LocalDateTime.parse(values[10].replace("\"", ""), formatter);
+                } catch (Exception e) {
+                    dateCreated = LocalDateTime.now().minusDays(lineCounter);
+                }
+                if (!(values.length < 12)){
+                    assignedFund = values[11];
+                }
+                
                 project proj = new project();
                 proj.setTitle(title);
                 categories.forEach(proj::setCategories);
@@ -46,6 +58,8 @@ public class ProjectCsvReader {
                 proj.setProjectBudget(budget);
                 proj.setTimeSpan(timeSpanFrom, timeSpanTo);
                 proj.setProjectActivities(activities);
+                proj.setDateCreated(dateCreated);
+                proj.assignFundFromName(assignedFund);
 
                 projects.add(proj);
             }
