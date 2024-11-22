@@ -100,6 +100,7 @@ public class UserFrame extends JFrame implements ActionListener {
     public ArrayList<fundContactClass> tempContacts = new ArrayList<>();
     private ArrayList<fundContactClass> removeContactArray = new ArrayList<>();
     private ArrayList<fundContactClass> contacts = new ArrayList<>();
+    UIButtons UIButtons = new UIButtons();
 
     // Constructor to set up the GUI
     public UserFrame() {
@@ -1131,26 +1132,27 @@ public class UserFrame extends JFrame implements ActionListener {
                 description += "\n";
             }
         }
-        projectFullPanel.add(createLeftAlignedLabel("Beskrivelse: " + description));
-        projectFullPanel.add(createLeftAlignedLabel("Målgruppe: " + project.getProjectTargetAudience()));
-        projectFullPanel.add(createLeftAlignedLabel("Budget: " + project.getProjectBudget()));
-        projectFullPanel.add(createLeftAlignedLabel("Fra Dato: " + project.getProjectTimeSpanFrom().toString()));
-        projectFullPanel.add(createLeftAlignedLabel("Til Dato: " + project.getProjectTimeSpanTo().toString()));
-        projectFullPanel.add(createLeftAlignedLabel("Aktiviteter: " + project.getProjectActivities()));
-        projectFullPanel.add(createLeftAlignedLabel("Kategori: " + project.getCategories()));
-        projectFullPanel.add(createLeftAlignedLabel("\n"));
+        projectFullPanel.add(new JLabel("Beskrivelse: " + description));
+        projectFullPanel.add(new JLabel("Målgruppe: " + project.getProjectTargetAudience()));
+        projectFullPanel.add(new JLabel("Budget: " + project.getProjectBudget()));
+        projectFullPanel.add(new JLabel("Fra Dato: " + project.getProjectTimeSpanFrom().toString()));
+        projectFullPanel.add(new JLabel("Til Dato: " + project.getProjectTimeSpanTo().toString()));
+        projectFullPanel.add(new JLabel("Aktiviteter: " + project.getProjectActivities()));
+        projectFullPanel.add(new JLabel("Kategori: " + project.getCategories()));
+        if (project.getFund() != null) {
+            projectFullPanel.add(new JLabel("Bevillieget fund: " + project.getFund().getTitle()));
+        }
+        projectFullPanel.add(new JLabel("\n"));
 
         // Checkbox to toggle "only one category needed" logic
         JCheckBox onlyOneNeededCheckBox = new JCheckBox("Kun en kategori kræves for match", true); // Default to true
-        projectFullPanel.add(createLeftAlignedLabel("\n"));
-        projectFullPanel.add(createLeftAlignedLabel("\n"));
-        projectFullPanel.add(Box.createHorizontalGlue()); // Add horizontal glue to push components to the left
+        projectFullPanel.add(new JLabel("\n"));
+        projectFullPanel.add(new JLabel("\n"));
         projectFullPanel.add(onlyOneNeededCheckBox);
 
-        // Helper method to create left-aligned labels
         // Panel for matching funds
         JPanel matchingFundsPanel = new JPanel();
-        matchingFundsPanel.setLayout(new BoxLayout(matchingFundsPanel, FlowLayout.CENTER));
+        matchingFundsPanel.setLayout(new BoxLayout(matchingFundsPanel, BoxLayout.Y_AXIS));
         projectFullPanel.add(matchingFundsPanel);
 
         // Method to update the matching funds list based on checkbox state
@@ -1169,7 +1171,7 @@ public class UserFrame extends JFrame implements ActionListener {
                 centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
                 for (fundClass fund : matchingFunds) {
                     JButton recommendButton = UIButtons.createNewListButton(new JLabel(fund.getTitle()), true);
-                    recommendButton.addActionListener(e -> showFundDetailsDialog(fund));
+                    recommendButton.addActionListener(e -> showFundDetailsDialog(fund, project));
                     centerPanel.add(recommendButton);
                     centerPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Add space between buttons
                     //Add space to the left of the buttons
@@ -1220,6 +1222,7 @@ public class UserFrame extends JFrame implements ActionListener {
         projectFullPanel.revalidate();
         projectFullPanel.repaint();
     }
+
 
     private void styleFundButton(JButton button) {
         button.setPreferredSize(new Dimension(300, 40)); // Set button size
@@ -2385,7 +2388,7 @@ public class UserFrame extends JFrame implements ActionListener {
         cardLayout.show(rightSidePanel, cardName);
     }
 
-    private void showFundDetailsDialog(fundClass fund) {
+       private void showFundDetailsDialog(fundClass fund, project project) {
         // Create the dialog box
         JDialog fundDialog = new JDialog(frame, fund.getTitle(), true);
         fundDialog.setLayout(new GridLayout(0, 1));
@@ -2439,14 +2442,27 @@ public class UserFrame extends JFrame implements ActionListener {
         fundDialog.add(new JLabel("\n"));
         fundDialog.add(new JLabel("Dato tilføjet: " + fund.getDateCreated()));
 
+        JButton assignButton = new JButton("Bevilig");
+        assignButton.addActionListener(e -> {
+            project.assignFund(fund);
+            showProjectDetails(project);
+            fundDialog.dispose();
+        });
         // Button to close the dialog
         JButton closeButton = new JButton("Luk");
         closeButton.addActionListener(e -> fundDialog.dispose());
+        fundDialog.add(assignButton);
         fundDialog.add(closeButton);
 
         fundDialog.pack();
         fundDialog.setLocationRelativeTo(projectFullPanel); // Center dialog relative to main panel
         fundDialog.setVisible(true);
     }
-}
 
+    private JButton deleteButton(String text) {
+        JButton button = new JButton(text);
+        button.setPreferredSize(new Dimension(150, 50));
+        button.addActionListener(this);
+        return button;
+    }
+}
