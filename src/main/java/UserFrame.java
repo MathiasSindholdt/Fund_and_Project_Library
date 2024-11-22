@@ -221,13 +221,15 @@ public class UserFrame extends JFrame implements ActionListener {
             editFundButton.editFundDialog(); // Call the method on the instance
         });
 
+        // EditFundButton editFundButton = new EditFundButton(this, main.fundList);
+
+
         panel5.add(createProbButton);
         panel5.add(changeProbButton);
         panel5.add(createProjectButton);
         panel5.add(changeProjectButton);
         panel5.add(createFundButton);
         panel5.add(changeFundButton);
-
 
         changeProjectButton.addActionListener(e -> {
             editProjectButton.openEditProjectDialog();
@@ -908,40 +910,8 @@ public class UserFrame extends JFrame implements ActionListener {
         proposalProjectFullPanel.add(new JLabel("Titel: " + proposal.getTitle()));
         proposalProjectFullPanel.add(new JLabel("Ejer: " + proposal.getProjectOwner()));
         proposalProjectFullPanel.add(new JLabel("Idé: " + proposal.getProjectPurpose()));
-        String description = new String();
-        List<String> strings = new ArrayList<String>();
-        int index = 0;
-        while (index < proposal.getDescription().length()) {
-            strings.add(proposal.getDescription().substring(index,
-                    Math.min(index + 60, proposal.getDescription().length())));
-            index += Math.min(index + 60, proposal.getDescription().length());
-        }
-
-        for (int i = 0; i < strings.size(); i++) {
-            if (i + 1 < strings.size()) {
-                if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
-                        && Character.isLetter(strings.get(i + 1).charAt(0))) {
-                    description += strings.get(i).trim() + "-";
-                    description += "\n";
-                } else if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
-                        && !Character.isLetter(strings.get(i + 1).charAt(0))) {
-                    description += strings.get(i).trim() + strings.get(i + 1).charAt(0);
-                    strings.set(i + 1, strings.get(i + 1).substring(1));
-                    description += "\n";
-                } else {
-                    description += strings.get(i).trim();
-                    description += "\n";
-                }
-            } else {
-                description += strings.get(i).trim();
-                description += "\n";
-            }
-        }
-        description += "\n";
         proposalProjectFullPanel.add(new JLabel("Beskrivelse: "));
-        for (String s : description.split("\n")) {
-            proposalProjectFullPanel.add(new JLabel(s));
-        }
+        insertWrappedText(proposal.getDescription(), proposalProjectFullPanel);
         proposalProjectFullPanel.add(new JLabel("Målgruppe: " + proposal.getProjectTargetAudience()));
         proposalProjectFullPanel.add(new JLabel("Budget: " + proposal.getProjectBudget()));
 
@@ -1096,6 +1066,41 @@ public class UserFrame extends JFrame implements ActionListener {
         FundCsvWriter.writeCsv("data/fundsArchive.csv", main.archiveFundList);
     }
 
+    private void insertWrappedText(String text, JPanel panel) {
+        String newText = new String();
+        List<String> strings = new ArrayList<String>();
+        int index = 0;
+        while (index < text.length()) {
+            strings.add(text.substring(index,
+                    Math.min(index + 100, text.length())));
+            index += Math.min(index + 100, text.length());
+        }
+
+        for (int i = 0; i < strings.size(); i++) {
+            if (i + 1 < strings.size()) {
+                if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
+                        && Character.isLetter(strings.get(i + 1).charAt(0))) {
+                    newText += strings.get(i).trim() + "-";
+                    newText += "\n";
+                } else if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
+                        && !Character.isLetter(strings.get(i + 1).charAt(0))) {
+                    newText += strings.get(i).trim() + strings.get(i + 1).charAt(0);
+                    strings.set(i + 1, strings.get(i + 1).substring(1));
+                    newText += "\n";
+                } else {
+                    newText += strings.get(i).trim();
+                    newText += "\n";
+                }
+            } else {
+                newText += strings.get(i).trim();
+                newText += "\n";
+            }
+        }
+        for (String s : newText.split("\n")) {
+            panel.add(new JLabel(s));
+        }
+    }
+
     private void showProjectDetails(project project) {
         projectFullPanel.removeAll();
 
@@ -1103,36 +1108,8 @@ public class UserFrame extends JFrame implements ActionListener {
         projectFullPanel.add(new JLabel("Titel: " + project.getTitle()));
         projectFullPanel.add(new JLabel("Ejer: " + project.getProjectOwner()));
         projectFullPanel.add(new JLabel("Idé: " + project.getProjectPurpose()));
-        String description = new String();
-        List<String> strings = new ArrayList<String>();
-        int index = 0;
-        while (index < project.getDescription().length()) {
-            strings.add(project.getDescription().substring(index,
-                    Math.min(index + 100, project.getDescription().length())));
-            index += Math.min(index + 100, project.getDescription().length());
-        }
-
-        for (int i = 0; i < strings.size(); i++) {
-            if (i + 1 < strings.size()) {
-                if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
-                        && Character.isLetter(strings.get(i + 1).charAt(0))) {
-                    description += strings.get(i).trim() + "-";
-                    description += "\n";
-                } else if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
-                        && !Character.isLetter(strings.get(i + 1).charAt(0))) {
-                    description += strings.get(i).trim() + strings.get(i + 1).charAt(0);
-                    strings.set(i + 1, strings.get(i + 1).substring(1));
-                    description += "\n";
-                } else {
-                    description += strings.get(i).trim();
-                    description += "\n";
-                }
-            } else {
-                description += strings.get(i).trim();
-                description += "\n";
-            }
-        }
-        projectFullPanel.add(new JLabel("Beskrivelse: " + description));
+        projectFullPanel.add(new JLabel("Beskrivelse: "));
+        insertWrappedText(project.getDescription(), projectFullPanel);
         projectFullPanel.add(new JLabel("Målgruppe: " + project.getProjectTargetAudience()));
         projectFullPanel.add(new JLabel("Budget: " + project.getProjectBudget()));
         projectFullPanel.add(new JLabel("Fra Dato: " + project.getProjectTimeSpanFrom().toString()));
@@ -1669,7 +1646,37 @@ public class UserFrame extends JFrame implements ActionListener {
         dialog.setVisible(true);
     }
 
-    
+    public JButton createXButton() {
+        ImageIcon originalIcon = new ImageIcon("img/X_button.png");
+        Image scaledImage = originalIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        ImageIcon resizedIcon = new ImageIcon(scaledImage);
+
+        JButton button = new JButton();
+        button.setPreferredSize(new Dimension(20, 20));
+        button.setIcon(resizedIcon);
+        button.setBorderPainted(false);
+        button.setContentAreaFilled(false);
+        button.setFocusPainted(false);
+        button.setOpaque(false);
+        button.addActionListener(this);
+        return button;
+    }
+
+    private JButton createLoopButton() {
+        ImageIcon originalIcon = new ImageIcon("Glass_loop.png");
+        Image scaledImage = originalIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        ImageIcon resizedIcon = new ImageIcon(scaledImage);
+
+        JButton button = new JButton();
+        button.setPreferredSize(new Dimension(20, 20));
+        button.setIcon(resizedIcon);
+        button.setBorderPainted(false);
+        button.setContentAreaFilled(false);
+        button.setFocusPainted(false);
+        button.setOpaque(false);
+        button.addActionListener(this);
+        return button;
+    }
 
     private void openContactsDialog(JDialog dialog) {
         JDialog contactDialog = new JDialog(dialog, "Tilføj Kontakt Person", true);
@@ -1754,41 +1761,8 @@ public class UserFrame extends JFrame implements ActionListener {
         fundFullPanel.removeAll();
 
         fundFullPanel.add(new JLabel("Titel: " + fund.getTitle()));
-        String description = new String();
-        description += "<html>";
-        List<String> strings = new ArrayList<String>();
-        int index = 0;
-        while (index < fund.getDescription().length()) {
-            strings.add(fund.getDescription().substring(index,
-                    Math.min(index + 60, fund.getDescription().length())));
-            index += Math.min(index + 60, fund.getDescription().length());
-        }
-
-        for (int i = 0; i < strings.size(); i++) {
-            if (i + 1 < strings.size()) {
-                if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
-                        && Character.isLetter(strings.get(i + 1).charAt(0))) {
-                    description += strings.get(i).trim() + "-";
-                    description += "\n";
-                } else if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
-                        && !Character.isLetter(strings.get(i + 1).charAt(0))) {
-                    description += strings.get(i).trim() + strings.get(i + 1).charAt(0);
-                    strings.set(i + 1, strings.get(i + 1).substring(1));
-                    description += "\n";
-                } else {
-                    description += strings.get(i).trim();
-                    description += "\n";
-                }
-            } else {
-                description += strings.get(i).trim();
-                description += "\n";
-            }
-        }
-        description += "\n";
         fundFullPanel.add(new JLabel("Beskrivelse: "));
-        for (String s : description.split("\n")) {
-            fundFullPanel.add(new JLabel(s));
-        }
+        insertWrappedText(fund.getDescription(), fundFullPanel);
         fundFullPanel.add(new JLabel("Beløb Fra: " + fund.getBudgetMin()));
         fundFullPanel.add(new JLabel("Beløb Til: " + fund.getBudgetMax()));
         // Make deadline readable for humans
