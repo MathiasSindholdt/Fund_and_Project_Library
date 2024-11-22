@@ -1,11 +1,15 @@
 import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class CsvStringWriter {
     public static void writeStringCSV(String filePath, ArrayList<String> categories) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath), "UTF-8"))) {
+            bw.write('\ufeff'); // Write BOM to support UTF-8 encoding
+
             for (String category : categories) {
                 bw.write(category + ","); // Write each category separated by a comma
             }
