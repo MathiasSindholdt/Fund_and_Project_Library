@@ -68,7 +68,6 @@ public class UserFrame extends JFrame implements ActionListener {
     private JButton projectButton;
     private JButton fundsButton;
     private JButton archiveButton;
-    private JButton deleteButton;
 
     // List to store project proposals
     private JPanel proposalProjectListPanel;
@@ -107,8 +106,12 @@ public class UserFrame extends JFrame implements ActionListener {
     public ArrayList<fundContactClass> tempContacts = new ArrayList<>();
     private ArrayList<fundContactClass> removeContactArray = new ArrayList<>();
     private ArrayList<fundContactClass> contacts = new ArrayList<>();
+
     private List<JToggleButton> tagButton;
     private ArrayList<String> selectedTags = new ArrayList<>();
+
+    UIButtons UIButtons = new UIButtons();
+
 
     // Constructor to set up the GUI
     public UserFrame() {
@@ -302,7 +305,28 @@ public class UserFrame extends JFrame implements ActionListener {
         changeFundButton = createButton("Redigér en fond");
 
         EditProjectButton editProjectButton = new EditProjectButton(this, main.projectList);
-        // EditFundButton editFundButton = new EditFundButton(this, main.fundList);
+
+        EditFundButton editFundButton = new EditFundButton(this, main.fundList);
+
+        EditProjectProposal editProjectProposal = new EditProjectProposal(this, main.proposalList);
+
+
+        changeFundButton.addActionListener(e -> {
+            editFundButton.editFundDialog(); // Call the method on the instance
+            updateFundList();
+        });
+
+
+        changeProbButton.addActionListener(e -> {
+            editProjectProposal.openEditProjectPropDialog(); // Call the method on the instance
+            updateProposalProjectList();
+        });
+
+        changeProjectButton.addActionListener(e -> {
+            editProjectButton.openEditProjectDialog();
+            updateProjectList();
+        });
+
 
         panel5.add(createProbButton);
         panel5.add(changeProbButton);
@@ -310,16 +334,6 @@ public class UserFrame extends JFrame implements ActionListener {
         panel5.add(changeProjectButton);
         panel5.add(createFundButton);
         panel5.add(changeFundButton);
-
-        /*
-         * changeFundButton.addActionListener(e -> {
-         * editFundButton.openEditFundDialog();
-         * });
-         */
-
-        changeProjectButton.addActionListener(e -> {
-            editProjectButton.openEditProjectDialog();
-        });
 
         return panel5;
     }
@@ -484,37 +498,6 @@ public class UserFrame extends JFrame implements ActionListener {
             detailsPanel.add(new JLabel("Details: " + item.toString()));
         }
 
-        deleteButton = deleteButton("Slet");
-        deleteButton.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(
-                    null,
-                    "Er du sikker på, at du vil slette dette element?",
-                    "Bekræft Sletning",
-                    JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) {
-                if (item instanceof project) {
-                    main.archiveProjectList.remove((project) item);
-                    displayArchiveList("ProjectDetails", main.archiveProjectList);
-                } else if (item instanceof proposalProject) {
-                    main.deniedProposalList.remove((proposalProject) item);
-                    displayArchiveList("proposalProjectsDetails", main.deniedProposalList);
-                } else if (item instanceof fundClass) {
-                    main.archiveFundList.remove((fundClass) item);
-                    displayArchiveList("FundDetails", main.archiveFundList);
-                }
-                System.out.println("Deleting item: " + item);
-                System.out.println(main.deniedProposalList);
-
-                JOptionPane.showMessageDialog(
-                        null,
-                        "Elementet er blevet slettet.",
-                        "Sletning fuldført",
-                        JOptionPane.INFORMATION_MESSAGE);
-            }
-        });
-
-        detailsPanel.add(Box.createVerticalStrut(10)); // Add spacing before the button
-        detailsPanel.add(deleteButton);
 
         // Show details in a dialog box
         JOptionPane.showMessageDialog(null, detailsPanel, "Item Details", JOptionPane.INFORMATION_MESSAGE);
@@ -871,14 +854,7 @@ public class UserFrame extends JFrame implements ActionListener {
             // Add the proposal to the list and update UI
             main.proposalList.add(proposal);
             updateProposalProjectList();
-            CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
-            CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
-            ProposalsCsvWriter.writeProposalCsv("data/proposals.csv", main.proposalList);
-            ProjectCsvWriter.writeProjectCsv("data/projects.csv", main.projectList);
-            FundCsvWriter.writeCsv("data/funds.csv", main.fundList);
-            ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv", main.deniedProposalList);
-            ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv", main.archiveProjectList);
-            FundCsvWriter.writeCsv("data/fundsArchive.csv", main.archiveFundList);
+            writeAll();
             System.out.println("Proposal added to list and UI updated");
 
             // Close the dialog
@@ -954,7 +930,7 @@ public class UserFrame extends JFrame implements ActionListener {
                                 proposal.getDateCreated().toString().split("T")[0],
                                 categoriesDisplay));
             }
-            JButton proposalButton = createNewListButton(proposalLabel);
+            JButton proposalButton = UIButtons.createNewListButton(proposalLabel);
             proposalButton.addActionListener(e -> showProjectProbDetails(proposal));
             proposalProjectListPanel.add(proposalButton);
         }
@@ -1025,7 +1001,7 @@ public class UserFrame extends JFrame implements ActionListener {
                                     categoriesDisplay));
                 }
             }
-            JButton projectButton = createNewListButton(projectLabel);
+            JButton projectButton = UIButtonscreateNewListButton(projectLabel);
             projectButton.addActionListener(e -> showProjectDetails(project));
             projectListPanel.add(projectButton);
         }
@@ -1049,7 +1025,17 @@ public class UserFrame extends JFrame implements ActionListener {
         proposalProjectListPanel.add(infoLabel);
 
         // Add labels for each proposal project
-        for (proposalProject proposal : main.proposalList) {
+        globalListSorting sorter = new globalListSorting();
+        // Call the sortProposalList method
+        System.out.println("Unsorted List: " + main.proposalList);
+
+        ArrayList<proposalProject> sortedProposalList = sorter.sortProposalList(
+            false, false, false, main.proposalList
+        );
+
+        System.out.println("Sorted List: " + sortedProposalList);
+
+        for (proposalProject proposal : sortedProposalList) {
             JLabel proposalLabel;
 
             // Check if the categories list is empty and set a default value
@@ -1071,8 +1057,11 @@ public class UserFrame extends JFrame implements ActionListener {
                                 proposal.getDateCreated().toString().split("T")[0],
                                 categoriesDisplay));
             }
-            JButton proposalButton = createNewListButton(proposalLabel);
-            proposalButton.addActionListener(e -> showProjectProbDetails(proposal));
+
+            JButton proposalButton = UIButtons.createNewListButton(proposalLabel, false);
+            proposalButton.addActionListener(e -> 
+                showProjectProbDetails(proposal));
+
             proposalProjectListPanel.add(proposalButton);
         }
         // Update the view
@@ -1094,8 +1083,21 @@ public class UserFrame extends JFrame implements ActionListener {
                         "Categories"));
         projectListPanel.add(infoLabel);
 
+
+        // Add labels for each proposal project
+        globalListSorting sorter = new globalListSorting();
+        // Call the sortProposalList method
+        System.out.println("Unsorted List: " + main.projectList);
+
+        ArrayList<project> sortedProjectList = sorter.sortProjectList(
+            false, false, false, false, main.projectList
+        );
+
+        System.out.println("Sorted List: " + sortedProjectList);
+
+
         // Add labels for each project
-        for (project project : main.projectList) {
+        for (project project : sortedProjectList) {
             if (project.getFunds().isEmpty()) {
                 compareProjectCatsWithFundCats comparer = new compareProjectCatsWithFundCats();
                 project.setFundList(comparer.compareCategoriesWithFund(true, main.fundList, project));
@@ -1105,14 +1107,15 @@ public class UserFrame extends JFrame implements ActionListener {
             String categoriesDisplay = project.getCategories().isEmpty() ? "No Categories"
                     : project.getCategories().toString();
 
-            if (project.getFunds().isEmpty()) {
+            if (project.getFund() == null) {
+
                 if (project.getTitle().length() < 20) {
                     projectLabel = new JLabel(
                             String.format("%-30s %-30s %-30s %-30s %-30s",
                                     project.getTitle(),
                                     project.getProjectOwner(),
                                     project.getDateCreated().toString().split("T")[0],
-                                    "No Deadlines",
+                                    "Ingen Beviling",
                                     categoriesDisplay));
                 } else {
                     projectLabel = new JLabel(
@@ -1120,17 +1123,32 @@ public class UserFrame extends JFrame implements ActionListener {
                                     project.getTitle().substring(0, 17) + "...",
                                     project.getProjectOwner(),
                                     project.getDateCreated().toString().split("T")[0],
-                                    "No Deadlines",
+                                    "Ingen Beviling",
                                     categoriesDisplay));
                 }
             } else {
+                String deadline;
+                    if(fundQSort.allDeadlinesPassed(project.getFund())){
+                        deadline = "Alle frister Overskredet";
+                    } else {
+                        if ((project.getFund().getDeadlines().toString()).contains("3000")){
+                            deadline = "Løbende Fond";
+                        } else {
+                            for (LocalDateTime dL : project.getFund().getDeadlines()){
+                                if (dL.isBefore(LocalDateTime.now())){
+                                    project.getFund().getDeadlines().remove(dL);
+                                } 
+                            }
+                            deadline = project.getFund().getDeadlines().get(0).toString().replace("T"," ").replace("[","").replace("]","");
+                        }
+                    }
                 if (project.getTitle().length() < 20) {
                     projectLabel = new JLabel(
                             String.format("%-30s %-30s %-30s %-30s %-30s",
                                     project.getTitle(),
                                     project.getProjectOwner(),
                                     project.getDateCreated().toString().split("T")[0],
-                                    project.getFunds().get(0).getDeadlines().get(0).toString(),
+                                    deadline,
                                     categoriesDisplay));
                 } else {
                     projectLabel = new JLabel(
@@ -1138,13 +1156,17 @@ public class UserFrame extends JFrame implements ActionListener {
                                     project.getTitle().substring(0, 17) + "...",
                                     project.getProjectOwner(),
                                     project.getDateCreated().toString().split("T")[0],
-                                    project.getFunds().get(0).getDeadlines().get(0).toString(),
+                                    deadline,
                                     categoriesDisplay));
                 }
             }
-            JButton projectButton = createNewListButton(projectLabel);
-            projectButton.addActionListener(e -> showProjectDetails(project));
-            projectListPanel.add(projectButton);
+
+
+            JButton projectButton = UIButtons.createNewListButton(projectLabel, false);
+            projectButton.addActionListener(e -> 
+                showProjectDetails(project));
+                projectListPanel.add(projectButton);
+
         }
 
         // Update the view
@@ -1159,40 +1181,8 @@ public class UserFrame extends JFrame implements ActionListener {
         proposalProjectFullPanel.add(new JLabel("Titel: " + proposal.getTitle()));
         proposalProjectFullPanel.add(new JLabel("Ejer: " + proposal.getProjectOwner()));
         proposalProjectFullPanel.add(new JLabel("Idé: " + proposal.getProjectPurpose()));
-        String description = new String();
-        List<String> strings = new ArrayList<String>();
-        int index = 0;
-        while (index < proposal.getDescription().length()) {
-            strings.add(proposal.getDescription().substring(index,
-                    Math.min(index + 60, proposal.getDescription().length())));
-            index += Math.min(index + 60, proposal.getDescription().length());
-        }
-
-        for (int i = 0; i < strings.size(); i++) {
-            if (i + 1 < strings.size()) {
-                if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
-                        && Character.isLetter(strings.get(i + 1).charAt(0))) {
-                    description += strings.get(i).trim() + "-";
-                    description += "\n";
-                } else if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
-                        && !Character.isLetter(strings.get(i + 1).charAt(0))) {
-                    description += strings.get(i).trim() + strings.get(i + 1).charAt(0);
-                    strings.set(i + 1, strings.get(i + 1).substring(1));
-                    description += "\n";
-                } else {
-                    description += strings.get(i).trim();
-                    description += "\n";
-                }
-            } else {
-                description += strings.get(i).trim();
-                description += "\n";
-            }
-        }
-        description += "\n";
         proposalProjectFullPanel.add(new JLabel("Beskrivelse: "));
-        for (String s : description.split("\n")) {
-            proposalProjectFullPanel.add(new JLabel(s));
-        }
+        insertWrappedText(proposal.getDescription(), proposalProjectFullPanel);
         proposalProjectFullPanel.add(new JLabel("Målgruppe: " + proposal.getProjectTargetAudience()));
         proposalProjectFullPanel.add(new JLabel("Budget: " + proposal.getProjectBudget()));
 
@@ -1212,14 +1202,7 @@ public class UserFrame extends JFrame implements ActionListener {
             approveProposal(proposal); // Approve the proposal and convert it to a project
             proposalProjectFullPanel.getParent().getParent().remove(proposalProjectFullPanel); // Close details
             updateProposalProjectList(); // Refresh proposal list
-            FundCsvWriter.writeCsv("data/funds.csv", main.fundList);
-            CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
-            CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
-            ProposalsCsvWriter.writeProposalCsv("data/proposals.csv", main.proposalList);
-            ProjectCsvWriter.writeProjectCsv("data/projects.csv", main.projectList);
-            ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv", main.deniedProposalList);
-            ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv", main.archiveProjectList);
-            FundCsvWriter.writeCsv("data/fundsArchive.csv", main.archiveFundList);
+            writeAll();
             System.out.println("Proposal added to list and UI updated");
             proposalProjectFullPanel.removeAll();
             proposalProjectFullPanel.repaint();
@@ -1246,14 +1229,7 @@ public class UserFrame extends JFrame implements ActionListener {
 
             // Call update methods after archiving
             updateProposalProjectList();
-            CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
-            CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
-            ProposalsCsvWriter.writeProposalCsv("data/proposals.csv", main.proposalList);
-            ProjectCsvWriter.writeProjectCsv("data/projects.csv", main.projectList);
-            FundCsvWriter.writeCsv("data/funds.csv", main.fundList);
-            ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv", main.deniedProposalList);
-            ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv", main.archiveProjectList);
-            FundCsvWriter.writeCsv("data/fundsArchive.csv", main.archiveFundList);
+            writeAll();
             System.out.println("Proposal added to list and UI updated");
             proposalProjectFullPanel.removeAll();
             proposalProjectFullPanel.revalidate();
@@ -1266,7 +1242,12 @@ public class UserFrame extends JFrame implements ActionListener {
         proposalProjectFullPanel.revalidate();
         proposalProjectFullPanel.repaint();
     }
-
+    
+    private JLabel createLeftAlignedLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        return label;
+    }
     private void approveProposal(proposalProject proposal) {
         System.out.println("Approving proposal: " + proposal.getTitle());
 
@@ -1275,9 +1256,7 @@ public class UserFrame extends JFrame implements ActionListener {
             approveProposal(proposal); // Approve the proposal and convert it to a project
             proposalProjectFullPanel.getParent().getParent().remove(proposalProjectFullPanel); // Close details
             updateProposalProjectList(); // Refresh proposal list
-            ProposalsCsvWriter.writeProposalCsv("data/proposals.csv", main.proposalList);
-            ProjectCsvWriter.writeProjectCsv("data/projects.csv", main.projectList);
-            FundCsvWriter.writeCsv("data/funds.csv", main.fundList);
+            writeAll();
             proposalProjectFullPanel.removeAll();
             proposalProjectFullPanel.repaint();
             proposalProjectFullPanel.revalidate();
@@ -1332,14 +1311,42 @@ public class UserFrame extends JFrame implements ActionListener {
 
         // Update the UI to reflect the new project list
         updateProjectList();
-        CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
-        CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
-        ProposalsCsvWriter.writeProposalCsv("data/proposals.csv", main.proposalList);
-        ProjectCsvWriter.writeProjectCsv("data/projects.csv", main.projectList);
-        FundCsvWriter.writeCsv("data/funds.csv", main.fundList);
-        ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv", main.deniedProposalList);
-        ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv", main.archiveProjectList);
-        FundCsvWriter.writeCsv("data/fundsArchive.csv", main.archiveFundList);
+        writeAll();
+    }
+
+    private void insertWrappedText(String text, JPanel panel) {
+        String newText = new String();
+        List<String> strings = new ArrayList<String>();
+        int index = 0;
+        while (index < text.length()) {
+            strings.add(text.substring(index,
+                    Math.min(index + 100, text.length())));
+            index += Math.min(index + 100, text.length());
+        }
+
+        for (int i = 0; i < strings.size(); i++) {
+            if (i + 1 < strings.size()) {
+                if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
+                        && Character.isLetter(strings.get(i + 1).charAt(0))) {
+                    newText += strings.get(i).trim() + "-";
+                    newText += "\n";
+                } else if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
+                        && !Character.isLetter(strings.get(i + 1).charAt(0))) {
+                    newText += strings.get(i).trim() + strings.get(i + 1).charAt(0);
+                    strings.set(i + 1, strings.get(i + 1).substring(1));
+                    newText += "\n";
+                } else {
+                    newText += strings.get(i).trim();
+                    newText += "\n";
+                }
+            } else {
+                newText += strings.get(i).trim();
+                newText += "\n";
+            }
+        }
+        for (String s : newText.split("\n")) {
+            panel.add(new JLabel(s));
+        }
     }
 
     private void showProjectDetails(project project) {
@@ -1349,42 +1356,17 @@ public class UserFrame extends JFrame implements ActionListener {
         projectFullPanel.add(new JLabel("Titel: " + project.getTitle()));
         projectFullPanel.add(new JLabel("Ejer: " + project.getProjectOwner()));
         projectFullPanel.add(new JLabel("Idé: " + project.getProjectPurpose()));
-        String description = new String();
-        List<String> strings = new ArrayList<String>();
-        int index = 0;
-        while (index < project.getDescription().length()) {
-            strings.add(project.getDescription().substring(index,
-                    Math.min(index + 100, project.getDescription().length())));
-            index += Math.min(index + 100, project.getDescription().length());
-        }
-
-        for (int i = 0; i < strings.size(); i++) {
-            if (i + 1 < strings.size()) {
-                if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
-                        && Character.isLetter(strings.get(i + 1).charAt(0))) {
-                    description += strings.get(i).trim() + "-";
-                    description += "\n";
-                } else if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
-                        && !Character.isLetter(strings.get(i + 1).charAt(0))) {
-                    description += strings.get(i).trim() + strings.get(i + 1).charAt(0);
-                    strings.set(i + 1, strings.get(i + 1).substring(1));
-                    description += "\n";
-                } else {
-                    description += strings.get(i).trim();
-                    description += "\n";
-                }
-            } else {
-                description += strings.get(i).trim();
-                description += "\n";
-            }
-        }
-        projectFullPanel.add(new JLabel("Beskrivelse: " + description));
+        projectFullPanel.add(new JLabel("Beskrivelse: "));
+        insertWrappedText(project.getDescription(), projectFullPanel);
         projectFullPanel.add(new JLabel("Målgruppe: " + project.getProjectTargetAudience()));
         projectFullPanel.add(new JLabel("Budget: " + project.getProjectBudget()));
         projectFullPanel.add(new JLabel("Fra Dato: " + project.getProjectTimeSpanFrom().toString()));
         projectFullPanel.add(new JLabel("Til Dato: " + project.getProjectTimeSpanTo().toString()));
         projectFullPanel.add(new JLabel("Aktiviteter: " + project.getProjectActivities()));
         projectFullPanel.add(new JLabel("Kategori: " + project.getCategories()));
+        if (project.getFund() != null) {
+            projectFullPanel.add(new JLabel("Bevillieget fund: " + project.getFund().getTitle()));
+        }
         projectFullPanel.add(new JLabel("\n"));
 
         // Checkbox to toggle "only one category needed" logic
@@ -1410,19 +1392,20 @@ public class UserFrame extends JFrame implements ActionListener {
             if (!matchingFunds.isEmpty()) {
                 matchingFundsPanel.add(new JLabel("Fonde med matchende kategorier:"));
                 projectFullPanel.add(new JLabel("\n"));
+                JPanel centerPanel = new JPanel();
+                centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
                 for (fundClass fund : matchingFunds) {
-                    // Add fund title
-                    matchingFundsPanel.add(new JLabel(fund.getTitle()));
-
-                    // Add custom loop button
-                    JButton loopButton = createLoopButton();
-                    loopButton.addActionListener(e -> showFundDetailsDialog(fund));
-                    matchingFundsPanel.add(loopButton);
+                    JButton recommendButton = UIButtons.createNewListButton(new JLabel(fund.getTitle()), true);
+                    recommendButton.addActionListener(e -> showFundDetailsDialog(fund, project));
+                    centerPanel.add(recommendButton);
+                    centerPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Add space between buttons
+                    //Add space to the left of the buttons
+                   // centerPanel.add(Box.createRigidArea(new Dimension(50, 0))); 
                 }
+                matchingFundsPanel.add(centerPanel);
             } else {
                 matchingFundsPanel.add(new JLabel("Ingen fonde matcher nogle kategorier"));
                 projectFullPanel.add(new JLabel("\n"));
-
             }
 
             matchingFundsPanel.revalidate();
@@ -1446,14 +1429,7 @@ public class UserFrame extends JFrame implements ActionListener {
 
             // Update project list and clear details display
             updateProjectList();
-            CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
-            CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
-            ProposalsCsvWriter.writeProposalCsv("data/proposals.csv", main.proposalList);
-            ProjectCsvWriter.writeProjectCsv("data/projects.csv", main.projectList);
-            FundCsvWriter.writeCsv("data/funds.csv", main.fundList);
-            ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv", main.deniedProposalList);
-            ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv", main.archiveProjectList);
-            FundCsvWriter.writeCsv("data/fundsArchive.csv", main.archiveFundList);
+            writeAll();
             projectFullPanel.removeAll();
             projectFullPanel.revalidate();
             projectFullPanel.repaint();
@@ -1464,6 +1440,7 @@ public class UserFrame extends JFrame implements ActionListener {
         projectFullPanel.revalidate();
         projectFullPanel.repaint();
     }
+
 
     private void styleFundButton(JButton button) {
         button.setPreferredSize(new Dimension(300, 40)); // Set button size
@@ -1587,7 +1564,9 @@ public class UserFrame extends JFrame implements ActionListener {
             // Create a panel to hold the deadline label and the remove button
             JPanel deadlinePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             JLabel deadlineLabelItem = new JLabel(newDeadline.format(formatter));
-            JButton xButton = createXButton();
+
+            JButton xButton = UIButtons.createXButton();
+            xButton.addActionListener(this);
 
             // Add action listener to the remove button
             final LocalDateTime deadlineToRemove = newDeadline;
@@ -1641,33 +1620,27 @@ public class UserFrame extends JFrame implements ActionListener {
         contactsPanel.setLayout(new BoxLayout(contactsPanel, BoxLayout.Y_AXIS));
         JScrollPane contactsScrollPane = new JScrollPane(contactsPanel);
         contactsScrollPane.setPreferredSize(new Dimension(200, 100));
-        createContactsButton.addActionListener(e -> {
-            openContactsDialog(dialog);
-            System.out.println(tempContact.getContactName());
-            System.out.println(tempContact.getContactPhoneNumber());
-            System.out.println(tempContact.getContactEmail());
 
-            JButton removeContactButton = createXButton();
-            JPanel removeContactPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            JLabel contactInfo = new JLabel(tempContact.getContactName() + " - " + tempContact.getContactPhoneNumber()
-                    + " - " + tempContact.getContactEmail());
-            contactsPanel.add(removeContactButton);
-            contactsPanel.revalidate();
-            contactsPanel.repaint();
-            contacts.add(tempContact);
+        createContactsButton.addActionListener(e->{
+        openContactsDialog(dialog);
+        System.out.println(tempContact.getContactName());
+        System.out.println(tempContact.getContactPhoneNumber());
+        System.out.println(tempContact.getContactEmail());
+    
+        JButton removeContactButton = UIButtons.createXButton();
+        JPanel removeContactPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel contactInfo = new JLabel(tempContact.getContactName() + " - " + tempContact.getContactPhoneNumber() + " - " + tempContact.getContactEmail());
+        contactsPanel.add(removeContactButton);
+        contactsPanel.revalidate();
+        contactsPanel.repaint();
+        contacts.add(tempContact);
+    
+        final fundContactClass contactToRemove = tempContact;
+        removeContactButton.addActionListener(removeEvent -> {
+            System.out.println("Removing contact: " + contactToRemove.getContactName());
+            contacts.remove(contactToRemove);
+            contactsPanel.remove(removeContactPanel);
 
-            final fundContactClass contactToRemove = tempContact;
-            removeContactButton.addActionListener(removeEvent -> {
-                System.out.println("Removing contact: " + contactToRemove.getContactName());
-                contacts.remove(contactToRemove);
-                contactsPanel.remove(removeContactPanel);
-                contactsPanel.revalidate();
-                contactsPanel.repaint();
-            });
-            removeContactPanel.add(contactInfo);
-            removeContactPanel.add(removeContactButton);
-
-            contactsPanel.add(removeContactPanel);
             contactsPanel.revalidate();
             contactsPanel.repaint();
         });
@@ -1837,14 +1810,9 @@ public class UserFrame extends JFrame implements ActionListener {
                 contacts.clear();
                 main.fundList.add(fund);
                 updateFundList();
-                CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
-                CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
-                ProposalsCsvWriter.writeProposalCsv("data/proposals.csv", main.proposalList);
-                ProjectCsvWriter.writeProjectCsv("data/projects.csv", main.projectList);
-                FundCsvWriter.writeCsv("data/funds.csv", main.fundList);
-                ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv", main.deniedProposalList);
-                ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv", main.archiveProjectList);
-                FundCsvWriter.writeCsv("data/fundsArchive.csv", main.archiveFundList);
+
+                writeAll();
+
                 dialog.dispose();
             }
         });
@@ -1900,7 +1868,7 @@ public class UserFrame extends JFrame implements ActionListener {
         dialog.setVisible(true);
     }
 
-    private JButton createXButton() {
+    public JButton createXButton() {
         ImageIcon originalIcon = new ImageIcon("img/X_button.png");
         Image scaledImage = originalIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         ImageIcon resizedIcon = new ImageIcon(scaledImage);
@@ -2015,51 +1983,20 @@ public class UserFrame extends JFrame implements ActionListener {
         fundFullPanel.removeAll();
 
         fundFullPanel.add(new JLabel("Titel: " + fund.getTitle()));
-        String description = new String();
-        description += "<html>";
-        List<String> strings = new ArrayList<String>();
-        int index = 0;
-        while (index < fund.getDescription().length()) {
-            strings.add(fund.getDescription().substring(index,
-                    Math.min(index + 60, fund.getDescription().length())));
-            index += Math.min(index + 60, fund.getDescription().length());
-        }
-
-        for (int i = 0; i < strings.size(); i++) {
-            if (i + 1 < strings.size()) {
-                if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
-                        && Character.isLetter(strings.get(i + 1).charAt(0))) {
-                    description += strings.get(i).trim() + "-";
-                    description += "\n";
-                } else if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
-                        && !Character.isLetter(strings.get(i + 1).charAt(0))) {
-                    description += strings.get(i).trim() + strings.get(i + 1).charAt(0);
-                    strings.set(i + 1, strings.get(i + 1).substring(1));
-                    description += "\n";
-                } else {
-                    description += strings.get(i).trim();
-                    description += "\n";
-                }
-            } else {
-                description += strings.get(i).trim();
-                description += "\n";
-            }
-        }
-        description += "\n";
         fundFullPanel.add(new JLabel("Beskrivelse: "));
-        for (String s : description.split("\n")) {
-            fundFullPanel.add(new JLabel(s));
-        }
+        insertWrappedText(fund.getDescription(), fundFullPanel);
         fundFullPanel.add(new JLabel("Beløb Fra: " + fund.getBudgetMin()));
         fundFullPanel.add(new JLabel("Beløb Til: " + fund.getBudgetMax()));
         // Make deadline readable for humans
         List<String> tempDeadlines = new ArrayList<>();
         for (int i = 0; i < fund.getDeadlines().size(); i++) {
+            if (fund.getDeadlines().toString().contains("3000")){
+                tempDeadlines.add("Løbende Ansøgningsfrist");
+            } else {
             tempDeadlines.add(fund.getDeadlines().get(i).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+            }
         }
         fundFullPanel.add(new JLabel("Ansøgningsfrist: " + String.join(", ", tempDeadlines)));
-        // fundFullPanel.add(new JLabel("Deadline: " + fund.getDeadlines()));
-        fundFullPanel.add(new JLabel("Løbende: " + fund.getRunning()));
         fundFullPanel.add(new JLabel("Kategori: " + fund.getCategories()));
         fundFullPanel.add(new JLabel("Tidligere samarbejde: " + String.join(", ", fund.getCollaborationHistory())));
         fundFullPanel.add(new JLabel("Kontaktperson(er): "));
@@ -2078,14 +2015,7 @@ public class UserFrame extends JFrame implements ActionListener {
 
             // Call update methods after archiving
             updateFundList();
-            CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
-            CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
-            ProposalsCsvWriter.writeProposalCsv("data/proposals.csv", main.proposalList);
-            ProjectCsvWriter.writeProjectCsv("data/projects.csv", main.projectList);
-            FundCsvWriter.writeCsv("data/funds.csv", main.fundList);
-            ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv", main.deniedProposalList);
-            ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv", main.archiveProjectList);
-            FundCsvWriter.writeCsv("data/fundsArchive.csv", main.archiveFundList);
+            writeAll();
             fundFullPanel.removeAll();
             fundFullPanel.revalidate();
             fundFullPanel.repaint();
@@ -2230,7 +2160,7 @@ public class UserFrame extends JFrame implements ActionListener {
                                     deadlineDisplay));
                 }
             }
-            JButton fundButton = createNewListButton(fundLabel);
+            JButton fundButton = UIButtons.createNewListButton(fundLabel);
             fundButton.addActionListener(e -> showFundDetails(fund));
             fundListPanel.add(fundButton);
         }
@@ -2257,7 +2187,16 @@ public class UserFrame extends JFrame implements ActionListener {
             if (fund.getDeadlines().contains(LocalDateTime.of(3000, 1, 1, 0, 0))) {
                 deadlineDisplay = "[Løbende Ansøgningsfrist]";
             } else {
-                deadlineDisplay = fund.getDeadlines().toString();
+                if(fundQSort.allDeadlinesPassed(fund)){
+                    deadlineDisplay = "Alle frister Overskredet";
+                } else {
+                        for (LocalDateTime dL : fund.getDeadlines()){
+                            if (dL.isBefore(LocalDateTime.now())){
+                                fund.getDeadlines().remove(dL);
+                            } 
+                        }
+                        deadlineDisplay = fund.getDeadlines().get(0).toString().replace("T"," ").replace("[","").replace("]","");
+                    }
             }
 
             if (fund.getTitle().length() < 20) {
@@ -2297,42 +2236,23 @@ public class UserFrame extends JFrame implements ActionListener {
                                     deadlineDisplay));
                 }
             }
-            JButton fundButton = createNewListButton(fundLabel);
-            fundButton.addActionListener(e -> showFundDetails(fund));
+
+            JButton fundButton = UIButtons.createNewListButton(fundLabel, false);
+            fundButton.addActionListener(e -> 
+                showFundDetails(fund));
+
             fundListPanel.add(fundButton);
         }
         fundListPanel.revalidate();
         fundListPanel.repaint();
     }
 
-    private JButton createNewListButton(JLabel infoLabel) {
-        JButton listButton = new JButton(infoLabel.getText());
-        listButton.setPreferredSize(new Dimension(300, 30)); // Set button size
-        listButton.setFont(new Font("SansSerif", Font.PLAIN, 14)); // Set font
-        listButton.setMaximumSize(new Dimension(850, 40)); // Set maximum size
-        listButton.setFocusPainted(false); // Remove focus border
-        listButton.setBackground(new Color(245, 245, 245)); // Set background color
-        listButton.setForeground(Color.DARK_GRAY); // Set text color
-        listButton.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)); // Set border
-        listButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Set cursor
+    
+    
 
-        // Add hover effect
-        listButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                listButton.setBackground(new Color(220, 220, 220)); // Change background on hover
-            }
 
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                listButton.setBackground(new Color(245, 245, 245)); // Revert background on exit
-            }
-        });
+    public void openProjectDialog() {
 
-        return listButton;
-    }
-
-    private void openProjectDialog() {
         JDialog dialog = new JDialog(frame, "Lav Projekt", true);
         dialog.setSize(700, 700);
 
@@ -2523,14 +2443,7 @@ public class UserFrame extends JFrame implements ActionListener {
                     System.out.println(proj.getCategories());
                 }
                 updateProjectList();
-                CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
-                CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
-                ProposalsCsvWriter.writeProposalCsv("data/proposals.csv", main.proposalList);
-                ProjectCsvWriter.writeProjectCsv("data/projects.csv", main.projectList);
-                FundCsvWriter.writeCsv("data/funds.csv", main.fundList);
-                ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv", main.deniedProposalList);
-                ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv", main.archiveProjectList);
-                FundCsvWriter.writeCsv("data/fundsArchive.csv", main.archiveFundList);
+                writeAll();
                 dialog.dispose();
             } catch (Exception e) {
                 System.err.println("Rip openProjectDialog died");
@@ -2604,7 +2517,7 @@ public class UserFrame extends JFrame implements ActionListener {
         JPanel archivePanel = new JPanel();
         archivePanel.setLayout(new BoxLayout(archivePanel, BoxLayout.Y_AXIS));
         JScrollPane archiveScrollPane = new JScrollPane(archivePanel);
-        rightSidePanel.add(archiveScrollPane, "Arkiv");
+        rightSidePanel.add(archiveScrollPane, "ArchiveDetails");
 
         return rightSidePanel;
     }
@@ -2738,7 +2651,7 @@ public class UserFrame extends JFrame implements ActionListener {
         cardLayout.show(rightSidePanel, cardName);
     }
 
-    private void showFundDetailsDialog(fundClass fund) {
+       private void showFundDetailsDialog(fundClass fund, project project) {
         // Create the dialog box
         JDialog fundDialog = new JDialog(frame, fund.getTitle(), true);
         fundDialog.setLayout(new GridLayout(0, 1));
@@ -2792,9 +2705,18 @@ public class UserFrame extends JFrame implements ActionListener {
         fundDialog.add(new JLabel("\n"));
         fundDialog.add(new JLabel("Dato tilføjet: " + fund.getDateCreated()));
 
+        JButton assignButton = new JButton("Bevilig");
+        assignButton.addActionListener(e -> {
+            project.assignFund(fund);
+            updateProjectList();
+            writeAll();
+            showProjectDetails(project);
+            fundDialog.dispose();
+        });
         // Button to close the dialog
         JButton closeButton = new JButton("Luk");
         closeButton.addActionListener(e -> fundDialog.dispose());
+        fundDialog.add(assignButton);
         fundDialog.add(closeButton);
 
         fundDialog.pack();
@@ -2808,6 +2730,17 @@ public class UserFrame extends JFrame implements ActionListener {
         button.addActionListener(this);
         return button;
 
+    }
+
+    public static void writeAll(){
+        FundCsvWriter.writeCsv("data/funds.csv", main.fundList);
+        CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
+        CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
+        ProposalsCsvWriter.writeProposalCsv("data/proposals.csv", main.proposalList);
+        ProjectCsvWriter.writeProjectCsv("data/projects.csv", main.projectList);
+        ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv", main.deniedProposalList);
+        ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv", main.archiveProjectList);
+        FundCsvWriter.writeCsv("data/fundsArchive.csv", main.archiveFundList);
     }
 
 }

@@ -5,9 +5,33 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class project extends projectAbstract {
     private ArrayList<fundClass> closestDeadlineFunds = new ArrayList<fundClass>();
+    private fundClass assignedFund;
+
+    public int assignFundFromName(String Name){
+        for (fundClass fc : main.fundList){
+            if (Objects.equals(Name, fc.getTitle())){
+                assignedFund=fc;
+                return 0;
+            }
+        }
+        System.out.println("no matching funds found");
+        return 1;
+    }
+
+    public void assignFund(fundClass newFund)
+    {
+        assignedFund=newFund;
+    }
+
+    public fundClass getFund()
+    {
+        return assignedFund;
+    }
+
     public project(
         String projectTitle,
         ArrayList<String> categories,
