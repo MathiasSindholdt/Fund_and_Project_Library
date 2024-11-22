@@ -16,9 +16,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -26,6 +30,7 @@ import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JToggleButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -79,7 +84,6 @@ public class UserFrame extends JFrame implements ActionListener {
     private JPanel tagButtonPanel;
 
     private JPanel rightSidePanel;
-    JButton tagButton;
     
     private boolean isInvalidLenght;
     String tempTitle;
@@ -104,6 +108,9 @@ public class UserFrame extends JFrame implements ActionListener {
     public ArrayList<fundContactClass> tempContacts = new ArrayList<>();
     private ArrayList<fundContactClass> removeContactArray = new ArrayList<>();
     private ArrayList<fundContactClass> contacts = new ArrayList<>();
+    private List<JToggleButton> tagButton;
+    private Map<String, List<String>> newTag;
+
 
     // Constructor to set up the GUI
     public UserFrame() {
@@ -220,15 +227,16 @@ public class UserFrame extends JFrame implements ActionListener {
     }
 
     private void filterProjectProposalsByTag(String newTag) {
-        System.out.println("Filtering project proposals by tag: " + newTag);
-    
+
         // Clear the panel before adding filtered proposals
         proposalProjectListPanel.removeAll();
+        projectListPanel.removeAll();
+        fundListPanel.removeAll();
     
         // Loop through proposals and add only those matching the tag
         for (proposalProject proposal : main.proposalList) {
             if (proposal.getCategories().contains(newTag)) { // Assuming getTags() returns a list of tags
-                JLabel proposalLabel = new JLabel(proposal.getTitle() + " + " + proposal.getProjectOwner());
+                JLabel proposalLabel = new JLabel(proposal.getTitle() + " - " + proposal.getProjectOwner());
     
                 proposalLabel.addMouseListener(new java.awt.event.MouseAdapter() {
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -238,24 +246,68 @@ public class UserFrame extends JFrame implements ActionListener {
     
                 proposalProjectListPanel.add(proposalLabel);
             }
+        }        for (project project : main.projectList) {
+            if (project.getCategories().contains(newTag)) { // Assuming getTags() returns a list of tags
+                JLabel projectLabel = new JLabel(project.getTitle() + " - " + project.getProjectOwner());
+    
+                projectLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+                    public void mouseClicked(java.awt.event.MouseEvent evt) {
+                        showProjectDetails(project); // Show the selected project's details
+                    }
+                });
+    
+                projectListPanel.add(projectLabel);
+            }
+        }        for (fundClass fund : main.fundList) {
+            if (fund.getCategories().contains(newTag)) { // Assuming getTags() returns a list of tags
+                JLabel fundLabel = new JLabel(fund.getTitle() + " - " + fund.getCategories());
+    
+                fundLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+                    public void mouseClicked(java.awt.event.MouseEvent evt) {
+                        showFundDetails(fund); // Show the selected project's details
+                    }
+                });
+    
+                fundListPanel.add(fundLabel);
+            }
         }
     
         // Refresh the panel to show the filtered list
         proposalProjectListPanel.revalidate();
         proposalProjectListPanel.repaint();
+        projectListPanel.revalidate();
+        projectListPanel.repaint();
+        fundListPanel.revalidate();
+        fundListPanel.repaint();
     }
 
     private void createTagButton(String newTag) {
-        tagButton = new JButton(newTag);
-        tagButton.addActionListener(new ActionListener() {
+        JToggleButton tagButtonInstance = new JToggleButton(newTag);
+        tagButtonInstance.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-                filterProjectProposalsByTag(newTag);
+                if (tagButtonInstance.isSelected()) {
+                    filterProjectProposalsByTag(newTag);
+                } else {
+                    resetToAllProjects();
+                }
             }
         });
-        panel2.add(tagButton);  // Now panel2 is available here
-        panel2.revalidate();  // To make sure the layout updates
-        panel2.repaint();  // To re-render the panel
+
+        panel2.add(tagButtonInstance);    // Add the button to the panel
+        panel2.revalidate();              // Update the layout
+        panel2.repaint();                 // Re-render the panel
     }
+    
+
+    //reset display to show it all again
+    private void resetToAllProjects() {
+            updateProposalProjectList();
+            updateProjectList();
+            updateFundList();
+        
+    }
+    
 
     // Center panel for the main view (like before)
     private JPanel createCenterPanel() {
