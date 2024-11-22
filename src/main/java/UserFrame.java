@@ -108,7 +108,7 @@ public class UserFrame extends JFrame implements ActionListener {
     private ArrayList<fundContactClass> removeContactArray = new ArrayList<>();
     private ArrayList<fundContactClass> contacts = new ArrayList<>();
     private List<JToggleButton> tagButton;
-    private Map<String, List<String>> newTag;
+    private ArrayList<String> selectedTags = new ArrayList<>();
 
     // Constructor to set up the GUI
     public UserFrame() {
@@ -260,7 +260,15 @@ public class UserFrame extends JFrame implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (tagButtonInstance.isSelected()) {
-                    filterProjectProposalsByTag(newTag);
+                    selectedTags.add(newTag);
+                }else {
+                    selectedTags.remove(newTag);
+                }
+                if (!selectedTags.isEmpty()) {
+                    for (String s : selectedTags) {
+                        resetToAllProjects();
+                        filterProjectProposalsByTag(s);
+                    }
                 } else {
                     resetToAllProjects();
                 }
