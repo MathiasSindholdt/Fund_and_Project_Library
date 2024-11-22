@@ -216,40 +216,78 @@ addDeadlineButton.addActionListener(e -> {
         }
     });
     
-
+    boolean isCollaborated = true;
     // Previous Collaborations section
     JLabel collaboratedLabel = new JLabel("Tidligere samarbejde?:");
     JCheckBox collaboratedCheckBox = new JCheckBox();
+    collaboratedCheckBox.setSelected(isCollaborated);
     JPanel collaborationPanel = new JPanel();
     collaborationPanel.setLayout(new BoxLayout(collaborationPanel, BoxLayout.Y_AXIS));
-    JLabel collaborationLabel = new JLabel("Tilføj tidligere samarbejdsprojekter:");
+    JLabel collaborationLabel = new JLabel("Rediger tidligere samarbejdsprojekter:");
     JButton createCollaborationButton = new JButton("Tilføj Projekter");
     JPanel collaborationContentPanel = new JPanel();
     collaborationContentPanel.setLayout(new BoxLayout(collaborationContentPanel, BoxLayout.Y_AXIS));
     JScrollPane collaborationScrollPane = new JScrollPane(collaborationContentPanel);
     collaborationScrollPane.setPreferredSize(new Dimension(200, 100));
+/*
+    // Populate existing collaborated projects
+    for (String project : getSelectedCollaboration()) {
+        JCheckBox checkBox = new JCheckBox(project);
+        checkBox.setSelected(true);
+        collaborationContentPanel.add(checkBox);
+    }
+*/
+    // Populate current projects
+    getCurrentCheckboxes.getAllProjects(collaborationContentPanel);
+
+    collaboratedCheckBox.addItemListener(e -> {
+        collaborationPanel.setVisible(collaboratedCheckBox.isSelected());
+        dialog.revalidate();
+        dialog.repaint();
+    });
 
     createCollaborationButton.addActionListener(e -> {
         String newCollaboration = JOptionPane.showInputDialog(dialog, "Skriv nye tidligere samarbejdeprojekter:");
         if (newCollaboration != null && !newCollaboration.trim().isEmpty()) {
             main.userProjectList.add(newCollaboration);
-            collaborationContentPanel.add(new JCheckBox(newCollaboration));
+            JCheckBox checkBox = new JCheckBox(newCollaboration);
+            checkBox.setSelected(true);
+            collaborationContentPanel.add(checkBox);
             collaborationContentPanel.revalidate();
             collaborationContentPanel.repaint();
         }
     });
 
+    // Add collaboration panel components
+    JPanel collaborationLabelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    collaborationLabelPanel.add(collaborationLabel);
+    collaborationLabelPanel.add(createCollaborationButton);
+    collaborationPanel.add(collaborationLabelPanel);
+    collaborationPanel.add(collaborationScrollPane);
+    collaborationPanel.setVisible(isCollaborated);
+
     // Løbende deadline section
     JLabel runningLabel = new JLabel("Løbende ansøgningsfrist:");
     JCheckBox runningCheckBox = new JCheckBox();
     runningCheckBox.addItemListener(e -> {
-        deadlineSpinner.setEnabled(!runningCheckBox.isSelected());
+        boolean isRunning = runningCheckBox.isSelected();
+        
+        // Hide deadlines and disable the spinner and add button
+        deadlineSpinner.setEnabled(!isRunning);
+        addDeadlineButton.setEnabled(!isRunning);
+        deadlineListPanel.setVisible(!isRunning);
+        addedDeadlinesLabel.setVisible(!isRunning);
+        
+        // Revalidate and repaint for dynamic updates
+        dialog.revalidate();
+        dialog.repaint();
     });
+    
 
 
 
    // Populating fields based on the selected fund
-    fundSelector.addActionListener(e -> {
+   fundSelector.addActionListener(e -> {
     String selectedFundTitle = (String) fundSelector.getSelectedItem();
     fundClass selectedFund = fundList.stream()
         .filter(fund -> fund.getTitle().equals(selectedFundTitle))
@@ -266,8 +304,18 @@ addDeadlineButton.addActionListener(e -> {
         amountFrom.setText(String.valueOf(selectedFund.getBudgetMin()));
         amountTo.setText(String.valueOf(selectedFund.getBudgetMax()));
     
+        // Prepopulate the website field if the fund has a website
+        if (selectedFund.getFundWebsite() != null && !selectedFund.getFundWebsite().isEmpty()) {
+            websiteCheckBox.setSelected(true);
+            websitePanel.setVisible(true);
+            websiteField.setText(selectedFund.getFundWebsite());
+        } else {
+            websiteCheckBox.setSelected(false);
+            websitePanel.setVisible(false);
+            websiteField.setText("");
+        }
+    
         // Handle deadlines
-       // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         addedDeadlines.clear(); // Clear the list of added deadlines
         
         for (LocalDateTime deadline : selectedFund.getDeadlines()) {
@@ -296,6 +344,7 @@ addDeadlineButton.addActionListener(e -> {
         deadlineListPanel.repaint();
     }
 });
+
 
 
     // Submit Button to Save Changes
@@ -335,18 +384,34 @@ addDeadlineButton.addActionListener(e -> {
                 dialog.add(UserFrameErrorHandling.displayAmountFromError());
                 hasError = true;
             } else {
-                selectedFund.setBudgetMin(Long.parseLong(amountFrom.getText().trim()));
+                Long tempLong = Long.parseLong(amountFrom.getText().trim());
+                selectedFund.setBudgetMin(tempLong);
             }
     
             if (!validationUtils.isNumericInput(amountTo.getText())) {
                 dialog.add(UserFrameErrorHandling.displayAmountToError());
                 hasError = true;
             } else {
-                selectedFund.setBudgetMax(Long.parseLong(amountTo.getText().trim()), 0);
+                Long tempLong = Long.parseLong(amountTo.getText().trim());
+                selectedFund.setBudgetMax(tempLong);
+            }
+            if (runningCheckBox.isSelected()) {
+                // Clear existing deadlines and set the future deadline
+                addedDeadlines.clear();
+                addedDeadlines.add(LocalDateTime.of(3000, 1, 1, 0, 0));
+            } else {
+                // Update the fund deadlines if running is not selected
+                selectedFund.clearDeadlines();
+                for (LocalDateTime deadline : addedDeadlines) {
+                    selectedFund.setDeadlines(deadline);
+                }
             }
     
             // Update deadlines
             for(int i = 0; i < addedDeadlines.size() ; i++){
+                System.out.println("HAMAS HAMAS");
+                System.out.println(addedDeadlines.get(i));
+                selectedFund.clearDeadlines();
                 selectedFund.setDeadlines(addedDeadlines.get(i));
             }
 
@@ -377,10 +442,24 @@ addDeadlineButton.addActionListener(e -> {
 
             // Update running status
             selectedFund.setRunning(runningCheckBox.isSelected());
+
+            List<String> selectedCollaboration = new ArrayList<>();
+            for (Component comp : collaborationContentPanel.getComponents()) {
+                if (comp instanceof JCheckBox) {
+                    JCheckBox checkBox = (JCheckBox) comp;
+                    if (checkBox.isSelected()) {
+                        selectedCollaboration.add(checkBox.getText());
+                    }
+                }
+            }
+            
+            // Update the selected fund's collaboration history
+            selectedFund.getCollaborationHistory().clear();
+            selectedFund.getCollaborationHistory().addAll(selectedCollaboration);
     
             // If no errors, save the updated fund
             if (!hasError) {
-                System.out.println("No errors-----------------");
+              /*  System.out.println("No errors-----------------");
                 System.out.println(selectedFund.getTitle());
                 System.out.println(selectedFund.getDescription());
                 System.out.println(selectedFund.getBudgetMin());
@@ -392,7 +471,7 @@ addDeadlineButton.addActionListener(e -> {
                 for (int i = 0; i<selectedFund.getContacts().size();i++) {
                    System.out.println(selectedFund.getContacts().get(i).getContactName() + "-" + selectedFund.getContacts().get(i).getContactPhoneNumber() + "-" + selectedFund.getContacts().get(i).getContactEmail());
                 }
-                System.out.println(selectedFund.getFundWebsite());
+                System.out.println(selectedFund.getFundWebsite());*/
                 //Remove the fund currently being edited from the fundlist
                 FundCsvWriter.writeCsv("data/funds.csv", fundList);
                 dialog.dispose();
@@ -442,7 +521,8 @@ addDeadlineButton.addActionListener(e -> {
         //  .addComponent(contactsLabel).addComponent(createContactsButton).addComponent(contactsScrollPane)
         .addComponent(selectTagLabel).addComponent(tagScrollPane)
         .addComponent(websiteLabel).addComponent(websiteCheckBox).addComponent(websitePanel)
-        .addComponent(collaboratedLabel).addComponent(collaboratedCheckBox).addComponent(collaborationPanel)
+        .addComponent(collaboratedLabel).addComponent(collaboratedCheckBox)
+        .addComponent(collaborationPanel)
         .addComponent(runningLabel).addComponent(runningCheckBox)
         .addComponent(saveButton)
     );
@@ -464,7 +544,8 @@ addDeadlineButton.addActionListener(e -> {
         //  .addComponent(contactsLabel).addComponent(createContactsButton).addComponent(contactsScrollPane)
         .addComponent(selectTagLabel).addComponent(tagScrollPane)
         .addComponent(websiteLabel).addComponent(websiteCheckBox).addComponent(websitePanel)
-        .addComponent(collaboratedLabel).addComponent(collaboratedCheckBox).addComponent(collaborationPanel)
+        .addComponent(collaboratedLabel).addComponent(collaboratedCheckBox)
+        .addComponent(collaborationPanel)
         .addComponent(runningLabel).addComponent(runningCheckBox)
         .addComponent(saveButton)
     );
