@@ -310,7 +310,7 @@ public class UserFrame extends JFrame implements ActionListener {
         if (clickCounts[2] % 3 == 1) {
             sortedProjectList = sorter.sortByClosestDateProject(sortedProjectList);
             sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
-            sortedProjectList = sorter.sortByClosestDateProject(sortedProjectList);
+            sortedProposalList = sorter.sortByClosestDateProposal(sortedProposalList);
 
         } else if (clickCounts[2] % 3 == 2) {
             sortedProjectList = sorter.sortByFurthestDateProject(sortedProjectList);
