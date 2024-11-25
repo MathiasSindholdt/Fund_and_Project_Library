@@ -46,7 +46,14 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SwingConstants;
 
+
 import org.checkerframework.checker.units.qual.s;
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class UserFrame extends JFrame implements ActionListener {
 
@@ -122,7 +129,7 @@ public class UserFrame extends JFrame implements ActionListener {
     UIButtons UIButtons = new UIButtons();
 
     int[] clickCounts = { 0, 0, 0, 0, 0 }; // Initialize the clickCounts array
-
+    public static String clickableURL;
     // Constructor to set up the GUI
     public UserFrame() {
         initializeFrame(); // Initialize JFrame
@@ -2419,8 +2426,26 @@ public class UserFrame extends JFrame implements ActionListener {
 
     
         // Hjemmeside
+        //fundDialog.add(new JLabel("Hjemmeside: " + fund.getFundWebsite()));
+        clickableURL = fund.getFundWebsite();
+        if (!clickableURL.startsWith("http://") && !clickableURL.startsWith("https://")) {
+            clickableURL = "https://" + clickableURL;
+        }
+
+        JLabel websiteLabel = new JLabel("<html>Hjemmeside: <a href=\"" + clickableURL + "\">" + clickableURL + "</a></html>");
+        websiteLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        websiteLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            try {
+                Desktop.getDesktop().browse(new URI(clickableURL));
+            } catch (IOException | URISyntaxException e1) {
+                e1.printStackTrace();
+            }
+            }
+        });
         fundFullPanel.add(new JLabel("Hjemmeside:"));
-        fundFullPanel.add(new JLabel(fund.getFundWebsite()));
+        fundFullPanel.add(websiteLabel);
         fundFullPanel.add(new JLabel("\n"));
 
     
@@ -3264,7 +3289,20 @@ public class UserFrame extends JFrame implements ActionListener {
         }
         fundDialog.add(new JLabel("Budget: " + fund.getBudgetSpan()));
         fundDialog.add(new JLabel("Tidligere projekter: " + fund.getCollaborationHistory()));
-        fundDialog.add(new JLabel("Hjemmeside: " + fund.getFundWebsite()));
+        //fundDialog.add(new JLabel("Hjemmeside: " + fund.getFundWebsite()));
+        JLabel websiteLabel = new JLabel("<html>Hjemmeside: <a href=\"" + fund.getFundWebsite() + "\">"
+                + fund.getFundWebsite() + "</a></html>");
+        websiteLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        websiteLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    Desktop.getDesktop().browse(new URI(fund.getFundWebsite()));
+                } catch (IOException | URISyntaxException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
         fundDialog.add(new JLabel("\n"));
         fundDialog.add(new JLabel("Dato tilføjet: " + fund.getDateCreated()));
 
