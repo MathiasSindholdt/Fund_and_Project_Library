@@ -272,63 +272,84 @@ public class GuestFrame extends JFrame implements ActionListener {
 
     }
 
-    private void updateBeforeFilter() {
+    private int updateBeforeFilter() {
 
         if (clickCounts[0] % 3 == 1) {
             sortedProposalList = sorter.compareTitleProposal(sortedProposalList);
             sortedFundList = sorter.compareTitleFund(sortedFundList);
             sortedProjectList = sorter.compareTitleProject(sortedProjectList);
+            return 0;
 
         } else if (clickCounts[0] % 3 == 2) {
             sortedProposalList = sorter.compareTitleProposalReverse(sortedProposalList);
             sortedFundList = sorter.compareTitleReverseFund(sortedFundList);
             sortedProjectList = sorter.compareTitleReverseProject(sortedProjectList);
+            return 0;
 
         } else {
-            sortedProposalList = main.proposalList;
-            sortedProjectList = main.projectList;
-            sortedFundList = main.fundList;
+            sortedProjectList = sorter.sortByClosestDateProject(sortedProjectList);
+            sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
+            sortedProposalList = sorter.sortByClosestDateProposal(sortedProposalList);
         }
+
         if (clickCounts[1] % 3 == 1) {
             sortedProposalList = sorter.compareOwnerProposal(sortedProposalList);
             sortedProjectList = sorter.compareOwnerProject(sortedProjectList);
+            return 0;
 
         } else if (clickCounts[1] % 3 == 2) {
             sortedProposalList = sorter.compareReverseOwnerProposal(sortedProposalList);
             sortedProjectList = sorter.compareOwnerReverseProject(sortedProjectList);
+            return 0;
 
         } else {
-            sortedProposalList = main.proposalList;
-            sortedProjectList = main.projectList;
-            sortedFundList = main.fundList;
-        }
-        if (clickCounts[2] % 3 == 1) {
             sortedProjectList = sorter.sortByClosestDateProject(sortedProjectList);
             sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
             sortedProposalList = sorter.sortByClosestDateProposal(sortedProposalList);
+        }
+
+        if (clickCounts[2] % 3 == 1) {
+            sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
+            return 0;
 
         } else if (clickCounts[2] % 3 == 2) {
-            sortedProjectList = sorter.sortByFurthestDateProject(sortedProjectList);
-            sortedFundList = sorter.sortByFurthestDateFund(sortedFundList);
-            sortedProposalList = sorter.sortByFurthestDateProposal(sortedProposalList);
+            sortedFundList = sorter.sortFundByFurthestDeadline(sortedFundList);
+            return 0;
 
         } else {
-            sortedProjectList = main.projectList;
-            sortedProposalList = main.proposalList;
-            sortedFundList = main.fundList;
+            sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
         }
+
         if (clickCounts[3] % 3 == 1) {
-            // TODO sort by budget
+            sortedProjectList = sorter.sortByClosestDateProject(sortedProjectList);
+            sortedProposalList = sorter.sortByClosestDateProposal(sortedProposalList);
+            return 0;
 
         } else if (clickCounts[3] % 3 == 2) {
-            // TODO sort reverse by budget
+            sortedProjectList = sorter.sortByFurthestDateProject(sortedProjectList);
+            sortedProposalList = sorter.sortByFurthestDateProposal(sortedProposalList);
+            System.out.println("--- Here is our flag ---");
+            return 0;
 
         } else {
-            sortedFundList = main.fundList;
-            sortedProjectList = main.projectList;
-            sortedProposalList = main.proposalList;
+            sortedProjectList = sorter.sortByClosestDateProject(sortedProjectList);
+            sortedProposalList = sorter.sortByClosestDateProposal(sortedProposalList);
         }
 
+        if (clickCounts[4] % 3 == 1) {
+            sortedFundList = sorter.compareBudgetFundDecreasing(sortedFundList);
+            return 0;
+
+        } else if (clickCounts[4] % 3 == 2) {
+            sortedFundList = sorter.compareBudgetFundIncreasing(sortedFundList);
+            return 0;
+
+        } else {
+            sortedProjectList = sorter.sortByClosestDateProject(sortedProjectList);
+            sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
+            sortedProposalList = sorter.sortByClosestDateProposal(sortedProposalList);
+        }
+        return 1;
     }
 
 
@@ -2573,15 +2594,15 @@ public class GuestFrame extends JFrame implements ActionListener {
             fundListPanel.repaint();
         });
         System.out.println(">>>>>>>>> " + (clickCounts[2] % 3));
-        if (clickCounts[2] % 3 == 1) {
-            sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
+        // if (clickCounts[2] % 3 == 1) {
+        //     sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
 
-        } else if (clickCounts[2] % 3 == 2) {
-            sortedFundList = sorter.sortByFurthestDateFund(sortedFundList);
+        // } else if (clickCounts[2] % 3 == 2) {
+        //     sortedFundList = sorter.sortByFurthestDateFund(sortedFundList);
 
-        } else {
-            sortedFundList = main.fundList;
-        }
+        // } else {
+        //     sortedFundList = main.fundList;
+        // }
 
         for (fundClass fund : sortedFundList) {
             JLabel fundLabel;
