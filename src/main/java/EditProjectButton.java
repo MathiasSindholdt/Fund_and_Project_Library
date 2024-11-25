@@ -167,6 +167,8 @@ public class EditProjectButton {
                     JOptionPane.showMessageDialog(dialog, "Fejl ved opdatering af projekt: " + ex.getMessage(), "Fejl", JOptionPane.ERROR_MESSAGE);
                 }
             }
+            ProjectCsvWriter.writeProjectCsv("data/projects.csv", projectList);
+
         });
 
         // Layout definition

@@ -1,4 +1,3 @@
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class main {
@@ -12,6 +11,7 @@ public class main {
     static ArrayList<proposalProject> deniedProposalList = new ArrayList<>();
     static ArrayList<project> archiveProjectList = new ArrayList<>();
     static ArrayList<fundClass> archiveFundList = new ArrayList<>();
+    
 
     public static void initializeLists() {
         categories.addAll(CsvStringReader.readStringCsv("data/categories.csv"));
@@ -28,6 +28,16 @@ public class main {
     
     public static boolean getCatagoryBoolean(){
         return onlyOneIsNeeded;
+    }
+    public static void clearCategories() {
+        categories.clear();
+    }
+    
+    public static void clearArchive() {
+        archiveFundList.clear();
+        archiveProjectList.clear();
+        deniedProposalList.clear();
+
     }
 
     public ArrayList<project> getProjectList(){
