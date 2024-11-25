@@ -1581,8 +1581,8 @@ public class UserFrame extends JFrame implements ActionListener {
         int index = 0;
         while (index < text.length()) {
             strings.add(text.substring(index,
-                    Math.min(index + 100, text.length())));
-            index += Math.min(index + 100, text.length());
+                    Math.min(index + 60, text.length())));
+            index += Math.min(index + 60, text.length());
         }
 
         for (int i = 0; i < strings.size(); i++) {
@@ -2239,54 +2239,34 @@ public class UserFrame extends JFrame implements ActionListener {
         contactDialog.setLocationRelativeTo(dialog);
         contactDialog.setVisible(true);
     }
-
+    
     private void showFundDetails(fundClass fund) {
         tempContacts = fund.getContacts();
         fundFullPanel.removeAll();
-    
-        // Sæt layout for panelet
-        fundFullPanel.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-      //  gbc.insets = new Insets(10, 10, 10, 10); // Afstand mellem komponenter
-        gbc.anchor = GridBagConstraints.WEST; // Venstrejustering
-        gbc.gridx = 0;
-        gbc.gridy = 0;
+        fundFullPanel.setLayout(new BoxLayout(fundFullPanel, BoxLayout.Y_AXIS));
     
         // Titel
-        fundFullPanel.add(new JLabel("Titel:"), gbc);
-        gbc.gridx = 1;
-        fundFullPanel.add(new JLabel(fund.getTitle()), gbc);
+        fundFullPanel.add(new JLabel("Titel:"));
+        fundFullPanel.add(new JLabel(fund.getTitle() + "\n"));
+        fundFullPanel.add(new JLabel("\n"));
+
+
     
         // Beskrivelse
-        gbc.gridx = 0;
-        gbc.gridy++;
-        fundFullPanel.add(new JLabel("Beskrivelse:"), gbc);
-        gbc.gridx = 1;
-        JTextArea descriptionArea = new JTextArea(fund.getDescription(), 5, 30);
-        descriptionArea.setLineWrap(true);
-        descriptionArea.setWrapStyleWord(true);
-        descriptionArea.setEditable(false);
-        JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
-        fundFullPanel.add(descriptionScrollPane, gbc);
+        fundFullPanel.add(new JLabel("Beskrivelse:" + "\n"));
+        insertWrappedText(fund.getDescription(), fundFullPanel);
+        fundFullPanel.add(new JLabel("\n"));
+
     
         // Budget
-        gbc.gridx = 0;
-        gbc.gridy++;
-        fundFullPanel.add(new JLabel("Beløb Fra:"), gbc);
-        gbc.gridx = 1;
-        fundFullPanel.add(new JLabel(String.valueOf(fund.getBudgetMin())), gbc);
-    
-        gbc.gridx = 0;
-        gbc.gridy++;
-        fundFullPanel.add(new JLabel("Beløb Til:"), gbc);
-        gbc.gridx = 1;
-        fundFullPanel.add(new JLabel(String.valueOf(fund.getBudgetMax())), gbc);
+        fundFullPanel.add(new JLabel("Beløb Fra: " + fund.getBudgetMin()));
+        fundFullPanel.add(new JLabel("\n"));
+        fundFullPanel.add(new JLabel("Beløb Til: " + fund.getBudgetMax()));
+        fundFullPanel.add(new JLabel("\n"));
+
     
         // Ansøgningsfrist
-        gbc.gridx = 0;
-        gbc.gridy++;
-        fundFullPanel.add(new JLabel("Ansøgningsfrist:"), gbc);
-        gbc.gridx = 1;
+        fundFullPanel.add(new JLabel("Ansøgningsfrist:"));
         List<String> formattedDeadlines = new ArrayList<>();
         for (LocalDateTime deadline : fund.getDeadlines()) {
             if (deadline.getYear() == 3000) {
@@ -2295,52 +2275,46 @@ public class UserFrame extends JFrame implements ActionListener {
                 formattedDeadlines.add(deadline.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
             }
         }
-        fundFullPanel.add(new JLabel(String.join(", ", formattedDeadlines)), gbc);
+        insertWrappedText(String.join(", ", formattedDeadlines), fundFullPanel);
+        fundFullPanel.add(new JLabel("\n"));
+
     
         // Kategori
-        gbc.gridx = 0;
-        gbc.gridy++;
-        fundFullPanel.add(new JLabel("Kategori:"), gbc);
-        gbc.gridx = 1;
-        fundFullPanel.add(new JLabel(String.join(", ", fund.getCategories())), gbc);
+        fundFullPanel.add(new JLabel("Kategori:"));
+        insertWrappedText(String.join(", ", fund.getCategories()), fundFullPanel);
+        fundFullPanel.add(new JLabel("\n"));
     
         // Tidligere samarbejde
-        gbc.gridx = 0;
-        gbc.gridy++;
-        fundFullPanel.add(new JLabel("Tidligere samarbejde:"), gbc);
-        gbc.gridx = 1;
-        fundFullPanel.add(new JLabel(String.join(", ", fund.getCollaborationHistory())), gbc);
+        fundFullPanel.add(new JLabel("Tidligere samarbejde:"));
+        insertWrappedText(String.join(", ", fund.getCollaborationHistory()), fundFullPanel);
+        fundFullPanel.add(new JLabel("\n"));
+
     
         // Kontaktperson(er)
-        gbc.gridx = 0;
-        gbc.gridy++;
-        fundFullPanel.add(new JLabel("Kontaktperson(er):"), gbc);
-        gbc.gridx = 1;
-        JPanel contactPanel = new JPanel();
-        contactPanel.setLayout(new BoxLayout(contactPanel, BoxLayout.Y_AXIS));
-        for (fundContactClass contact : tempContacts) {
-            contactPanel.add(new JLabel(
-                contact.getContactName() + " - " +
-                contact.getContactPhoneNumber() + " - " +
-                contact.getContactEmail()
-            ));
+        fundFullPanel.add(new JLabel("Kontaktperson(er):"));
+        if (!tempContacts.isEmpty()) {
+            for (fundContactClass contact : tempContacts) {
+                fundFullPanel.add(new JLabel(
+                    contact.getContactName() + " - " +
+                    contact.getContactPhoneNumber() + " - " +
+                    contact.getContactEmail()
+                ));
+            }
+        } else {
+            fundFullPanel.add(new JLabel("Ingen kontaktpersoner tilgængelige."));
         }
-        fundFullPanel.add(contactPanel, gbc);
+        fundFullPanel.add(new JLabel("\n"));
+
     
         // Hjemmeside
-        gbc.gridx = 0;
-        gbc.gridy++;
-        fundFullPanel.add(new JLabel("Hjemmeside:"), gbc);
-        gbc.gridx = 1;
-        fundFullPanel.add(new JLabel(fund.getFundWebsite()), gbc);
+        fundFullPanel.add(new JLabel("Hjemmeside:"));
+        fundFullPanel.add(new JLabel(fund.getFundWebsite()));
+        fundFullPanel.add(new JLabel("\n"));
+
     
         // Arkivér-knap
-        gbc.gridx = 0;
-        gbc.gridy++;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
         JButton archiveButton = new JButton("Arkivér");
-        archiveButton.setPreferredSize(new Dimension(150, 50));
+     //   archiveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         archiveButton.addActionListener(e -> {
             archive.archiveFund(fund);
             updateFundList();
@@ -2349,14 +2323,14 @@ public class UserFrame extends JFrame implements ActionListener {
             fundFullPanel.revalidate();
             fundFullPanel.repaint();
         });
-        fundFullPanel.add(archiveButton, gbc);
+     //   fundFullPanel.add(Box.createVerticalStrut(10)); // Add some spacing
+        fundFullPanel.add(archiveButton);
     
-        // Opdater panelet
+        // Refresh panel
         fundFullPanel.revalidate();
         fundFullPanel.repaint();
-        fundListPanel.revalidate();
-        fundListPanel.repaint();
     }
+    
     
 
     /*
