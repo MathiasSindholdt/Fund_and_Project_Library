@@ -315,11 +315,11 @@ public class UserFrame extends JFrame implements ActionListener {
         } else if (clickCounts[2] % 3 == 2) {
             sortedProjectList = sorter.sortByFurthestDateProject(sortedProjectList);
             sortedFundList = sorter.sortByFurthestDateFund(sortedFundList);
-            sortedProjectList = sorter.sortByFurthestDateProject(sortedProjectList);
+            sortedProposalList = sorter.sortByFurthestDateProposal(sortedProposalList);
 
         } else {
             sortedProjectList = main.projectList;
-            sortedProjectList = main.projectList;
+            sortedProposalList = main.proposalList;
             sortedFundList = main.fundList;
         }
         if (clickCounts[3] % 3 == 1) {
@@ -331,7 +331,7 @@ public class UserFrame extends JFrame implements ActionListener {
         } else {
             sortedFundList = main.fundList;
             sortedProjectList = main.projectList;
-            sortedFundList = main.fundList;
+            sortedProposalList = main.proposalList;
         }
 
     }
