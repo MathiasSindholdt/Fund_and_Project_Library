@@ -1,12 +1,12 @@
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Objects;
 
 public class FundCsvWriter {
 
@@ -24,6 +24,9 @@ public class FundCsvWriter {
             
             // Process each fund and create rows of data
             for (fundClass fund : fundList) {
+                if (Objects.equals(fund.getFundWebsite(), "Website")){
+                    continue;
+                }
                 // Extract data from the fundClass object
                 String[] fundData = new String[10];
                 fundData[0] = escapeCsvField(fund.getTitle());  
