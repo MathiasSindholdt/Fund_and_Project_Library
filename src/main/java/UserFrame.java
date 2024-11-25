@@ -655,18 +655,17 @@ public class UserFrame extends JFrame implements ActionListener {
     }
 
     private void updateCategoryPanel() {
-        Component[] compArr = panel2.getComponents();
-        for (Component c : compArr) {
-            if (c instanceof JButton) {
-                panel2.remove(c);
-            }
-
+        panel2.removeAll();
+    
+        for (String category : main.categories) {
+            createTagButton(category);
+            System.out.println(category);
         }
-        for (String s : main.categories) {
-            createTagButton(s);
-        }
-
+    
+        panel2.revalidate();
+        panel2.repaint();
     }
+    
 
     private void openproposalProjectDialog() {
 
