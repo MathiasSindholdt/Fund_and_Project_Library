@@ -365,41 +365,27 @@ public class UserFrame extends JFrame implements ActionListener {
         // Truncate tag name if it's longer than 17 characters
         String displayTag = newTag.length() > 17 ? newTag.substring(0, 16) + "..." : newTag;
     
-        // Avoid duplicate tags in the list
-        if (!selectedTags.contains(newTag)) {
-            selectedTags.add(newTag); // Add full tag to the list
-        }
+        // Create the button with the display name
+        JToggleButton tagButtonInstance = new JToggleButton(displayTag);
     
-        // Clear panel2 to prevent duplicates
-        panel2.removeAll();
-    
-        // Rebuild buttons for all current tags
-        for (String tag : selectedTags) {
-            String displayTagText = tag.length() > 17 ? tag.substring(0, 16) + "..." : tag;
-    
-            // Create button
-            JToggleButton tagButtonInstance = new JToggleButton(displayTagText);
-    
-            // Action listener for button
-            tagButtonInstance.addActionListener(e -> {
+        // Add action listener for button selection
+        tagButtonInstance.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 if (tagButtonInstance.isSelected()) {
-                    selectedTags.add(tag); // Add full tag to the list
+                    selectedTags.add(newTag); // Use full tag in the list
                 } else {
-                    selectedTags.remove(tag); // Remove full tag from the list
+                    selectedTags.remove(newTag); // Use full tag in the list
                 }
                 System.out.println("<<<<<<<<" + selectedTags.toString());
                 filterByTag();
-            });
+            }
+        });
     
-            // Add the button to the panel
-            panel2.add(tagButtonInstance);
-        }
-    
-        // Refresh panel2
-        panel2.revalidate();
-        panel2.repaint();
+        panel2.add(tagButtonInstance); // Add the button to the panel
+        panel2.revalidate(); // Update the layout
+        panel2.repaint(); // Re-render the panel
     }
-    
     
 
     // reset display to show it all again
