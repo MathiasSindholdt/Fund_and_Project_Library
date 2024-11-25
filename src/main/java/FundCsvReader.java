@@ -25,7 +25,7 @@ public class FundCsvReader {
         long lineCounter = 0;
         
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filepath), StandardCharsets.UTF_8))) {
-
+            String headerLine = br.readLine();  // Skip header line
             String line;
             while ((line = br.readLine()) != null) {
                 lineCounter++;
