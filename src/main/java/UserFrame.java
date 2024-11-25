@@ -336,37 +336,6 @@ public class UserFrame extends JFrame implements ActionListener {
 
     }
 
-    private void filterByTag(String newTag) {
-
-        ArrayList<fundClass> fundList = new ArrayList<>();
-        ArrayList<project> projectList = new ArrayList<>();
-        ArrayList<proposalProject> proposalList = new ArrayList<>();
-
-        if (selectedTags.equals(main.categories)) {
-            selectedTags.clear();
-        }
-
-        // Loop through proposals and add only those matching the tag
-        for (proposalProject proposal : sortedProposalList) {
-            if (proposal.getCategories().contains(newTag)) {
-                proposalList.add(proposal);
-            }
-        }
-        for (project project : sortedProjectList) {
-            if (project.getCategories().contains(newTag)) {
-                projectList.add(project);
-            }
-        }
-        for (fundClass fund : sortedFundList) {
-            if (fund.getCategories().contains(newTag)) {
-                fundList.add(fund);
-            }
-        }
-
-        updateFundList(fundList);
-        updateProposalProjectList(proposalList);
-        updateProjectList(projectList);
-    }
 
     // Refresh the panel to show the filtered list
 
@@ -969,15 +938,6 @@ public class UserFrame extends JFrame implements ActionListener {
             proposalProjectListPanel.revalidate();
             proposalProjectListPanel.repaint();
         });
-        if (clickCounts[0] % 3 == 1) {
-            sortedProposalList = sorter.compareTitleProposal(sortedProposalList);
-
-        } else if (clickCounts[0] % 3 == 2) {
-            sortedProposalList = sorter.compareTitleProposalReverse(sortedProposalList);
-
-        } else {
-            sortedProposalList = main.proposalList;
-        }
 
         proposalOwnerSortButton.addActionListener(e -> {
             System.out.println("Owner button clicked");
@@ -998,15 +958,6 @@ public class UserFrame extends JFrame implements ActionListener {
             proposalProjectListPanel.revalidate();
             proposalProjectListPanel.repaint();
         });
-        if (clickCounts[1] % 3 == 1) {
-            sortedProposalList = sorter.compareOwnerProposal(sortedProposalList);
-
-        } else if (clickCounts[1] % 3 == 2) {
-            sortedProposalList = sorter.compareReverseOwnerProposal(sortedProposalList);
-
-        } else {
-            sortedProposalList = main.proposalList;
-        }
 
         proposalDateButton.addActionListener(e -> {
             System.out.println("deadline button clicked");
@@ -1027,15 +978,6 @@ public class UserFrame extends JFrame implements ActionListener {
             proposalProjectListPanel.revalidate();
             proposalProjectListPanel.repaint();
         });
-        if (clickCounts[3] % 3 == 1) {
-            sortedProposalList = sorter.sortByClosestDateProposal(sortedProposalList);
-
-        } else if (clickCounts[3] % 3 == 2) {
-            sortedProposalList = sorter.sortByFurthestDateProposal(sortedProposalList);
-
-        } else {
-            sortedProposalList = main.proposalList;
-        }
         // proposalProjectListPanel.add(buttonPanel);
         // Add labels for each proposal project
         for (proposalProject proposal : smallerList) {
