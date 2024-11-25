@@ -279,63 +279,84 @@ public class UserFrame extends JFrame implements ActionListener {
 
     }
 
-    private void updateBeforeFilter() {
+    private int updateBeforeFilter() {
 
         if (clickCounts[0] % 3 == 1) {
             sortedProposalList = sorter.compareTitleProposal(sortedProposalList);
             sortedFundList = sorter.compareTitleFund(sortedFundList);
             sortedProjectList = sorter.compareTitleProject(sortedProjectList);
+            return 0;
 
         } else if (clickCounts[0] % 3 == 2) {
             sortedProposalList = sorter.compareTitleProposalReverse(sortedProposalList);
             sortedFundList = sorter.compareTitleReverseFund(sortedFundList);
             sortedProjectList = sorter.compareTitleReverseProject(sortedProjectList);
+            return 0;
 
         } else {
-            sortedProposalList = main.proposalList;
-            sortedProjectList = main.projectList;
-            sortedFundList = main.fundList;
+            sortedProjectList = sorter.sortByClosestDateProject(sortedProjectList);
+            sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
+            sortedProposalList = sorter.sortByClosestDateProposal(sortedProposalList);
         }
+
         if (clickCounts[1] % 3 == 1) {
             sortedProposalList = sorter.compareOwnerProposal(sortedProposalList);
             sortedProjectList = sorter.compareOwnerProject(sortedProjectList);
+            return 0;
 
         } else if (clickCounts[1] % 3 == 2) {
             sortedProposalList = sorter.compareReverseOwnerProposal(sortedProposalList);
             sortedProjectList = sorter.compareOwnerReverseProject(sortedProjectList);
+            return 0;
 
         } else {
-            sortedProposalList = main.proposalList;
-            sortedProjectList = main.projectList;
-            sortedFundList = main.fundList;
-        }
-        if (clickCounts[2] % 3 == 1) {
             sortedProjectList = sorter.sortByClosestDateProject(sortedProjectList);
             sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
             sortedProposalList = sorter.sortByClosestDateProposal(sortedProposalList);
+        }
+
+        if (clickCounts[2] % 3 == 1) {
+            sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
+            return 0;
 
         } else if (clickCounts[2] % 3 == 2) {
-            sortedProjectList = sorter.sortByFurthestDateProject(sortedProjectList);
-            sortedFundList = sorter.sortByFurthestDateFund(sortedFundList);
-            sortedProposalList = sorter.sortByFurthestDateProposal(sortedProposalList);
+            sortedFundList = sorter.sortFundByFurthestDeadline(sortedFundList);
+            return 0;
 
         } else {
-            sortedProjectList = main.projectList;
-            sortedProposalList = main.proposalList;
-            sortedFundList = main.fundList;
+            sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
         }
+
         if (clickCounts[3] % 3 == 1) {
-            // TODO sort by budget
+            sortedProjectList = sorter.sortByClosestDateProject(sortedProjectList);
+            sortedProposalList = sorter.sortByClosestDateProposal(sortedProposalList);
+            return 0;
 
         } else if (clickCounts[3] % 3 == 2) {
-            // TODO sort reverse by budget
+            sortedProjectList = sorter.sortByFurthestDateProject(sortedProjectList);
+            sortedProposalList = sorter.sortByFurthestDateProposal(sortedProposalList);
+            System.out.println("--- Here is our flag ---");
+            return 0;
 
         } else {
-            sortedFundList = main.fundList;
-            sortedProjectList = main.projectList;
-            sortedProposalList = main.proposalList;
+            sortedProjectList = sorter.sortByClosestDateProject(sortedProjectList);
+            sortedProposalList = sorter.sortByClosestDateProposal(sortedProposalList);
         }
 
+        if (clickCounts[4] % 3 == 1) {
+            sortedFundList = sorter.compareBudgetFundDecreasing(sortedFundList);
+            return 0;
+
+        } else if (clickCounts[4] % 3 == 2) {
+            sortedFundList = sorter.compareBudgetFundIncreasing(sortedFundList);
+            return 0;
+
+        } else {
+            sortedProjectList = sorter.sortByClosestDateProject(sortedProjectList);
+            sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
+            sortedProposalList = sorter.sortByClosestDateProposal(sortedProposalList);
+        }
+        return 1;
     }
 
 
@@ -587,9 +608,7 @@ public class UserFrame extends JFrame implements ActionListener {
     // Show the frame
     public void show() {
         main.initializeLists();
-        updateProposalProjectList();
-        updateProjectList();
-        updateFundList();
+        filterByTag();
         frame.setVisible(true);
         updateCategoryPanel();
     }
@@ -966,7 +985,11 @@ public class UserFrame extends JFrame implements ActionListener {
             System.out.println("deadline button clicked");
             clickCounts[0] = 0;
             clickCounts[1] = 0;
-            clickCounts[2]++;
+            clickCounts[2] = 0;
+            clickCounts[3]++;
+            clickCounts[4] = 0;
+
+
 
             JButton newButton = UIButtons.sortingButtons("date", clickCounts);
             proposalDateButton.setText(newButton.getText());
@@ -1024,7 +1047,7 @@ public class UserFrame extends JFrame implements ActionListener {
         projectListPanel.removeAll();
         JButton projectTitleSortButton = UIButtons.sortingButtons("title", clickCounts);
         JButton projectOwnerSortButton = UIButtons.sortingButtons("owner", clickCounts);
-        JButton projectDeadlineSortButton = UIButtons.sortingButtons("deadline", clickCounts);
+        JButton projectDeadlineSortButton = UIButtons.sortingButtons("date", clickCounts);
         JButton catagoriesButton = UIButtons.createListCatagoryButton("Kategorier");
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -1083,10 +1106,11 @@ public class UserFrame extends JFrame implements ActionListener {
             System.out.println("deadline button clicked");
             clickCounts[0] = 0;
             clickCounts[1] = 0;
-            clickCounts[2]++;
-            clickCounts[3] = 0;
+            clickCounts[2] = 0;
+            clickCounts[3]++;
+            clickCounts[4] = 0;
 
-            JButton newButton = UIButtons.sortingButtons("deadline", clickCounts);
+            JButton newButton = UIButtons.sortingButtons("date", clickCounts);
             projectDeadlineSortButton.setText(newButton.getText());
             projectDeadlineSortButton.setIcon(newButton.getIcon());
 
@@ -1223,10 +1247,12 @@ public class UserFrame extends JFrame implements ActionListener {
             proposalProjectListPanel.repaint();
         });
         proposalDateButton.addActionListener(e -> {
-            System.out.println("deadline button clicked");
+            System.out.println("date button clicked");
             clickCounts[0] = 0;
             clickCounts[1] = 0;
+            clickCounts[2] = 0;
             clickCounts[3]++;
+            clickCounts[4] = 0;
 
             JButton newButton = UIButtons.sortingButtons("date", clickCounts);
             proposalDateButton.setText(newButton.getText());
@@ -1281,7 +1307,7 @@ public class UserFrame extends JFrame implements ActionListener {
         projectListPanel.removeAll();
         JButton projectTitleSortButton = UIButtons.sortingButtons("title", clickCounts);
         JButton projectOwnerSortButton = UIButtons.sortingButtons("owner", clickCounts);
-        JButton projectDeadlineSortButton = UIButtons.sortingButtons("deadline", clickCounts);
+        JButton projectDeadlineSortButton = UIButtons.sortingButtons("date", clickCounts);
         JButton catagoriesButton = UIButtons.createListCatagoryButton("Kategorier");
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -1336,13 +1362,14 @@ public class UserFrame extends JFrame implements ActionListener {
         });
 
         projectDeadlineSortButton.addActionListener(e -> {
-            System.out.println("deadline button clicked");
+            System.out.println("date button clicked");
             clickCounts[0] = 0;
             clickCounts[1] = 0;
-            clickCounts[2]++;
-            clickCounts[3] = 0;
+            clickCounts[2] = 0;
+            clickCounts[3]++;
+            clickCounts[4] = 0;
 
-            JButton newButton = UIButtons.sortingButtons("deadline", clickCounts);
+            JButton newButton = UIButtons.sortingButtons("date", clickCounts);
             projectDeadlineSortButton.setText(newButton.getText());
             projectDeadlineSortButton.setIcon(newButton.getIcon());
 
@@ -1581,8 +1608,8 @@ public class UserFrame extends JFrame implements ActionListener {
         int index = 0;
         while (index < text.length()) {
             strings.add(text.substring(index,
-                    Math.min(index + 100, text.length())));
-            index += Math.min(index + 100, text.length());
+                    Math.min(index + 60, text.length())));
+            index += Math.min(index + 60, text.length());
         }
 
         for (int i = 0; i < strings.size(); i++) {
@@ -2248,54 +2275,34 @@ public class UserFrame extends JFrame implements ActionListener {
         contactDialog.setLocationRelativeTo(dialog);
         contactDialog.setVisible(true);
     }
-
+    
     private void showFundDetails(fundClass fund) {
         tempContacts = fund.getContacts();
         fundFullPanel.removeAll();
-    
-        // Sæt layout for panelet
-        fundFullPanel.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-      //  gbc.insets = new Insets(10, 10, 10, 10); // Afstand mellem komponenter
-        gbc.anchor = GridBagConstraints.WEST; // Venstrejustering
-        gbc.gridx = 0;
-        gbc.gridy = 0;
+        fundFullPanel.setLayout(new BoxLayout(fundFullPanel, BoxLayout.Y_AXIS));
     
         // Titel
-        fundFullPanel.add(new JLabel("Titel:"), gbc);
-        gbc.gridx = 1;
-        fundFullPanel.add(new JLabel(fund.getTitle()), gbc);
+        fundFullPanel.add(new JLabel("Titel:"));
+        fundFullPanel.add(new JLabel(fund.getTitle() + "\n"));
+        fundFullPanel.add(new JLabel("\n"));
+
+
     
         // Beskrivelse
-        gbc.gridx = 0;
-        gbc.gridy++;
-        fundFullPanel.add(new JLabel("Beskrivelse:"), gbc);
-        gbc.gridx = 1;
-        JTextArea descriptionArea = new JTextArea(fund.getDescription(), 5, 30);
-        descriptionArea.setLineWrap(true);
-        descriptionArea.setWrapStyleWord(true);
-        descriptionArea.setEditable(false);
-        JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
-        fundFullPanel.add(descriptionScrollPane, gbc);
+        fundFullPanel.add(new JLabel("Beskrivelse:" + "\n"));
+        insertWrappedText(fund.getDescription(), fundFullPanel);
+        fundFullPanel.add(new JLabel("\n"));
+
     
         // Budget
-        gbc.gridx = 0;
-        gbc.gridy++;
-        fundFullPanel.add(new JLabel("Beløb Fra:"), gbc);
-        gbc.gridx = 1;
-        fundFullPanel.add(new JLabel(String.valueOf(fund.getBudgetMin())), gbc);
-    
-        gbc.gridx = 0;
-        gbc.gridy++;
-        fundFullPanel.add(new JLabel("Beløb Til:"), gbc);
-        gbc.gridx = 1;
-        fundFullPanel.add(new JLabel(String.valueOf(fund.getBudgetMax())), gbc);
+        fundFullPanel.add(new JLabel("Beløb Fra: " + fund.getBudgetMin()));
+        fundFullPanel.add(new JLabel("\n"));
+        fundFullPanel.add(new JLabel("Beløb Til: " + fund.getBudgetMax()));
+        fundFullPanel.add(new JLabel("\n"));
+
     
         // Ansøgningsfrist
-        gbc.gridx = 0;
-        gbc.gridy++;
-        fundFullPanel.add(new JLabel("Ansøgningsfrist:"), gbc);
-        gbc.gridx = 1;
+        fundFullPanel.add(new JLabel("Ansøgningsfrist:"));
         List<String> formattedDeadlines = new ArrayList<>();
         for (LocalDateTime deadline : fund.getDeadlines()) {
             if (deadline.getYear() == 3000) {
@@ -2304,52 +2311,46 @@ public class UserFrame extends JFrame implements ActionListener {
                 formattedDeadlines.add(deadline.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
             }
         }
-        fundFullPanel.add(new JLabel(String.join(", ", formattedDeadlines)), gbc);
+        insertWrappedText(String.join(", ", formattedDeadlines), fundFullPanel);
+        fundFullPanel.add(new JLabel("\n"));
+
     
         // Kategori
-        gbc.gridx = 0;
-        gbc.gridy++;
-        fundFullPanel.add(new JLabel("Kategori:"), gbc);
-        gbc.gridx = 1;
-        fundFullPanel.add(new JLabel(String.join(", ", fund.getCategories())), gbc);
+        fundFullPanel.add(new JLabel("Kategori:"));
+        insertWrappedText(String.join(", ", fund.getCategories()), fundFullPanel);
+        fundFullPanel.add(new JLabel("\n"));
     
         // Tidligere samarbejde
-        gbc.gridx = 0;
-        gbc.gridy++;
-        fundFullPanel.add(new JLabel("Tidligere samarbejde:"), gbc);
-        gbc.gridx = 1;
-        fundFullPanel.add(new JLabel(String.join(", ", fund.getCollaborationHistory())), gbc);
+        fundFullPanel.add(new JLabel("Tidligere samarbejde:"));
+        insertWrappedText(String.join(", ", fund.getCollaborationHistory()), fundFullPanel);
+        fundFullPanel.add(new JLabel("\n"));
+
     
         // Kontaktperson(er)
-        gbc.gridx = 0;
-        gbc.gridy++;
-        fundFullPanel.add(new JLabel("Kontaktperson(er):"), gbc);
-        gbc.gridx = 1;
-        JPanel contactPanel = new JPanel();
-        contactPanel.setLayout(new BoxLayout(contactPanel, BoxLayout.Y_AXIS));
-        for (fundContactClass contact : tempContacts) {
-            contactPanel.add(new JLabel(
-                contact.getContactName() + " - " +
-                contact.getContactPhoneNumber() + " - " +
-                contact.getContactEmail()
-            ));
+        fundFullPanel.add(new JLabel("Kontaktperson(er):"));
+        if (!tempContacts.isEmpty()) {
+            for (fundContactClass contact : tempContacts) {
+                fundFullPanel.add(new JLabel(
+                    contact.getContactName() + " - " +
+                    contact.getContactPhoneNumber() + " - " +
+                    contact.getContactEmail()
+                ));
+            }
+        } else {
+            fundFullPanel.add(new JLabel("Ingen kontaktpersoner tilgængelige."));
         }
-        fundFullPanel.add(contactPanel, gbc);
+        fundFullPanel.add(new JLabel("\n"));
+
     
         // Hjemmeside
-        gbc.gridx = 0;
-        gbc.gridy++;
-        fundFullPanel.add(new JLabel("Hjemmeside:"), gbc);
-        gbc.gridx = 1;
-        fundFullPanel.add(new JLabel(fund.getFundWebsite()), gbc);
+        fundFullPanel.add(new JLabel("Hjemmeside:"));
+        fundFullPanel.add(new JLabel(fund.getFundWebsite()));
+        fundFullPanel.add(new JLabel("\n"));
+
     
         // Arkivér-knap
-        gbc.gridx = 0;
-        gbc.gridy++;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
         JButton archiveButton = new JButton("Arkivér");
-        archiveButton.setPreferredSize(new Dimension(150, 50));
+     //   archiveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         archiveButton.addActionListener(e -> {
             archive.archiveFund(fund);
             updateFundList();
@@ -2358,14 +2359,14 @@ public class UserFrame extends JFrame implements ActionListener {
             fundFullPanel.revalidate();
             fundFullPanel.repaint();
         });
-        fundFullPanel.add(archiveButton, gbc);
+     //   fundFullPanel.add(Box.createVerticalStrut(10)); // Add some spacing
+        fundFullPanel.add(archiveButton);
     
-        // Opdater panelet
+        // Refresh panel
         fundFullPanel.revalidate();
         fundFullPanel.repaint();
-        fundListPanel.revalidate();
-        fundListPanel.repaint();
     }
+    
     
 
     /*
@@ -2454,6 +2455,7 @@ public class UserFrame extends JFrame implements ActionListener {
         fundTitleButton.addActionListener(e -> {
             System.out.println("Title button clicked");
             clickCounts[0]++;
+            clickCounts[1] = 0;
             clickCounts[2] = 0;
             clickCounts[3] = 0;
 
@@ -2474,8 +2476,11 @@ public class UserFrame extends JFrame implements ActionListener {
         fundBudgetButton.addActionListener(e -> {
             System.out.println("Owner button clicked");
             clickCounts[0] = 0;
+            clickCounts[1] = 0;
             clickCounts[2] = 0;
-            clickCounts[3]++;
+            clickCounts[3] = 0;
+            clickCounts[4]++;
+
 
             JButton newButton = UIButtons.sortingButtons("budget", clickCounts);
             fundBudgetButton.setText(newButton.getText());
@@ -2494,6 +2499,7 @@ public class UserFrame extends JFrame implements ActionListener {
         deadlineButton.addActionListener(e -> {
             System.out.println("deadline button clicked");
             clickCounts[0] = 0;
+            clickCounts[1] = 0;
             clickCounts[2]++;
             clickCounts[3] = 0;
 
@@ -2610,8 +2616,11 @@ public class UserFrame extends JFrame implements ActionListener {
         fundTitleButton.addActionListener(e -> {
             System.out.println("Title button clicked");
             clickCounts[0]++;
+            clickCounts[1] = 0;
             clickCounts[2] = 0;
+            clickCounts[3] = 0;
             clickCounts[4] = 0;
+
 
             JButton newButton = UIButtons.sortingButtons("title", clickCounts);
             fundTitleButton.setText(newButton.getText());
@@ -2630,7 +2639,9 @@ public class UserFrame extends JFrame implements ActionListener {
         fundBudgetButton.addActionListener(e -> {
             System.out.println("budget button clicked");
             clickCounts[0] = 0;
+            clickCounts[1] = 0;
             clickCounts[2] = 0;
+            clickCounts[3] = 0;
             clickCounts[4]++;
 
             JButton newButton = UIButtons.sortingButtons("budget", clickCounts);
@@ -2666,16 +2677,16 @@ public class UserFrame extends JFrame implements ActionListener {
             fundListPanel.revalidate();
             fundListPanel.repaint();
         });
-        System.out.println(">>>>>>>>> " + (clickCounts[2] % 3));
-        if (clickCounts[2] % 3 == 1) {
-            sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
+        System.out.println(">>>>>>>>> " + (clickCounts[3] % 3));
+        // if (clickCounts[2] % 3 == 1) {
+        //     sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
 
-        } else if (clickCounts[2] % 3 == 2) {
-            sortedFundList = sorter.sortByFurthestDateFund(sortedFundList);
+        // } else if (clickCounts[2] % 3 == 2) {
+        //     sortedFundList = sorter.sortByFurthestDateFund(sortedFundList);
 
-        } else {
-            sortedFundList = main.fundList;
-        }
+        // } else {
+        //     sortedFundList = main.fundList;
+        // }
 
         for (fundClass fund : sortedFundList) {
             JLabel fundLabel;
