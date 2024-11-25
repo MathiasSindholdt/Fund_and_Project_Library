@@ -39,8 +39,7 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SwingConstants;
 
-public class UIButtons extends JPanel{
-
+public class UIButtons extends JPanel {
 
     public void changeCursor(JButton button) {
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -69,7 +68,6 @@ public class UIButtons extends JPanel{
         button.setOpaque(false);
         return button;
     }
-
 
     public JButton createButton(String text) {
         JButton button = new JButton(text);
@@ -148,7 +146,7 @@ public class UIButtons extends JPanel{
 
     public JButton createNewListButton(JLabel infoLabel, Boolean rightSide) {
         JButton listButton = new JButton(infoLabel.getText());
-        if(rightSide) {
+        if (rightSide) {
             listButton.setMaximumSize(new Dimension(1000, 40)); // Set maximum size
         } else {
             listButton.setMaximumSize(new Dimension(850, 40)); // Set maximum size
@@ -160,14 +158,14 @@ public class UIButtons extends JPanel{
         listButton.setForeground(Color.DARK_GRAY); // Set text color
         listButton.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)); // Set border
         listButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Set cursor
-    
+
         // Add hover effect
         listButton.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 listButton.setBackground(new Color(220, 220, 220)); // Change background on hover
             }
-    
+
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 listButton.setBackground(new Color(245, 245, 245)); // Revert background on exit
@@ -175,5 +173,92 @@ public class UIButtons extends JPanel{
         });
 
         return listButton;
+    }
+
+    public JButton createListCatagoryButton(String text){
+        JButton listButton = new JButton(text);
+        listButton.setMaximumSize(new Dimension(150, 40)); // Set maximum size
+        listButton.setFont(new Font("SansSerif", Font.PLAIN, 14)); // Set font
+        listButton.setPreferredSize(new Dimension(300, 30));
+        listButton.setFocusPainted(false); // Remove focus border
+        listButton.setBackground(new Color(245, 245, 245)); // Set background color
+        listButton.setForeground(Color.DARK_GRAY); // Set text color
+        listButton.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)); // Set border
+        listButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Set cursor
+
+        // Add hover effect
+        listButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                listButton.setBackground(new Color(220, 220, 220)); // Change background on hover
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                listButton.setBackground(new Color(245, 245, 245)); // Revert background on exit
+            }
+        });
+
+        return listButton;
+    }
+
+    public JButton sortingButtons(String typeOfButton, int[] clickCount) {
+        System.out.println(clickCount[0]);
+        System.out.println(typeOfButton);
+        JButton button = new JButton();
+        String arrow;
+        button.setMaximumSize(new Dimension(150, 40)); // Set maximum size
+
+        button.setFont(new Font("SansSerif", Font.PLAIN, 14)); // Set font
+        button.setPreferredSize(new Dimension(300, 30));
+        button.setFocusPainted(false); // Remove focus border
+        button.setBackground(new Color(245, 245, 245)); // Set background color
+        button.setForeground(Color.DARK_GRAY); // Set text color
+        button.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)); // Set border
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Set cursor
+
+        // Add hover effect
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(220, 220, 220)); // Change background on hover
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(245, 245, 245)); // Revert background on exit
+            }
+        });
+        switch (typeOfButton) {
+            case "title":
+                System.out.println("updating title");
+                arrow = clickCount[0] % 3 == 1 ? "↑" : clickCount[0] % 3 == 2 ? "↓" : "";
+                button.setText("Titel " + arrow);
+                break;
+            case "owner":
+                arrow = clickCount[1] % 3 == 1 ? "↑" : clickCount[1] % 3 == 2 ? "↓" : "";
+                button.setText("Ejer " + arrow);
+                break;
+            case "deadline":
+                arrow = clickCount[2] % 3 == 1 ? "↑" : clickCount[2] % 3 == 2 ? "↓" : "";
+                button.setText("Deadline " + arrow);
+                break;
+            case "date":
+                arrow = clickCount[3] % 3 == 1 ? "↑" : clickCount[3] % 3 == 2 ? "↓" : "";
+                button.setText("Oprettelsesdato " + arrow);
+                break;
+            case "budget":
+                arrow = clickCount[4] % 3 == 1 ? "↑" : clickCount[4] % 3 == 2 ? "↓" : "";
+                button.setText("Budget " + arrow);
+                break;
+            // case "fundDeadline":
+            //     arrow = clickCount[5] % 3 == 1 ? "↑" : "";
+            //     button.setText("Deadline " + arrow);
+            //     break;
+            default:
+                System.out.println("Error in sortingButtons");
+                break;
+        }
+        return button;
     }
 }
