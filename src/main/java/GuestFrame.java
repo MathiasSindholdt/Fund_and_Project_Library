@@ -1018,7 +1018,7 @@ public class GuestFrame extends JFrame implements ActionListener {
         projectListPanel.removeAll();
         JButton projectTitleSortButton = UIButtons.sortingButtons("title", clickCounts);
         JButton projectOwnerSortButton = UIButtons.sortingButtons("owner", clickCounts);
-        JButton projectDeadlineSortButton = UIButtons.sortingButtons("deadline", clickCounts);
+        JButton projectDeadlineSortButton = UIButtons.sortingButtons("date", clickCounts);
         JButton catagoriesButton = UIButtons.createListCatagoryButton("Kategorier");
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -1080,7 +1080,7 @@ public class GuestFrame extends JFrame implements ActionListener {
             clickCounts[2]++;
             clickCounts[3] = 0;
 
-            JButton newButton = UIButtons.sortingButtons("deadline", clickCounts);
+            JButton newButton = UIButtons.sortingButtons("date", clickCounts);
             projectDeadlineSortButton.setText(newButton.getText());
             projectDeadlineSortButton.setIcon(newButton.getIcon());
 
@@ -1276,7 +1276,7 @@ public class GuestFrame extends JFrame implements ActionListener {
         projectListPanel.removeAll();
         JButton projectTitleSortButton = UIButtons.sortingButtons("title", clickCounts);
         JButton projectOwnerSortButton = UIButtons.sortingButtons("owner", clickCounts);
-        JButton projectDeadlineSortButton = UIButtons.sortingButtons("deadline", clickCounts);
+        JButton projectDeadlineSortButton = UIButtons.sortingButtons("date", clickCounts);
         JButton catagoriesButton = UIButtons.createListCatagoryButton("Kategorier");
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -1338,7 +1338,7 @@ public class GuestFrame extends JFrame implements ActionListener {
             clickCounts[3]++;
             clickCounts[4] = 0;
 
-            JButton newButton = UIButtons.sortingButtons("deadline", clickCounts);
+            JButton newButton = UIButtons.sortingButtons("date", clickCounts);
             projectDeadlineSortButton.setText(newButton.getText());
             projectDeadlineSortButton.setIcon(newButton.getIcon());
 
