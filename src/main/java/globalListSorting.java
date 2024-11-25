@@ -67,7 +67,7 @@ public class globalListSorting {
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
                 // Compare titles of the two elements in reverse order
-                if (sortedList.get(i).getProjectOwner().toLowerCase().compareTo(sortedList.get(j).getProjectOwner().toLowerCase()) > 0) {
+                if (sortedList.get(i).getProjectOwner().toLowerCase().compareTo(sortedList.get(j).getProjectOwner().toLowerCase()) < 0) {
                     // Swap elements
                     temp = sortedList.get(i);
                     sortedList.set(i, sortedList.get(j));

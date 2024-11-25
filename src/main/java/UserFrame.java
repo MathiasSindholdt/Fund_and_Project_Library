@@ -316,28 +316,37 @@ public class UserFrame extends JFrame implements ActionListener {
         }
 
         if (clickCounts[2] % 3 == 1) {
-            sortedProjectList = sorter.sortByClosestDateProject(sortedProjectList);
             sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
-            sortedProposalList = sorter.sortByClosestDateProposal(sortedProposalList);
             return 0;
 
         } else if (clickCounts[2] % 3 == 2) {
-            sortedProjectList = sorter.sortByFurthestDateProject(sortedProjectList);
             sortedFundList = sorter.sortFundByFurthestDeadline(sortedFundList);
+            return 0;
+
+        } else {
+            sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
+        }
+
+        if (clickCounts[3] % 3 == 1) {
+            sortedProjectList = sorter.sortByClosestDateProject(sortedProjectList);
+            sortedProposalList = sorter.sortByClosestDateProposal(sortedProposalList);
+            return 0;
+
+        } else if (clickCounts[3] % 3 == 2) {
+            sortedProjectList = sorter.sortByFurthestDateProject(sortedProjectList);
             sortedProposalList = sorter.sortByFurthestDateProposal(sortedProposalList);
             return 0;
 
         } else {
             sortedProjectList = sorter.sortByClosestDateProject(sortedProjectList);
-            sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
             sortedProposalList = sorter.sortByClosestDateProposal(sortedProposalList);
         }
 
-        if (clickCounts[3] % 3 == 1) {
+        if (clickCounts[4] % 3 == 1) {
             sortedFundList = sorter.compareBudgetFundDecreasing(sortedFundList);
             return 0;
 
-        } else if (clickCounts[3] % 3 == 2) {
+        } else if (clickCounts[4] % 3 == 2) {
             sortedFundList = sorter.compareBudgetFundIncreasing(sortedFundList);
             return 0;
 
@@ -975,8 +984,10 @@ public class UserFrame extends JFrame implements ActionListener {
             System.out.println("deadline button clicked");
             clickCounts[0] = 0;
             clickCounts[1] = 0;
-            clickCounts[2]++;
-            clickCounts[3] = 0;
+            clickCounts[2] = 0;
+            clickCounts[3]++;
+            clickCounts[4] = 0;
+
 
 
             JButton newButton = UIButtons.sortingButtons("date", clickCounts);
@@ -1237,8 +1248,9 @@ public class UserFrame extends JFrame implements ActionListener {
             System.out.println("deadline button clicked");
             clickCounts[0] = 0;
             clickCounts[1] = 0;
-            clickCounts[2]++;
-            clickCounts[3] = 0;
+            clickCounts[2] = 0;
+            clickCounts[3]++;
+            clickCounts[4] = 0;
 
             JButton newButton = UIButtons.sortingButtons("date", clickCounts);
             proposalDateButton.setText(newButton.getText());
@@ -2431,6 +2443,7 @@ public class UserFrame extends JFrame implements ActionListener {
         fundTitleButton.addActionListener(e -> {
             System.out.println("Title button clicked");
             clickCounts[0]++;
+            clickCounts[1] = 0;
             clickCounts[2] = 0;
             clickCounts[3] = 0;
 
@@ -2451,8 +2464,11 @@ public class UserFrame extends JFrame implements ActionListener {
         fundBudgetButton.addActionListener(e -> {
             System.out.println("Owner button clicked");
             clickCounts[0] = 0;
+            clickCounts[1] = 0;
             clickCounts[2] = 0;
-            clickCounts[3]++;
+            clickCounts[3] = 0;
+            clickCounts[4]++;
+
 
             JButton newButton = UIButtons.sortingButtons("budget", clickCounts);
             fundBudgetButton.setText(newButton.getText());
@@ -2471,6 +2487,7 @@ public class UserFrame extends JFrame implements ActionListener {
         deadlineButton.addActionListener(e -> {
             System.out.println("deadline button clicked");
             clickCounts[0] = 0;
+            clickCounts[1] = 0;
             clickCounts[2]++;
             clickCounts[3] = 0;
 
@@ -2587,8 +2604,11 @@ public class UserFrame extends JFrame implements ActionListener {
         fundTitleButton.addActionListener(e -> {
             System.out.println("Title button clicked");
             clickCounts[0]++;
+            clickCounts[1] = 0;
             clickCounts[2] = 0;
             clickCounts[3] = 0;
+            clickCounts[4] = 0;
+
 
             JButton newButton = UIButtons.sortingButtons("title", clickCounts);
             fundTitleButton.setText(newButton.getText());
@@ -2607,8 +2627,10 @@ public class UserFrame extends JFrame implements ActionListener {
         fundBudgetButton.addActionListener(e -> {
             System.out.println("Owner button clicked");
             clickCounts[0] = 0;
+            clickCounts[1] = 0;
             clickCounts[2] = 0;
-            clickCounts[3]++;
+            clickCounts[3] = 0;
+            clickCounts[4]++;
 
             JButton newButton = UIButtons.sortingButtons("budget", clickCounts);
             fundBudgetButton.setText(newButton.getText());
