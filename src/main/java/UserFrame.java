@@ -335,6 +335,7 @@ public class UserFrame extends JFrame implements ActionListener {
         } else if (clickCounts[3] % 3 == 2) {
             sortedProjectList = sorter.sortByFurthestDateProject(sortedProjectList);
             sortedProposalList = sorter.sortByFurthestDateProposal(sortedProposalList);
+            System.out.println("--- Here is our flag ---");
             return 0;
 
         } else {
@@ -1105,8 +1106,9 @@ public class UserFrame extends JFrame implements ActionListener {
             System.out.println("deadline button clicked");
             clickCounts[0] = 0;
             clickCounts[1] = 0;
-            clickCounts[2]++;
-            clickCounts[3] = 0;
+            clickCounts[2] = 0;
+            clickCounts[3]++;
+            clickCounts[4] = 0;
 
             JButton newButton = UIButtons.sortingButtons("date", clickCounts);
             projectDeadlineSortButton.setText(newButton.getText());
@@ -1245,7 +1247,7 @@ public class UserFrame extends JFrame implements ActionListener {
             proposalProjectListPanel.repaint();
         });
         proposalDateButton.addActionListener(e -> {
-            System.out.println("deadline button clicked");
+            System.out.println("date button clicked");
             clickCounts[0] = 0;
             clickCounts[1] = 0;
             clickCounts[2] = 0;
@@ -1360,13 +1362,14 @@ public class UserFrame extends JFrame implements ActionListener {
         });
 
         projectDeadlineSortButton.addActionListener(e -> {
-            System.out.println("deadline button clicked");
+            System.out.println("date button clicked");
             clickCounts[0] = 0;
             clickCounts[1] = 0;
-            clickCounts[2]++;
-            clickCounts[3] = 0;
+            clickCounts[2] = 0;
+            clickCounts[3]++;
+            clickCounts[4] = 0;
 
-            JButton newButton = UIButtons.sortingButtons("deadline", clickCounts);
+            JButton newButton = UIButtons.sortingButtons("date", clickCounts);
             projectDeadlineSortButton.setText(newButton.getText());
             projectDeadlineSortButton.setIcon(newButton.getIcon());
 
@@ -2665,7 +2668,7 @@ public class UserFrame extends JFrame implements ActionListener {
             fundListPanel.revalidate();
             fundListPanel.repaint();
         });
-        System.out.println(">>>>>>>>> " + (clickCounts[2] % 3));
+        System.out.println(">>>>>>>>> " + (clickCounts[3] % 3));
         // if (clickCounts[2] % 3 == 1) {
         //     sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
 

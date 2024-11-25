@@ -103,7 +103,7 @@ public class globalListSorting {
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
                 // Compare dates
-                if (sortedList.get(i).getDateCreated().compareTo(sortedList.get(j).getDateCreated()) < 0) {
+                if (sortedList.get(i).getDateCreated().compareTo(sortedList.get(j).getDateCreated()) > 0) {
                     // Manual swap
                     proposalProject temp = sortedList.get(i);
                     sortedList.set(i, sortedList.get(j));
