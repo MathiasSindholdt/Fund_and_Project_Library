@@ -2701,7 +2701,9 @@ public class UserFrame extends JFrame implements ActionListener {
         deadlineButton.addActionListener(e -> {
             System.out.println("deadline button clicked");
             clickCounts[0] = 0;
+            clickCounts[1] = 0;
             clickCounts[2]++;
+            clickCounts[3] = 0;
             clickCounts[4] = 0;
 
             JButton newButton = UIButtons.sortingButtons("deadline", clickCounts);

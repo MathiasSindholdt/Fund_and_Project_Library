@@ -45,9 +45,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SwingConstants;
+
 public class GuestFrame extends JFrame implements ActionListener {
 
-   private JFrame frame;
+    private JFrame frame;
     private JPanel cardPanel;
     private CardLayout cardLayout;
     JPanel panel2 = new JPanel();
@@ -259,15 +260,15 @@ public class GuestFrame extends JFrame implements ActionListener {
                 }
             }
         }
-        
-        if (selectedTags.isEmpty()){
+
+        if (selectedTags.isEmpty()) {
             updateFundList();
             updateProposalProjectList();
             updateProjectList();
-        }else {
-        updateFundList(fundList);
-        updateProposalProjectList(proposalList);
-        updateProjectList(projectList);
+        } else {
+            updateFundList(fundList);
+            updateProposalProjectList(proposalList);
+            updateProjectList(projectList);
         }
 
     }
@@ -352,16 +353,15 @@ public class GuestFrame extends JFrame implements ActionListener {
         return 1;
     }
 
-
     // Refresh the panel to show the filtered list
 
     private void createTagButton(String newTag) {
         // Truncate tag name if it's longer than 17 characters
         String displayTag = newTag.length() > 17 ? newTag.substring(0, 16) + "..." : newTag;
-    
+
         // Create the button with the display name
         JToggleButton tagButtonInstance = new JToggleButton(displayTag);
-    
+
         // Add action listener for button selection
         tagButtonInstance.addActionListener(new ActionListener() {
             @Override
@@ -375,7 +375,7 @@ public class GuestFrame extends JFrame implements ActionListener {
                 filterByTag();
             }
         });
-    
+
         panel2.add(tagButtonInstance); // Add the button to the panel
         panel2.revalidate(); // Update the layout
         panel2.repaint(); // Re-render the panel
@@ -400,10 +400,8 @@ public class GuestFrame extends JFrame implements ActionListener {
         changeProbButton = UIButtons.createButton("Redigér projekt forslag");
         changeProbButton.addActionListener(this);
 
-
         EditProjectProposal editProjectProposal = new EditProjectProposal(this, main.proposalList);
 
-       
         changeProbButton.addActionListener(e -> {
             editProjectProposal.openEditProjectPropDialog(); // Call the method on the instance
             updateProposalProjectList();
@@ -961,7 +959,8 @@ public class GuestFrame extends JFrame implements ActionListener {
             System.out.println("deadline button clicked");
             clickCounts[0] = 0;
             clickCounts[1] = 0;
-            clickCounts[2]++;
+            clickCounts[2] = 0;
+            clickCounts[3]++;
 
             JButton newButton = UIButtons.sortingButtons("date", clickCounts);
             proposalDateButton.setText(newButton.getText());
@@ -1221,6 +1220,7 @@ public class GuestFrame extends JFrame implements ActionListener {
             System.out.println("deadline button clicked");
             clickCounts[0] = 0;
             clickCounts[1] = 0;
+            clickCounts[2] = 0;
             clickCounts[3]++;
 
             JButton newButton = UIButtons.sortingButtons("date", clickCounts);
@@ -1334,8 +1334,9 @@ public class GuestFrame extends JFrame implements ActionListener {
             System.out.println("deadline button clicked");
             clickCounts[0] = 0;
             clickCounts[1] = 0;
-            clickCounts[2]++;
-            clickCounts[3] = 0;
+            clickCounts[2] = 0;
+            clickCounts[3]++;
+            clickCounts[4] = 0;
 
             JButton newButton = UIButtons.sortingButtons("deadline", clickCounts);
             projectDeadlineSortButton.setText(newButton.getText());
@@ -1452,7 +1453,6 @@ public class GuestFrame extends JFrame implements ActionListener {
         proposalProjectFullPanel.add(new JLabel("Budget: " + proposal.getProjectBudget()));
         proposalProjectFullPanel.add(new JLabel("\n"));
 
-
         // Display date range
         proposalProjectFullPanel.add(new JLabel("Fra Dato: " + proposal.getProjectTimeSpanFrom().toString()));
         proposalProjectFullPanel.add(new JLabel("Til Dato: " + proposal.getProjectTimeSpanTo().toString()));
@@ -1462,17 +1462,12 @@ public class GuestFrame extends JFrame implements ActionListener {
         proposalProjectFullPanel.add(new JLabel("Aktiviteter: " + proposal.getProjectActivities()));
         proposalProjectFullPanel.add(new JLabel("\n"));
 
-
         // Display categories as a concatenated string
         String categories = String.join(", ", proposal.getCategories());
         proposalProjectFullPanel.add(new JLabel("Kategorier: " + categories));
         proposalProjectFullPanel.add(new JLabel("\n"));
 
-
-
         // Add buttons to the panel
-  
-
 
         // Refresh the panel to reflect the changes
         proposalProjectFullPanel.revalidate();
@@ -1672,7 +1667,7 @@ public class GuestFrame extends JFrame implements ActionListener {
         updateMatchingFunds.run();
 
         // Archive button to archive the project
-    
+
         projectFullPanel.revalidate();
         projectFullPanel.repaint();
     }
@@ -2214,32 +2209,28 @@ public class GuestFrame extends JFrame implements ActionListener {
         contactDialog.setLocationRelativeTo(dialog);
         contactDialog.setVisible(true);
     }
-    
+
     private void showFundDetails(fundClass fund) {
         tempContacts = fund.getContacts();
         fundFullPanel.removeAll();
         fundFullPanel.setLayout(new BoxLayout(fundFullPanel, BoxLayout.Y_AXIS));
-    
+
         // Titel
         fundFullPanel.add(new JLabel("Titel:"));
         fundFullPanel.add(new JLabel(fund.getTitle() + "\n"));
         fundFullPanel.add(new JLabel("\n"));
 
-
-    
         // Beskrivelse
         fundFullPanel.add(new JLabel("Beskrivelse:" + "\n"));
         insertWrappedText(fund.getDescription(), fundFullPanel);
         fundFullPanel.add(new JLabel("\n"));
 
-    
         // Budget
         fundFullPanel.add(new JLabel("Beløb Fra: " + fund.getBudgetMin()));
         fundFullPanel.add(new JLabel("\n"));
         fundFullPanel.add(new JLabel("Beløb Til: " + fund.getBudgetMax()));
         fundFullPanel.add(new JLabel("\n"));
 
-    
         // Ansøgningsfrist
         fundFullPanel.add(new JLabel("Ansøgningsfrist:"));
         List<String> formattedDeadlines = new ArrayList<>();
@@ -2253,47 +2244,39 @@ public class GuestFrame extends JFrame implements ActionListener {
         insertWrappedText(String.join(", ", formattedDeadlines), fundFullPanel);
         fundFullPanel.add(new JLabel("\n"));
 
-    
         // Kategori
         fundFullPanel.add(new JLabel("Kategori:"));
         insertWrappedText(String.join(", ", fund.getCategories()), fundFullPanel);
         fundFullPanel.add(new JLabel("\n"));
-    
+
         // Tidligere samarbejde
         fundFullPanel.add(new JLabel("Tidligere samarbejde:"));
         insertWrappedText(String.join(", ", fund.getCollaborationHistory()), fundFullPanel);
         fundFullPanel.add(new JLabel("\n"));
 
-    
         // Kontaktperson(er)
         fundFullPanel.add(new JLabel("Kontaktperson(er):"));
         if (!tempContacts.isEmpty()) {
             for (fundContactClass contact : tempContacts) {
                 fundFullPanel.add(new JLabel(
-                    contact.getContactName() + " - " +
-                    contact.getContactPhoneNumber() + " - " +
-                    contact.getContactEmail()
-                ));
+                        contact.getContactName() + " - " +
+                                contact.getContactPhoneNumber() + " - " +
+                                contact.getContactEmail()));
             }
         } else {
             fundFullPanel.add(new JLabel("Ingen kontaktpersoner tilgængelige."));
         }
         fundFullPanel.add(new JLabel("\n"));
 
-    
         // Hjemmeside
         fundFullPanel.add(new JLabel("Hjemmeside:"));
         fundFullPanel.add(new JLabel(fund.getFundWebsite()));
         fundFullPanel.add(new JLabel("\n"));
 
-    
-        
         // Refresh panel
         fundFullPanel.revalidate();
         fundFullPanel.repaint();
     }
-    
-    
 
     /*
      * formatNumber() - shortens number to be at most 4 chars
@@ -2377,12 +2360,13 @@ public class GuestFrame extends JFrame implements ActionListener {
         buttonPanel.add(Box.createRigidArea(new Dimension(60, 0))); // Add space between buttons
         buttonPanel.add(deadlineButton);
         fundListPanel.add(buttonPanel);
-
         fundTitleButton.addActionListener(e -> {
             System.out.println("Title button clicked");
             clickCounts[0]++;
+            clickCounts[1] = 0;
             clickCounts[2] = 0;
             clickCounts[3] = 0;
+            clickCounts[4] = 0;
 
             JButton newButton = UIButtons.sortingButtons("title", clickCounts);
             fundTitleButton.setText(newButton.getText());
@@ -2391,8 +2375,8 @@ public class GuestFrame extends JFrame implements ActionListener {
             fundBudgetButton.setText("Budget");
             fundBudgetButton.setIcon(null);
             deadlineButton.setText("Deadline");
-            deadlineButton.setIcon(null);
 
+            deadlineButton.setIcon(null);
             filterByTag();
             fundListPanel.revalidate();
             fundListPanel.repaint();
@@ -2401,8 +2385,10 @@ public class GuestFrame extends JFrame implements ActionListener {
         fundBudgetButton.addActionListener(e -> {
             System.out.println("Owner button clicked");
             clickCounts[0] = 0;
+            clickCounts[1] = 0;
             clickCounts[2] = 0;
-            clickCounts[3]++;
+            clickCounts[3] = 0;
+            clickCounts[4]++;
 
             JButton newButton = UIButtons.sortingButtons("budget", clickCounts);
             fundBudgetButton.setText(newButton.getText());
@@ -2421,8 +2407,10 @@ public class GuestFrame extends JFrame implements ActionListener {
         deadlineButton.addActionListener(e -> {
             System.out.println("deadline button clicked");
             clickCounts[0] = 0;
+            clickCounts[1] = 0;
             clickCounts[2]++;
             clickCounts[3] = 0;
+            clickCounts[4] = 0;
 
             JButton newButton = UIButtons.sortingButtons("deadline", clickCounts);
             deadlineButton.setText(newButton.getText());
@@ -2432,8 +2420,8 @@ public class GuestFrame extends JFrame implements ActionListener {
             fundTitleButton.setIcon(null);
             fundBudgetButton.setText("Budget");
             fundBudgetButton.setIcon(null);
-
             filterByTag();
+
             fundListPanel.revalidate();
             fundListPanel.repaint();
         });
@@ -2537,8 +2525,10 @@ public class GuestFrame extends JFrame implements ActionListener {
         fundTitleButton.addActionListener(e -> {
             System.out.println("Title button clicked");
             clickCounts[0]++;
+            clickCounts[1] = 0;
             clickCounts[2] = 0;
             clickCounts[3] = 0;
+            clickCounts[4] = 0;
 
             JButton newButton = UIButtons.sortingButtons("title", clickCounts);
             fundTitleButton.setText(newButton.getText());
@@ -2557,8 +2547,10 @@ public class GuestFrame extends JFrame implements ActionListener {
         fundBudgetButton.addActionListener(e -> {
             System.out.println("Owner button clicked");
             clickCounts[0] = 0;
+            clickCounts[1] = 0;
             clickCounts[2] = 0;
-            clickCounts[3]++;
+            clickCounts[3] = 0;
+            clickCounts[4]++;
 
             JButton newButton = UIButtons.sortingButtons("budget", clickCounts);
             fundBudgetButton.setText(newButton.getText());
@@ -2577,8 +2569,10 @@ public class GuestFrame extends JFrame implements ActionListener {
         deadlineButton.addActionListener(e -> {
             System.out.println("deadline button clicked");
             clickCounts[0] = 0;
+            clickCounts[1] = 0;
             clickCounts[2]++;
             clickCounts[3] = 0;
+            clickCounts[4] = 0;
 
             JButton newButton = UIButtons.sortingButtons("deadline", clickCounts);
             deadlineButton.setText(newButton.getText());
@@ -2595,13 +2589,13 @@ public class GuestFrame extends JFrame implements ActionListener {
         });
         System.out.println(">>>>>>>>> " + (clickCounts[2] % 3));
         // if (clickCounts[2] % 3 == 1) {
-        //     sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
+        // sortedFundList = sorter.sortFundByClosestDeadline(sortedFundList);
 
         // } else if (clickCounts[2] % 3 == 2) {
-        //     sortedFundList = sorter.sortByFurthestDateFund(sortedFundList);
+        // sortedFundList = sorter.sortByFurthestDateFund(sortedFundList);
 
         // } else {
-        //     sortedFundList = main.fundList;
+        // sortedFundList = main.fundList;
         // }
 
         for (fundClass fund : sortedFundList) {
