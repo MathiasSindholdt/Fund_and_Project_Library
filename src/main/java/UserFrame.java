@@ -109,7 +109,7 @@ public class UserFrame extends JFrame implements ActionListener {
     public static fundContactClass tempContact;
     public ArrayList<fundContactClass> tempContacts = new ArrayList<>();
     private ArrayList<fundContactClass> removeContactArray = new ArrayList<>();
-    private ArrayList<fundContactClass> contacts = new ArrayList<>();
+    public static ArrayList<fundContactClass> contacts = new ArrayList<>();
     public ArrayList<proposalProject> sortedProposalList = main.proposalList;
     public ArrayList<project> sortedProjectList = main.projectList;
     public ArrayList<fundClass> sortedFundList = main.fundList;
@@ -1825,7 +1825,7 @@ public class UserFrame extends JFrame implements ActionListener {
             JPanel deadlinePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             JLabel deadlineLabelItem = new JLabel(newDeadline.format(formatter));
 
-            JButton xButton = UIButtons.createXButton();
+            JButton xButton = new JButton("X");
             xButton.addActionListener(this);
 
             // Add action listener to the remove button
@@ -1887,11 +1887,13 @@ public class UserFrame extends JFrame implements ActionListener {
             System.out.println(tempContact.getContactPhoneNumber());
             System.out.println(tempContact.getContactEmail());
 
-            JButton removeContactButton = UIButtons.createXButton();
+            JButton removeContactButton = new JButton("X");
             JPanel removeContactPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             JLabel contactInfo = new JLabel(tempContact.getContactName() + " - " + tempContact.getContactPhoneNumber()
                     + " - " + tempContact.getContactEmail());
-            contactsPanel.add(removeContactButton);
+            removeContactPanel.add(contactInfo);
+            removeContactPanel.add(removeContactButton);
+            contactsPanel.add(removeContactPanel);
             contactsPanel.revalidate();
             contactsPanel.repaint();
             contacts.add(tempContact);
@@ -2042,7 +2044,7 @@ public class UserFrame extends JFrame implements ActionListener {
             }
 
             // Website Errorhandling
-            if (validationUtils.isValidUrl(websiteField.getText()) == false) {
+            if (!validationUtils.isValidUrl(websiteField.getText())) {
                 dialog.add(UserFrameErrorHandling.displayWebsiteError());
                 hasError = true;
             } else {
@@ -2163,7 +2165,7 @@ public class UserFrame extends JFrame implements ActionListener {
         return button;
     }
 
-    private void openContactsDialog(JDialog dialog) {
+    public static void openContactsDialog(JDialog dialog) {
         JDialog contactDialog = new JDialog(dialog, "Tilføj Kontakt Person", true);
         contactDialog.setSize(300, 200);
         JPanel mainPanel = new JPanel();
@@ -2219,6 +2221,13 @@ public class UserFrame extends JFrame implements ActionListener {
                     return;
                 }
             }
+            if(contactName != "N/A"){
+                if(!validationUtils.isValidInput(contactName)){
+                    UserFrameErrorHandling.displayNameError(validationUtils.isWithinLowerCharLimit(contactName));
+                    return;
+                }
+            }
+
             tempContact = new fundContactClass(contactName, contactPhone, contatctEmail);
             contactDialog.dispose();
 
@@ -2602,7 +2611,7 @@ public class UserFrame extends JFrame implements ActionListener {
             System.out.println("Title button clicked");
             clickCounts[0]++;
             clickCounts[2] = 0;
-            clickCounts[3] = 0;
+            clickCounts[4] = 0;
 
             JButton newButton = UIButtons.sortingButtons("title", clickCounts);
             fundTitleButton.setText(newButton.getText());
@@ -2619,10 +2628,10 @@ public class UserFrame extends JFrame implements ActionListener {
         });
 
         fundBudgetButton.addActionListener(e -> {
-            System.out.println("Owner button clicked");
+            System.out.println("budget button clicked");
             clickCounts[0] = 0;
             clickCounts[2] = 0;
-            clickCounts[3]++;
+            clickCounts[4]++;
 
             JButton newButton = UIButtons.sortingButtons("budget", clickCounts);
             fundBudgetButton.setText(newButton.getText());
@@ -2642,7 +2651,7 @@ public class UserFrame extends JFrame implements ActionListener {
             System.out.println("deadline button clicked");
             clickCounts[0] = 0;
             clickCounts[2]++;
-            clickCounts[3] = 0;
+            clickCounts[4] = 0;
 
             JButton newButton = UIButtons.sortingButtons("deadline", clickCounts);
             deadlineButton.setText(newButton.getText());

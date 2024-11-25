@@ -107,4 +107,13 @@ public class UserFrameErrorHandling{
         }
         return new JPanel();
     }
+
+    public static JPanel displayNameError(Boolean isInvalidLenght){
+        if(!isInvalidLenght){
+            JOptionPane.showMessageDialog(null, "Navnet skal være mellem 1 og 200 tegn");
+        } else if(isInvalidLenght){
+            JOptionPane.showMessageDialog(null, "Ugyldige tegn i navnet");
+        }
+        return new JPanel();
+    }
 }

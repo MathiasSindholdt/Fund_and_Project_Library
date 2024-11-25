@@ -27,6 +27,7 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 
 public class EditFundButton {
+//    UserFrame UI = new UserFrame();
     private JFrame frame;
     private ArrayList<fundClass> fundList;
     private JPanel tagPanel; // Declare here for broader scope
@@ -119,7 +120,7 @@ public void editFundDialog() {
                 .toInstant()
                 .atZone(java.time.ZoneId.systemDefault())
                 .toLocalDate()
-                .atTime(23, 59); // Always set to 00:00 for consistency
+                .atTime(23, 59);
             
             // Check for duplicates
             if (addedDeadlines.stream().anyMatch(d -> d.toLocalDate().equals(newDeadline.toLocalDate()))) {
@@ -208,6 +209,43 @@ public void editFundDialog() {
             tagPanel.revalidate();
             tagPanel.repaint();
         }
+    });
+
+    // Kontakt person(er)
+    JLabel contactsLabel = new JLabel("Kontakt person(er):");
+    JButton createContactsButton = new JButton("Tilføj Kontakt person(er)");
+    JPanel contactsPanel = new JPanel();
+    contactsPanel.setLayout(new BoxLayout(contactsPanel, BoxLayout.Y_AXIS));
+    JScrollPane contactsScrollPane = new JScrollPane(contactsPanel);
+    contactsScrollPane.setPreferredSize(new Dimension(200, 100));
+
+    createContactsButton.addActionListener(e -> {
+        UserFrame.openContactsDialog(dialog);
+        System.out.println(UserFrame.tempContact.getContactName());
+        System.out.println(UserFrame.tempContact.getContactPhoneNumber());
+        System.out.println(UserFrame.tempContact.getContactEmail());
+
+        JButton removeContactButton = new JButton("X");
+        JPanel removeContactPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel contactInfo = new JLabel(UserFrame.tempContact.getContactName() + " - " + UserFrame.tempContact.getContactPhoneNumber()
+                + " - " + UserFrame.tempContact.getContactEmail());
+        removeContactPanel.add(contactInfo);
+        removeContactPanel.add(removeContactButton);
+        contactsPanel.add(removeContactPanel);
+        contactsPanel.revalidate();
+        contactsPanel.repaint();
+        UserFrame.contacts.add(UserFrame.tempContact);
+
+        final fundContactClass contactToRemove = UserFrame.tempContact;
+        removeContactButton.addActionListener(removeEvent -> {
+            System.out.println("Removing contact: " + contactToRemove.getContactName());
+            UserFrame.contacts.remove(contactToRemove);
+            contactsPanel.remove(removeContactPanel);
+
+            contactsPanel.revalidate();
+            contactsPanel.repaint();
+        });
+
     });
     
     boolean isCollaborated = true;
@@ -339,7 +377,30 @@ public void editFundDialog() {
         deadlineListPanel.revalidate();
         deadlineListPanel.repaint();
     }
+    //Load the selected fund's contacts
+    for(int i = 0; i < selectedFund.getContacts().size(); i++){
+        JButton removeContactButton = new JButton("X");
+        JPanel removeContactPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel contactInfo = new JLabel(selectedFund.getContacts().get(i).getContactName() + " - " + selectedFund.getContacts().get(i).getContactPhoneNumber()
+                + " - " + selectedFund.getContacts().get(i).getContactEmail());
+        removeContactPanel.add(contactInfo);
+        removeContactPanel.add(removeContactButton);
+    contactsPanel.add(removeContactPanel);
+    contactsPanel.revalidate();
+    contactsPanel.repaint();
+    final fundContactClass contactToRemove = selectedFund.getContacts().get(i);
+    removeContactButton.addActionListener(removeEvent -> {
+        System.out.println("Removing contact: " + contactToRemove.getContactName());
+        UserFrame.contacts.remove(contactToRemove);
+        contactsPanel.remove(removeContactPanel);
+
+        contactsPanel.revalidate();
+        contactsPanel.repaint();
+    });
+
+    }
 });
+
 
 
 
@@ -418,10 +479,11 @@ public void editFundDialog() {
             selectedFund.getCategories().clear();
             selectedFund.getCategories().addAll(selectedCategories);
 
-            if(websiteCheckBox.isSelected() == true){
-                if(validationUtils.isValidUrl(websiteField.getText()) == false){
+            if(websiteCheckBox.isSelected()){
+                if(!validationUtils.isValidUrl(websiteField.getText())){
                     dialog.add(UserFrameErrorHandling.displayWebsiteError());
-                    //hasError = true;
+                    hasError = true;
+                    return;
                 }else{
                     selectedFund.setfundWebsite(websiteField.getText().trim());
                 }
@@ -441,6 +503,14 @@ public void editFundDialog() {
                     }
                 }
             }
+            if(runningCheckBox.isSelected()){
+                selectedFund.getDeadlines().clear();
+                selectedFund.setDeadlines(LocalDateTime.of(3000, 1, 1, 0, 0));
+            }
+
+            //Update the selected fund's contacts
+            selectedFund.getContacts().clear();
+            selectedFund.getContacts().addAll(UserFrame.contacts);
             
             // Update the selected fund's collaboration history
             selectedFund.getCollaborationHistory().clear();
@@ -448,7 +518,7 @@ public void editFundDialog() {
     
             // If no errors, save the updated fund
             if (!hasError) {
-               System.out.println("No errors-----------------");
+               System.out.println("No errors, updating fund-----------------");
                 System.out.println(selectedFund.getTitle());
                 System.out.println(selectedFund.getDescription());
                 System.out.println(selectedFund.getBudgetMin());
@@ -461,6 +531,8 @@ public void editFundDialog() {
                    System.out.println(selectedFund.getContacts().get(i).getContactName() + "-" + selectedFund.getContacts().get(i).getContactPhoneNumber() + "-" + selectedFund.getContacts().get(i).getContactEmail());
                 }
                 System.out.println(selectedFund.getFundWebsite());
+                System.out.println("---------------------");
+                //UserFrame.updateFundList();
                 //Remove the fund currently being edited from the fundlist
                 FundCsvWriter.writeCsv("data/funds.csv", fundList);
                 dialog.dispose();
@@ -507,6 +579,8 @@ public void editFundDialog() {
         .addComponent(addedDeadlinesLabel)
         .addComponent(deadlineScrollPane)
         .addComponent(addDeadlineButton)     
+        .addComponent(contactsLabel).addComponent(createContactsButton)
+        .addComponent(contactsScrollPane)
         //  .addComponent(contactsLabel).addComponent(createContactsButton).addComponent(contactsScrollPane)
         .addComponent(selectTagLabel).addComponent(tagScrollPane)
         .addComponent(websiteLabel).addComponent(websiteCheckBox).addComponent(websitePanel)
@@ -529,8 +603,9 @@ public void editFundDialog() {
         .addComponent(deadLineTimePanel)
         .addComponent(addedDeadlinesLabel)
         .addComponent(deadlineScrollPane)
-        .addComponent(addDeadlineButton)      
-        //  .addComponent(contactsLabel).addComponent(createContactsButton).addComponent(contactsScrollPane)
+        .addComponent(addDeadlineButton)  
+        .addComponent(contactsLabel).addComponent(createContactsButton)
+        .addComponent(contactsScrollPane)  
         .addComponent(selectTagLabel).addComponent(tagScrollPane)
         .addComponent(websiteLabel).addComponent(websiteCheckBox).addComponent(websitePanel)
         .addComponent(collaboratedLabel).addComponent(collaboratedCheckBox)
