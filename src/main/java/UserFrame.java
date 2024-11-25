@@ -132,7 +132,7 @@ public class UserFrame extends JFrame implements ActionListener {
         JPanel topPanel = new JPanel();
         topPanel.setBackground(Color.WHITE);
         topPanel.setPreferredSize(new Dimension(100, 30)); // Set height for the top panel
-        JLabel label = new JLabel("Katagorier");
+        JLabel label = new JLabel("Kategorier");
         label.setHorizontalAlignment(SwingConstants.CENTER); // Center the text
         topPanel.add(label);
 
@@ -234,7 +234,7 @@ public class UserFrame extends JFrame implements ActionListener {
     private JPanel createSidePanel() {
         // Create the main panel
         panel2.setBackground(new Color(213, 213, 213, 255));
-        panel2.setPreferredSize(new Dimension(100, 100));
+        panel2.setPreferredSize(new Dimension(150, 100));
         // panel2.setLayout(new BorderLayout()); // Use BorderLayout for better
         // organization
 
@@ -342,24 +342,31 @@ public class UserFrame extends JFrame implements ActionListener {
     // Refresh the panel to show the filtered list
 
     private void createTagButton(String newTag) {
-        JToggleButton tagButtonInstance = new JToggleButton(newTag);
+        // Truncate tag name if it's longer than 17 characters
+        String displayTag = newTag.length() > 17 ? newTag.substring(0, 16) + "..." : newTag;
+    
+        // Create the button with the display name
+        JToggleButton tagButtonInstance = new JToggleButton(displayTag);
+    
+        // Add action listener for button selection
         tagButtonInstance.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (tagButtonInstance.isSelected()) {
-                    selectedTags.add(newTag);
+                    selectedTags.add(newTag); // Use full tag in the list
                 } else {
-                    selectedTags.remove(newTag);
+                    selectedTags.remove(newTag); // Use full tag in the list
                 }
                 System.out.println("<<<<<<<<" + selectedTags.toString());
                 filterByTag();
             }
         });
-
+    
         panel2.add(tagButtonInstance); // Add the button to the panel
         panel2.revalidate(); // Update the layout
         panel2.repaint(); // Re-render the panel
     }
+    
 
     // reset display to show it all again
     private void resetToAllProjects() {
@@ -1439,23 +1446,40 @@ public class UserFrame extends JFrame implements ActionListener {
 
         // Display project proposal details
         proposalProjectFullPanel.add(new JLabel("Titel: " + proposal.getTitle()));
+        proposalProjectFullPanel.add(new JLabel("\n"));
         proposalProjectFullPanel.add(new JLabel("Ejer: " + proposal.getProjectOwner()));
+        proposalProjectFullPanel.add(new JLabel("\n"));
+
         proposalProjectFullPanel.add(new JLabel("Idé: " + proposal.getProjectPurpose()));
+        proposalProjectFullPanel.add(new JLabel("\n"));
+
         proposalProjectFullPanel.add(new JLabel("Beskrivelse: "));
+
         insertWrappedText(proposal.getDescription(), proposalProjectFullPanel);
+        proposalProjectFullPanel.add(new JLabel("\n"));
+
         proposalProjectFullPanel.add(new JLabel("Målgruppe: " + proposal.getProjectTargetAudience()));
+        proposalProjectFullPanel.add(new JLabel("\n"));
+
         proposalProjectFullPanel.add(new JLabel("Budget: " + proposal.getProjectBudget()));
+        proposalProjectFullPanel.add(new JLabel("\n"));
+
 
         // Display date range
         proposalProjectFullPanel.add(new JLabel("Fra Dato: " + proposal.getProjectTimeSpanFrom().toString()));
         proposalProjectFullPanel.add(new JLabel("Til Dato: " + proposal.getProjectTimeSpanTo().toString()));
+        proposalProjectFullPanel.add(new JLabel("\n"));
 
         // Display project activities
         proposalProjectFullPanel.add(new JLabel("Aktiviteter: " + proposal.getProjectActivities()));
+        proposalProjectFullPanel.add(new JLabel("\n"));
+
 
         // Display categories as a concatenated string
         String categories = String.join(", ", proposal.getCategories());
         proposalProjectFullPanel.add(new JLabel("Kategorier: " + categories));
+        proposalProjectFullPanel.add(new JLabel("\n"));
+
 
         JButton approveButton = new JButton("Godkend");
         approveButton.addActionListener(event -> {
@@ -1615,15 +1639,31 @@ public class UserFrame extends JFrame implements ActionListener {
 
         // Display project details
         projectFullPanel.add(new JLabel("Titel: " + project.getTitle()));
+        projectFullPanel.add(new JLabel("\n"));
+
         projectFullPanel.add(new JLabel("Ejer: " + project.getProjectOwner()));
+        projectFullPanel.add(new JLabel("\n"));
+
         projectFullPanel.add(new JLabel("Idé: " + project.getProjectPurpose()));
+        projectFullPanel.add(new JLabel("\n"));
+
         projectFullPanel.add(new JLabel("Beskrivelse: "));
         insertWrappedText(project.getDescription(), projectFullPanel);
+        projectFullPanel.add(new JLabel("\n"));
+
         projectFullPanel.add(new JLabel("Målgruppe: " + project.getProjectTargetAudience()));
+        projectFullPanel.add(new JLabel("\n"));
+
         projectFullPanel.add(new JLabel("Budget: " + project.getProjectBudget()));
+        projectFullPanel.add(new JLabel("\n"));
+
         projectFullPanel.add(new JLabel("Fra Dato: " + project.getProjectTimeSpanFrom().toString()));
         projectFullPanel.add(new JLabel("Til Dato: " + project.getProjectTimeSpanTo().toString()));
+        projectFullPanel.add(new JLabel("\n"));
+
         projectFullPanel.add(new JLabel("Aktiviteter: " + project.getProjectActivities()));
+        projectFullPanel.add(new JLabel("\n"));
+
         projectFullPanel.add(new JLabel("Kategori: " + project.getCategories()));
         if (project.getFund() != null) {
             projectFullPanel.add(new JLabel("Bevillieget fund: " + project.getFund().getTitle()));
@@ -2401,7 +2441,7 @@ public class UserFrame extends JFrame implements ActionListener {
         fundListPanel.removeAll();
         JButton fundTitleButton = UIButtons.sortingButtons("title", clickCounts);
         JButton fundBudgetButton = UIButtons.sortingButtons("budget", clickCounts);
-        JButton catagoriesButton = UIButtons.createListCatagoryButton("Katagorier");
+        JButton catagoriesButton = UIButtons.createListCatagoryButton("Kategorier");
         JButton deadlineButton = UIButtons.sortingButtons("deadline", clickCounts);
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -2557,7 +2597,7 @@ public class UserFrame extends JFrame implements ActionListener {
         fundListPanel.removeAll();
         JButton fundTitleButton = UIButtons.sortingButtons("title", clickCounts);
         JButton fundBudgetButton = UIButtons.sortingButtons("budget", clickCounts);
-        JButton catagoriesButton = UIButtons.createListCatagoryButton("Katagorier");
+        JButton catagoriesButton = UIButtons.createListCatagoryButton("Kategorier");
         JButton deadlineButton = UIButtons.sortingButtons("deadline", clickCounts);
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
