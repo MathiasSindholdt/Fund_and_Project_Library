@@ -6,6 +6,8 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -406,6 +408,7 @@ public class UserFrame extends JFrame implements ActionListener {
         changeFundButton.addActionListener(e -> {
             editFundButton.editFundDialog(); // Call the method on the instance
             updateFundList();
+
         });
 
         changeProbButton.addActionListener(e -> {
@@ -1590,8 +1593,8 @@ public class UserFrame extends JFrame implements ActionListener {
         int index = 0;
         while (index < text.length()) {
             strings.add(text.substring(index,
-                    Math.min(index + 100, text.length())));
-            index += Math.min(index + 100, text.length());
+                    Math.min(index + 60, text.length())));
+            index += Math.min(index + 60, text.length());
         }
 
         for (int i = 0; i < strings.size(); i++) {
@@ -1826,7 +1829,7 @@ public class UserFrame extends JFrame implements ActionListener {
                         .toInstant()
                         .atZone(java.time.ZoneId.systemDefault())
                         .toLocalDate()
-                        .atTime(0, 0); // Set default time to 00:00
+                        .atTime(23, 59); // Set default time to 00:00
             }
             addedDeadlines.add(newDeadline);
 
@@ -2248,67 +2251,99 @@ public class UserFrame extends JFrame implements ActionListener {
         contactDialog.setLocationRelativeTo(dialog);
         contactDialog.setVisible(true);
     }
-
+    
     private void showFundDetails(fundClass fund) {
-
         tempContacts = fund.getContacts();
         fundFullPanel.removeAll();
+        fundFullPanel.setLayout(new BoxLayout(fundFullPanel, BoxLayout.Y_AXIS));
+    
+        // Titel
+        fundFullPanel.add(new JLabel("Titel:"));
+        fundFullPanel.add(new JLabel(fund.getTitle() + "\n"));
+        fundFullPanel.add(new JLabel("\n"));
 
-        fundFullPanel.add(new JLabel("Titel: " + fund.getTitle()));
-        fundFullPanel.add(new JLabel("Beskrivelse: "));
+
+    
+        // Beskrivelse
+        fundFullPanel.add(new JLabel("Beskrivelse:" + "\n"));
         insertWrappedText(fund.getDescription(), fundFullPanel);
+        fundFullPanel.add(new JLabel("\n"));
+
+    
+        // Budget
         fundFullPanel.add(new JLabel("Beløb Fra: " + fund.getBudgetMin()));
+        fundFullPanel.add(new JLabel("\n"));
         fundFullPanel.add(new JLabel("Beløb Til: " + fund.getBudgetMax()));
-        // Make deadline readable for humans
-        List<String> tempDeadlines = new ArrayList<>();
-        for (int i = 0; i < fund.getDeadlines().size(); i++) {
-            if (fund.getDeadlines().toString().contains("3000")) {
-                tempDeadlines.add("Løbende Ansøgningsfrist");
+        fundFullPanel.add(new JLabel("\n"));
+
+    
+        // Ansøgningsfrist
+        fundFullPanel.add(new JLabel("Ansøgningsfrist:"));
+        List<String> formattedDeadlines = new ArrayList<>();
+        for (LocalDateTime deadline : fund.getDeadlines()) {
+            if (deadline.getYear() == 3000) {
+                formattedDeadlines.add("Løbende Ansøgningsfrist");
             } else {
-                tempDeadlines.add(fund.getDeadlines().get(i).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+                formattedDeadlines.add(deadline.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
             }
         }
-        fundFullPanel.add(new JLabel("Ansøgningsfrist: " + String.join(", ", tempDeadlines)));
-        fundFullPanel.add(new JLabel("Kategori: " + fund.getCategories()));
-        fundFullPanel.add(new JLabel("Tidligere samarbejde: " + String.join(", ", fund.getCollaborationHistory())));
-        fundFullPanel.add(new JLabel("Kontaktperson(er): "));
-        for (int i = 0; i < tempContacts.size(); i++) {
-            fundFullPanel.add(new JLabel(tempContacts.get(i).getContactName() + " - "
-                    + tempContacts.get(i).getContactPhoneNumber() + " - " + tempContacts.get(i).getContactEmail()));
+        insertWrappedText(String.join(", ", formattedDeadlines), fundFullPanel);
+        fundFullPanel.add(new JLabel("\n"));
+
+    
+        // Kategori
+        fundFullPanel.add(new JLabel("Kategori:"));
+        insertWrappedText(String.join(", ", fund.getCategories()), fundFullPanel);
+        fundFullPanel.add(new JLabel("\n"));
+    
+        // Tidligere samarbejde
+        fundFullPanel.add(new JLabel("Tidligere samarbejde:"));
+        insertWrappedText(String.join(", ", fund.getCollaborationHistory()), fundFullPanel);
+        fundFullPanel.add(new JLabel("\n"));
+
+    
+        // Kontaktperson(er)
+        fundFullPanel.add(new JLabel("Kontaktperson(er):"));
+        if (!tempContacts.isEmpty()) {
+            for (fundContactClass contact : tempContacts) {
+                fundFullPanel.add(new JLabel(
+                    contact.getContactName() + " - " +
+                    contact.getContactPhoneNumber() + " - " +
+                    contact.getContactEmail()
+                ));
+            }
+        } else {
+            fundFullPanel.add(new JLabel("Ingen kontaktpersoner tilgængelige."));
         }
-        fundFullPanel.add(new JLabel("Hjemmeside: " + fund.getFundWebsite()));
+        fundFullPanel.add(new JLabel("\n"));
+
+    
+        // Hjemmeside
+        fundFullPanel.add(new JLabel("Hjemmeside:"));
+        fundFullPanel.add(new JLabel(fund.getFundWebsite()));
+        fundFullPanel.add(new JLabel("\n"));
+
+    
+        // Arkivér-knap
         JButton archiveButton = new JButton("Arkivér");
-        Dimension buttonSize = new Dimension(150, 50);
-        archiveButton.setPreferredSize(buttonSize);
-
+     //   archiveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         archiveButton.addActionListener(e -> {
-
             archive.archiveFund(fund);
-
-            // Call update methods after archiving
             updateFundList();
             writeAll();
             fundFullPanel.removeAll();
             fundFullPanel.revalidate();
             fundFullPanel.repaint();
-
         });
-
+     //   fundFullPanel.add(Box.createVerticalStrut(10)); // Add some spacing
         fundFullPanel.add(archiveButton);
-
-        /*
-         * JButton archiveButton = new JButton("Arkivér");
-         * Dimension buttonSize = new Dimension(150, 50);
-         */
-
-        fundFullPanel.add(archiveButton);
-
+    
+        // Refresh panel
         fundFullPanel.revalidate();
         fundFullPanel.repaint();
-
-        fundListPanel.revalidate();
-        fundListPanel.repaint();
     }
+    
+    
 
     /*
      * formatNumber() - shortens number to be at most 4 chars

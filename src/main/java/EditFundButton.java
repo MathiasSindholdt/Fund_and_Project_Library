@@ -108,62 +108,56 @@ public void editFundDialog() {
 
     // Knap til at tilføje en ny deadline
     JButton addDeadlineButton = new JButton("Tilføj ansøgningsfrist");
-    
+
     // List til opbevaring af tilføjede deadlines
     List<LocalDateTime> addedDeadlines = new ArrayList<>();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
-addDeadlineButton.addActionListener(e -> {
-    LocalDateTime newDeadline;
-    if (deadLineTimeCheckBox.isSelected()) {
-        if (!validationUtils.isValidTime(deadLineTimeFieldHour.getText(), true)) {
-            dialog.add(UserFrameErrorHandling.displayTimeError());
-            return;
-        }
-        if (!validationUtils.isValidTime(deadLineTimeFieldMinute.getText(), false)) {
-            dialog.add(UserFrameErrorHandling.displayTimeError());
-            return;
-        }
-        newDeadline = ((java.util.Date) deadlineSpinner.getValue())
-            .toInstant()
-            .atZone(java.time.ZoneId.systemDefault())
-            .toLocalDateTime();
-        newDeadline = newDeadline.withHour(Integer.parseInt(deadLineTimeFieldHour.getText()));
-        newDeadline = newDeadline.withMinute(Integer.parseInt(deadLineTimeFieldMinute.getText()));
-    } else {
-        newDeadline = ((java.util.Date) deadlineSpinner.getValue())
-            .toInstant()
-            .atZone(java.time.ZoneId.systemDefault())
-            .toLocalDate()
-            .atTime(0, 0); // Set default time to 00:00
-    }
-    addedDeadlines.add(newDeadline);
-
-        // Create a panel to hold the deadline label and the remove button
-        JPanel deadlinePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel deadlineLabelItem = new JLabel(newDeadline.format(formatter));
-        JButton xButton = new JButton("X");
-        
-        
-        // Add action listener to the remove button
-        final LocalDateTime deadlineToRemove = newDeadline;
-        xButton.addActionListener(removeEvent -> {
-            addedDeadlines.remove(deadlineToRemove);
-            deadlineListPanel.remove(deadlinePanel);
+    
+    addDeadlineButton.addActionListener(e -> {
+        try {
+            LocalDateTime newDeadline = ((java.util.Date) deadlineSpinner.getValue())
+                .toInstant()
+                .atZone(java.time.ZoneId.systemDefault())
+                .toLocalDate()
+                .atTime(23, 59); // Always set to 00:00 for consistency
+            
+            // Check for duplicates
+            if (addedDeadlines.stream().anyMatch(d -> d.toLocalDate().equals(newDeadline.toLocalDate()))) {
+                JOptionPane.showMessageDialog(dialog, "Fristen er allerede tilføjet.");
+                return;
+            }
+    
+            // Add the new deadline
+            addedDeadlines.add(newDeadline);
+            System.out.println("Added Deadline: " + newDeadline);
+    
+            // Create a panel to hold the deadline label and the remove button
+            JPanel deadlinePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            JLabel deadlineLabelItem = new JLabel(newDeadline.format(formatter));
+            JButton xButton = new JButton("X");
+            
+            // Add action listener to the remove button
+            xButton.addActionListener(removeEvent -> {
+                addedDeadlines.remove(newDeadline); // Remove deadline
+                deadlineListPanel.remove(deadlinePanel);
+                deadlineListPanel.revalidate();
+                deadlineListPanel.repaint();
+            });
+    
+            // Add components to the deadline panel
+            deadlinePanel.add(deadlineLabelItem);
+            deadlinePanel.add(xButton);
+    
+            // Add the deadline panel to the main panel
+            deadlineListPanel.add(deadlinePanel);
             deadlineListPanel.revalidate();
             deadlineListPanel.repaint();
-        });
-
-
-        // Add components to the deadline panel
-        deadlinePanel.add(deadlineLabelItem);
-        deadlinePanel.add(xButton);
-
-        // Add the deadline panel to the main panel
-        deadlineListPanel.add(deadlinePanel);
-        deadlineListPanel.revalidate();
-        deadlineListPanel.repaint();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(dialog, "Der opstod en fejl ved tilføjelse af fristen: " + ex.getMessage());
+            ex.printStackTrace();
+        }
     });
+    
 
     JLabel websiteLabel = new JLabel("Hjemmeside?:");
     JCheckBox websiteCheckBox = new JCheckBox();
@@ -322,6 +316,8 @@ addDeadlineButton.addActionListener(e -> {
             // Add each existing deadline to the list and to the panel
             addedDeadlines.add(deadline);
 
+            
+
             // Create a panel for each deadline
             JPanel deadlinePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             JLabel deadlineLabelItem = new JLabel(deadline.format(formatter));
@@ -395,23 +391,16 @@ addDeadlineButton.addActionListener(e -> {
                 Long tempLong = Long.parseLong(amountTo.getText().trim());
                 selectedFund.setBudgetMax(tempLong);
             }
-            if (runningCheckBox.isSelected()) {
-                // Clear existing deadlines and set the future deadline
-                addedDeadlines.clear();
-                addedDeadlines.add(LocalDateTime.of(3000, 1, 1, 0, 0));
-            } else {
-                // Update the fund deadlines if running is not selected
-                selectedFund.clearDeadlines();
+            // Update the fund deadlines if running is not selected
+            if (!runningCheckBox.isSelected()) {
+                selectedFund.clearDeadlines(); // Clear all existing deadlines once
                 for (LocalDateTime deadline : addedDeadlines) {
-                    selectedFund.setDeadlines(deadline);
+                    selectedFund.setDeadlines(deadline); // Append each deadline
                 }
             }
-    
             // Update deadlines
+            selectedFund.clearDeadlines();
             for(int i = 0; i < addedDeadlines.size() ; i++){
-                System.out.println("HAMAS HAMAS");
-                System.out.println(addedDeadlines.get(i));
-                selectedFund.clearDeadlines();
                 selectedFund.setDeadlines(addedDeadlines.get(i));
             }
 
@@ -459,7 +448,7 @@ addDeadlineButton.addActionListener(e -> {
     
             // If no errors, save the updated fund
             if (!hasError) {
-              /*  System.out.println("No errors-----------------");
+               System.out.println("No errors-----------------");
                 System.out.println(selectedFund.getTitle());
                 System.out.println(selectedFund.getDescription());
                 System.out.println(selectedFund.getBudgetMin());
@@ -471,7 +460,7 @@ addDeadlineButton.addActionListener(e -> {
                 for (int i = 0; i<selectedFund.getContacts().size();i++) {
                    System.out.println(selectedFund.getContacts().get(i).getContactName() + "-" + selectedFund.getContacts().get(i).getContactPhoneNumber() + "-" + selectedFund.getContacts().get(i).getContactEmail());
                 }
-                System.out.println(selectedFund.getFundWebsite());*/
+                System.out.println(selectedFund.getFundWebsite());
                 //Remove the fund currently being edited from the fundlist
                 FundCsvWriter.writeCsv("data/funds.csv", fundList);
                 dialog.dispose();
