@@ -24,6 +24,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
@@ -45,6 +46,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SwingConstants;
+
+import org.checkerframework.checker.units.qual.C;
+
+import jdk.jfr.Category;
 
 public class GuestFrame extends JFrame implements ActionListener {
 
@@ -853,7 +858,7 @@ public class GuestFrame extends JFrame implements ActionListener {
             // Add the proposal to the list and update UI
             main.proposalList.add(proposal);
             updateProposalProjectList();
-            writeAll();
+            write();
             System.out.println("Proposal added to list and UI updated");
 
             // Close the dialog
@@ -1488,7 +1493,6 @@ public class GuestFrame extends JFrame implements ActionListener {
             approveProposal(proposal); // Approve the proposal and convert it to a project
             proposalProjectFullPanel.getParent().getParent().remove(proposalProjectFullPanel); // Close details
             updateProposalProjectList(); // Refresh proposal list
-            writeAll();
             proposalProjectFullPanel.removeAll();
             proposalProjectFullPanel.repaint();
             proposalProjectFullPanel.revalidate();
@@ -1543,7 +1547,6 @@ public class GuestFrame extends JFrame implements ActionListener {
 
         // Update the UI to reflect the new project list
         updateProjectList();
-        writeAll();
     }
 
     private void insertWrappedText(String text, JPanel panel) {
@@ -2044,7 +2047,6 @@ public class GuestFrame extends JFrame implements ActionListener {
                 main.fundList.add(fund);
                 updateFundList();
 
-                writeAll();
 
                 dialog.dispose();
             }
@@ -2861,7 +2863,6 @@ public class GuestFrame extends JFrame implements ActionListener {
                     System.out.println(proj.getCategories());
                 }
                 updateProjectList();
-                writeAll();
                 dialog.dispose();
             } catch (Exception e) {
                 System.err.println("Rip openProjectDialog died");
@@ -2984,6 +2985,11 @@ public class GuestFrame extends JFrame implements ActionListener {
             openproposalProjectDialog();
         } else if (e.getSource() == logoutButton) {
             Frontpage frontpage = new Frontpage();
+            main.fundList.removeAll(sortedFundList);
+            main.projectList.removeAll(sortedProjectList);
+            main.proposalList.removeAll(sortedProposalList);
+            main.clearCategories();
+
             frontpage.show();
             frame.dispose();
 
@@ -3114,15 +3120,10 @@ public class GuestFrame extends JFrame implements ActionListener {
 
     }
 
-    public static void writeAll() {
-        FundCsvWriter.writeCsv("data/funds.csv", main.fundList);
+    public static void write() {
         CsvStringWriter.writeStringCSV("data/categories.csv", main.categories);
-        CsvStringWriter.writeStringCSV("data/nonSystemProjects.csv", main.userProjectList);
         ProposalsCsvWriter.writeProposalCsv("data/proposals.csv", main.proposalList);
-        ProjectCsvWriter.writeProjectCsv("data/projects.csv", main.projectList);
-        ProposalsCsvWriter.writeProposalCsv("data/deniedProposals.csv", main.deniedProposalList);
-        ProjectCsvWriter.writeProjectCsv("data/projectsArchive.csv", main.archiveProjectList);
-        FundCsvWriter.writeCsv("data/fundsArchive.csv", main.archiveFundList);
     }
 
 }
+

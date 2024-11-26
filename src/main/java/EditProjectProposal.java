@@ -167,6 +167,8 @@ public class EditProjectProposal {
                     JOptionPane.showMessageDialog(dialog, "Fejl ved opdatering af projekt forslag: " + ex.getMessage(), "Fejl", JOptionPane.ERROR_MESSAGE);
                 }
             }
+            ProposalsCsvWriter.writeProposalCsv("data/proposals.csv", proposalList);
+
         });
 
         // Layout definition

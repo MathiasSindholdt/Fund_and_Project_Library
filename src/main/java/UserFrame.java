@@ -3,28 +3,28 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.Array;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -32,7 +32,6 @@ import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JToggleButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -43,17 +42,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SwingConstants;
-
-
-import org.checkerframework.checker.units.qual.s;
-import java.awt.Desktop;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class UserFrame extends JFrame implements ActionListener {
 
@@ -664,18 +655,17 @@ public class UserFrame extends JFrame implements ActionListener {
     }
 
     private void updateCategoryPanel() {
-        Component[] compArr = panel2.getComponents();
-        for (Component c : compArr) {
-            if (c instanceof JButton) {
-                panel2.remove(c);
-            }
-
+        panel2.removeAll();
+    
+        for (String category : main.categories) {
+            createTagButton(category);
+            System.out.println(category);
         }
-        for (String s : main.categories) {
-            createTagButton(s);
-        }
-
+    
+        panel2.revalidate();
+        panel2.repaint();
     }
+    
 
     private void openproposalProjectDialog() {
 
@@ -1551,7 +1541,7 @@ public class UserFrame extends JFrame implements ActionListener {
         proposalProjectFullPanel.add(new JLabel("\n"));
 
 
-        JButton approveButton = new JButton("Godkend");
+        JButton approveButton = new JButton("Godkend Projektforslag");
         approveButton.addActionListener(event -> {
             approveProposal(proposal); // Approve the proposal and convert it to a project
             proposalProjectFullPanel.getParent().getParent().remove(proposalProjectFullPanel); // Close details
@@ -1564,14 +1554,10 @@ public class UserFrame extends JFrame implements ActionListener {
         });
 
         // Reject button
-        JButton rejectButton = new JButton("Afvis");
-        rejectButton.addActionListener(event -> {
-            proposalProjectFullPanel.getParent().getParent().remove(proposalProjectFullPanel); // Close details
-        });
+      
 
         // Add buttons to the panel
         proposalProjectFullPanel.add(approveButton);
-        proposalProjectFullPanel.add(rejectButton);
 
         JButton archiveButton = new JButton("Afvis Projektforslag");
         Dimension buttonSize = new Dimension(150, 50);
@@ -1807,6 +1793,8 @@ public class UserFrame extends JFrame implements ActionListener {
         });
 
         projectFullPanel.add(archiveButton);
+        projectFullPanel.add(changeProjectButton);
+
 
         projectFullPanel.revalidate();
         projectFullPanel.repaint();
@@ -2462,6 +2450,8 @@ public class UserFrame extends JFrame implements ActionListener {
         });
      //   fundFullPanel.add(Box.createVerticalStrut(10)); // Add some spacing
         fundFullPanel.add(archiveButton);
+        fundFullPanel.add(changeFundButton);
+
     
         // Refresh panel
         fundFullPanel.revalidate();
@@ -3181,9 +3171,14 @@ public class UserFrame extends JFrame implements ActionListener {
             openProjectDialog();
         } else if (e.getSource() == logoutButton) {
             Frontpage frontpage = new Frontpage();
+            main.fundList.removeAll(sortedFundList);
+            main.projectList.removeAll(sortedProjectList);
+            main.proposalList.removeAll(sortedProposalList);
+            main.clearCategories();
+            main.clearArchive();
+
             frontpage.show();
             frame.dispose();
-
         }
 
     }
