@@ -208,6 +208,11 @@ public class UserFrame extends JFrame implements ActionListener {
         changeCursor(archiveButton);
         panel1.add(leftPanel, BorderLayout.WEST);
 
+        setupToggleBehavior(projectPropButton);
+        setupToggleBehavior(projectButton);
+        setupToggleBehavior(fundsButton);
+        setupToggleBehavior(archiveButton);
+
         logoutButton = UIButtons.createLogutButton();
         logoutButton.addActionListener(this);
         logoutButton.setPreferredSize(new Dimension(100, 50)); // Set preferred size
@@ -387,6 +392,27 @@ public class UserFrame extends JFrame implements ActionListener {
         panel2.repaint(); // Re-render the panel
     }
     
+    private void setupToggleBehavior(JButton button) {
+        button.setPreferredSize(new Dimension(120, 50));
+        button.setFocusPainted(false);
+        button.setBackground(new Color(213, 213, 213, 255)); // Default color
+        button.setForeground(Color.BLACK);
+        button.setFont(new Font("Arial", Font.BOLD, 14));
+    
+        button.addActionListener(e -> {
+            resetButtonStates(); // Reset all buttons
+            button.setBackground(new Color(169, 169, 169)); // Set selected button to darker color
+        });
+    
+        changeCursor(button); // Set cursor to hand
+    }   
+    
+    private void resetButtonStates() {
+        projectPropButton.setBackground(new Color(213, 213, 213, 255));
+        projectButton.setBackground(new Color(213, 213, 213, 255));
+        fundsButton.setBackground(new Color(213, 213, 213, 255));
+        archiveButton.setBackground(new Color(213, 213, 213, 255));
+    }
 
     // reset display to show it all again
     private void resetToAllProjects() {

@@ -180,26 +180,6 @@ public class UIButtons extends JPanel {
         String arrow;
         button.setMaximumSize(new Dimension(150, 40)); // Set maximum size
 
-        button.setFont(new Font("SansSerif", Font.PLAIN, 14)); // Set font
-        button.setPreferredSize(new Dimension(300, 30));
-        button.setFocusPainted(false); // Remove focus border
-        button.setBackground(new Color(245, 245, 245)); // Set background color
-        button.setForeground(Color.DARK_GRAY); // Set text color
-        button.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)); // Set border
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Set cursor
-
-        // Add hover effect
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                button.setBackground(new Color(220, 220, 220)); // Change background on hover
-            }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                button.setBackground(new Color(245, 245, 245)); // Revert background on exit
-            }
-        });
         switch (typeOfButton) {
             case "title":
                 System.out.println("updating title");
