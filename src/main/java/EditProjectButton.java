@@ -52,38 +52,38 @@ public class EditProjectButton {
         }
 
         // Fields for editing
-        JLabel nameLabel = new JLabel("Titel:");
+        JLabel nameLabel = new JLabel("Titel:*");
         JTextField nameField = new JTextField();
 
-        JLabel purposeLabel = new JLabel("Formål:");
+        JLabel purposeLabel = new JLabel("Formål:*");
         JTextField purposeField = new JTextField();
 
-        JLabel descriptionLabel = new JLabel("Beskrivelse:");
+        JLabel descriptionLabel = new JLabel("Beskrivelse:*");
         JTextArea descriptionArea = new JTextArea(5, 20);
         JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
 
-        JLabel ownerLabel = new JLabel("Ejer:");
+        JLabel ownerLabel = new JLabel("Ejer:*");
         JTextField ownerField = new JTextField();
 
-        JLabel targetLabel = new JLabel("Målgruppe:");
+        JLabel targetLabel = new JLabel("Målgruppe:*");
         JTextField targetField = new JTextField();
 
-        JLabel budgetLabel = new JLabel("Budget:");
+        JLabel budgetLabel = new JLabel("Budget:*");
         JTextField budgetField = new JTextField();
 
-        JLabel fromDateLabel = new JLabel("Fra dato:");
+        JLabel fromDateLabel = new JLabel("Fra dato:*");
         SpinnerDateModel fromDateModel = new SpinnerDateModel();
         JSpinner fromDateSpinner = new JSpinner(fromDateModel);
         JSpinner.DateEditor fromDateEditor = new JSpinner.DateEditor(fromDateSpinner, "dd/MM/yyyy");
         fromDateSpinner.setEditor(fromDateEditor);
 
-        JLabel toDateLabel = new JLabel("Til dato:");
+        JLabel toDateLabel = new JLabel("Til dato:*");
         SpinnerDateModel toDateModel = new SpinnerDateModel();
         JSpinner toDateSpinner = new JSpinner(toDateModel);
         JSpinner.DateEditor toDateEditor = new JSpinner.DateEditor(toDateSpinner, "dd/MM/yyyy");
         toDateSpinner.setEditor(toDateEditor);
 
-        JLabel activitiesLabel = new JLabel("Aktiviteter:");
+        JLabel activitiesLabel = new JLabel("Aktiviteter:*");
         JTextField activitiesField = new JTextField();
 
         JLabel selectTagLabel = new JLabel("Vælg relevante kategorier:");
