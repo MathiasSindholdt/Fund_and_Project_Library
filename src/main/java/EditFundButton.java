@@ -58,18 +58,18 @@ public void editFundDialog() {
     }
 
     // Fond Titel
-    JLabel nameLabel = new JLabel("Titel:");
+    JLabel nameLabel = new JLabel("Titel:*");
     JTextField nameField = new JTextField();
 
-    JLabel descriptionLabel = new JLabel("Beskrivelse:");
+    JLabel descriptionLabel = new JLabel("Beskrivelse:*");
     JTextArea descriptionArea = new JTextArea(5, 20);
     JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
 
     // Fond Beløb Fra og Til
-    JLabel amountFromLabel = new JLabel("Beløb fra:");
+    JLabel amountFromLabel = new JLabel("Beløb fra:*");
     JTextField amountFrom = new JTextField();
 
-    JLabel amountToLabel = new JLabel("Beløb til:");
+    JLabel amountToLabel = new JLabel("Beløb til:*");
     JTextField amountTo = new JTextField();
 
        // Fond Deadline
@@ -81,7 +81,7 @@ public void editFundDialog() {
     deadlineSpinner.setValue(Date.from(Instant.now())); // Set default time to 00:00
 
     // Tilføjede Deadlines Panel
-    JLabel addedDeadlinesLabel = new JLabel("Tilføjede ansøgningsfrister:");
+    JLabel addedDeadlinesLabel = new JLabel("Tilføjede ansøgningsfrister:*");
     JPanel deadlineListPanel = new JPanel();
     deadlineListPanel.setLayout(new BoxLayout(deadlineListPanel, BoxLayout.Y_AXIS));
     JScrollPane deadlineScrollPane = new JScrollPane(deadlineListPanel);
@@ -571,6 +571,7 @@ public void editFundDialog() {
         .addComponent(descriptionLabel).addComponent(descriptionScrollPane)
         .addComponent(amountFromLabel).addComponent(amountFrom)
         .addComponent(amountToLabel).addComponent(amountTo)
+        .addComponent(runningLabel).addComponent(runningCheckBox)
         .addComponent(deadlineLabel)
         .addComponent(deadlineSpinner)
         .addComponent(isDeadLineTimeLabel)
@@ -586,7 +587,6 @@ public void editFundDialog() {
         .addComponent(websiteLabel).addComponent(websiteCheckBox).addComponent(websitePanel)
         .addComponent(collaboratedLabel).addComponent(collaboratedCheckBox)
         .addComponent(collaborationPanel)
-        .addComponent(runningLabel).addComponent(runningCheckBox)
         .addComponent(saveButton)
     );
 
@@ -596,6 +596,7 @@ public void editFundDialog() {
         .addComponent(descriptionLabel).addComponent(descriptionScrollPane)
         .addComponent(amountFromLabel).addComponent(amountFrom)
         .addComponent(amountToLabel).addComponent(amountTo)
+        .addComponent(runningLabel).addComponent(runningCheckBox)
         .addComponent(deadlineLabel)
         .addComponent(deadlineSpinner)
         .addComponent(isDeadLineTimeLabel)
@@ -610,7 +611,6 @@ public void editFundDialog() {
         .addComponent(websiteLabel).addComponent(websiteCheckBox).addComponent(websitePanel)
         .addComponent(collaboratedLabel).addComponent(collaboratedCheckBox)
         .addComponent(collaborationPanel)
-        .addComponent(runningLabel).addComponent(runningCheckBox)
         .addComponent(saveButton)
     );
 

@@ -402,15 +402,15 @@ public class UserFrame extends JFrame implements ActionListener {
         panel5.setBackground(new Color(213, 213, 213, 255));
 
         // The button to open the project proposal dialog
-        createProbButton = UIButtons.createButton("Lav projekt forslag");
+        createProbButton = UIButtons.createButton("Opret projekt forslag");
         createProbButton.addActionListener(this);
         changeProbButton = UIButtons.createButton("Redigér projekt forslag");
         changeProbButton.addActionListener(this);
-        createProjectButton = UIButtons.createButton("Lav et nyt projekt");
+        createProjectButton = UIButtons.createButton("Opret et nyt projekt");
         createProjectButton.addActionListener(this);
         changeProjectButton = UIButtons.createButton("Redigér et projekt");
         changeProjectButton.addActionListener(this);
-        createFundButton = UIButtons.createButton("Lav en ny fond");
+        createFundButton = UIButtons.createButton("Tilføj en ny fond");
         createFundButton.addActionListener(this);
         changeFundButton = UIButtons.createButton("Redigér en fond");
         changeFundButton.addActionListener(this);
@@ -669,7 +669,7 @@ public class UserFrame extends JFrame implements ActionListener {
 
     private void openproposalProjectDialog() {
 
-        JDialog dialog = new JDialog(frame, "Lav Projekt Forslag", true);
+        JDialog dialog = new JDialog(frame, "Opret Projekt Forslag", true);
         dialog.setSize(700, 700);
         System.out.println("Opening proposal project dialog...");
 
@@ -684,38 +684,38 @@ public class UserFrame extends JFrame implements ActionListener {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         dialog.add(scrollPane);
 
-        JLabel nameLabel = new JLabel("Titel:");
+        JLabel nameLabel = new JLabel("Titel:*");
         JTextField nameField = new JTextField();
 
-        JLabel ideaLabel = new JLabel("Idé/Formål:");
+        JLabel ideaLabel = new JLabel("Idé/Formål:*");
         JTextField ideaField = new JTextField();
 
-        JLabel descriptionLabel = new JLabel("Kort beskrivelse af projektet:");
+        JLabel descriptionLabel = new JLabel("Kort beskrivelse af projektet:*");
         JTextArea descriptionArea = new JTextArea(5, 20);
         JScrollPane desciptionScrollPane = new JScrollPane(descriptionArea);
 
-        JLabel ownerLabel = new JLabel("Ejer af idé/forslaget:");
+        JLabel ownerLabel = new JLabel("Ejer af idé/forslaget:*");
         JTextField ownerField = new JTextField();
 
-        JLabel targetLabel = new JLabel("Målgruppe (hvem gavner dette forslag):");
+        JLabel targetLabel = new JLabel("Målgruppe (hvem gavner dette forslag):*");
         JTextField targetField = new JTextField();
 
-        JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
+        JLabel budgetLabel = new JLabel("Anslået budget (kr.):*");
         JTextField budgetField = new JTextField();
 
-        JLabel fromDateLabel = new JLabel("Fra dato:");
+        JLabel fromDateLabel = new JLabel("Fra dato:*");
         SpinnerDateModel fromDateModel = new SpinnerDateModel();
         JSpinner fromDateSpinner = new JSpinner(fromDateModel);
         JSpinner.DateEditor fromDateEditor = new JSpinner.DateEditor(fromDateSpinner, "dd/MM/yyyy");
         fromDateSpinner.setEditor(fromDateEditor);
 
-        JLabel toDateLabel = new JLabel("Til dato:");
+        JLabel toDateLabel = new JLabel("Til dato:*");
         SpinnerDateModel toDateModel = new SpinnerDateModel();
         JSpinner toDateSpinner = new JSpinner(toDateModel);
         JSpinner.DateEditor toDateEditor = new JSpinner.DateEditor(toDateSpinner, "dd/MM/yyyy");
         toDateSpinner.setEditor(toDateEditor);
 
-        JLabel activitiesLabel = new JLabel("Aktiviteter:");
+        JLabel activitiesLabel = new JLabel("Aktiviteter:*");
         JTextField activitiesField = new JTextField();
 
         // "Create Tag" label and button
@@ -1553,7 +1553,6 @@ public class UserFrame extends JFrame implements ActionListener {
             proposalProjectFullPanel.revalidate();
         });
 
-        // Reject button
       
 
         // Add buttons to the panel
@@ -1824,7 +1823,7 @@ public class UserFrame extends JFrame implements ActionListener {
     }
 
     private void openFundDialog() {
-        JDialog dialog = new JDialog(frame, "Lav En Fond", true);
+        JDialog dialog = new JDialog(frame, "Tilføj En Fond", true);
         dialog.setSize(700, 600);
 
         JPanel mainPanel = new JPanel();
@@ -1837,19 +1836,19 @@ public class UserFrame extends JFrame implements ActionListener {
         layout.setAutoCreateContainerGaps(true);
 
         // Fond Titel
-        JLabel nameLabel = new JLabel("Fond Titel:");
+        JLabel nameLabel = new JLabel("Fond Titel:*");
         JTextField nameField = new JTextField();
 
         // Fond Beskrivelse
-        JLabel descriptionLabel = new JLabel("Beskrivelse:");
+        JLabel descriptionLabel = new JLabel("Beskrivelse:*");
         JTextArea descriptionArea = new JTextArea(7, 20);
         JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
         descriptionArea.setLineWrap(true);
 
         // Fond Beløb Fra og Til
-        JLabel amountFromLabel = new JLabel("Beløb fra:");
+        JLabel amountFromLabel = new JLabel("Beløb fra:*");
         JTextField amountFromField = new JTextField();
-        JLabel amountToLabel = new JLabel("Beløb til:");
+        JLabel amountToLabel = new JLabel("Beløb til:*");
         JTextField amountToField = new JTextField();
 
         // Fond Deadline
@@ -1947,7 +1946,7 @@ public class UserFrame extends JFrame implements ActionListener {
 
         // Kategori valg
         JLabel tagLabel = new JLabel("Tilføj Kategori:");
-        JButton createTagButton = new JButton("Lav Kategori");
+        JButton createTagButton = new JButton("Opret Kategori");
         JPanel tagPanel = new JPanel();
         tagPanel.setLayout(new BoxLayout(tagPanel, BoxLayout.Y_AXIS));
         JScrollPane tagScrollPane = new JScrollPane(tagPanel);
@@ -2186,6 +2185,7 @@ public class UserFrame extends JFrame implements ActionListener {
                 .addComponent(descriptionLabel).addComponent(descriptionScrollPane)
                 .addComponent(amountFromLabel).addComponent(amountFromField)
                 .addComponent(amountToLabel).addComponent(amountToField)
+                .addComponent(runningLabel).addComponent(runningCheckBox)
                 .addComponent(deadlineLabel).addComponent(deadlineSpinner)
                 .addComponent(isDeadLineTimeLabel)
                 .addComponent(deadLineTimeCheckBox).addComponent(deadLineTimePanel)
@@ -2197,7 +2197,6 @@ public class UserFrame extends JFrame implements ActionListener {
                 .addComponent(websiteLabel).addComponent(websiteCheckBox).addComponent(websitePanel)
                 .addComponent(collaboratedLabel).addComponent(collaboratedCheckBox)
                 .addComponent(collaborationPanel)
-                .addComponent(runningLabel).addComponent(runningCheckBox)
                 .addComponent(submitButton));
 
         layout.setVerticalGroup(layout.createSequentialGroup()
@@ -2205,6 +2204,7 @@ public class UserFrame extends JFrame implements ActionListener {
                 .addComponent(descriptionLabel).addComponent(descriptionScrollPane)
                 .addComponent(amountFromLabel).addComponent(amountFromField)
                 .addComponent(amountToLabel).addComponent(amountToField)
+                .addComponent(runningLabel).addComponent(runningCheckBox)
                 .addComponent(deadlineLabel).addComponent(deadlineSpinner)
                 .addComponent(isDeadLineTimeLabel)
                 .addComponent(deadLineTimeCheckBox).addComponent(deadLineTimePanel)
@@ -2216,7 +2216,6 @@ public class UserFrame extends JFrame implements ActionListener {
                 .addComponent(websiteLabel).addComponent(websiteCheckBox).addComponent(websitePanel)
                 .addComponent(collaboratedLabel).addComponent(collaboratedCheckBox)
                 .addComponent(collaborationPanel)
-                .addComponent(runningLabel).addComponent(runningCheckBox)
                 .addComponent(submitButton));
 
         JScrollPane scrollPane = new JScrollPane(mainPanel);
@@ -2854,7 +2853,7 @@ public class UserFrame extends JFrame implements ActionListener {
 
     public void openProjectDialog() {
 
-        JDialog dialog = new JDialog(frame, "Lav Projekt", true);
+        JDialog dialog = new JDialog(frame, "Opret Projekt", true);
         dialog.setSize(700, 700);
 
         // Main panel with layout
@@ -2867,43 +2866,43 @@ public class UserFrame extends JFrame implements ActionListener {
         // Wrap the main panel in a scroll pane
 
         // Components
-        JLabel nameLabel = new JLabel("Titel:");
+        JLabel nameLabel = new JLabel("Titel:*");
         JTextField nameField = new JTextField();
 
-        JLabel purposeLabel = new JLabel("Formål:");
+        JLabel purposeLabel = new JLabel("Formål:*");
         JTextField purposeField = new JTextField();
 
-        JLabel descriptionLabel = new JLabel("Beskrivelse af projektet:");
+        JLabel descriptionLabel = new JLabel("Beskrivelse af projektet:*");
         JTextArea descriptionArea = new JTextArea(5, 20);
         JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
 
-        JLabel ownerLabel = new JLabel("Ejer af projektet:");
+        JLabel ownerLabel = new JLabel("Ejer af projektet:*");
         JTextField ownerField = new JTextField();
 
-        JLabel targetLabel = new JLabel("Målgruppe (hvem gavner dette projekt):");
+        JLabel targetLabel = new JLabel("Målgruppe (hvem gavner dette projekt):*");
         JTextField targetField = new JTextField();
 
-        JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
+        JLabel budgetLabel = new JLabel("Anslået budget (kr.):*");
         JTextField budgetField = new JTextField();
 
-        JLabel fromDateLabel = new JLabel("Fra dato:");
+        JLabel fromDateLabel = new JLabel("Fra dato:*");
         SpinnerDateModel fromDateModel = new SpinnerDateModel();
         JSpinner fromDateSpinner = new JSpinner(fromDateModel);
         JSpinner.DateEditor fromDateEditor = new JSpinner.DateEditor(fromDateSpinner, "dd/MM/yyyy");
         fromDateSpinner.setEditor(fromDateEditor);
 
-        JLabel toDateLabel = new JLabel("Til dato:");
+        JLabel toDateLabel = new JLabel("Til dato:*");
         SpinnerDateModel toDateModel = new SpinnerDateModel();
         JSpinner toDateSpinner = new JSpinner(toDateModel);
         JSpinner.DateEditor toDateEditor = new JSpinner.DateEditor(toDateSpinner, "dd/MM/yyyy");
         toDateSpinner.setEditor(toDateEditor);
 
-        JLabel activitiesLabel = new JLabel("Aktiviteter:");
+        JLabel activitiesLabel = new JLabel("Aktiviteter:*");
         JTextField activitiesField = new JTextField();
 
         // Tag creation and selection
-        JLabel createTagLabel = new JLabel("Create Tag:");
-        JButton createTagButton = new JButton("Create Tag");
+        JLabel createTagLabel = new JLabel("Opret kategori :");
+        JButton createTagButton = new JButton("Opret kategori");
 
         JLabel selectTagLabel = new JLabel("Vælg relevante kategorier:");
         JPanel tagPanel = new JPanel();
@@ -2911,7 +2910,7 @@ public class UserFrame extends JFrame implements ActionListener {
         JScrollPane tagScrollPane = new JScrollPane(tagPanel);
 
         createTagButton.addActionListener(e -> {
-            String newTag = JOptionPane.showInputDialog(dialog, "Enter new tag:");
+            String newTag = JOptionPane.showInputDialog(dialog, "Skriv en ny kategori:");
             if (newTag != null && !newTag.trim().isEmpty()) {
                 JCheckBox tagCheckBox = new JCheckBox(newTag);
                 if (main.categories.stream().anyMatch(tag -> tag.equalsIgnoreCase(newTag))) {

@@ -400,7 +400,7 @@ public class GuestFrame extends JFrame implements ActionListener {
         panel5.setBackground(new Color(213, 213, 213, 255));
 
         // The button to open the project proposal dialog
-        createProbButton = UIButtons.createButton("Lav projekt forslag");
+        createProbButton = UIButtons.createButton("Opret projekt forslag");
         createProbButton.addActionListener(this);
         changeProbButton = UIButtons.createButton("Redigér projekt forslag");
         changeProbButton.addActionListener(this);
@@ -623,38 +623,38 @@ public class GuestFrame extends JFrame implements ActionListener {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         dialog.add(scrollPane);
 
-        JLabel nameLabel = new JLabel("Titel:");
+        JLabel nameLabel = new JLabel("Titel:*");
         JTextField nameField = new JTextField();
 
-        JLabel ideaLabel = new JLabel("Idé/Formål:");
+        JLabel ideaLabel = new JLabel("Idé/Formål:*");
         JTextField ideaField = new JTextField();
 
-        JLabel descriptionLabel = new JLabel("Kort beskrivelse af projektet:");
+        JLabel descriptionLabel = new JLabel("Kort beskrivelse af projektet:*");
         JTextArea descriptionArea = new JTextArea(5, 20);
         JScrollPane desciptionScrollPane = new JScrollPane(descriptionArea);
 
-        JLabel ownerLabel = new JLabel("Ejer af idé/forslaget:");
+        JLabel ownerLabel = new JLabel("Ejer af idé/forslaget:*");
         JTextField ownerField = new JTextField();
 
-        JLabel targetLabel = new JLabel("Målgruppe (hvem gavner dette forslag):");
+        JLabel targetLabel = new JLabel("Målgruppe (hvem gavner dette forslag):*");
         JTextField targetField = new JTextField();
 
-        JLabel budgetLabel = new JLabel("Anslået budget (kr.):");
+        JLabel budgetLabel = new JLabel("Anslået budget (kr.):*");
         JTextField budgetField = new JTextField();
 
-        JLabel fromDateLabel = new JLabel("Fra dato:");
+        JLabel fromDateLabel = new JLabel("Fra dato:*");
         SpinnerDateModel fromDateModel = new SpinnerDateModel();
         JSpinner fromDateSpinner = new JSpinner(fromDateModel);
         JSpinner.DateEditor fromDateEditor = new JSpinner.DateEditor(fromDateSpinner, "dd/MM/yyyy");
         fromDateSpinner.setEditor(fromDateEditor);
 
-        JLabel toDateLabel = new JLabel("Til dato:");
+        JLabel toDateLabel = new JLabel("Til dato:*");
         SpinnerDateModel toDateModel = new SpinnerDateModel();
         JSpinner toDateSpinner = new JSpinner(toDateModel);
         JSpinner.DateEditor toDateEditor = new JSpinner.DateEditor(toDateSpinner, "dd/MM/yyyy");
         toDateSpinner.setEditor(toDateEditor);
 
-        JLabel activitiesLabel = new JLabel("Aktiviteter:");
+        JLabel activitiesLabel = new JLabel("Aktiviteter:*");
         JTextField activitiesField = new JTextField();
 
         // "Create Tag" label and button
