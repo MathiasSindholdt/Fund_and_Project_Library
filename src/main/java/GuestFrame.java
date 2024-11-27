@@ -208,13 +208,40 @@ public class GuestFrame extends JFrame implements ActionListener {
         changeCursor(archiveButton);
         panel1.add(leftPanel, BorderLayout.WEST);
 
+        setupToggleBehavior(projectPropButton);
+        setupToggleBehavior(projectButton);
+        setupToggleBehavior(fundsButton);
+        setupToggleBehavior(archiveButton);
+
         logoutButton = UIButtons.createLogutButton();
         logoutButton.addActionListener(this);
-        logoutButton.setPreferredSize(new Dimension(100, 50)); // Set preferred size
+        logoutButton.setPreferredSize(new Dimension(150, 50)); // Set preferred size
         panel1.add(logoutButton, BorderLayout.EAST);
         changeCursor(logoutButton);
 
         return panel1;
+    }
+
+    private void setupToggleBehavior(JButton button) {
+        button.setPreferredSize(new Dimension(120, 50));
+        button.setFocusPainted(false);
+        button.setBackground(new Color(213, 213, 213, 255)); // Default color
+        button.setForeground(Color.BLACK);
+        button.setFont(new Font("Arial", Font.BOLD, 14));
+    
+        button.addActionListener(e -> {
+            resetButtonStates(); // Reset all buttons
+            button.setBackground(new Color(169, 169, 169)); // Set selected button to darker color
+        });
+    
+        changeCursor(button); // Set cursor to hand
+    }   
+
+    private void resetButtonStates() {
+        projectPropButton.setBackground(new Color(213, 213, 213, 255));
+        projectButton.setBackground(new Color(213, 213, 213, 255));
+        fundsButton.setBackground(new Color(213, 213, 213, 255));
+        archiveButton.setBackground(new Color(213, 213, 213, 255));
     }
 
     public static void changeCursor(JButton button) {
@@ -1005,7 +1032,11 @@ public class GuestFrame extends JFrame implements ActionListener {
                                 categoriesDisplay));
             }
             JButton proposalButton = UIButtons.createNewListButton(proposalLabel, false);
-            proposalButton.addActionListener(e -> showProjectProbDetails(proposal));
+            proposalButton.addActionListener(e ->  {
+                showProjectProbDetails(proposal);
+                resetAllListButtons(0); // Reset all buttons to default color
+                projectButton.setBackground(new Color(150, 150, 150));
+            });    
             proposalProjectListPanel.add(proposalButton);
             proposalProjectListPanel.add(Box.createHorizontalGlue());
             proposalProjectListPanel.add(Box.createRigidArea(new Dimension(20, 0))); // Add space to the left of the
@@ -1014,6 +1045,54 @@ public class GuestFrame extends JFrame implements ActionListener {
         // Update the view
         proposalProjectListPanel.revalidate();
         proposalProjectListPanel.repaint();
+    }
+
+    private void resetAllListButtons(int List){
+        //If List == 0, reset proposalProjectListPanel buttons
+        //If List == 1, reset projectListPanel buttons
+        //If List == 2, reset fundListPanel buttons
+
+        if(List == 0){
+            for (Component comp : proposalProjectListPanel.getComponents()) {
+                if (comp instanceof JButton) {
+                    JButton button = (JButton) comp;
+                    button.setFont(new Font("SansSerif", Font.PLAIN, 14)); // Set font
+                    button.setPreferredSize(new Dimension(300, 30));
+                    button.setFocusPainted(false); // Remove focus border
+                    button.setBackground(new Color(245, 245, 245)); // Set background color
+                    button.setForeground(Color.DARK_GRAY); // Set text color
+                    button.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)); // Set border
+                    button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Set cursor                 
+                    }
+            }
+        } else if(List == 1){
+            for (Component comp : projectListPanel.getComponents()) {
+                if (comp instanceof JButton) {
+                    JButton button = (JButton) comp;
+                    button.setFont(new Font("SansSerif", Font.PLAIN, 14)); // Set font
+                    button.setPreferredSize(new Dimension(300, 30));
+                    button.setFocusPainted(false); // Remove focus border
+                    button.setBackground(new Color(245, 245, 245)); // Set background color
+                    button.setForeground(Color.DARK_GRAY); // Set text color
+                    button.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)); // Set border
+                    button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Set cursor                
+                    }
+            }
+        } else if(List == 2){
+            for (Component comp : fundListPanel.getComponents()) {
+                if (comp instanceof JButton) {
+                    JButton button = (JButton) comp;
+                    button.setFont(new Font("SansSerif", Font.PLAIN, 14)); // Set font
+                    button.setPreferredSize(new Dimension(300, 30));
+                    button.setFocusPainted(false); // Remove focus border
+                    button.setBackground(new Color(245, 245, 245)); // Set background color
+                    button.setForeground(Color.DARK_GRAY); // Set text color
+                    button.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)); // Set border
+                    button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Set cursor  
+                    }
+            }
+        }
+
     }
 
     private void updateProjectList(ArrayList<project> smallerList) { // SORT HERE
@@ -1148,7 +1227,11 @@ public class GuestFrame extends JFrame implements ActionListener {
                 }
             }
             JButton projectButton = UIButtons.createNewListButton(projectLabel, false);
-            projectButton.addActionListener(e -> showProjectDetails(project));
+            projectButton.addActionListener(e -> {
+                showProjectDetails(project);
+                resetAllListButtons(1); // Reset all buttons to default color
+                projectButton.setBackground(new Color(150, 150, 150));
+            });
             projectListPanel.add(projectButton);
             projectListPanel.add(Box.createHorizontalGlue());
             projectListPanel.add(Box.createRigidArea(new Dimension(30, 0))); // Add space to the left of the buttons
@@ -1266,8 +1349,11 @@ public class GuestFrame extends JFrame implements ActionListener {
             }
 
             JButton proposalButton = UIButtons.createNewListButton(proposalLabel, false);
-            proposalButton.addActionListener(e -> showProjectProbDetails(proposal));
-
+            proposalButton.addActionListener(e -> {
+                showProjectProbDetails(proposal);
+                resetAllListButtons(0); // Reset all buttons to default color
+                proposalButton.setBackground(new Color(150, 150, 150));
+            });
             proposalProjectListPanel.add(proposalButton);
         }
         // Update the view
@@ -1424,7 +1510,11 @@ public class GuestFrame extends JFrame implements ActionListener {
             }
 
             JButton projectButton = UIButtons.createNewListButton(projectLabel, false);
-            projectButton.addActionListener(e -> showProjectDetails(project));
+            projectButton.addActionListener(e -> {
+                showProjectDetails(project);
+                resetAllListButtons(1); // Reset all buttons to default color
+                projectButton.setBackground(new Color(150, 150, 150));
+            });
             projectListPanel.add(projectButton);
             projectListPanel.add(Box.createHorizontalGlue());
             projectListPanel.add(Box.createRigidArea(new Dimension(30, 0))); // Add space to the left of the buttons
@@ -2488,8 +2578,11 @@ public class GuestFrame extends JFrame implements ActionListener {
             }
 
             JButton fundButton = UIButtons.createNewListButton(fundLabel, false);
-            fundButton.addActionListener(e -> showFundDetails(fund));
-
+            fundButton.addActionListener(e -> {
+                showFundDetails(fund);
+                resetAllListButtons(2); // Reset all buttons to default color
+                fundButton.setBackground(new Color(150, 150, 150));
+            });
             fundListPanel.add(fundButton);
         }
         fundListPanel.revalidate();
@@ -2660,8 +2753,11 @@ public class GuestFrame extends JFrame implements ActionListener {
             }
 
             JButton fundButton = UIButtons.createNewListButton(fundLabel, false);
-            fundButton.addActionListener(e -> showFundDetails(fund));
-
+            fundButton.addActionListener(e -> {
+                showFundDetails(fund);
+                resetAllListButtons(2); // Reset all buttons to default color
+                fundButton.setBackground(new Color(150, 150, 150));
+            });
             fundListPanel.add(fundButton);
             fundListPanel.add(Box.createHorizontalGlue());
             fundListPanel.add(Box.createRigidArea(new Dimension(20, 0))); // Add space to the left of the buttons

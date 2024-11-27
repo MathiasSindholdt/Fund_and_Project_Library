@@ -3,6 +3,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -75,9 +76,11 @@ public class UIButtons extends JPanel {
         Image scaledImage = originalIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         ImageIcon resizedIcon = new ImageIcon(scaledImage);
 
-        JButton button = new JButton();
-        button.setPreferredSize(new Dimension(50, 50));
-        button.setIcon(resizedIcon);
+        JButton button = new JButton("Log ud", resizedIcon);
+        button.setIconTextGap(10); // Set gap between icon and text
+        button.setHorizontalTextPosition(JButton.LEFT); // Position text to the left of the icon
+        button.setFont(button.getFont().deriveFont(Font.BOLD));
+        button.setFont(button.getFont().deriveFont(14.0f));
         button.setBorderPainted(false);
         button.setContentAreaFilled(false);
         button.setFocusPainted(false);
@@ -134,12 +137,16 @@ public class UIButtons extends JPanel {
         listButton.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
+            if (!listButton.getBackground().equals(new Color(150, 150, 150))) {
                 listButton.setBackground(new Color(220, 220, 220)); // Change background on hover
+            }
             }
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
+            if (!listButton.getBackground().equals(new Color(150, 150, 150))) {
                 listButton.setBackground(new Color(245, 245, 245)); // Revert background on exit
+            }
             }
         });
 
