@@ -31,7 +31,9 @@ public class UIButtons extends JPanel {
         Image scaledImage = originalIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         ImageIcon resizedIcon = new ImageIcon(scaledImage);
 
-        JButton button = new JButton();
+        JButton button = new JButton("Hjem", resizedIcon);
+        button.setIconTextGap(10);
+        button.setHorizontalTextPosition(JButton.LEFT);
         button.setPreferredSize(new Dimension(50, 50));
         button.setIcon(resizedIcon);
         button.setBorderPainted(false);

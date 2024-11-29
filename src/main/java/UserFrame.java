@@ -112,12 +112,17 @@ public class UserFrame extends JFrame implements ActionListener {
     public ArrayList<proposalProject> sortedProposalList = main.proposalList;
     public ArrayList<project> sortedProjectList = main.projectList;
     public ArrayList<fundClass> sortedFundList = main.fundList;
-
+    
     private List<JToggleButton> tagButton;
     private ArrayList<String> selectedTags = new ArrayList<>();
-
+    
     globalListSorting sorter = new globalListSorting();
     UIButtons UIButtons = new UIButtons();
+    EditProjectButton editProjectButton = new EditProjectButton(this, main.projectList);
+
+    EditFundButton editFundButton = new EditFundButton(this, main.fundList);
+
+    EditProjectProposal editProjectProposal = new EditProjectProposal(this, main.proposalList);
 
     int[] clickCounts = { 0, 0, 0, 0, 0 }; // Initialize the clickCounts array
     public static String clickableURL;
@@ -179,7 +184,7 @@ public class UserFrame extends JFrame implements ActionListener {
         leftPanel.setOpaque(false); // Make it transparent to show panel1 background
         menuButton = UIButtons.createMenuButton();
         menuButton.addActionListener(this);
-        menuButton.setPreferredSize(new Dimension(100, 50)); // Set preferred size
+        menuButton.setPreferredSize(new Dimension(106, 50)); // Set preferred size
         leftPanel.add(menuButton);
         changeCursor(menuButton);
 
@@ -421,31 +426,135 @@ public class UserFrame extends JFrame implements ActionListener {
         updateFundList();
 
     }
+    
+    public JPanel createCenterPanel() {
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(new Color(213, 213, 213, 255));
 
-    // Center panel for the main view (like before)
-    private JPanel createCenterPanel() {
-        JPanel panel5 = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panel5.setBackground(new Color(213, 213, 213, 255));
+        // Panel for the welcome label
+        JPanel welcomePanel = new JPanel();
+        welcomePanel.setLayout(new BoxLayout(welcomePanel, BoxLayout.Y_AXIS));
+        welcomePanel.setBackground(new Color(213, 213, 213, 255));
 
-        // The button to open the project proposal dialog
+        JLabel welcomeLabel = new JLabel("Velkommen");
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 28));
+        welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT); 
+
+        welcomePanel.add(Box.createVerticalGlue());
+        welcomePanel.add(welcomeLabel);
+        welcomePanel.add(Box.createRigidArea(new Dimension(0, 20))); // 
+
+        mainPanel.add(welcomePanel, BorderLayout.NORTH);
+
+        // Panel for the sections and buttons
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setBackground(new Color(213, 213, 213, 255));
+
+        // Section for Projekt forslag
+        JPanel projectProposalPanel = new JPanel();
+        projectProposalPanel.setLayout(new BorderLayout());
+        projectProposalPanel.setBackground(new Color(213, 213, 213, 255));
+
+        JLabel projectProposalLabel = new JLabel("Projekt forslag");
+        projectProposalLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        projectProposalLabel.setHorizontalAlignment(SwingConstants.LEFT); // Align label to the left
+        projectProposalLabel.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 0)); // Add space to the left
+
+        JPanel projectProposalButtons = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        projectProposalButtons.setBackground(new Color(213, 213, 213, 255));
+
         createProbButton = UIButtons.createButton("Opret projekt forslag");
         createProbButton.addActionListener(this);
         changeProbButton = UIButtons.createButton("Redigér projekt forslag");
         changeProbButton.addActionListener(this);
+
+        projectProposalButtons.add(createProbButton);
+        projectProposalButtons.add(changeProbButton);
+        projectProposalPanel.add(projectProposalLabel, BorderLayout.NORTH);
+        JPanel verticalSpacePanel = new JPanel();
+        verticalSpacePanel.setLayout(new BoxLayout(verticalSpacePanel, BoxLayout.Y_AXIS));
+        verticalSpacePanel.add(Box.createRigidArea(new Dimension(0, 20))); // Add vertical space
+        verticalSpacePanel.setBackground(new Color(213, 213, 213, 255));
+        verticalSpacePanel.add(projectProposalButtons);
+
+        projectProposalPanel.add(verticalSpacePanel, BorderLayout.CENTER);
+
+        // Section for Projekt
+        JPanel projectPanel = new JPanel();
+        projectPanel.setLayout(new BorderLayout());
+        projectPanel.setBackground(new Color(213, 213, 213, 255));
+
+        JLabel projectLabel = new JLabel("Projekt");
+        projectLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        projectLabel.setHorizontalAlignment(SwingConstants.LEFT); // Align label to the left
+        projectLabel.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 0)); // Add space to the left
+
+        JPanel projectButtons = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        projectButtons.setBackground(new Color(213, 213, 213, 255));
+
         createProjectButton = UIButtons.createButton("Opret et nyt projekt");
         createProjectButton.addActionListener(this);
         changeProjectButton = UIButtons.createButton("Redigér et projekt");
         changeProjectButton.addActionListener(this);
+
+        projectButtons.add(createProjectButton);
+        projectButtons.add(changeProjectButton);
+
+        projectPanel.add(projectLabel, BorderLayout.NORTH);
+        JPanel verticalSpacePanel2 = new JPanel();
+        verticalSpacePanel2.setLayout(new BoxLayout(verticalSpacePanel2, BoxLayout.Y_AXIS));
+        verticalSpacePanel2.add(Box.createRigidArea(new Dimension(0, 20))); // Add vertical space
+        verticalSpacePanel2.setBackground(new Color(213, 213, 213, 255));
+        verticalSpacePanel2.add(projectButtons);
+
+        projectPanel.add(verticalSpacePanel2, BorderLayout.CENTER);
+
+        // Section for Fond
+        JPanel fundPanel = new JPanel();
+        fundPanel.setLayout(new BorderLayout());
+        fundPanel.setBackground(new Color(213, 213, 213, 255));
+
+        JLabel fundLabel = new JLabel("Fond");
+        fundLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        fundLabel.setHorizontalAlignment(SwingConstants.LEFT); // Align label to the left
+        fundLabel.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 0)); // Add space to the left
+
+
+        JPanel fundButtons = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        fundButtons.setBackground(new Color(213, 213, 213, 255));
+
         createFundButton = UIButtons.createButton("Tilføj en ny fond");
         createFundButton.addActionListener(this);
         changeFundButton = UIButtons.createButton("Redigér en fond");
         changeFundButton.addActionListener(this);
 
-        EditProjectButton editProjectButton = new EditProjectButton(this, main.projectList);
+        fundButtons.add(createFundButton);
+        fundButtons.add(changeFundButton);
 
-        EditFundButton editFundButton = new EditFundButton(this, main.fundList);
+        fundPanel.add(fundLabel, BorderLayout.NORTH);
+        JPanel verticalSpacePanel3 = new JPanel();
+        verticalSpacePanel3.setLayout(new BoxLayout(verticalSpacePanel3, BoxLayout.Y_AXIS));
+        verticalSpacePanel3.add(Box.createRigidArea(new Dimension(0, 20))); // Add vertical space
+        verticalSpacePanel3.setBackground(new Color(213, 213, 213, 255));
+        verticalSpacePanel3.add(fundButtons);
 
-        EditProjectProposal editProjectProposal = new EditProjectProposal(this, main.proposalList);
+        fundPanel.add(verticalSpacePanel3, BorderLayout.CENTER);
+
+
+        // Add sections to content panel
+        contentPanel.add(projectProposalPanel);
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        contentPanel.add(projectPanel);
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        contentPanel.add(fundPanel);
+
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
+
+
+
+        //ActionListeners for edit buttons
+       
 
         changeFundButton.addActionListener(e -> {
             editFundButton.editFundDialog(); // Call the method on the instance
@@ -463,17 +572,9 @@ public class UserFrame extends JFrame implements ActionListener {
             updateProjectList();
         });
 
-        panel5.add(createProbButton);
-        panel5.add(changeProbButton);
-        panel5.add(createProjectButton);
-        panel5.add(changeProjectButton);
-        panel5.add(createFundButton);
-        panel5.add(changeFundButton);
-
-        return panel5;
+        return mainPanel;
     }
-
-    // Separate view for "Projekt forslag"
+     // Separate view for "Projekt forslag"
     private JPanel createproposalProjectView() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
@@ -796,11 +897,6 @@ public class UserFrame extends JFrame implements ActionListener {
                 UserFrameErrorHandling.displayTitleError(isInvalidLenght);
                 System.out.println("Title error: Length is invalid");
                 hasError = true;
-            } else if (!validationUtils.isValidInput(nameField.getText())) {
-                isInvalidLenght = false;
-                dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
-                System.out.println("Title error: Invalid input");
-                hasError = true;
             } else {
                 tempTitle = nameField.getText();
                 System.out.println("Title set: " + tempTitle);
@@ -811,11 +907,6 @@ public class UserFrame extends JFrame implements ActionListener {
                 isInvalidLenght = true;
                 dialog.add(UserFrameErrorHandling.displayIdeaError(isInvalidLenght));
                 System.out.println("Idea error: Length is invalid");
-                hasError = true;
-            } else if (!validationUtils.isValidInput(ideaField.getText())) {
-                isInvalidLenght = false;
-                dialog.add(UserFrameErrorHandling.displayIdeaError(isInvalidLenght));
-                System.out.println("Idea error: Invalid input");
                 hasError = true;
             } else {
                 tempIdea = ideaField.getText();
@@ -828,11 +919,6 @@ public class UserFrame extends JFrame implements ActionListener {
                 dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
                 System.out.println("Description error: Length is invalid");
                 hasError = true;
-            } else if (!validationUtils.isValidDescription(descriptionArea.getText())) {
-                isInvalidLenght = false;
-                dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
-                System.out.println("Description error: Invalid input");
-                hasError = true;
             } else {
                 tempDescription = descriptionArea.getText();
                 System.out.println("Description set: " + tempDescription);
@@ -844,11 +930,6 @@ public class UserFrame extends JFrame implements ActionListener {
                 dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
                 System.out.println("Owner error: Length is invalid");
                 hasError = true;
-            } else if (!validationUtils.isValidInput(ownerField.getText())) {
-                isInvalidLenght = false;
-                dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
-                System.out.println("Owner error: Invalid input");
-                hasError = true;
             } else {
                 tempOwner = ownerField.getText();
                 System.out.println("Owner set: " + tempOwner);
@@ -859,11 +940,6 @@ public class UserFrame extends JFrame implements ActionListener {
                 isInvalidLenght = true;
                 dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
                 System.out.println("Target Audience error: Length is invalid");
-                hasError = true;
-            } else if (!validationUtils.isValidInput(targetField.getText())) {
-                isInvalidLenght = false;
-                dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
-                System.out.println("Target Audience error: Invalid input");
                 hasError = true;
             } else {
                 tempTargetAudience = targetField.getText();
@@ -901,11 +977,6 @@ public class UserFrame extends JFrame implements ActionListener {
                 isInvalidLenght = true;
                 dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
                 System.out.println("Activities error: Length is invalid");
-                hasError = true;
-            } else if (!validationUtils.isValidInput(activitiesField.getText())) {
-                isInvalidLenght = false;
-                dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
-                System.out.println("Activities error: Invalid input");
                 hasError = true;
             } else {
                 tempActivities = activitiesField.getText();
@@ -1421,6 +1492,8 @@ proposalProjectListPanel.repaint();
             });
 
             proposalProjectListPanel.add(proposalButton);
+            proposalProjectListPanel.add(Box.createHorizontalGlue());
+            proposalProjectListPanel.add(Box.createRigidArea(new Dimension(30, 0))); // Add space to the left of the buttons
         }
         // Update the view
         proposalProjectListPanel.revalidate();
@@ -1667,6 +1740,20 @@ proposalProjectListPanel.repaint();
 
         proposalProjectFullPanel.add(archiveButton);
 
+
+        JButton editButton = new JButton("Rediger Projektforslag");
+        editButton.addActionListener(e -> {
+            editProjectProposal.openEditProjectPropDialog(proposal);
+            proposalProjectFullPanel.removeAll();
+            proposalProjectFullPanel.revalidate();
+            proposalProjectFullPanel.repaint();
+            showProjectProbDetails(proposal);
+            updateProposalProjectList();
+            writeAll();
+        });
+
+        proposalProjectFullPanel.add(editButton);
+
         // Refresh the panel to reflect the changes
         proposalProjectFullPanel.revalidate();
         proposalProjectFullPanel.repaint();
@@ -1882,9 +1969,19 @@ proposalProjectListPanel.repaint();
         });
 
         projectFullPanel.add(archiveButton);
-        projectFullPanel.add(changeProjectButton);
 
+        JButton editButton = new JButton("Rediger Projekt");
+        editButton.addActionListener(e -> {
+            editProjectButton.openEditProjectDialog(project);
+            projectFullPanel.removeAll();
+            projectFullPanel.revalidate();
+            projectFullPanel.repaint();
+            showProjectDetails(project);
+            updateProjectList();
+            writeAll();
+        });
 
+        projectFullPanel.add(editButton);
         projectFullPanel.revalidate();
         projectFullPanel.repaint();
     }
@@ -2180,12 +2277,8 @@ proposalProjectListPanel.repaint();
             boolean hasError = false;
 
             // FundTitle errorhandling
-            if (validationUtils.isWithinLowerCharLimit(nameField.getText()) == false) {
+            if (!validationUtils.isWithinLowerCharLimit(nameField.getText())) {
                 isInvalidLenght = true;
-                dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
-                hasError = true;
-            } else if (validationUtils.isValidInput(nameField.getText()) == false) {
-                isInvalidLenght = false;
                 dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
                 hasError = true;
             } else {
@@ -2193,26 +2286,23 @@ proposalProjectListPanel.repaint();
             }
 
             // FundDescription errorhandling
-            if (validationUtils.isWithinUpperCharLimit(descriptionArea.getText()) == false) {
+            if (!validationUtils.isWithinUpperCharLimit(descriptionArea.getText())) {
                 isInvalidLenght = true;
                 dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
                 hasError = true;
-            } else if (validationUtils.isValidDescription(descriptionArea.getText()) == false) {
-                isInvalidLenght = false;
-                dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
-                hasError = true;
-            } else {
+            }  else {
                 tempDescription = descriptionArea.getText().trim();
             }
 
             // Money errorhandling
-            if (validationUtils.isNumericInput(amountFromField.getText()) == false) {
+            if (!validationUtils.isNumericInput(amountFromField.getText())) {
                 dialog.add(UserFrameErrorHandling.displayAmountFromError());
                 hasError = true;
             } else {
                 tempAmountFrom = Long.parseLong(amountFromField.getText().trim());
             }
-            if (validationUtils.isNumericInput(amountToField.getText()) == false) {
+
+            if (!validationUtils.isNumericInput(amountToField.getText())) {
                 dialog.add(UserFrameErrorHandling.displayAmountToError());
                 hasError = true;
             } else {
@@ -2509,7 +2599,7 @@ proposalProjectListPanel.repaint();
             clickableURL = "https://" + clickableURL;
         }
 
-        JLabel websiteLabel = new JLabel("<html>Hjemmeside: <a href=\"" + clickableURL + "\">" + clickableURL + "</a></html>");
+        JLabel websiteLabel = new JLabel("<html> <a href=\"" + clickableURL + "\">" + clickableURL + "</a></html>");
         websiteLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         websiteLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -2539,6 +2629,17 @@ proposalProjectListPanel.repaint();
         });
      //   fundFullPanel.add(Box.createVerticalStrut(10)); // Add some spacing
         fundFullPanel.add(archiveButton);
+
+        JButton changeFundButton = new JButton("Redigér fond");
+        changeFundButton.addActionListener(e -> {
+            editFundButton.editFundDialog(fund);
+            updateFundList();
+            writeAll();
+            fundFullPanel.removeAll();
+            fundFullPanel.revalidate();
+            fundFullPanel.repaint();
+            showFundDetails(fund);
+        });
         fundFullPanel.add(changeFundButton);
 
     
@@ -3031,11 +3132,8 @@ proposalProjectListPanel.repaint();
         submitButton.addActionListener((ActionEvent ae) -> {
             try {
                 // Get the values from the input fields
-                if (validationUtils.isWithinLowerCharLimit(nameField.getText()) == false) {
+                if (!validationUtils.isWithinLowerCharLimit(nameField.getText())) {
                     isInvalidLenght = true;
-                    dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
-                } else if (validationUtils.isValidInput(nameField.getText()) == false) {
-                    isInvalidLenght = false;
                     dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
                 } else {
                     tempTitle = nameField.getText();
@@ -3044,18 +3142,12 @@ proposalProjectListPanel.repaint();
                 if (validationUtils.isWithinLowerCharLimit(purposeField.getText()) == false) {
                     isInvalidLenght = true;
                     dialog.add(UserFrameErrorHandling.displayPurposeError(isInvalidLenght));
-                } else if (validationUtils.isValidInput(purposeField.getText()) == false) {
-                    isInvalidLenght = false;
-                    dialog.add(UserFrameErrorHandling.displayPurposeError(isInvalidLenght));
                 } else {
                     tempPurpose = purposeField.getText();
                 }
 
                 if (validationUtils.isWithinUpperCharLimit(descriptionArea.getText()) == false) {
                     isInvalidLenght = true;
-                    dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
-                } else if (validationUtils.isValidDescription(descriptionArea.getText()) == false) {
-                    isInvalidLenght = false;
                     dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
                 } else {
                     tempDescription = descriptionArea.getText();
@@ -3064,18 +3156,12 @@ proposalProjectListPanel.repaint();
                 if (validationUtils.isWithinLowerCharLimit(ownerField.getText()) == false) {
                     isInvalidLenght = true;
                     dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
-                } else if (validationUtils.isValidInput(ownerField.getText()) == false) {
-                    isInvalidLenght = false;
-                    dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
                 } else {
                     tempOwner = ownerField.getText();
                 }
 
                 if (validationUtils.isWithinLowerCharLimit(targetField.getText()) == false) {
                     isInvalidLenght = true;
-                    dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
-                } else if (validationUtils.isValidInput(targetField.getText()) == false) {
-                    isInvalidLenght = false;
                     dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
                 } else {
                     tempTargetAudience = targetField.getText();
@@ -3096,9 +3182,6 @@ proposalProjectListPanel.repaint();
 
                 if (validationUtils.isWithinLowerCharLimit(activitiesField.getText()) == false) {
                     isInvalidLenght = true;
-                    dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
-                } else if (validationUtils.isValidInput(activitiesField.getText()) == false) {
-                    isInvalidLenght = false;
                     dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
                 } else {
                     tempActivities = activitiesField.getText();
@@ -3259,6 +3342,7 @@ proposalProjectListPanel.repaint();
             cardLayout.show(cardPanel, "Archive");
             updateRightSidePanel("Archive");
         } else if (e.getSource() == menuButton) {
+            resetButtonStates();
             cardLayout.show(cardPanel, "Main");
         } else if (e.getSource() == createProbButton) {
             openproposalProjectDialog();
