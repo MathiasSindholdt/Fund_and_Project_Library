@@ -118,6 +118,8 @@ public class GuestFrame extends JFrame implements ActionListener {
 
     globalListSorting sorter = new globalListSorting();
     UIButtons UIButtons = new UIButtons();
+    EditProjectProposal editProjectProposal = new EditProjectProposal(this, main.proposalList);
+
 
     int[] clickCounts = { 0, 0, 0, 0, 0 }; // Initialize the clickCounts array
 
@@ -480,6 +482,13 @@ public class GuestFrame extends JFrame implements ActionListener {
 
         mainPanel.add(contentPanel, BorderLayout.CENTER);
 
+
+      
+
+        changeProbButton.addActionListener(e -> {
+            editProjectProposal.openEditProjectPropDialog(); // Call the method on the instance
+            updateProposalProjectList();
+        });
         return mainPanel;
     }
 

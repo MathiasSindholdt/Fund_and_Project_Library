@@ -465,7 +465,9 @@ public class UserFrame extends JFrame implements ActionListener {
         projectProposalButtons.setBackground(new Color(213, 213, 213, 255));
 
         createProbButton = UIButtons.createButton("Opret projekt forslag");
+        createProbButton.addActionListener(this);
         changeProbButton = UIButtons.createButton("Redigér projekt forslag");
+        changeProbButton.addActionListener(this);
 
         projectProposalButtons.add(createProbButton);
         projectProposalButtons.add(changeProbButton);
@@ -492,7 +494,9 @@ public class UserFrame extends JFrame implements ActionListener {
         projectButtons.setBackground(new Color(213, 213, 213, 255));
 
         createProjectButton = UIButtons.createButton("Opret et nyt projekt");
+        createProjectButton.addActionListener(this);
         changeProjectButton = UIButtons.createButton("Redigér et projekt");
+        changeProjectButton.addActionListener(this);
 
         projectButtons.add(createProjectButton);
         projectButtons.add(changeProjectButton);
@@ -521,7 +525,9 @@ public class UserFrame extends JFrame implements ActionListener {
         fundButtons.setBackground(new Color(213, 213, 213, 255));
 
         createFundButton = UIButtons.createButton("Tilføj en ny fond");
+        createFundButton.addActionListener(this);
         changeFundButton = UIButtons.createButton("Redigér en fond");
+        changeFundButton.addActionListener(this);
 
         fundButtons.add(createFundButton);
         fundButtons.add(changeFundButton);
@@ -544,6 +550,27 @@ public class UserFrame extends JFrame implements ActionListener {
         contentPanel.add(fundPanel);
 
         mainPanel.add(contentPanel, BorderLayout.CENTER);
+
+
+
+        //ActionListeners for edit buttons
+       
+
+        changeFundButton.addActionListener(e -> {
+            editFundButton.editFundDialog(); // Call the method on the instance
+            updateFundList();
+
+        });
+
+        changeProbButton.addActionListener(e -> {
+            editProjectProposal.openEditProjectPropDialog(); // Call the method on the instance
+            updateProposalProjectList();
+        });
+
+        changeProjectButton.addActionListener(e -> {
+            editProjectButton.openEditProjectDialog();
+            updateProjectList();
+        });
 
         return mainPanel;
     }
