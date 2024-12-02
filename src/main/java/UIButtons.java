@@ -51,7 +51,6 @@ public class UIButtons extends JPanel {
 
     public JButton createProjectPropButton(String text) {
         JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(130, 50));
         return button;
     }
 

@@ -42,7 +42,7 @@ public class EditFundButton {
 
 public void editFundDialog() {
     JDialog dialog = new JDialog(frame, "Rediger Fond", true);
-    dialog.setSize(700, 600);
+    dialog.setSize(800, 600);
 
     JPanel mainPanel = new JPanel();
     mainPanel.setLayout(new GroupLayout(mainPanel));
