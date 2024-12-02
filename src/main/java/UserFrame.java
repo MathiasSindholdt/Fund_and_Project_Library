@@ -48,10 +48,10 @@ import javax.swing.SwingConstants;
 
 public class UserFrame extends JFrame implements ActionListener {
 
-    private JFrame frame;
+    public static JFrame frame;
     private JPanel cardPanel;
     private CardLayout cardLayout;
-    JPanel panel2 = new JPanel();
+    public static JPanel panel2 = new JPanel();
 
     // Buttons
     private JButton createProbButton;
@@ -60,6 +60,9 @@ public class UserFrame extends JFrame implements ActionListener {
     private JButton changeProjectButton;
     private JButton createFundButton;
     private JButton changeFundButton;
+    private JButton createCategoriesButton;
+    private JButton changeCategoriesButton;
+
 
     private JButton menuButton;
     private JButton logoutButton;
@@ -119,9 +122,7 @@ public class UserFrame extends JFrame implements ActionListener {
     globalListSorting sorter = new globalListSorting();
     UIButtons UIButtons = new UIButtons();
     EditProjectButton editProjectButton = new EditProjectButton(this, main.projectList);
-
     EditFundButton editFundButton = new EditFundButton(this, main.fundList);
-
     EditProjectProposal editProjectProposal = new EditProjectProposal(this, main.proposalList);
 
     int[] clickCounts = { 0, 0, 0, 0, 0 }; // Initialize the clickCounts array
@@ -189,6 +190,7 @@ public class UserFrame extends JFrame implements ActionListener {
         changeCursor(menuButton);
 
         projectPropButton = UIButtons.createProjectPropButton("Projekt forslag");
+        projectPropButton.setPreferredSize(new Dimension(150, 50)); 
         projectPropButton.addActionListener(this);
         panel1.add(projectPropButton);
         leftPanel.add(projectPropButton);
@@ -377,7 +379,7 @@ public class UserFrame extends JFrame implements ActionListener {
     
         // Create the button with the display name
         JToggleButton tagButtonInstance = new JToggleButton(displayTag);
-    
+        tagButtonInstance.setPreferredSize(new Dimension(120, 25));
         // Add action listener for button selection
         tagButtonInstance.addActionListener(new ActionListener() {
             @Override
@@ -398,7 +400,6 @@ public class UserFrame extends JFrame implements ActionListener {
     }
     
     private void setupToggleBehavior(JButton button) {
-        button.setPreferredSize(new Dimension(120, 50));
         button.setFocusPainted(false);
         button.setBackground(new Color(213, 213, 213, 255)); // Default color
         button.setForeground(Color.BLACK);
@@ -464,9 +465,11 @@ public class UserFrame extends JFrame implements ActionListener {
         JPanel projectProposalButtons = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         projectProposalButtons.setBackground(new Color(213, 213, 213, 255));
 
-        createProbButton = UIButtons.createButton("Opret projekt forslag");
+        createProbButton = UIButtons.createButton("Opret et nyt projekt forslag");
+        createProbButton.setPreferredSize(new Dimension(200, 50));
         createProbButton.addActionListener(this);
         changeProbButton = UIButtons.createButton("Redigér projekt forslag");
+        changeProbButton.setPreferredSize(new Dimension(175, 50));
         changeProbButton.addActionListener(this);
 
         projectProposalButtons.add(createProbButton);
@@ -494,6 +497,7 @@ public class UserFrame extends JFrame implements ActionListener {
         projectButtons.setBackground(new Color(213, 213, 213, 255));
 
         createProjectButton = UIButtons.createButton("Opret et nyt projekt");
+        createProjectButton.setPreferredSize(new Dimension(160, 50));
         createProjectButton.addActionListener(this);
         changeProjectButton = UIButtons.createButton("Redigér et projekt");
         changeProjectButton.addActionListener(this);
@@ -542,12 +546,46 @@ public class UserFrame extends JFrame implements ActionListener {
         fundPanel.add(verticalSpacePanel3, BorderLayout.CENTER);
 
 
+        //section for catagories
+        JPanel categoriesPanel = new JPanel();
+        categoriesPanel.setLayout(new BorderLayout());
+        categoriesPanel.setBackground(new Color(213, 213, 213, 255));
+
+        JLabel categoriesLabel = new JLabel("Kategorier");
+        categoriesLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        categoriesLabel.setHorizontalAlignment(SwingConstants.LEFT); // Align label to the left
+        categoriesLabel.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 0)); // Add space to the left
+
+        JPanel categoriesButtons = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        categoriesButtons.setBackground(new Color(213, 213, 213, 255));
+
+        createCategoriesButton = UIButtons.createButton("Opret en ny kategori");
+        createCategoriesButton.setPreferredSize(new Dimension(160, 50));
+        createCategoriesButton.addActionListener(this);
+        changeCategoriesButton = UIButtons.createButton("Redigér kategori listen");
+        changeCategoriesButton.addActionListener(this);
+       
+        categoriesButtons.add(createCategoriesButton);
+        categoriesButtons.add(changeCategoriesButton);
+
+        categoriesPanel.add(categoriesLabel, BorderLayout.NORTH);
+        JPanel verticalSpacePanel4 = new JPanel();
+        verticalSpacePanel4.setLayout(new BoxLayout(verticalSpacePanel4, BoxLayout.Y_AXIS));
+        verticalSpacePanel4.add(Box.createRigidArea(new Dimension(0, 20))); // Add vertical space
+        verticalSpacePanel4.setBackground(new Color(213, 213, 213, 255));
+        verticalSpacePanel4.add(categoriesButtons);
+
+        categoriesPanel.add(verticalSpacePanel4, BorderLayout.CENTER);
+
+
         // Add sections to content panel
         contentPanel.add(projectProposalPanel);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         contentPanel.add(projectPanel);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         contentPanel.add(fundPanel);
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        contentPanel.add(categoriesPanel);
 
         mainPanel.add(contentPanel, BorderLayout.CENTER);
 
@@ -572,6 +610,11 @@ public class UserFrame extends JFrame implements ActionListener {
             updateProjectList();
         });
 
+        changeCategoriesButton.addActionListener(e -> {
+            openEditCategoriesDialog();
+            updateCategoryPanel();
+        });
+
         return mainPanel;
     }
      // Separate view for "Projekt forslag"
@@ -579,12 +622,29 @@ public class UserFrame extends JFrame implements ActionListener {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
 
-        JLabel label = new JLabel("Projekt Forslag", SwingConstants.CENTER);
-        panel.add(label, BorderLayout.NORTH);
+        
 
         // Panel to display project proposals dynamically
         proposalProjectListPanel = new JPanel();
         proposalProjectListPanel.setLayout(new BoxLayout(proposalProjectListPanel, BoxLayout.Y_AXIS));
+
+
+        JButton addProposal = new JButton("Tilføj et nyt projekt forslag");
+        addProposal.addActionListener(e -> {
+            openproposalProjectDialog();
+            updateProposalProjectList();
+        });
+        JButton changeProposal = new JButton("Rediger et projekt forslag");
+        changeProposal.addActionListener(e -> {
+            editProjectProposal.openEditProjectPropDialog();
+            updateProjectList();
+        });
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        buttonPanel.setLayout(new GridLayout(1, 2, 10, 0)); // Set GridLayout with 1 row, 2 columns, and 10px horizontal gap
+        buttonPanel.add(addProposal);
+        buttonPanel.add(changeProposal);
+        panel.add(buttonPanel, BorderLayout.NORTH);
 
         // Scroll pane to handle multiple proposals
         JScrollPane scrollPane = new JScrollPane(proposalProjectListPanel);
@@ -598,12 +658,29 @@ public class UserFrame extends JFrame implements ActionListener {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
 
-        JLabel label = new JLabel("Projekter", SwingConstants.CENTER);
-        panel.add(label, BorderLayout.NORTH);
+       
 
         // Initialize the project list panel
         projectListPanel = new JPanel();
         projectListPanel.setLayout(new BoxLayout(projectListPanel, BoxLayout.Y_AXIS)); // Ensure layout is set
+
+
+        JButton addProject = new JButton("Tilføj et nyt projekt");
+        addProject.addActionListener(e -> {
+            openProjectDialog();
+            updateProjectList();
+        });
+        JButton changeProject = new JButton("Rediger et projekt");
+        changeProject.addActionListener(e -> {
+            editProjectButton.openEditProjectDialog();
+            updateProjectList();
+        });
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        buttonPanel.setLayout(new GridLayout(1, 2, 10, 0));
+        buttonPanel.add(addProject);
+        buttonPanel.add(changeProject);
+        panel.add(buttonPanel, BorderLayout.NORTH);
 
         JScrollPane scrollPane = new JScrollPane(projectListPanel); // Add project list panel in a scroll pane
         panel.add(scrollPane, BorderLayout.CENTER);
@@ -616,12 +693,27 @@ public class UserFrame extends JFrame implements ActionListener {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
 
-        JLabel label = new JLabel("Fonde", SwingConstants.CENTER);
-        panel.add(label, BorderLayout.NORTH);
 
         // Initialize fund list panel
         fundListPanel = new JPanel();
         fundListPanel.setLayout(new BoxLayout(fundListPanel, BoxLayout.Y_AXIS));
+
+        JButton addFund = new JButton("Tilføj en ny fond");
+        addFund.addActionListener(e -> {
+            openFundDialog();
+            updateFundList();
+        });
+        JButton changeFund = new JButton("Rediger en fond");
+        changeFund.addActionListener(e -> {
+            editFundButton.editFundDialog();
+            updateFundList();
+        });
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        buttonPanel.setLayout(new GridLayout(1, 2, 10, 0)); // Set GridLayout with 1 row, 2 columns, and 10px horizontal gap
+        buttonPanel.add(addFund);
+        buttonPanel.add(changeFund);
+        panel.add(buttonPanel, BorderLayout.NORTH);
 
         // Create a scroll pane for the fund list
         JScrollPane scrollPane = new JScrollPane(fundListPanel);
@@ -781,9 +873,10 @@ public class UserFrame extends JFrame implements ActionListener {
         updateCategoryPanel();
     }
 
-    private void updateCategoryPanel() {
+  
+    public void updateCategoryPanel() {
         panel2.removeAll();
-    
+        System.err.println("Updating category panel...");
         for (String category : main.categories) {
             createTagButton(category);
             System.out.println(category);
@@ -793,6 +886,143 @@ public class UserFrame extends JFrame implements ActionListener {
         panel2.repaint();
     }
     
+
+    public void openCategoriesDialog(){
+        JDialog dialog = new JDialog(UserFrame.frame, "Tilføj nye Kategorier");
+        dialog.setSize(500, 500);
+        dialog.setLayout(new BorderLayout());
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        JPanel categoriesPanel = new JPanel();
+        categoriesPanel.setLayout(new BoxLayout(categoriesPanel, BoxLayout.Y_AXIS));
+        
+        JLabel title = new JLabel("Tilføj en ny kategori");
+        title.setFont(new Font("Arial", Font.PLAIN, 20));
+        title.setBounds(50, 10, 200, 30);
+
+        JButton addCategoryButton = new JButton("Tilføj kategori");
+        addCategoryButton.setPreferredSize(new Dimension(150, 50));
+        addCategoryButton.setBounds(50, 250, 150, 50);
+        addCategoryButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        
+        for(String category : main.categories){
+            JLabel categoryLabel = new JLabel(category);
+            categoriesPanel.add(categoryLabel);
+            categoriesPanel.add(Box.createVerticalStrut(5));
+        }
+        addCategoryButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String category = JOptionPane.showInputDialog(dialog, "Indtast den nye kategori");
+                JOptionPane.showMessageDialog(dialog, "Kategori: "+ category + " er blevet tilføjet");
+                if(category == null || category.isEmpty()){
+                    return;
+                }
+
+                if(main.categories.contains(category)){
+                    UserFrameErrorHandling.displayTagError();
+                    return;
+                }else{
+                    main.categories.add(category);
+                    JLabel categoryLabel = new JLabel(category);
+                    categoriesPanel.add(categoryLabel);
+                    categoriesPanel.add(Box.createVerticalStrut(5));
+                    updateCategoryPanel();
+                }
+                
+                dialog.revalidate();
+                dialog.repaint();
+            }
+        });
+        
+        
+        JScrollPane scrollPane = new JScrollPane(categoriesPanel);
+        scrollPane.setBounds(50, 50, 400, 200);
+        scrollPane.setBorder(BorderFactory.createLineBorder(Color.black));
+        
+        dialog.add(title, BorderLayout.NORTH);
+        dialog.add(scrollPane, BorderLayout.CENTER);
+        dialog.add(addCategoryButton, BorderLayout.SOUTH);
+        dialog.setLocationRelativeTo(UserFrame.frame);
+        dialog.setVisible(true);
+    }
+
+    public void openEditCategoriesDialog(){
+        JDialog dialog = new JDialog(UserFrame.frame, "Rediger Kategori listen");
+        dialog.setSize(500, 500);
+        dialog.setLayout(new BorderLayout());
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        JPanel categoriesPanel = new JPanel();
+        
+        
+        for(String category : main.categories){
+            JButton removeButton = new JButton("X");
+            JButton editButton = new JButton("🖉");
+            JPanel editRemovePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            JLabel categoryLabel = new JLabel(category);
+            editRemovePanel.add(categoryLabel);
+            editRemovePanel.add(editButton);
+            editRemovePanel.add(removeButton);
+            editRemovePanel.add(Box.createVerticalStrut(5));
+            categoriesPanel.add(editRemovePanel);
+            categoriesPanel.revalidate();
+            categoriesPanel.repaint();
+
+            removeButton.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    int response = JOptionPane.showConfirmDialog(dialog, "Er du sikker på, at du vil fjerne denne kategori?", "Bekræft fjernelse", JOptionPane.YES_NO_OPTION);
+                    if (response == JOptionPane.YES_OPTION) {
+                        categoriesPanel.repaint();
+                        System.out.println("Removing category: " + category);
+                        main.categories.remove(categoryLabel.getText());
+                        categoriesPanel.remove(editRemovePanel);
+                        categoriesPanel.revalidate();
+                        categoriesPanel.repaint();
+                        updateCategoryPanel();
+                        writeAll(); // Update in csv
+                    }
+                }
+            });
+
+            editButton.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+
+                    String newCategory = JOptionPane.showInputDialog(dialog, "Indtast den nye kategori titel");
+                    if(newCategory == null || newCategory.isEmpty()){
+                        return;
+                    }
+
+                    if(main.categories.contains(newCategory)){
+                        UserFrameErrorHandling.displayTagError();
+                        return;
+                    }else{
+                        categoryLabel.setText(newCategory);
+                        int index = main.categories.indexOf(category);
+                        if (index != -1) {
+                            main.categories.set(index, newCategory);
+                        }
+                        updateCategoryPanel();
+                        writeAll();
+                    }
+                };
+            });
+        }
+
+        categoriesPanel.setLayout(new BoxLayout(categoriesPanel, BoxLayout.Y_AXIS));
+        JScrollPane scrollPane = new JScrollPane(categoriesPanel);
+        scrollPane.setBounds(50, 50, 400, 200);
+        scrollPane.setBorder(BorderFactory.createLineBorder(Color.black));
+        
+       
+        dialog.add(scrollPane, BorderLayout.CENTER);
+        dialog.setLocationRelativeTo(UserFrame.frame);
+        dialog.setVisible(true);
+    }
+
+
 
     private void openproposalProjectDialog() {
 
@@ -2599,7 +2829,8 @@ proposalProjectListPanel.repaint();
             clickableURL = "https://" + clickableURL;
         }
 
-        JLabel websiteLabel = new JLabel("<html> <a href=\"" + clickableURL + "\">" + clickableURL + "</a></html>");
+        String wrappedURL = "<html><a href=\"" + clickableURL + "\">" + clickableURL.replaceAll("(.{70})", "$1<br>") + "</a></html>";
+        JLabel websiteLabel = new JLabel(wrappedURL);
         websiteLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         websiteLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -3350,6 +3581,8 @@ proposalProjectListPanel.repaint();
             openFundDialog();
         } else if (e.getSource() == createProjectButton) {
             openProjectDialog();
+        } else if(e.getSource() == createCategoriesButton){
+            openCategoriesDialog();
         } else if (e.getSource() == logoutButton) {
             Frontpage frontpage = new Frontpage();
             main.fundList.removeAll(sortedFundList);
