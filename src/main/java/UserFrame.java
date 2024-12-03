@@ -52,6 +52,7 @@ public class UserFrame extends JFrame implements ActionListener {
     private JPanel cardPanel;
     private CardLayout cardLayout;
     public static JPanel panel2 = new JPanel();
+    private PDFGenerator PDFGen = new PDFGenerator();
 
     // Buttons
     private JButton createProbButton;
@@ -1982,6 +1983,8 @@ proposalProjectListPanel.repaint();
             writeAll();
         });
 
+        
+
         proposalProjectFullPanel.add(editButton);
 
         // Refresh the panel to reflect the changes
@@ -2210,6 +2213,18 @@ proposalProjectListPanel.repaint();
             updateProjectList();
             writeAll();
         });
+
+        JButton exportPDF = new JButton("Export to PDF");
+        compareProjectCatsWithFundCats comparer = new compareProjectCatsWithFundCats();
+        boolean onlyOneNeeded = onlyOneNeededCheckBox.isSelected();
+        exportPDF.addActionListener(e -> {
+            PDFGen.GeneratePDF(project, comparer.compareCategoriesWithFund(onlyOneNeeded, main.fundList,
+                    project));
+            JOptionPane.showMessageDialog(null, "PDF er blevet eksporteret til din downloads mappe");
+
+        });
+        projectFullPanel.add(exportPDF);
+        projectFullPanel.add(archiveButton);
 
         projectFullPanel.add(editButton);
         projectFullPanel.revalidate();

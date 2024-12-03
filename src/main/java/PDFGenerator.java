@@ -30,8 +30,15 @@ public class PDFGenerator {
 
         textStreamObject.add("F1", 11, 30, pageTop - textOffset, "Project Ejer: " + project.getProjectOwner());
         textOffset += 14;
-        textStreamObject.add("F1", 11, 30, pageTop - textOffset,
-                "Kategorier: " + project.getCategories().toString().replace("[", " ").replace("]", " "));
+        if (project.getCategories().toString().length() < 20) {
+            textStreamObject.add("F1", 11, 30, pageTop - textOffset,
+                    "Kategorier: " + project.getCategories().toString().replace("[", " ").replace("]", " "));
+        } else {
+            textStreamObject.add("F1", 11, 30, pageTop - textOffset,
+                    "Kategorier: "
+                            + project.getCategories().toString().replace("[", " ").replace("]", " ").substring(0, 17)
+                            + "...");
+        }
 
         textOffset += 14;
         textStreamObject.add("F1", 11, 30 + 400, pageTop - textOffset + 28,
@@ -118,10 +125,16 @@ public class PDFGenerator {
         textOffset = 20;
 
         for (int i = 0; i < fundClasseList.size(); i++) {
+            if (fundClasseList.get(i).getTitle().length() < 55) {
+                textStreamObject2.add("F1", 16, 30, pageTop - textOffset,
+                        "   " + (i + 1) + ". " + fundClasseList.get(i).getTitle());
+                textOffset += 18;
+            } else {
 
-            textStreamObject2.add("F1", 16, 30, pageTop - textOffset,
-                    "   " + (i + 1) + ". " + fundClasseList.get(i).getTitle());
-            textOffset += 18;
+                textStreamObject2.add("F1", 16, 30, pageTop - textOffset,
+                        "   " + (i + 1) + ". " + fundClasseList.get(i).getTitle().substring(0, 52) + "...");
+                textOffset += 18;
+            }
         }
 
         PageObject page2 = new PageObject();
@@ -138,10 +151,25 @@ public class PDFGenerator {
         PDF pdf = new PDF(catalogObject);
 
         try {
-            FileWriter fileWriter = new FileWriter("report.pdf");
-            fileWriter.write(pdf.build());
-            fileWriter.close();
+            FileWriter fileWriter;
+            String home = System.getProperty("user.home");
+            switch (System.getProperty("os.name")) {
+                case "Windows":
+                    fileWriter = new FileWriter(home + "/Downloads/" + project.getTitle() + " report.pdf");
+                    fileWriter.write(pdf.build());
+                    fileWriter.close();
+                    break;
+                case "Linux":
+                    fileWriter = new FileWriter(home + "/Downloads/" + project.getTitle() + " report.pdf");
+                    fileWriter.write(pdf.build());
+                    fileWriter.close();
+                    break;
+                default:
+                    System.err.println("unable to determine os");
+            }
         } catch (IOException e) {
+
+            System.out.println(e);
             System.out.println("was unable to write to PDF");
         }
 
@@ -160,54 +188,54 @@ public class PDFGenerator {
      */
     private String formatNumber(String number) {
 
+        String newnumber = number.substring(0, number.length() % 3);
         if (number.length() % 3 != 0) {
-            number = number.substring(0, number.length() % 3);
-            switch (((number.length() - number.length() % 3) / 3) + 1) {
+            switch (((number.length() - number.length() % 3) / 3)) {
                 case 0:
-                    number += " ";
+                    newnumber += " ";
                     break;
                 case 1:
-                    number += "k";
+                    newnumber += "k";
                     break;
                 case 2:
-                    number += "m";
+                    newnumber += "m";
                     break;
                 case 3:
-                    number += "b";
+                    newnumber += "b";
                     break;
                 case 4:
-                    number += "t";
+                    newnumber += "t";
                     break;
                 case 5:
-                    number += "q";
+                    newnumber += "q";
                     break;
 
             }
         } else if (number.length() % 3 == 0) {
-            number = number.substring(0, (number.length() % 3) + 3);
+            newnumber = number.substring(0, (number.length() % 3) + 3);
             switch (((number.length() - number.length() % 3) / 3) - 1) {
                 case 0:
-                    number += " ";
+                    newnumber += " ";
                     break;
                 case 1:
-                    number += "k";
+                    newnumber += "k";
                     break;
                 case 2:
-                    number += "m";
+                    newnumber += "m";
                     break;
                 case 3:
-                    number += "b";
+                    newnumber += "b";
                     break;
                 case 4:
-                    number += "t";
+                    newnumber += "t";
                     break;
                 case 5:
-                    number += "q";
+                    newnumber += "q";
                     break;
 
             }
         }
-        return number;
+        return newnumber;
 
     }
 
@@ -223,12 +251,49 @@ public class PDFGenerator {
         ArrayList<PageObject> pages = new ArrayList<PageObject>();
         int pageTop = 750;
         for (fundClass fc : funds) {
+            TextStreamObject textStreamObject = new TextStreamObject("F1", 20, 30, pageTop, "");
             int textOffset = 0;
-            TextStreamObject textStreamObject = new TextStreamObject("F1", 20, 30, pageTop, fc.getTitle());
+            List<String> strings = new ArrayList<String>();
+            String text = fc.getTitle();
+            int index = 0;
+            while (index < text.length()) {
+                strings.add(text.substring(index, Math.min(index + 50, text.length())));
+                index += 50;
+            }
+
+            for (int i = 0; i < strings.size(); i++) {
+
+                if (i + 1 < strings.size()) {
+                    if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
+                            && Character.isLetter(strings.get(i + 1).charAt(0))) {
+                        textStreamObject.add("F1", 20, 30, pageTop - textOffset, strings.get(i).trim() + "-");
+                        textOffset += 20;
+                    } else if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
+                            && !Character.isLetter(strings.get(i + 1).charAt(0))) {
+                        textStreamObject.add("F1", 20, 30, pageTop - textOffset,
+                                strings.get(i).trim() + strings.get(i + 1).charAt(0));
+                        strings.set(i + 1, strings.get(i + 1).substring(1));
+                        textOffset += 20;
+                    } else {
+                        textStreamObject.add("F1", 20, 30, pageTop - textOffset, strings.get(i).trim());
+                        textOffset += 20;
+                    }
+                } else {
+                    textStreamObject.add("F1", 20, 30, pageTop - textOffset, strings.get(i).trim());
+                    textOffset += 20;
+                }
+            }
             textOffset += 20;
 
-            textStreamObject.add("F1", 11, 30, pageTop - textOffset,
-                    "Kategorier: " + fc.getCategories().toString().replace("[", " ").replace("]", " "));
+            if (fc.getCategories().toString().length() < 20) {
+                textStreamObject.add("F1", 11, 30, pageTop - textOffset,
+                        "Kategorier: " + fc.getCategories().toString().replace("[", " ").replace("]", " "));
+            } else {
+                textStreamObject.add("F1", 11, 30, pageTop - textOffset,
+                        "Kategorier: "
+                                + fc.getCategories().toString().replace("[", " ").replace("]", " ").substring(0, 17)
+                                + "...");
+            }
 
             textOffset += 14;
             String budget = new String();
@@ -240,16 +305,23 @@ public class PDFGenerator {
             for (LocalDateTime date : fc.getDeadlines()) {
                 Deadlines.add(date.toString().split("T")[0]);
             }
-            textStreamObject.add("F1", 11, 30, pageTop - textOffset,
-                    "Deadlines: " + Deadlines.toString().replace("[", " ").replace("]", " "));
-            textOffset += 20;
-            textOffset += 14;
+            if (!Deadlines.toString().contains("3000")) {
+                textStreamObject.add("F1", 11, 30, pageTop - textOffset,
+                        "Deadlines: " + Deadlines.toString().replace("[", " ").replace("]", " "));
+                textOffset += 20;
+                textOffset += 14;
+            } else {
+                textStreamObject.add("F1", 11, 30, pageTop - textOffset,
+                        "Deadlines: " + "løbene");
+                textOffset += 20;
+                textOffset += 14;
+
+            }
             textStreamObject.add("F1", 16, 30, pageTop - textOffset, "Beskrivelse");
             textOffset += 18;
-            List<String> strings = new ArrayList<String>();
-            String text = fc.getDescription();
+            text = fc.getDescription();
             System.out.println("\033[31m" + text + "\n text length: " + text.length() + "\033[0m");
-            int index = 0;
+            index = 0;
             while (index < text.length()) {
                 strings.add(text.substring(index, Math.min(index + 100, text.length())));
                 index += Math.min(index + 100, text.length());
@@ -282,9 +354,9 @@ public class PDFGenerator {
             textStreamObject.add("F1", 16, 30, pageTop - textOffset, "Kontaktperson(er)");
             textOffset += 18;
             for (fundContactClass fcc : fc.getContacts()) {
-                textStreamObject.add("F1", 11, 30, pageTop - textOffset, 
-                        fcc.getContactName() + " - " + fcc.getContactEmail() + 
-                        " - " + fcc.getContactPhoneNumber());
+                textStreamObject.add("F1", 11, 30, pageTop - textOffset,
+                        fcc.getContactName() + " - " + fcc.getContactEmail() +
+                                " - " + fcc.getContactPhoneNumber());
                 textOffset += 14;
             }
             textOffset += 18;
