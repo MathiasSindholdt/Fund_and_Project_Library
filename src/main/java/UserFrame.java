@@ -779,6 +779,7 @@ public class UserFrame extends JFrame implements ActionListener {
         // Display details based on the type of item
         if (item instanceof project) {
             project proj = (project) item;
+            detailsDialog.setTitle(proj.getTitle());
             detailsPanel.add(new JLabel("Titel: " + proj.getTitle()));
             detailsPanel.add(new JLabel("Beskrivelse: " + proj.getDescription()));
             detailsPanel.add(new JLabel("Kategorier: " + proj.getCategories()));
@@ -788,14 +789,16 @@ public class UserFrame extends JFrame implements ActionListener {
             detailsPanel.add(new JLabel("Aktiviter: " + proj.getProjectActivities()));
             detailsPanel.add(new JLabel("\n"));
 
-            detailsPanel.add(new JLabel("Dato fra: " + proj.getProjectTimeSpanFrom()));
-            detailsPanel.add(new JLabel("Dato til: " + proj.getProjectTimeSpanTo()));
+            detailsPanel.add(new JLabel("Dato fra: " + proj.getProjectTimeSpanFrom().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
+            detailsPanel.add(new JLabel("Dato til: " + proj.getProjectTimeSpanTo().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
             detailsPanel.add(new JLabel("\n"));
+            
 
-            detailsPanel.add(new JLabel("Dato lavet: " + proj.getDateCreated()));
+            detailsPanel.add(new JLabel("Dato lavet: " + proj.getDateCreated().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
 
         } else if (item instanceof proposalProject) {
             proposalProject proposal = (proposalProject) item;
+            detailsDialog.setTitle(proposal.getTitle());
             detailsPanel.add(new JLabel("Titel: " + proposal.getTitle()));
             detailsPanel.add(new JLabel("Beskrivelse: " + proposal.getDescription()));
             detailsPanel.add(new JLabel("Kategorier: " + proposal.getCategories()));
@@ -805,18 +808,19 @@ public class UserFrame extends JFrame implements ActionListener {
             detailsPanel.add(new JLabel("Aktiviter: " + proposal.getProjectActivities()));
             detailsPanel.add(new JLabel("\n"));
 
-            detailsPanel.add(new JLabel("Dato fra: " + proposal.getProjectTimeSpanFrom()));
-            detailsPanel.add(new JLabel("Dato til: " + proposal.getProjectTimeSpanTo()));
+            detailsPanel.add(new JLabel("Dato fra: " + proposal.getProjectTimeSpanFrom().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
+            detailsPanel.add(new JLabel("Dato til: " + proposal.getProjectTimeSpanTo().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
             detailsPanel.add(new JLabel("\n"));
 
-            detailsPanel.add(new JLabel("Dato lavet: " + proposal.getDateCreated()));
+            detailsPanel.add(new JLabel("Dato lavet: " + proposal.getDateCreated().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
 
         } else if (item instanceof fundClass) {
             fundClass fund = (fundClass) item;
+            detailsDialog.setTitle(fund.getTitle());
             detailsPanel.add(new JLabel("Titel: " + fund.getTitle()));
             detailsPanel.add(new JLabel("Beskrivelse: " + fund.getDescription()));
             detailsPanel.add(new JLabel("Kategorier: " + fund.getCategories()));
-            if (fund.getDeadlines().get(0) == LocalDateTime.of(3000, 1, 1, 0, 0)) {
+            if (!fund.getDeadlines().isEmpty() && fund.getDeadlines().get(0).equals(LocalDateTime.of(3000, 1, 1, 0, 0))) {
                 detailsPanel.add(new JLabel("Ansøgningsfrist(er): Løbende"));
             } else {
                 detailsPanel.add(new JLabel("Ansøgningsfrist(er): " + fund.getDeadlines()));
@@ -826,7 +830,7 @@ public class UserFrame extends JFrame implements ActionListener {
             detailsPanel.add(new JLabel("Tidligere samarbejde: " + fund.getCollaborationHistory()));
             detailsPanel.add(new JLabel("Hjemmeside: " + fund.getFundWebsite()));
             detailsPanel.add(new JLabel("\n"));
-            detailsPanel.add(new JLabel("Dato lavet: " + fund.getDateCreated()));
+            detailsPanel.add(new JLabel("Dato lavet: " + fund.getDateCreated().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
 
         } else {
             detailsPanel.add(new JLabel("Details: " + item.toString()));
@@ -1746,14 +1750,14 @@ proposalProjectListPanel.repaint();
                         String.format("%-30s %-30s %-30s %-30s",
                                 proposal.getTitle(),
                                 proposal.getProjectOwner(),
-                                proposal.getDateCreated().toString().split("T")[0],
+                                proposal.getDateCreated().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                                 categoriesDisplay));
             } else {
                 proposalLabel = new JLabel(
                         String.format("%-30s %-30s %-30s %-30s",
                                 proposal.getTitle().substring(0, 17) + "...",
                                 proposal.getProjectOwner(),
-                                proposal.getDateCreated().toString().split("T")[0],
+                                proposal.getDateCreated().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                                 categoriesDisplay));
             }
 
@@ -1873,7 +1877,7 @@ proposalProjectListPanel.repaint();
                             String.format("%-30s %-30s %-30s %-30s %-30s",
                                     project.getTitle(),
                                     project.getProjectOwner(),
-                                    project.getDateCreated().toString().split("T")[0],
+                                    project.getDateCreated().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                                     "Ingen Beviling",
                                     categoriesDisplay));
                 } else {
@@ -1881,7 +1885,7 @@ proposalProjectListPanel.repaint();
                             String.format("%-30s %-30s %-30s %-30s %-30s",
                                     project.getTitle().substring(0, 17) + "...",
                                     project.getProjectOwner(),
-                                    project.getDateCreated().toString().split("T")[0],
+                                    project.getDateCreated().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                                     "Ingen Beviling",
                                     categoriesDisplay));
                 }
@@ -1907,7 +1911,7 @@ proposalProjectListPanel.repaint();
                             String.format("%-30s %-30s %-30s %-30s %-30s",
                                     project.getTitle(),
                                     project.getProjectOwner(),
-                                    project.getDateCreated().toString().split("T")[0],
+                                    project.getDateCreated().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                                     deadline,
                                     categoriesDisplay));
                 } else {
@@ -1915,7 +1919,7 @@ proposalProjectListPanel.repaint();
                             String.format("%-30s %-30s %-30s %-30s %-30s",
                                     project.getTitle().substring(0, 17) + "...",
                                     project.getProjectOwner(),
-                                    project.getDateCreated().toString().split("T")[0],
+                                    project.getDateCreated().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                                     deadline,
                                     categoriesDisplay));
                 }
@@ -1954,7 +1958,7 @@ proposalProjectListPanel.repaint();
         insertWrappedText(proposal.getDescription(), proposalProjectFullPanel);
         proposalProjectFullPanel.add(new JLabel("\n"));
 
-        proposalProjectFullPanel.add(new JLabel("Målgruppe: " + proposal.getProjectTargetAudience()));
+        proposalProjectFullPanel.add(new JLabel("MålgrushowFundppe: " + proposal.getProjectTargetAudience()));
         proposalProjectFullPanel.add(new JLabel("\n"));
 
         proposalProjectFullPanel.add(new JLabel("Budget: " + proposal.getProjectBudget()));
@@ -1962,8 +1966,9 @@ proposalProjectListPanel.repaint();
 
 
         // Display date range
-        proposalProjectFullPanel.add(new JLabel("Fra Dato: " + proposal.getProjectTimeSpanFrom().toString()));
-        proposalProjectFullPanel.add(new JLabel("Til Dato: " + proposal.getProjectTimeSpanTo().toString()));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        proposalProjectFullPanel.add(new JLabel("Fra Dato: " + proposal.getProjectTimeSpanFrom().toLocalDate().format(formatter)));
+        proposalProjectFullPanel.add(new JLabel("Til Dato: " + proposal.getProjectTimeSpanTo().toLocalDate().format(formatter)));
         proposalProjectFullPanel.add(new JLabel("\n"));
 
         // Display project activities
@@ -2225,8 +2230,9 @@ proposalProjectListPanel.repaint();
         projectFullPanel.add(new JLabel("Budget: " + project.getProjectBudget()));
         projectFullPanel.add(new JLabel("\n"));
 
-        projectFullPanel.add(new JLabel("Fra Dato: " + project.getProjectTimeSpanFrom().toString()));
-        projectFullPanel.add(new JLabel("Til Dato: " + project.getProjectTimeSpanTo().toString()));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        projectFullPanel.add(new JLabel("Fra Dato: " + project.getProjectTimeSpanFrom().toLocalDate().format(formatter)));
+        projectFullPanel.add(new JLabel("Til Dato: " + project.getProjectTimeSpanTo().toLocalDate().format(formatter)));
         projectFullPanel.add(new JLabel("\n"));
 
         projectFullPanel.add(new JLabel("Aktiviteter: " + project.getProjectActivities()));
@@ -3359,8 +3365,7 @@ proposalProjectListPanel.repaint();
                             fund.getDeadlines().remove(dL);
                         }
                     }
-                    deadlineDisplay = fund.getDeadlines().get(0).toString().replace("T", " ").replace("[", "")
-                            .replace("]", "");
+                    deadlineDisplay = fund.getDateCreated().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
                 }
             }
 
@@ -3796,6 +3801,7 @@ proposalProjectListPanel.repaint();
         // Create the dialog box
         JDialog fundDialog = new JDialog(frame, fund.getTitle(), true);
         fundDialog.setLayout(new GridLayout(0, 1));
+        fundDialog.setPreferredSize(new Dimension(960, 384));
 
         // Add fund details to the dialog box
         fundDialog.add(new JLabel("Titel: " + fund.getTitle()));
@@ -3803,9 +3809,14 @@ proposalProjectListPanel.repaint();
         List<String> strings = new ArrayList<String>();
         int index = 0;
         while (index < fund.getDescription().length()) {
-            strings.add(fund.getDescription().substring(index,
-                    Math.min(index + 60, fund.getDescription().length())));
-            index += Math.min(index + 60, fund.getDescription().length());
+            int endIndex = Math.min(index + 150, fund.getDescription().length());
+            if (endIndex < fund.getDescription().length() && !Character.isWhitespace(fund.getDescription().charAt(endIndex))) {
+            while (endIndex > index && !Character.isWhitespace(fund.getDescription().charAt(endIndex))) {
+                endIndex--;
+            }
+            }
+            strings.add(fund.getDescription().substring(index, endIndex).trim());
+            index = endIndex;
         }
 
         for (int i = 0; i < strings.size(); i++) {
@@ -3835,7 +3846,11 @@ proposalProjectListPanel.repaint();
         }
 
         fundDialog.add(new JLabel("Kategorier: " + fund.getCategories()));
-        fundDialog.add(new JLabel("Ansøgningsfrist: " + fund.getDeadlines().toString()));
+        if (!fund.getDeadlines().isEmpty() && fund.getDeadlines().get(0).equals(LocalDateTime.of(3000, 1, 1, 0, 0))) {
+            fundDialog.add(new JLabel("Ansøgningsfrist(er): Løbende"));
+        } else {
+            fundDialog.add(new JLabel("Ansøgningsfrist(er): " + fund.getDeadlines()));
+        }    
         for (int i = 0; i < tempContacts.size(); i++) {
             fundDialog.add(new JLabel("Kontaktpersoner: " + tempContacts.get(i).getContactName() + " - "
                     + tempContacts.get(i).getContactPhoneNumber() + " - " + tempContacts.get(i).getContactEmail()));
@@ -3856,16 +3871,21 @@ proposalProjectListPanel.repaint();
                 }
             }
         });
+        fundDialog.add(websiteLabel);
         fundDialog.add(new JLabel("\n"));
-        fundDialog.add(new JLabel("Dato tilføjet: " + fund.getDateCreated()));
+        fundDialog.add(new JLabel("Dato tilføjet: " + fund.getDateCreated().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
 
         JButton assignButton = new JButton("Bevilig");
         assignButton.addActionListener(e -> {
+            int confirmation = JOptionPane.showConfirmDialog(null, "Er du sikker på at du vil bevilige dette projekt?", "Bevilig projekt",
+            JOptionPane.YES_NO_OPTION);
+        if (confirmation == JOptionPane.YES_OPTION) {
             project.assignFund(fund);
             updateProjectList();
             writeAll();
             showProjectDetails(project);
             fundDialog.dispose();
+        }
         });
         // Button to close the dialog
         JButton closeButton = new JButton("Luk");

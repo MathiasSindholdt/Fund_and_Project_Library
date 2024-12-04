@@ -686,19 +686,20 @@ public class GuestFrame extends JFrame implements ActionListener {
         updateCategoryPanel();
     }
 
-    private void updateCategoryPanel() {
-        Component[] compArr = panel2.getComponents();
-        for (Component c : compArr) {
-            if (c instanceof JButton) {
-                panel2.remove(c);
-            }
 
+  
+    public void updateCategoryPanel() {
+        panel2.removeAll();
+        System.err.println("Updating category panel...");
+        for (String category : main.categories) {
+            createTagButton(category);
+            System.out.println(category);
         }
-        for (String s : main.categories) {
-            createTagButton(s);
-        }
-
+    
+        panel2.revalidate();
+        panel2.repaint();
     }
+    
 
     private void openproposalProjectDialog() {
 
@@ -925,6 +926,7 @@ public class GuestFrame extends JFrame implements ActionListener {
             updateProposalProjectList();
             write();
             System.out.println("Proposal added to list and UI updated");
+            JOptionPane.showMessageDialog(dialog, "Projektforslaget er blevet tilføjet", "Projektforslag tilføjet", JOptionPane.INFORMATION_MESSAGE);
 
             // Close the dialog
             dialog.dispose();
@@ -2533,6 +2535,9 @@ public class GuestFrame extends JFrame implements ActionListener {
         } else if (e.getSource() == createProbButton) {
             openproposalProjectDialog();
         } else if (e.getSource() == logoutButton) {
+            int confirmation = JOptionPane.showConfirmDialog(null, "Er du sikker på at du vil logge ud?", "Log ud",
+                    JOptionPane.YES_NO_OPTION);
+            if (confirmation == JOptionPane.YES_OPTION) {
             Frontpage frontpage = new Frontpage();
             main.fundList.removeAll(sortedFundList);
             main.projectList.removeAll(sortedProjectList);
@@ -2541,7 +2546,7 @@ public class GuestFrame extends JFrame implements ActionListener {
             main.clearArchive();
             frontpage.show();
             frame.dispose();
-
+            }
         }
 
     }
