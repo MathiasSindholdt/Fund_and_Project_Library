@@ -28,11 +28,11 @@ public class UIButtons extends JPanel {
 
     public JButton createMenuButton() {
         ImageIcon originalIcon = new ImageIcon("img/house.png");
-        Image scaledImage = originalIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        Image scaledImage = originalIcon.getImage().getScaledInstance(50, 40, Image.SCALE_SMOOTH);
         ImageIcon resizedIcon = new ImageIcon(scaledImage);
 
         JButton button = new JButton("Hjem", resizedIcon);
-        button.setIconTextGap(10);
+        button.setIconTextGap(5);
         button.setHorizontalTextPosition(JButton.LEFT);
         button.setPreferredSize(new Dimension(50, 50));
         button.setIcon(resizedIcon);
@@ -74,7 +74,7 @@ public class UIButtons extends JPanel {
 
     public JButton createLogutButton() {
         ImageIcon originalIcon = new ImageIcon("img/Logout.png");
-        Image scaledImage = originalIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        Image scaledImage = originalIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
         ImageIcon resizedIcon = new ImageIcon(scaledImage);
 
         JButton button = new JButton("Log ud", resizedIcon);

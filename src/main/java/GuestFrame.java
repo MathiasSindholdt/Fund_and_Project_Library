@@ -181,11 +181,12 @@ public class GuestFrame extends JFrame implements ActionListener {
         leftPanel.setOpaque(false); // Make it transparent to show panel1 background
         menuButton = UIButtons.createMenuButton();
         menuButton.addActionListener(this);
-        menuButton.setPreferredSize(new Dimension(106, 50)); // Set preferred size
+        menuButton.setPreferredSize(new Dimension(125, 50)); // Set preferred size
         leftPanel.add(menuButton);
         changeCursor(menuButton);
 
         projectPropButton = UIButtons.createProjectPropButton("Projekt forslag");
+        projectPropButton.setPreferredSize(new Dimension(150, 50)); 
         projectPropButton.addActionListener(this);
         panel1.add(projectPropButton);
         leftPanel.add(projectPropButton);
@@ -225,7 +226,6 @@ public class GuestFrame extends JFrame implements ActionListener {
     }
 
     private void setupToggleBehavior(JButton button) {
-        button.setPreferredSize(new Dimension(120, 50));
         button.setFocusPainted(false);
         button.setBackground(new Color(213, 213, 213, 255)); // Default color
         button.setForeground(Color.BLACK);
@@ -392,10 +392,10 @@ public class GuestFrame extends JFrame implements ActionListener {
     private void createTagButton(String newTag) {
         // Truncate tag name if it's longer than 17 characters
         String displayTag = newTag.length() > 17 ? newTag.substring(0, 16) + "..." : newTag;
-
+    
         // Create the button with the display name
         JToggleButton tagButtonInstance = new JToggleButton(displayTag);
-
+        tagButtonInstance.setPreferredSize(new Dimension(120, 25));
         // Add action listener for button selection
         tagButtonInstance.addActionListener(new ActionListener() {
             @Override
@@ -409,12 +409,11 @@ public class GuestFrame extends JFrame implements ActionListener {
                 filterByTag();
             }
         });
-
+    
         panel2.add(tagButtonInstance); // Add the button to the panel
         panel2.revalidate(); // Update the layout
         panel2.repaint(); // Re-render the panel
     }
-
     // reset display to show it all again
     private void resetToAllProjects() {
         updateProposalProjectList();
@@ -461,8 +460,12 @@ public class GuestFrame extends JFrame implements ActionListener {
         JPanel projectProposalButtons = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         projectProposalButtons.setBackground(new Color(213, 213, 213, 255));
 
-        createProbButton = UIButtons.createButton("Opret projekt forslag");
+        createProbButton = UIButtons.createButton("Opret et nyt projekt forslag");
+        createProbButton.setPreferredSize(new Dimension(200, 50));
+        createProbButton.addActionListener(this);
         changeProbButton = UIButtons.createButton("Redigér projekt forslag");
+        changeProbButton.setPreferredSize(new Dimension(175, 50));
+        changeProbButton.addActionListener(this);
 
         projectProposalButtons.add(createProbButton);
         projectProposalButtons.add(changeProbButton);
@@ -497,12 +500,29 @@ public class GuestFrame extends JFrame implements ActionListener {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
 
-        JLabel label = new JLabel("Projekt Forslag", SwingConstants.CENTER);
-        panel.add(label, BorderLayout.NORTH);
+        
 
         // Panel to display project proposals dynamically
         proposalProjectListPanel = new JPanel();
         proposalProjectListPanel.setLayout(new BoxLayout(proposalProjectListPanel, BoxLayout.Y_AXIS));
+
+
+        JButton addProposal = new JButton("Tilføj et nyt projekt forslag");
+        addProposal.addActionListener(e -> {
+            openproposalProjectDialog();
+            updateProposalProjectList();
+        });
+        JButton changeProposal = new JButton("Rediger et projekt forslag");
+        changeProposal.addActionListener(e -> {
+            editProjectProposal.openEditProjectPropDialog();
+            updateProjectList();
+        });
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        buttonPanel.setLayout(new GridLayout(1, 2, 10, 0)); // Set GridLayout with 1 row, 2 columns, and 10px horizontal gap
+        buttonPanel.add(addProposal);
+        buttonPanel.add(changeProposal);
+        panel.add(buttonPanel, BorderLayout.NORTH);
 
         // Scroll pane to handle multiple proposals
         JScrollPane scrollPane = new JScrollPane(proposalProjectListPanel);
@@ -833,12 +853,13 @@ public class GuestFrame extends JFrame implements ActionListener {
             }
 
             // Budget Error Handling
-            if (!validationUtils.isNumericInput(budgetField.getText())) {
+            String trimmedBudget = budgetField.getText().trim().replace(".", "").replace(",", "");
+            if (!validationUtils.isNumericInput(trimmedBudget)) {
                 dialog.add(UserFrameErrorHandling.displayBudgetError());
                 System.out.println("Budget error: Invalid input");
                 hasError = true;
             } else {
-                tempBudget = Long.parseLong(budgetField.getText());
+                tempBudget = Long.parseLong(trimmedBudget);
                 System.out.println("Budget set: " + tempBudget);
             }
 
@@ -1581,6 +1602,63 @@ public class GuestFrame extends JFrame implements ActionListener {
         proposalProjectFullPanel.add(new JLabel("Kategorier: " + categories));
         proposalProjectFullPanel.add(new JLabel("\n"));
 
+        JCheckBox onlyOneNeededBox = new JCheckBox("Kun en kategori kræves for match", true);
+        proposalProjectFullPanel.add(new JLabel("\n"));
+        proposalProjectFullPanel.add(new JLabel("\n"));
+        proposalProjectFullPanel.add(onlyOneNeededBox);
+
+        JPanel matchingFundsPanel = new JPanel();
+        matchingFundsPanel.setLayout(new BoxLayout(matchingFundsPanel, BoxLayout.Y_AXIS));
+        proposalProjectFullPanel.add(matchingFundsPanel);
+
+
+
+        Runnable updateMatchingFunds = () -> {
+            matchingFundsPanel.removeAll();
+            project tempProject = new project();
+            tempProject.setTitle(proposal.getTitle());
+            tempProject.setProjectPurpose(proposal.getProjectPurpose());
+            tempProject.setDescription(proposal.getDescription());
+            tempProject.setProjectOwner(proposal.getProjectOwner());
+            tempProject.setProjectTargetAudience(proposal.getProjectTargetAudience());
+            tempProject.setProjectBudget(proposal.getProjectBudget());
+            tempProject.setTimeSpan(proposal.getProjectTimeSpanFrom(), proposal.getProjectTimeSpanTo());
+            tempProject.setProjectActivities(proposal.getProjectActivities());
+            for(String category : proposal.getCategories()) {
+                tempProject.setCategories(category);
+            }
+
+             compareProjectCatsWithFundCats comparer = new compareProjectCatsWithFundCats();
+            boolean onlyOneNeeded = onlyOneNeededBox.isSelected();
+            ArrayList<fundClass> matchingFunds = comparer.compareCategoriesWithFund(onlyOneNeeded, main.fundList,
+                    tempProject);
+
+            if (!matchingFunds.isEmpty()) {
+                matchingFundsPanel.add(new JLabel("Fonde med matchende kategorier:"));
+                proposalProjectFullPanel.add(new JLabel("\n"));
+                JPanel centerPanel = new JPanel();
+                centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+                for (fundClass fund : matchingFunds) {
+                    JButton recommendButton = UIButtons.createNewListButton(new JLabel(fund.getTitle()), true);
+                    recommendButton.addActionListener(e -> showFundDetailsDialog(fund, tempProject));
+                    centerPanel.add(recommendButton);
+                    centerPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Add space between buttons
+                    // Add space to the left of the buttons
+                    // centerPanel.add(Box.createRigidArea(new Dimension(50, 0)));
+                }
+                matchingFundsPanel.add(centerPanel);
+            } else {
+                matchingFundsPanel.add(new JLabel("Ingen fonde matcher nogle kategorier"));
+                proposalProjectFullPanel.add(new JLabel("\n"));
+            }
+
+            matchingFundsPanel.revalidate();
+            matchingFundsPanel.repaint();
+        };
+
+        onlyOneNeededBox.addActionListener(e -> updateMatchingFunds.run());
+
+        updateMatchingFunds.run();
         // Add buttons to the panel
 
         // Refresh the panel to reflect the changes
@@ -2460,7 +2538,7 @@ public class GuestFrame extends JFrame implements ActionListener {
             main.projectList.removeAll(sortedProjectList);
             main.proposalList.removeAll(sortedProposalList);
             main.clearCategories();
-
+            main.clearArchive();
             frontpage.show();
             frame.dispose();
 

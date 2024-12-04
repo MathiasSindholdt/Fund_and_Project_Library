@@ -109,6 +109,7 @@ public class UserFrame extends JFrame implements ActionListener {
     String tempWebsite;
     Long tempAmountFrom;
     Long tempAmountTo;
+    private boolean noUrl;
     public static fundContactClass tempContact;
     public ArrayList<fundContactClass> tempContacts = new ArrayList<>();
     private ArrayList<fundContactClass> removeContactArray = new ArrayList<>();
@@ -186,11 +187,11 @@ public class UserFrame extends JFrame implements ActionListener {
         leftPanel.setOpaque(false); // Make it transparent to show panel1 background
         menuButton = UIButtons.createMenuButton();
         menuButton.addActionListener(this);
-        menuButton.setPreferredSize(new Dimension(106, 50)); // Set preferred size
+        menuButton.setPreferredSize(new Dimension(125, 50)); // Set preferred size
         leftPanel.add(menuButton);
         changeCursor(menuButton);
 
-        projectPropButton = UIButtons.createProjectPropButton("Projekt forslag");
+        projectPropButton = UIButtons.createProjectPropButton("Projektforslag");
         projectPropButton.setPreferredSize(new Dimension(150, 50)); 
         projectPropButton.addActionListener(this);
         panel1.add(projectPropButton);
@@ -453,12 +454,12 @@ public class UserFrame extends JFrame implements ActionListener {
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBackground(new Color(213, 213, 213, 255));
 
-        // Section for Projekt forslag
+        // Section for Projektforslag
         JPanel projectProposalPanel = new JPanel();
         projectProposalPanel.setLayout(new BorderLayout());
         projectProposalPanel.setBackground(new Color(213, 213, 213, 255));
 
-        JLabel projectProposalLabel = new JLabel("Projekt forslag");
+        JLabel projectProposalLabel = new JLabel("Projektforslag");
         projectProposalLabel.setFont(new Font("Arial", Font.BOLD, 20));
         projectProposalLabel.setHorizontalAlignment(SwingConstants.LEFT); // Align label to the left
         projectProposalLabel.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 0)); // Add space to the left
@@ -466,10 +467,10 @@ public class UserFrame extends JFrame implements ActionListener {
         JPanel projectProposalButtons = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         projectProposalButtons.setBackground(new Color(213, 213, 213, 255));
 
-        createProbButton = UIButtons.createButton("Opret et nyt projekt forslag");
+        createProbButton = UIButtons.createButton("Opret et nyt Projektforslag");
         createProbButton.setPreferredSize(new Dimension(200, 50));
         createProbButton.addActionListener(this);
-        changeProbButton = UIButtons.createButton("Redigér projekt forslag");
+        changeProbButton = UIButtons.createButton("Redigér Projektforslag");
         changeProbButton.setPreferredSize(new Dimension(175, 50));
         changeProbButton.addActionListener(this);
 
@@ -618,7 +619,7 @@ public class UserFrame extends JFrame implements ActionListener {
 
         return mainPanel;
     }
-     // Separate view for "Projekt forslag"
+     // Separate view for "Projektforslag"
     private JPanel createproposalProjectView() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
@@ -630,12 +631,12 @@ public class UserFrame extends JFrame implements ActionListener {
         proposalProjectListPanel.setLayout(new BoxLayout(proposalProjectListPanel, BoxLayout.Y_AXIS));
 
 
-        JButton addProposal = new JButton("Tilføj et nyt projekt forslag");
+        JButton addProposal = new JButton("Tilføj et nyt Projektforslag");
         addProposal.addActionListener(e -> {
             openproposalProjectDialog();
             updateProposalProjectList();
         });
-        JButton changeProposal = new JButton("Rediger et projekt forslag");
+        JButton changeProposal = new JButton("Rediger et Projektforslag");
         changeProposal.addActionListener(e -> {
             editProjectProposal.openEditProjectPropDialog();
             updateProjectList();
@@ -768,7 +769,11 @@ public class UserFrame extends JFrame implements ActionListener {
 
     private <T> void displayItemDetails(T item) {
         // Create a new panel or dialog to show item details
+        JDialog detailsDialog = new JDialog(frame, "Item Details", true);
         JPanel detailsPanel = new JPanel();
+        detailsDialog.add(detailsPanel);
+        detailsDialog.setSize(400, 300);
+        detailsDialog.setLocationRelativeTo(frame);
         detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
 
         // Display details based on the type of item
@@ -827,7 +832,7 @@ public class UserFrame extends JFrame implements ActionListener {
             detailsPanel.add(new JLabel("Details: " + item.toString()));
         }
 
-        deleteButton = deleteButton("Slet");
+        JButton deleteButton = new JButton("Slet");
         deleteButton.addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(
                     null,
@@ -856,14 +861,47 @@ public class UserFrame extends JFrame implements ActionListener {
                         "Elementet er blevet slettet.",
                         "Sletning fuldført",
                         JOptionPane.INFORMATION_MESSAGE);
+                        
+                detailsDialog.dispose();
             }
+        });
+
+        JButton returnButton = new JButton("Send tilbage");
+
+        returnButton.addActionListener(e -> {
+            if (item instanceof project) {
+                main.archiveProjectList.remove((project) item);
+                main.projectList.add((project) item);
+                writeAll();
+                displayArchiveList("ProjectDetails", main.archiveProjectList);
+                updateProjectList();
+            } else if (item instanceof proposalProject) {
+                main.deniedProposalList.remove((proposalProject) item);
+                main.proposalList.add((proposalProject) item);
+                writeAll();
+                displayArchiveList("proposalProjectsDetails", main.deniedProposalList);
+                updateProposalProjectList();  
+            } else if (item instanceof fundClass) {
+                main.archiveFundList.remove((fundClass) item);
+                main.fundList.add((fundClass) item);
+                writeAll();
+                displayArchiveList("FundDetails", main.archiveFundList);
+                updateFundList();
+            }
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Elementet er blevet sendt tilbage.",
+                    "Sendt tilbage",
+                    JOptionPane.INFORMATION_MESSAGE);
+            detailsDialog.dispose();
         });
 
         detailsPanel.add(Box.createVerticalStrut(10)); // Add spacing before the button
         detailsPanel.add(deleteButton);
+        detailsPanel.add(Box.createVerticalStrut(10)); // Add spacing before the button
+        detailsPanel.add(returnButton);
 
-        // Show details in a dialog box
-        JOptionPane.showMessageDialog(null, detailsPanel, "Item Details", JOptionPane.INFORMATION_MESSAGE);
+        detailsDialog.setVisible(true);
     }
 
     // Show the frame
@@ -1027,7 +1065,7 @@ public class UserFrame extends JFrame implements ActionListener {
 
     private void openproposalProjectDialog() {
 
-        JDialog dialog = new JDialog(frame, "Opret Projekt Forslag", true);
+        JDialog dialog = new JDialog(frame, "Opret Projektforslag", true);
         dialog.setSize(700, 700);
         System.out.println("Opening proposal project dialog...");
 
@@ -1178,12 +1216,13 @@ public class UserFrame extends JFrame implements ActionListener {
             }
 
             // Budget Error Handling
-            if (!validationUtils.isNumericInput(budgetField.getText())) {
+            String trimmedBudget = budgetField.getText().trim().replace(".", "").replace(",", "");
+            if (!validationUtils.isNumericInput(trimmedBudget)) {
                 dialog.add(UserFrameErrorHandling.displayBudgetError());
                 System.out.println("Budget error: Invalid input");
                 hasError = true;
             } else {
-                tempBudget = Long.parseLong(budgetField.getText());
+                tempBudget = Long.parseLong(trimmedBudget);
                 System.out.println("Budget set: " + tempBudget);
             }
 
@@ -1231,6 +1270,7 @@ public class UserFrame extends JFrame implements ActionListener {
                 return;
             }
 
+           
             // Create the proposal project instance with categories
             proposalProject proposal = new proposalProject(
                     tempTitle,
@@ -1249,10 +1289,12 @@ public class UserFrame extends JFrame implements ActionListener {
             updateProposalProjectList();
             writeAll();
             System.out.println("Proposal added to list and UI updated");
+            JOptionPane.showMessageDialog(dialog, "Projektforslaget er blevet tilføjet", "Projektforslag tilføjet", JOptionPane.INFORMATION_MESSAGE);
 
             // Close the dialog
             dialog.dispose();
             System.out.println("Dialog closed");
+            
         });
 
         // Define layout structure
@@ -1934,9 +1976,66 @@ proposalProjectListPanel.repaint();
         proposalProjectFullPanel.add(new JLabel("Kategorier: " + categories));
         proposalProjectFullPanel.add(new JLabel("\n"));
 
+        JCheckBox onlyOneNeededBox = new JCheckBox("Kun en kategori kræves for match", true);
+        proposalProjectFullPanel.add(new JLabel("\n"));
+        proposalProjectFullPanel.add(new JLabel("\n"));
+        proposalProjectFullPanel.add(onlyOneNeededBox);
+
+        JPanel matchingFundsPanel = new JPanel();
+        matchingFundsPanel.setLayout(new BoxLayout(matchingFundsPanel, BoxLayout.Y_AXIS));
+        proposalProjectFullPanel.add(matchingFundsPanel);
+
+
+        Runnable updateMatchingFunds = () -> {
+            matchingFundsPanel.removeAll();
+            project tempProject = new project();
+            tempProject.setTitle(proposal.getTitle());
+            tempProject.setProjectPurpose(proposal.getProjectPurpose());
+            tempProject.setDescription(proposal.getDescription());
+            tempProject.setProjectOwner(proposal.getProjectOwner());
+            tempProject.setProjectTargetAudience(proposal.getProjectTargetAudience());
+            tempProject.setProjectBudget(proposal.getProjectBudget());
+            tempProject.setTimeSpan(proposal.getProjectTimeSpanFrom(), proposal.getProjectTimeSpanTo());
+            tempProject.setProjectActivities(proposal.getProjectActivities());
+            for(String category : proposal.getCategories()) {
+                tempProject.setCategories(category);
+            }
+
+             compareProjectCatsWithFundCats comparer = new compareProjectCatsWithFundCats();
+            boolean onlyOneNeeded = onlyOneNeededBox.isSelected();
+            ArrayList<fundClass> matchingFunds = comparer.compareCategoriesWithFund(onlyOneNeeded, main.fundList,
+                    tempProject);
+
+            if (!matchingFunds.isEmpty()) {
+                matchingFundsPanel.add(new JLabel("Fonde med matchende kategorier:"));
+                proposalProjectFullPanel.add(new JLabel("\n"));
+                JPanel centerPanel = new JPanel();
+                centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+                for (fundClass fund : matchingFunds) {
+                    JButton recommendButton = UIButtons.createNewListButton(new JLabel(fund.getTitle()), true);
+                    recommendButton.addActionListener(e -> showFundDetailsDialog(fund, tempProject));
+                    centerPanel.add(recommendButton);
+                    centerPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Add space between buttons
+                    // Add space to the left of the buttons
+                    // centerPanel.add(Box.createRigidArea(new Dimension(50, 0)));
+                }
+                matchingFundsPanel.add(centerPanel);
+            } else {
+                matchingFundsPanel.add(new JLabel("Ingen fonde matcher nogle kategorier"));
+                proposalProjectFullPanel.add(new JLabel("\n"));
+            }
+
+            matchingFundsPanel.revalidate();
+            matchingFundsPanel.repaint();
+        };
+
+        onlyOneNeededBox.addActionListener(e -> updateMatchingFunds.run());
+
+        updateMatchingFunds.run();
 
         JButton approveButton = new JButton("Godkend Projektforslag");
         approveButton.addActionListener(event -> {
+            JOptionPane.showMessageDialog(null, "Projektforslaget er blevet godkendt og ligger nu i projekt listen");
             approveProposal(proposal); // Approve the proposal and convert it to a project
             proposalProjectFullPanel.getParent().getParent().remove(proposalProjectFullPanel); // Close details
             updateProposalProjectList(); // Refresh proposal list
@@ -1957,6 +2056,9 @@ proposalProjectListPanel.repaint();
         archiveButton.setPreferredSize(buttonSize);
 
         archiveButton.addActionListener(e -> {
+            int confirmation = JOptionPane.showConfirmDialog(null, "Er du sikker på at du vil afvise dette Projektforslag?",
+                    "Afvis Projektforslag", JOptionPane.YES_NO_OPTION);
+            if (confirmation == JOptionPane.YES_OPTION) {
             // Archive the project
             archive.archiveProposal(proposal);
 
@@ -1967,6 +2069,7 @@ proposalProjectListPanel.repaint();
             proposalProjectFullPanel.removeAll();
             proposalProjectFullPanel.revalidate();
             proposalProjectFullPanel.repaint();
+            }
         });
 
         proposalProjectFullPanel.add(archiveButton);
@@ -2190,6 +2293,9 @@ proposalProjectListPanel.repaint();
         archiveButton.setPreferredSize(buttonSize);
 
         archiveButton.addActionListener(e -> {
+            int confirmation = JOptionPane.showConfirmDialog(null, "Er du sikker på at du vil arkivere dette projekt?",
+                    "Arkivér Projekt", JOptionPane.YES_NO_OPTION);
+            if (confirmation == JOptionPane.YES_OPTION) {
             // Archive the project
             archive.archiveProject(project);
 
@@ -2199,6 +2305,7 @@ proposalProjectListPanel.repaint();
             projectFullPanel.removeAll();
             projectFullPanel.revalidate();
             projectFullPanel.repaint();
+            }
         });
 
         projectFullPanel.add(archiveButton);
@@ -2451,6 +2558,11 @@ proposalProjectListPanel.repaint();
 
         websiteCheckBox.addItemListener(e2 -> {
             websitePanel.setVisible(websiteCheckBox.isSelected());
+            if(websiteCheckBox.isSelected()){
+                noUrl = false;
+            }else{
+                noUrl = true;
+            }
             dialog.revalidate();
             dialog.repaint();
         });
@@ -2540,18 +2652,22 @@ proposalProjectListPanel.repaint();
             }
 
             // Money errorhandling
-            if (!validationUtils.isNumericInput(amountFromField.getText())) {
+            String trimmedAmountTo = amountToField.getText().trim().replace(".", "").replace(",", "");
+            String trimmedAmountFrom = amountFromField.getText().trim().replace(".", "").replace(",", "");
+            System.out.println(trimmedAmountFrom);
+            System.out.println(trimmedAmountTo);
+            if (!validationUtils.isNumericInput(trimmedAmountFrom)) {
                 dialog.add(UserFrameErrorHandling.displayAmountFromError());
                 hasError = true;
             } else {
-                tempAmountFrom = Long.parseLong(amountFromField.getText().trim());
+                tempAmountFrom = Long.parseLong(trimmedAmountFrom);
             }
 
-            if (!validationUtils.isNumericInput(amountToField.getText())) {
+            if (!validationUtils.isNumericInput(trimmedAmountTo)) {
                 dialog.add(UserFrameErrorHandling.displayAmountToError());
                 hasError = true;
             } else {
-                tempAmountTo = Long.parseLong(amountToField.getText().trim());
+                tempAmountTo = Long.parseLong(trimmedAmountTo);
             }
 
             // Category Errorhandling
@@ -2591,9 +2707,11 @@ proposalProjectListPanel.repaint();
             }
 
             if (!hasError) {
+                JOptionPane.showMessageDialog(dialog, "Fonden er blevet tilføjet", "Fonden tilføjet", JOptionPane.INFORMATION_MESSAGE);
+
                 fundClass fund = new fundClass(tempTitle, tempDescription, tempAmountFrom, tempAmountTo,
                         addedDeadlines, selectedCatagories, selectedCollabortion, contacts, tempWebsite,
-                        isCollaborated, running);
+                        isCollaborated, running, noUrl);
                 contacts.clear();
                 main.fundList.add(fund);
                 updateFundList();
@@ -2840,7 +2958,7 @@ proposalProjectListPanel.repaint();
         // Hjemmeside
         //fundDialog.add(new JLabel("Hjemmeside: " + fund.getFundWebsite()));
         clickableURL = fund.getFundWebsite();
-        if (!clickableURL.startsWith("http://") && !clickableURL.startsWith("https://")) {
+        if (!clickableURL.startsWith("http://") && !clickableURL.startsWith("https://" ) && !fund.getNoUrl() && !clickableURL.isEmpty()) {
             clickableURL = "https://" + clickableURL;
         }
 
@@ -2866,17 +2984,21 @@ proposalProjectListPanel.repaint();
         JButton archiveButton = new JButton("Arkivér");
      //   archiveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         archiveButton.addActionListener(e -> {
+            int confirmation = JOptionPane.showConfirmDialog(null, "Er du sikker på at du vil arkivere denne fond?",
+                    "Arkivér Fond", JOptionPane.YES_NO_OPTION);
+            if (confirmation == JOptionPane.YES_OPTION) {
             archive.archiveFund(fund);
             updateFundList();
             writeAll();
             fundFullPanel.removeAll();
             fundFullPanel.revalidate();
             fundFullPanel.repaint();
+            }
         });
      //   fundFullPanel.add(Box.createVerticalStrut(10)); // Add some spacing
         fundFullPanel.add(archiveButton);
 
-        JButton changeFundButton = new JButton("Redigér fond");
+        JButton changeFundButton = new JButton("Redigér denne fond");
         changeFundButton.addActionListener(e -> {
             editFundButton.editFundDialog(fund);
             updateFundList();
@@ -3385,38 +3507,39 @@ proposalProjectListPanel.repaint();
                     tempTitle = nameField.getText();
                 }
 
-                if (validationUtils.isWithinLowerCharLimit(purposeField.getText()) == false) {
+                if (!validationUtils.isWithinLowerCharLimit(purposeField.getText())) {
                     isInvalidLenght = true;
                     dialog.add(UserFrameErrorHandling.displayPurposeError(isInvalidLenght));
                 } else {
                     tempPurpose = purposeField.getText();
                 }
 
-                if (validationUtils.isWithinUpperCharLimit(descriptionArea.getText()) == false) {
+                if (!validationUtils.isWithinUpperCharLimit(descriptionArea.getText())) {
                     isInvalidLenght = true;
                     dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
                 } else {
                     tempDescription = descriptionArea.getText();
                 }
 
-                if (validationUtils.isWithinLowerCharLimit(ownerField.getText()) == false) {
+                if (!validationUtils.isWithinLowerCharLimit(ownerField.getText())) {
                     isInvalidLenght = true;
                     dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
                 } else {
                     tempOwner = ownerField.getText();
                 }
 
-                if (validationUtils.isWithinLowerCharLimit(targetField.getText()) == false) {
+                if (!validationUtils.isWithinLowerCharLimit(targetField.getText())) {
                     isInvalidLenght = true;
                     dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
                 } else {
                     tempTargetAudience = targetField.getText();
                 }
 
-                if (validationUtils.isNumericInput(budgetField.getText()) == false) {
+                String trimmedBudget = budgetField.getText().trim().replace(".", "").replace(",", "");
+                if (!validationUtils.isNumericInput(trimmedBudget)) {
                     dialog.add(UserFrameErrorHandling.displayBudgetError());
                 } else {
-                    tempBudget = Long.parseLong(budgetField.getText());
+                    tempBudget = Long.parseLong(trimmedBudget);
                 }
 
                 LocalDate fromDate = ((Date) ((fromDateSpinner.getValue()))).toInstant().atZone(ZoneId.systemDefault())
@@ -3426,7 +3549,7 @@ proposalProjectListPanel.repaint();
                 LocalDateTime projectFromDate = fromDate.atStartOfDay();
                 LocalDateTime projectToDate = toDate.atStartOfDay();
 
-                if (validationUtils.isWithinLowerCharLimit(activitiesField.getText()) == false) {
+                if (!validationUtils.isWithinLowerCharLimit(activitiesField.getText())) {
                     isInvalidLenght = true;
                     dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
                 } else {
@@ -3469,6 +3592,7 @@ proposalProjectListPanel.repaint();
                     System.out.println(proj.getClosestDeadlineFunds());
                     System.out.println(proj.getCategories());
                 }
+                JOptionPane.showMessageDialog(dialog, "Projektet er blevet tilføjet", "Projekt tilføjet", JOptionPane.INFORMATION_MESSAGE);
                 updateProjectList();
                 writeAll();
                 dialog.dispose();
@@ -3599,15 +3723,20 @@ proposalProjectListPanel.repaint();
         } else if(e.getSource() == createCategoriesButton){
             openCategoriesDialog();
         } else if (e.getSource() == logoutButton) {
+            int confirmation = JOptionPane.showConfirmDialog(null, "Er du sikker på at du vil logge ud?", "Log ud",
+                    JOptionPane.YES_NO_OPTION);
+            if (confirmation == JOptionPane.YES_OPTION) {
             Frontpage frontpage = new Frontpage();
             main.fundList.removeAll(sortedFundList);
             main.projectList.removeAll(sortedProjectList);
             main.proposalList.removeAll(sortedProposalList);
             main.clearCategories();
             main.clearArchive();
+            
 
             frontpage.show();
             frame.dispose();
+            }
         }
 
     }

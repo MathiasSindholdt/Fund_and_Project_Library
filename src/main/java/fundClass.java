@@ -10,6 +10,7 @@ public class fundClass extends elementFormatting{
     private ArrayList<String> collaborationHistory= new ArrayList<String>();
     private boolean running;
     private String fundWebsite;
+    private boolean noUrl;
 
     public String getFundWebsite(){
         return fundWebsite;
@@ -85,6 +86,14 @@ public class fundClass extends elementFormatting{
         deadlines.clear();
     }
 
+    public void setNoUrl(boolean noUrl){
+        this.noUrl = noUrl;
+    }
+
+    public boolean getNoUrl(){
+        return noUrl;
+    }
+
     //Constructor
     public fundClass(
         String fundName,
@@ -97,7 +106,8 @@ public class fundClass extends elementFormatting{
         ArrayList<fundContactClass> fundContacts,
         String fundWebsite,
         boolean Collaborated,
-        boolean running){
+        boolean running,
+        boolean noUrl){
         this.setTitle(fundName);
         this.setDescription(fundDescription);
         this.setBudget(fundAmountFrom,fundAmountTo);
@@ -119,6 +129,7 @@ public class fundClass extends elementFormatting{
             }
         }
         this.setRunning(running);
+        this.setNoUrl(noUrl);
     }
 
         //Overloaded

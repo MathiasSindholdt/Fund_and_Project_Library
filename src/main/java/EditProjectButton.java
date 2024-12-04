@@ -126,8 +126,14 @@ public class EditProjectButton {
         });
 
         // Submit button
-        JButton submitButton = new JButton("Gem");
+        JButton submitButton = new JButton("Gem Ændringer");
         submitButton.addActionListener(ae -> {
+            int confirm = JOptionPane.showConfirmDialog(
+                null,
+                "Er du sikker på, at du vil redigere dette element?",
+                "Bekræft redigering",
+                JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
             boolean isInvalidLenght = false;
             boolean hasError = false;
             int selectedIndex = projectSelector.getSelectedIndex();
@@ -223,7 +229,7 @@ public class EditProjectButton {
                 }
             }
             ProjectCsvWriter.writeProjectCsv("data/projects.csv", projectList);
-
+        }
         });
 
         // Layout definition
@@ -349,8 +355,14 @@ public class EditProjectButton {
         }
         
         // Submit button
-        JButton submitButton = new JButton("Gem");
+        JButton submitButton = new JButton("Gem Ændringer");
         submitButton.addActionListener(ae -> {
+            int confirm = JOptionPane.showConfirmDialog(
+                null,
+                "Er du sikker på, at du vil redigere dette element?",
+                "Bekræft redigering",
+                JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
             boolean isInvalidLenght = false;
             boolean hasError = false;
                 try {
@@ -441,7 +453,7 @@ public class EditProjectButton {
                 }
             
             ProjectCsvWriter.writeProjectCsv("data/projects.csv", projectList);
-
+            }
         });
 
         // Layout definition

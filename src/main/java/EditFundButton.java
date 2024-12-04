@@ -407,6 +407,12 @@ public void editFundDialog() {
     JButton saveButton = new JButton("Gem Ændringer");
     System.out.println("Gem ændringer");
     saveButton.addActionListener(event -> {
+        int confirm = JOptionPane.showConfirmDialog(
+            null,
+            "Er du sikker på, at du vil redigere dette element?",
+            "Bekræft redigering",
+            JOptionPane.YES_NO_OPTION);
+    if (confirm == JOptionPane.YES_OPTION) {
         String selectedFundTitle = (String) fundSelector.getSelectedItem();
         fundClass selectedFund = fundList.stream()
             .filter(fund -> fund.getTitle().equals(selectedFundTitle))
@@ -538,10 +544,12 @@ public void editFundDialog() {
                 System.out.println("---------------------");
                 //UserFrame.updateFundList();
                 //Remove the fund currently being edited from the fundlist
+                JOptionPane.showMessageDialog(dialog, "Fonden er blevet opdateret");
                 FundCsvWriter.writeCsv("data/funds.csv", fundList);
                 dialog.dispose();
             }
         }
+    }
     
         });
 
@@ -953,6 +961,12 @@ public void editFundDialog(fundClass loadedFund) {
     JButton saveButton = new JButton("Gem Ændringer");
     System.out.println("Gem ændringer");
     saveButton.addActionListener(event -> {
+        int confirm = JOptionPane.showConfirmDialog(
+            null,
+            "Er du sikker på, at du vil redigere dette element?",
+            "Bekræft redigering",
+            JOptionPane.YES_NO_OPTION);
+    if (confirm == JOptionPane.YES_OPTION) {
         
         boolean hasError = false;
         
@@ -1075,10 +1089,12 @@ public void editFundDialog(fundClass loadedFund) {
             System.out.println("---------------------");
             //UserFrame.updateFundList();
             //Remove the fund currently being edited from the fundlist
-            FundCsvWriter.writeCsv("data/funds.csv", fundList);
+          ///  FundCsvWriter.writeCsv("data/funds.csv", fundList);
+            JOptionPane.showMessageDialog(dialog, "Fonden er blevet opdateret");
+
             dialog.dispose();
         }
-
+    }
     });
 
 

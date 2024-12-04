@@ -126,7 +126,7 @@ public class EditProjectProposal {
         });
 
         // Submit button
-        JButton submitButton = new JButton("Gem");
+        JButton submitButton = new JButton("Gem Ændringer");
         submitButton.addActionListener(ae -> {
             int selectedIndex = projectPropSelecter.getSelectedIndex();
             boolean isInvalidLenght = false;
@@ -212,11 +212,18 @@ public class EditProjectProposal {
                             }
                         }
                     }
+                    int confirm = JOptionPane.showConfirmDialog(
+                        null,
+                        "Er du sikker på, at du vil redigere dette element?",
+                        "Bekræft redigering",
+                        JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
                     selectedPropProject.getCategories().clear();
                     selectedPropProject.getCategories().addAll(selectedCategories);
 
                     JOptionPane.showMessageDialog(dialog, "Projekt forslag opdateret!");
                     dialog.dispose();
+                }
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(dialog, "Fejl ved opdatering af projekt forslag: " + ex.getMessage(), "Fejl", JOptionPane.ERROR_MESSAGE);
                 }
@@ -342,7 +349,7 @@ public void openEditProjectPropDialog(proposalProject loadselectedPropProject) {
     }
 
     // Submit button
-    JButton submitButton = new JButton("Gem");
+    JButton submitButton = new JButton("Gem Ændringer Ændringer");
     submitButton.addActionListener(ae -> {
         boolean isInvalidLenght = false;
         boolean hasError = false;
@@ -422,11 +429,19 @@ public void openEditProjectPropDialog(proposalProject loadselectedPropProject) {
                         }
                     }
                 }
+
+                int confirm = JOptionPane.showConfirmDialog(
+                    null,
+                    "Er du sikker på, at du vil redigere dette element?",
+                    "Bekræft redigering",
+                    JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
                 loadselectedPropProject.getCategories().clear();
                 loadselectedPropProject.getCategories().addAll(selectedCategories);
 
                 JOptionPane.showMessageDialog(dialog, "Projekt forslag opdateret!");
                 dialog.dispose();
+            }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(dialog, "Fejl ved opdatering af projekt forslag: " + ex.getMessage(), "Fejl", JOptionPane.ERROR_MESSAGE);
             }
