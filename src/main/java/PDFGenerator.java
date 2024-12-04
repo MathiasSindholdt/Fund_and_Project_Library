@@ -166,7 +166,19 @@ public class PDFGenerator {
                     System.err.println("unable to determine os");
             }
         } catch (IOException e) {
-
+            try{
+                FileWriter fileWriter;
+                String home = System.getProperty("user.home");
+                System.out.println(System.getProperty("os.name"));
+                if (System.getProperty("os.name").contains("Linux")){
+                    fileWriter = new FileWriter(home + "/Hentet/" + project.getTitle() + " report.pdf");
+                    fileWriter.write(pdf.build());
+                    fileWriter.close();
+                }
+            }catch (IOException e2){
+                System.out.println(e2);
+                System.out.println("was unable to write to PDF");
+            }
             System.out.println(e);
             System.out.println("was unable to write to PDF");
         }
