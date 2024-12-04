@@ -153,18 +153,16 @@ public class PDFGenerator {
         try {
             FileWriter fileWriter;
             String home = System.getProperty("user.home");
-            switch (System.getProperty("os.name")) {
-                case "Windows":
-                    fileWriter = new FileWriter(home + "/Downloads/" + project.getTitle() + " report.pdf");
-                    fileWriter.write(pdf.build());
-                    fileWriter.close();
-                    break;
-                case "Linux":
-                    fileWriter = new FileWriter(home + "/Downloads/" + project.getTitle() + " report.pdf");
-                    fileWriter.write(pdf.build());
-                    fileWriter.close();
-                    break;
-                default:
+            System.out.println(System.getProperty("os.name"));
+            if (System.getProperty("os.name").contains("Windows")){
+                fileWriter = new FileWriter(home + "\\Downloads\\" + project.getTitle() + " report.pdf");
+                fileWriter.write(pdf.build());
+                fileWriter.close();
+            }else if (System.getProperty("os.name").contains("Linux")){
+                fileWriter = new FileWriter(home + "/Downloads/" + project.getTitle() + " report.pdf");
+                fileWriter.write(pdf.build());
+                fileWriter.close();
+            }else{
                     System.err.println("unable to determine os");
             }
         } catch (IOException e) {
