@@ -49,48 +49,48 @@ import javax.swing.SwingConstants;
 public abstract class AbstractFrame extends JFrame implements ActionListener{
     
     public static JFrame frame;
-    private JPanel cardPanel;
-    private CardLayout cardLayout;
+    public JPanel cardPanel;
+    public CardLayout cardLayout;
     public static JPanel panel2 = new JPanel();
-    private PDFGenerator PDFGen = new PDFGenerator();
+    public PDFGenerator PDFGen = new PDFGenerator();
 
     // Buttons
-    private JButton createProbButton;
-    private JButton changeProbButton;
-    private JButton createProjectButton;
-    private JButton changeProjectButton;
-    private JButton createFundButton;
-    private JButton changeFundButton;
-    private JButton createCategoriesButton;
-    private JButton changeCategoriesButton;
+    public JButton createProbButton;
+    public JButton changeProbButton;
+    public JButton createProjectButton;
+    public JButton changeProjectButton;
+    public JButton createFundButton;
+    public JButton changeFundButton;
+    public JButton createCategoriesButton;
+    public JButton changeCategoriesButton;
 
 
-    private JButton menuButton;
-    private JButton logoutButton;
-    private JButton backButton;
-    private JButton xButton;
-    private JButton xButtonHover;
-    private JButton projectPropButton;
-    private JButton projectButton;
-    private JButton fundsButton;
-    private JButton archiveButton;
-    private JButton deleteButton;
+    public JButton menuButton;
+    public JButton logoutButton;
+    public JButton backButton;
+    public JButton xButton;
+    public JButton xButtonHover;
+    public JButton projectPropButton;
+    public JButton projectButton;
+    public JButton fundsButton;
+    public JButton archiveButton;
+    public JButton deleteButton;
 
     // List to store project proposals
-    private JPanel proposalProjectListPanel;
-    private JPanel proposalProjectFullPanel;
+    public JPanel proposalProjectListPanel;
+    public JPanel proposalProjectFullPanel;
 
-    private JPanel projectListPanel;
-    private JPanel projectFullPanel;
+    public JPanel projectListPanel;
+    public JPanel projectFullPanel;
 
-    private JPanel fundListPanel;
-    private JPanel fundFullPanel;
+    public JPanel fundListPanel;
+    public JPanel fundFullPanel;
     // tag button
-    private JPanel tagButtonPanel;
+    public JPanel tagButtonPanel;
 
-    private JPanel rightSidePanel;
+    public JPanel rightSidePanel;
 
-    private boolean isInvalidLenght;
+    public boolean isInvalidLenght;
     String tempTitle;
     String tempDescription;
     String tempPurpose;
@@ -109,18 +109,18 @@ public abstract class AbstractFrame extends JFrame implements ActionListener{
     String tempWebsite;
     Long tempAmountFrom;
     Long tempAmountTo;
-    private boolean noUrl;
+    public boolean noUrl;
     public static fundContactClass tempContact;
     public ArrayList<fundContactClass> tempContacts = new ArrayList<>();
-    private ArrayList<fundContactClass> removeContactArray = new ArrayList<>();
+    public ArrayList<fundContactClass> removeContactArray = new ArrayList<>();
     public static ArrayList<fundContactClass> contacts = new ArrayList<>();
     public ArrayList<proposalProject> sortedProposalList = main.proposalList;
     public ArrayList<project> sortedProjectList = main.projectList;
     public ArrayList<fundClass> sortedFundList = main.fundList;
     public String userType = "Guest";
     
-    private List<JToggleButton> tagButton;
-    private ArrayList<String> selectedTags = new ArrayList<>();
+    public List<JToggleButton> tagButton;
+    public ArrayList<String> selectedTags = new ArrayList<>();
     
     globalListSorting sorter = new globalListSorting();
     UIButtons UIButtons = new UIButtons();
@@ -132,14 +132,14 @@ public abstract class AbstractFrame extends JFrame implements ActionListener{
     public static String clickableURL;
     // Constructor to set up the GUI
 
-    private void initializeFrame() {
+    public void initializeFrame() {
         frame = new JFrame(userType);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1920, 1080);
         frame.setLayout(new BorderLayout(10, 10));
     }
 
-    private JPanel createTopPanel() {
+    public JPanel createTopPanel() {
         JPanel panel1 = new JPanel();
         panel1.setBackground(new Color(213, 213, 213, 255));
         panel1.setLayout(new BorderLayout());
@@ -192,7 +192,7 @@ public abstract class AbstractFrame extends JFrame implements ActionListener{
         return panel1;
     }
 
-    private void setupToggleBehavior(JButton button) {
+    public void setupToggleBehavior(JButton button) {
         button.setFocusPainted(false);
         button.setBackground(new Color(213, 213, 213, 255)); // Default color
         button.setForeground(Color.BLACK);
@@ -219,7 +219,7 @@ public abstract class AbstractFrame extends JFrame implements ActionListener{
         });
     }
 
-    private JPanel createSidePanel() {
+    public JPanel createSidePanel() {
         // Create the main panel
         panel2.setBackground(new Color(213, 213, 213, 255));
         panel2.setPreferredSize(new Dimension(150, 100));
@@ -230,7 +230,7 @@ public abstract class AbstractFrame extends JFrame implements ActionListener{
     }
 
 
-    private void filterByTag() {
+    public void filterByTag() {
         updateBeforeFilter();
 
         ArrayList<fundClass> fundList = new ArrayList<>();
@@ -268,7 +268,7 @@ public abstract class AbstractFrame extends JFrame implements ActionListener{
 
     }
 
-    private int updateBeforeFilter() {
+    public int updateBeforeFilter() {
         if (clickCounts[0] % 3 == 1) {
             sortedProposalList = sorter.compareTitleProposal(sortedProposalList);
             sortedFundList = sorter.compareTitleFund(sortedFundList);
@@ -347,7 +347,7 @@ public abstract class AbstractFrame extends JFrame implements ActionListener{
         return 1;
     }
 
-    private void createTagButton(String newTag) {
+    public void createTagButton(String newTag) {
         // Truncate tag name if it's longer than 17 characters
         String displayTag = newTag.length() > 17 ? newTag.substring(0, 16) + "..." : newTag;
     
@@ -373,14 +373,14 @@ public abstract class AbstractFrame extends JFrame implements ActionListener{
         panel2.repaint(); // Re-render the panel
     }
 
-    private void resetButtonStates() {
+    public void resetButtonStates() {
         projectPropButton.setBackground(new Color(213, 213, 213, 255));
         projectButton.setBackground(new Color(213, 213, 213, 255));
         fundsButton.setBackground(new Color(213, 213, 213, 255));
         archiveButton.setBackground(new Color(213, 213, 213, 255));
     }
 
-    private JPanel createproposalProjectView() {
+    public JPanel createproposalProjectView() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
 
@@ -415,7 +415,7 @@ public abstract class AbstractFrame extends JFrame implements ActionListener{
         return panel;
     }
 
-    private JPanel createArchiveView() {
+    public JPanel createArchiveView() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.WHITE);
 
@@ -458,7 +458,7 @@ public abstract class AbstractFrame extends JFrame implements ActionListener{
 
     // Method to update the right-side panel based on selected archive type
 
-    private <T> void displayItemDetails(T item) {
+    public <T> void displayItemDetails(T item) {
         // Create a new panel or dialog to show item details
         JDialog detailsDialog = new JDialog(frame, "Item Details", true);
         JPanel detailsPanel = new JPanel();
@@ -621,7 +621,7 @@ public abstract class AbstractFrame extends JFrame implements ActionListener{
         panel2.repaint();
     }
 
-    private void openproposalProjectDialog() {
+    public void openproposalProjectDialog() {
 
         JDialog dialog = new JDialog(frame, "Opret Projektforslag", true);
         dialog.setSize(700, 700);
@@ -888,7 +888,7 @@ public abstract class AbstractFrame extends JFrame implements ActionListener{
         dialog.setVisible(true);
     }
 
-    private void updateProposalProjectList(ArrayList<proposalProject> smallerList) {
+    public void updateProposalProjectList(ArrayList<proposalProject> smallerList) {
         System.out.println("Updating proposal project list");
         proposalProjectListPanel.removeAll();
         JButton proposalTitleSortButton = UIButtons.sortingButtons("title", clickCounts);
@@ -1012,7 +1012,7 @@ proposalProjectListPanel.revalidate();
 proposalProjectListPanel.repaint();
     }
 
-    private void resetAllListButtons(int List){
+    public void resetAllListButtons(int List){
         //If List == 0, reset proposalProjectListPanel buttons
         //If List == 1, reset projectListPanel buttons
         //If List == 2, reset fundListPanel buttons
@@ -1060,7 +1060,7 @@ proposalProjectListPanel.repaint();
 
     }
 
-    private void updateProposalProjectList() {
+    public void updateProposalProjectList() {
         System.out.println("Updating proposal project list");
         proposalProjectListPanel.removeAll();
         JButton proposalTitleSortButton = UIButtons.sortingButtons("title", clickCounts);
@@ -1182,7 +1182,7 @@ proposalProjectListPanel.repaint();
         proposalProjectListPanel.repaint();
     }
 
-    private void updateProjectList() { // SORT HERE
+    public void updateProjectList() { // SORT HERE
         // Ryd panelet før opdatering
         System.out.println("Updating project list");
         projectListPanel.removeAll();
@@ -1346,7 +1346,7 @@ proposalProjectListPanel.repaint();
         projectListPanel.repaint();
     }
 
-    private void updateProjectList(ArrayList<project> smallerList) { // SORT HERE
+    public void updateProjectList(ArrayList<project> smallerList) { // SORT HERE
         // Ryd panelet før opdatering
 
         System.out.println("Updating project list");
@@ -1494,7 +1494,7 @@ proposalProjectListPanel.repaint();
         projectListPanel.repaint();
     }
 
-    private void showProjectProbDetails(proposalProject proposal) {
+    public void showProjectProbDetails(proposalProject proposal) {
         proposalProjectFullPanel.removeAll();
 
         // Display project proposal details
@@ -1651,7 +1651,7 @@ proposalProjectListPanel.repaint();
         proposalProjectFullPanel.repaint();
     } 
 
-    private void approveProposal(proposalProject proposal) {
+    public void approveProposal(proposalProject proposal) {
         System.out.println("Approving proposal: " + proposal.getTitle());
 
         JButton approveButton = new JButton("Godkend");
@@ -1717,7 +1717,7 @@ proposalProjectListPanel.repaint();
         writeAll();
     }
 
-    private void insertWrappedText(String text, JPanel panel) {
+    public void insertWrappedText(String text, JPanel panel) {
         String newText = new String();
         List<String> strings = new ArrayList<String>();
         int index = 0;
@@ -1752,7 +1752,7 @@ proposalProjectListPanel.repaint();
         }
     }
 
-    private void showProjectDetails(project project) {
+    public void showProjectDetails(project project) {
         projectFullPanel.removeAll();
 
         // Display project details
@@ -1892,7 +1892,7 @@ proposalProjectListPanel.repaint();
             projectFullPanel.repaint();
     }
 
-    private void showFundDetails(fundClass fund) {
+    public void showFundDetails(fundClass fund) {
         tempContacts = fund.getContacts();
         fundFullPanel.removeAll();
         fundFullPanel.setLayout(new BoxLayout(fundFullPanel, BoxLayout.Y_AXIS));
@@ -2018,7 +2018,7 @@ proposalProjectListPanel.repaint();
         fundFullPanel.repaint();
     }
 
-    private String formatNumber(String number) {
+    public String formatNumber(String number) {
 
         String newnumber = number.substring(0, number.length() % 3);
         if (number.length() % 3 != 0) {
@@ -2071,7 +2071,7 @@ proposalProjectListPanel.repaint();
 
     }
 
-    private void updateFundList(ArrayList<fundClass> smallerList) {
+    public void updateFundList(ArrayList<fundClass> smallerList) {
         fundListPanel.removeAll();
         JButton fundTitleButton = UIButtons.sortingButtons("title", clickCounts);
         JButton fundBudgetButton = UIButtons.sortingButtons("budget", clickCounts);
@@ -2227,7 +2227,7 @@ proposalProjectListPanel.repaint();
         fundListPanel.repaint();
     }
 
-    private void updateFundList() {
+    public void updateFundList() {
         fundListPanel.removeAll(); // Clear existing funds
         // JLabel infoLabel = new JLabel(
         // String.format("%-30s %-30s %-30s %-30s",
@@ -2404,7 +2404,7 @@ proposalProjectListPanel.repaint();
         fundListPanel.repaint();
     }
 
-    private JPanel createRightSidePanel() {
+    public JPanel createRightSidePanel() {
         JPanel rightSidePanel = new JPanel(new CardLayout());
         rightSidePanel.setBackground(new Color(213, 213, 213, 255));
         rightSidePanel.setPreferredSize(new Dimension(500, 100));
@@ -2432,7 +2432,7 @@ proposalProjectListPanel.repaint();
         return rightSidePanel;
     }
 
-    private void updateRightSidePanel(String tab) {
+    public void updateRightSidePanel(String tab) {
         CardLayout layout = (CardLayout) rightSidePanel.getLayout();
         System.out.println(tab);
         switch (tab) {
@@ -2454,7 +2454,7 @@ proposalProjectListPanel.repaint();
         }
     }
 
-    private <T> void displayArchiveList(String cardName, List<T> archiveList) {
+    public <T> void displayArchiveList(String cardName, List<T> archiveList) {
         JPanel targetPanel;
 
         // Determine which panel to update based on card name
@@ -2505,7 +2505,7 @@ proposalProjectListPanel.repaint();
         cardLayout.show(rightSidePanel, cardName);
     }
 
-    private void showFundDetailsDialog(fundClass fund, project project) {
+    public void showFundDetailsDialog(fundClass fund, project project) {
         // Create the dialog box
         JDialog fundDialog = new JDialog(frame, fund.getTitle(), true);
         fundDialog.setLayout(new GridLayout(0, 1));
