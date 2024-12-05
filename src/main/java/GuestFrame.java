@@ -225,6 +225,7 @@ public class GuestFrame extends JFrame implements ActionListener {
         return panel1;
     }
 
+//done
     private void setupToggleBehavior(JButton button) {
         button.setFocusPainted(false);
         button.setBackground(new Color(213, 213, 213, 255)); // Default color
@@ -238,6 +239,8 @@ public class GuestFrame extends JFrame implements ActionListener {
     
         changeCursor(button); // Set cursor to hand
     }   
+
+    //ONLY IN GUEST
 
     private void resetButtonStates() {
         projectPropButton.setBackground(new Color(213, 213, 213, 255));
@@ -414,14 +417,8 @@ public class GuestFrame extends JFrame implements ActionListener {
         panel2.revalidate(); // Update the layout
         panel2.repaint(); // Re-render the panel
     }
-    // reset display to show it all again
-    private void resetToAllProjects() {
-        updateProposalProjectList();
-        updateProjectList();
-        updateFundList();
 
-    }
-
+    //KEEP THIS ITS DIFFERENT
     // Center panel for the main view (like before)
     public JPanel createCenterPanel() {
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -531,6 +528,7 @@ public class GuestFrame extends JFrame implements ActionListener {
         return panel;
     }
 
+    //KEEP ITS DIFEFRENT
     // Separate view for "Projekter"
     private JPanel createProjectsView() {
         JPanel panel = new JPanel(new BorderLayout());
@@ -549,6 +547,7 @@ public class GuestFrame extends JFrame implements ActionListener {
         return panel;
     }
 
+    //KEEP ITS DIFEFRENT
     // Separate view for "Fonde"
     private JPanel createFundsView() {
         JPanel panel = new JPanel(new BorderLayout());
@@ -606,6 +605,8 @@ public class GuestFrame extends JFrame implements ActionListener {
 
         return panel;
     }
+
+//KEEP IS DIFEFRNET
 
     // Creates the right-side panel with different views for each archive type
 
@@ -676,6 +677,7 @@ public class GuestFrame extends JFrame implements ActionListener {
         JOptionPane.showMessageDialog(null, detailsPanel, "Item Details", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    //KEEP Sets the specific frame
     // Show the frame
     public void show() {
         main.initializeLists();
@@ -1668,76 +1670,6 @@ public class GuestFrame extends JFrame implements ActionListener {
         proposalProjectFullPanel.repaint();
     }
 
-    private JLabel createLeftAlignedLabel(String text) {
-        JLabel label = new JLabel(text);
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        return label;
-    }
-
-    private void approveProposal(proposalProject proposal) {
-        System.out.println("Approving proposal: " + proposal.getTitle());
-
-        JButton approveButton = new JButton("Godkend");
-        approveButton.addActionListener(event -> {
-            approveProposal(proposal); // Approve the proposal and convert it to a project
-            proposalProjectFullPanel.getParent().getParent().remove(proposalProjectFullPanel); // Close details
-            updateProposalProjectList(); // Refresh proposal list
-            proposalProjectFullPanel.removeAll();
-            proposalProjectFullPanel.repaint();
-            proposalProjectFullPanel.revalidate();
-        });
-
-        // Check if proposalProjects list is initialized
-        if (main.proposalList == null) {
-            System.out.println("Error: proposalProjects list is not initialized.");
-            return;
-        }
-
-        // Remove the proposal from the proposalProjects list
-        if (main.proposalList.remove(proposal)) {
-            System.out.println("Proposal removed: " + proposal.getTitle());
-        } else {
-            System.out.println("Proposal not found in proposalProjects list: " + proposal.getTitle());
-        }
-
-        // Create a new project instance using proposal details
-        project project = new project();
-
-        // Set project details based on proposal details
-        try {
-            project.setTitle(proposal.getTitle());
-            project.setProjectPurpose(proposal.getProjectPurpose());
-            project.setDescription(proposal.getDescription());
-            project.setProjectOwner(proposal.getProjectOwner());
-            project.setProjectTargetAudience(proposal.getProjectTargetAudience());
-            project.setProjectBudget(proposal.getProjectBudget());
-            project.setTimeSpan(proposal.getProjectTimeSpanFrom(), proposal.getProjectTimeSpanTo());
-            project.setProjectActivities(proposal.getProjectActivities());
-
-            // Set categories from the proposal, ensuring the project has the same
-            // categories
-            for (String category : proposal.getCategories()) {
-                project.setCategories(category); // Assuming setCategories handles adding categories to the project
-            }
-
-            // Add the new project to the projects list if initialized
-            if (main.projectList != null) {
-                main.projectList.add(project);
-                System.out.println("New project added: " + project.getTitle());
-            } else {
-                System.out.println("Error: projects list is not initialized.");
-            }
-
-        } catch (NullPointerException e) {
-            System.out.println("Error: One of the proposal properties is null - " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Error: Unexpected issue while approving proposal - " + e.getMessage());
-        }
-
-        // Update the UI to reflect the new project list
-        updateProjectList();
-    }
-
     private void insertWrappedText(String text, JPanel panel) {
         String newText = new String();
         List<String> strings = new ArrayList<String>();
@@ -1864,31 +1796,6 @@ public class GuestFrame extends JFrame implements ActionListener {
         projectFullPanel.repaint();
     }
 
-    private void styleFundButton(JButton button) {
-        button.setPreferredSize(new Dimension(300, 40)); // Set button size
-        button.setFont(new Font("SansSerif", Font.PLAIN, 14)); // Clean, modern font
-        button.setFocusPainted(false); // Remove focus border
-        button.setBackground(new Color(0, 0, 0)); // Light gray background
-        button.setForeground(Color.DARK_GRAY); // Dark gray text
-        button.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)); // Subtle border
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Hand cursor
-
-        // Add hover effect
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                button.setBackground(new Color(220, 220, 220)); // Slightly darker gray on hover
-            }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                button.setBackground(new Color(245, 245, 245)); // Revert to original color
-            }
-        });
-    }
-
- 
-
     public JButton createXButton() {
         ImageIcon originalIcon = new ImageIcon("img/X_button.png");
         Image scaledImage = originalIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
@@ -1903,99 +1810,6 @@ public class GuestFrame extends JFrame implements ActionListener {
         button.setOpaque(false);
         button.addActionListener(this);
         return button;
-    }
-
-    private JButton createLoopButton() {
-        ImageIcon originalIcon = new ImageIcon("Glass_loop.png");
-        Image scaledImage = originalIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-        ImageIcon resizedIcon = new ImageIcon(scaledImage);
-
-        JButton button = new JButton();
-        button.setPreferredSize(new Dimension(20, 20));
-        button.setIcon(resizedIcon);
-        button.setBorderPainted(false);
-        button.setContentAreaFilled(false);
-        button.setFocusPainted(false);
-        button.setOpaque(false);
-        button.addActionListener(this);
-        return button;
-    }
-
-    private void openContactsDialog(JDialog dialog) {
-        JDialog contactDialog = new JDialog(dialog, "Tilføj Kontakt Person", true);
-        contactDialog.setSize(300, 200);
-        JPanel mainPanel = new JPanel();
-        contactDialog.add(mainPanel);
-
-        GroupLayout layout = new GroupLayout(mainPanel);
-        mainPanel.setLayout(layout);
-        layout.setAutoCreateGaps(true);
-        layout.setAutoCreateContainerGaps(true);
-
-        JLabel nameLabel = new JLabel("Navn:");
-        JTextField nameField = new JTextField();
-
-        JLabel phoneLabel = new JLabel("Telefon:");
-        JTextField phoneField = new JTextField();
-
-        JLabel emailLabel = new JLabel("Email:");
-        JTextField emailField = new JTextField();
-
-        JButton submitButton = new JButton("Tilføj");
-        submitButton.addActionListener(event -> {
-            String contactName = "";
-            contactName = nameField.getText();
-            String contactPhone = "";
-            contactPhone = phoneField.getText();
-            String contatctEmail = "";
-            contatctEmail = emailField.getText();
-
-            // Function to replace empty fields with "N/A"
-            if (contactName.isEmpty()) {
-                contactName = "N/A";
-            }
-            if (contactPhone.isEmpty()) {
-                contactPhone = "N/A";
-            }
-            if (contatctEmail.isEmpty()) {
-                contatctEmail = "N/A";
-            }
-
-            // Validate phone number
-            // Trimming of phone number to remove "+landcode and spaces"
-            if (contactPhone != "N/A") {
-                String trimmedContactPhone = contactPhone.trim().replaceAll("\\s+", "").replaceAll("^\\+\\d{2}", "");
-                System.out.println(trimmedContactPhone);
-                if (!validationUtils.isValidPhoneNumber(trimmedContactPhone)) {
-                    UserFrameErrorHandling.displayPhoneError();
-                    return;
-                }
-            }
-            if (contatctEmail != "N/A") {
-                if (!validationUtils.validateEmailInput(contatctEmail)) {
-                    UserFrameErrorHandling.displayEmailError();
-                    return;
-                }
-            }
-            tempContact = new fundContactClass(contactName, contactPhone, contatctEmail);
-            contactDialog.dispose();
-
-        });
-
-        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addComponent(nameLabel).addComponent(nameField)
-                .addComponent(phoneLabel).addComponent(phoneField)
-                .addComponent(emailLabel).addComponent(emailField)
-                .addComponent(submitButton));
-
-        layout.setVerticalGroup(layout.createSequentialGroup()
-                .addComponent(nameLabel).addComponent(nameField)
-                .addComponent(phoneLabel).addComponent(phoneField)
-                .addComponent(emailLabel).addComponent(emailField)
-                .addComponent(submitButton));
-
-        contactDialog.setLocationRelativeTo(dialog);
-        contactDialog.setVisible(true);
     }
 
     private void showFundDetails(fundClass fund) {
@@ -2514,6 +2328,7 @@ public class GuestFrame extends JFrame implements ActionListener {
         }
     }
 
+    //KEEP DIFFERENT
     @Override
     public void actionPerformed(ActionEvent e) {
         System.out.println("Action performed");
@@ -2664,14 +2479,6 @@ public class GuestFrame extends JFrame implements ActionListener {
         fundDialog.pack();
         fundDialog.setLocationRelativeTo(projectFullPanel); // Center dialog relative to main panel
         fundDialog.setVisible(true);
-    }
-
-    private JButton deleteButton(String text) {
-        JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(150, 50));
-        button.addActionListener(this);
-        return button;
-
     }
 
     public static void write() {
