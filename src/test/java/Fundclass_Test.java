@@ -34,7 +34,7 @@ public class Fundclass_Test extends testTemplate {
 
         fundClass fc = new fundClass(name, description, amountFrom, amountTo,
                 deadlines, categories, collaborationHistory, contacts,
-                website, collaborated, running);
+                website, collaborated, running, false);
         if (!name.equals(fc.getTitle())) {
             ErrDump += name + " != " + fc.getTitle() + "\n";
             passed = false;
