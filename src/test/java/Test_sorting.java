@@ -1,35 +1,19 @@
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class test_sorting extends testTemplate {
+import org.junit.jupiter.api.Test;
+
+public class Test_sorting extends testTemplate {
 
     public String ErrDump = new String();
 
-    public boolean test() {
-        boolean passed = true;
+    @Test
+    public void invalidDataTest() {
 
-        this.TestName = "Sorting Test";
-        if (!validDataTest()) {
-            this.ErrMessage += " Error in Sorting with valid data test\n";
-            this.ErrMessage += ErrDump;
-
-            passed = false;
-        }
-        if (!invalidDataTest()) {
-            this.ErrMessage += " Error in Sorting with invalid data test\n";
-            this.ErrMessage += ErrDump;
-
-            passed = false;
-        }
-
-        return passed;
-
-    }
-
-    public boolean invalidDataTest() {
-
-        boolean passed = true;
         ArrayList<fundClass> funds = new ArrayList<>();
         ArrayList<fundClass> expectedFunds = new ArrayList<>();
 
@@ -64,16 +48,16 @@ public class test_sorting extends testTemplate {
 
         sortingFundLists sorter = new sortingFundLists();
         funds = sorter.sortFunds(funds, project, false);
-
+        
         for (int i = 0; i < funds.size(); i++) {
-            if (!Objects.equals(funds.get(i).getDeadlines(), expectedFunds.get(i).getDeadlines())) {
-                ErrDump += funds.get(i).getDeadlines() + " != " + expectedFunds.get(i).getDeadlines() + "\n";
-                passed = false;
-            }
+             assertEquals(funds.get(i).getDeadlines(), expectedFunds.get(i).getDeadlines());
         }
-        return passed;
+
+
     }
-    public boolean validDataTest() {
+
+    @Test
+    public void validDataTest() {
 
         boolean passed = true;
         ArrayList<fundClass> funds = new ArrayList<>();
@@ -112,12 +96,8 @@ public class test_sorting extends testTemplate {
         funds = sorter.sortFunds(funds, project, false);
 
         for (int i = 0; i < funds.size(); i++) {
-            if (!Objects.equals(funds.get(i).getDeadlines(), expectedFunds.get(i).getDeadlines())) {
-                ErrDump += funds.get(i).getDeadlines() + " != " + expectedFunds.get(i).getDeadlines() + "\n";
-                passed = false;
-            }
+            assertEquals(funds.get(i).getDeadlines(), expectedFunds.get(i).getDeadlines());
         }
-        return passed;
     }
 
 }
