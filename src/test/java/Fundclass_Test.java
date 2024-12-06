@@ -3,23 +3,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Fundclass_test extends testTemplate {
+import org.junit.jupiter.api.Test;
+
+public class Fundclass_Test extends testTemplate {
     public String ErrDump = new String();
 
-    public boolean test() {
-        this.TestName = "FundClass Test";
-        if (!test_Constructor()) {
-            this.ErrMessage += " Error in Constructor test\n";
-            this.ErrMessage += ErrDump;
-
-            return false;
-        }
-
-        return true;
-
-    }
-
-    public boolean test_Constructor() {
+    @Test
+    public void test_Constructor() {
         boolean passed = true;
         String name = "Example fund";
         String description = "Example description";
@@ -96,7 +86,6 @@ public class Fundclass_test extends testTemplate {
             passed = false;
         }
 
-        return passed;
     }
 
 }
