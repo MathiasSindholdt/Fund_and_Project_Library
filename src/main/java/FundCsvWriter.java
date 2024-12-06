@@ -10,6 +10,7 @@ import java.util.List;
 public class FundCsvWriter {
 
     public static void writeCsv(String filepath, List<fundClass> fundList) {
+        String tempFormattedString;
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filepath), "UTF-8"))) {
             writer.write('\ufeff'); // Write BOM to support UTF-8 encoding
 
@@ -30,7 +31,8 @@ public class FundCsvWriter {
                 String[] fundData = new String[10];
                 fundData[0] = escapeCsvField(fund.getTitle());  
                 fundData[1] = escapeCsvField(fund.getFundWebsite());  
-                fundData[2] = escapeCsvField(fund.getDescription());  
+                tempFormattedString = fund.getDescription().replace(",", "|");
+                fundData[2] = tempFormattedString; //fund.getDescription();
                 fundData[3] = formatApplicationDeadline(fund.getDeadlines());
                 fundData[4] = String.valueOf(fund.getBudgetMin()); 
                 fundData[5] = String.valueOf(fund.getBudgetMax());  

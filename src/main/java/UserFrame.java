@@ -217,6 +217,7 @@ public class UserFrame extends AbstractFrame{
         createCategoriesButton.setPreferredSize(new Dimension(160, 50));
         createCategoriesButton.addActionListener(this);
         changeCategoriesButton = UIButtons.createButton("Redigér kategori listen");
+        changeCategoriesButton.setPreferredSize(new Dimension(180, 50));
         changeCategoriesButton.addActionListener(this);
        
         categoriesButtons.add(createCategoriesButton);
@@ -381,6 +382,7 @@ public class UserFrame extends AbstractFrame{
                     categoriesPanel.add(categoryLabel);
                     categoriesPanel.add(Box.createVerticalStrut(5));
                     updateCategoryPanel();
+                    writeAll();
                 }
                 
                 dialog.revalidate();
@@ -497,8 +499,9 @@ public class UserFrame extends AbstractFrame{
         // Fond Beskrivelse
         JLabel descriptionLabel = new JLabel("Beskrivelse:*");
         JTextArea descriptionArea = new JTextArea(7, 20);
-        JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
         descriptionArea.setLineWrap(true);
+        descriptionArea.setWrapStyleWord(true);
+        JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
 
         // Fond Beløb Fra og Til
         JLabel amountFromLabel = new JLabel("Beløb fra:*");
@@ -1012,6 +1015,8 @@ public class UserFrame extends AbstractFrame{
 
         JLabel descriptionLabel = new JLabel("Beskrivelse af projektet:*");
         JTextArea descriptionArea = new JTextArea(5, 20);
+        descriptionArea.setLineWrap(true);
+        descriptionArea.setWrapStyleWord(true);
         JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
 
         JLabel ownerLabel = new JLabel("Ejer af projektet:*");
@@ -1066,6 +1071,9 @@ public class UserFrame extends AbstractFrame{
             JCheckBox tagCheckBox = new JCheckBox(category);
             tagPanel.add(tagCheckBox);
         }
+
+        JCheckBox sensitiveInfo = new JCheckBox("Indeholder projektet følsomme oplysninger");
+        
 
         JButton submitButton = new JButton("Tilføj");
         submitButton.addActionListener((ActionEvent ae) -> {
@@ -1137,14 +1145,17 @@ public class UserFrame extends AbstractFrame{
                         }
                     }
                 }
-
+                boolean isSensitive = sensitiveInfo.isSelected();
+                System.out.println("------------");
+                System.out.println(isSensitive);
+                System.out.println("----------------");
                 System.out.println(projectFromDate);
                 System.out.println(projectToDate);
                 // Create a new project proposal and add it to the list
 
                 project project = new project(tempTitle, selectedCatagories, tempDescription, tempPurpose, tempOwner,
                         tempTargetAudience, tempBudget, projectFromDate, projectToDate, tempActivities,
-                        main.getFundList(), main.getCatagoryBoolean());
+                        main.getFundList(), main.getCatagoryBoolean(), isSensitive);
                 main.projectList.add(project);
 
                 System.out.println("------------");
@@ -1186,7 +1197,7 @@ public class UserFrame extends AbstractFrame{
                 .addComponent(activitiesLabel).addComponent(activitiesField)
                 .addComponent(createTagLabel).addComponent(createTagButton)
                 .addComponent(selectTagLabel).addComponent(tagScrollPane)
-                .addComponent(submitButton)
+                .addComponent(sensitiveInfo).addComponent(submitButton)
 
         );
 
@@ -1202,7 +1213,8 @@ public class UserFrame extends AbstractFrame{
                 .addComponent(activitiesLabel).addComponent(activitiesField)
                 .addComponent(createTagLabel).addComponent(createTagButton)
                 .addComponent(selectTagLabel).addComponent(tagScrollPane)
-                .addComponent(submitButton));
+                .addComponent(sensitiveInfo).addComponent(submitButton)    
+            );
 
         JScrollPane FramescrollPane = new JScrollPane(mainPanel);
         FramescrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);

@@ -10,6 +10,7 @@ import java.util.List;
 public class ProposalsCsvWriter {
     
     public static void writeProposalCsv(String filepath, List<proposalProject> proposalList) {
+        String tempFormattedString;
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filepath), "UTF-8"))) {
             writer.write('\ufeff'); // Write BOM to support UTF-8 encoding
             String[] header = {
@@ -25,14 +26,19 @@ public class ProposalsCsvWriter {
 
                 List<String> categories = proposal.getCategories();
                 proposalData[1] = categories != null ? "\"" + String.join(", ", categories) + "\"" : "N/A";
-                proposalData[2] = proposal.getDescription();
-                proposalData[3] = proposal.getProjectPurpose();
-                proposalData[4] = proposal.getProjectOwner();
-                proposalData[5] = proposal.getProjectTargetAudience();
+                tempFormattedString = proposal.getDescription().replace(",", "|");
+                proposalData[2] = tempFormattedString; //proposal.getDescription();
+                tempFormattedString = proposal.getProjectPurpose().replace(",", "|");
+                proposalData[3] = tempFormattedString; //proposal.getProjectPurpose();
+                tempFormattedString = proposal.getProjectOwner().replace(",", "|");
+                proposalData[4] = tempFormattedString; //proposal.getProjectOwner();
+                tempFormattedString = proposal.getProjectTargetAudience().replace(",", "|");
+                proposalData[5] = tempFormattedString; //proposal.getProjectTargetAudience();
                 proposalData[6] = String.valueOf(proposal.getProjectBudget());
                 proposalData[7] = formatDateTime(proposal.getProjectTimeSpanFrom());
                 proposalData[8] = formatDateTime(proposal.getProjectTimeSpanTo());
-                proposalData[9] = proposal.getProjectActivities();
+                tempFormattedString = proposal.getProjectActivities().replace(",", "|");
+                proposalData[9] = tempFormattedString; //proposal.getProjectActivities();
                 proposalData[10] = formatDateTime(proposal.getDateCreated());
 
                 String line = String.join(",", proposalData);

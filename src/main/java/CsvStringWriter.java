@@ -11,6 +11,7 @@ public class CsvStringWriter {
             bw.write('\ufeff'); // Write BOM to support UTF-8 encoding
 
             for (String category : categories) {
+                category = category.replace(",", "|"); // Replace commas with pipes
                 bw.write(category + ","); // Write each category separated by a comma
             }
             bw.newLine(); // Add a new line at the end

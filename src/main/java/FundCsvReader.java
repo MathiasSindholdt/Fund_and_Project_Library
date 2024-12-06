@@ -82,6 +82,11 @@ public class FundCsvReader {
                 List<fundContactClass> contacts = parseContactInformation(data.get(8));
 
                 LocalDateTime dateCreated;
+
+                // replace | with , in the csv file after reading
+                description = description.replace("|", ",");
+                
+
                 try{
                     dateCreated = LocalDateTime.parse(data.get(10).replace("\"", ""), formatter);
                 } catch (Exception e) {

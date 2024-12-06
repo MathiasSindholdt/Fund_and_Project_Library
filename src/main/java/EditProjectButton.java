@@ -61,6 +61,8 @@ public class EditProjectButton {
         JLabel descriptionLabel = new JLabel("Beskrivelse:*");
         JTextArea descriptionArea = new JTextArea(5, 20);
         JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
+        descriptionArea.setLineWrap(true);
+        descriptionArea.setWrapStyleWord(true);
 
         JLabel ownerLabel = new JLabel("Ejer:*");
         JTextField ownerField = new JTextField();
@@ -296,6 +298,8 @@ public class EditProjectButton {
         JLabel descriptionLabel = new JLabel("Beskrivelse:*");
         JTextArea descriptionArea = new JTextArea(5, 20);
         JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
+        descriptionArea.setLineWrap(true);
+        descriptionArea.setWrapStyleWord(true);
 
         JLabel ownerLabel = new JLabel("Ejer:*");
         JTextField ownerField = new JTextField();

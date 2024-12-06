@@ -39,6 +39,15 @@ public class ProposalCsvReader {
                 LocalDateTime timeSpanTo = LocalDateTime.parse(values[8].replace("\"", ""), formatter);
                 String activities = values[9].replace("\"", "");
                 LocalDateTime dateCreated;
+
+                // replacement of | with , in the csv file after reading
+                description = description.replace("|", ",");
+                purpose = purpose.replace("|", ",");
+                owner = owner.replace("|", ",");
+                targetAudience = targetAudience.replace("|", ",");
+                activities = activities.replace("|", ",");
+                
+
                 try{
                     dateCreated = LocalDateTime.parse(values[10].replace("\"", ""), formatter);
                 } catch (Exception e) {

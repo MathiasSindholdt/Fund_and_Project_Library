@@ -10,6 +10,7 @@ import java.util.Objects;
 public class project extends projectAbstract {
     private ArrayList<fundClass> closestDeadlineFunds = new ArrayList<fundClass>();
     private fundClass assignedFund;
+    private boolean isSensitive;
 
     public int assignFundFromName(String Name){
         for (fundClass fc : main.fundList){
@@ -44,7 +45,8 @@ public class project extends projectAbstract {
         LocalDateTime to,
         String projectActivities,
         ArrayList<fundClass> fundList,
-        boolean onlyOneIsNeeded
+        boolean onlyOneIsNeeded,
+        boolean isSensitive
     ){
         this.setTitle(projectTitle);
         for (String category : categories) {
@@ -58,12 +60,22 @@ public class project extends projectAbstract {
             this.setTimeSpan(from, to);
             this.setProjectActivities(projectActivities);
             this.setClosestDeadlineFunds(fundList, onlyOneIsNeeded);
+            System.out.println("************************************" + isSensitive);
+            this.setSensitive(isSensitive);
         }
     
 
     //Overloaded constructor This enables the user of pure setters if only parts are needed to be changed
     //IMPORTANT! THIS REQUIRES MANUAL SETTING OF ALL PARAMETERS!
     public project(){
+    }
+
+    public void setSensitive(boolean isSensitive){
+        this.isSensitive = isSensitive;
+    }
+
+    public boolean getSensitive(){
+        return isSensitive;
     }
 
     public ArrayList<fundClass> getClosestDeadlineFunds(){

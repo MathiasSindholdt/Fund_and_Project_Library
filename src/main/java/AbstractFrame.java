@@ -217,7 +217,7 @@ public abstract class AbstractFrame extends JFrame implements ActionListener{
     public JPanel createSidePanel() {
         // Create the main panel
         panel2.setBackground(new Color(213, 213, 213, 255));
-        panel2.setPreferredSize(new Dimension(150, 100));
+        panel2.setPreferredSize(new Dimension(200, 100));
         // panel2.setLayout(new BorderLayout()); // Use BorderLayout for better
         // organization
 
@@ -642,6 +642,8 @@ public abstract class AbstractFrame extends JFrame implements ActionListener{
         JLabel descriptionLabel = new JLabel("Kort beskrivelse af projektet:*");
         JTextArea descriptionArea = new JTextArea(5, 20);
         JScrollPane desciptionScrollPane = new JScrollPane(descriptionArea);
+        descriptionArea.setLineWrap(true);
+        descriptionArea.setWrapStyleWord(true);
 
         JLabel ownerLabel = new JLabel("Ejer af idé/forslaget:*");
         JTextField ownerField = new JTextField();
@@ -1258,9 +1260,13 @@ proposalProjectListPanel.repaint();
             projectListPanel.revalidate();
             projectListPanel.repaint();
         });
-
+        
         // Add labels for each project
         for (project project : sortedProjectList) {
+            if(project.getSensitive() && userType == "guest"){
+                System.out.println("Sensitive project dected for proj" + project.getTitle());
+                continue;
+            }
             if (project.getFunds().isEmpty()) {
                 compareProjectCatsWithFundCats comparer = new compareProjectCatsWithFundCats();
                 project.setFundList(comparer.compareCategoriesWithFund(true, main.fundList, project));
@@ -1426,7 +1432,13 @@ proposalProjectListPanel.repaint();
         });
 
         // Add labels for each project
+        System.out.println("--------------------" + userType + "2");
+
         for (project project : smallerList) {
+            if(project.getSensitive() && userType == "guest"){
+                System.out.println("Sensitive project detected");
+                continue;
+            }
             if (project.getFunds().isEmpty()) {
                 compareProjectCatsWithFundCats comparer = new compareProjectCatsWithFundCats();
                 project.setFundList(comparer.compareCategoriesWithFund(true, main.fundList, project));
@@ -1506,7 +1518,7 @@ proposalProjectListPanel.repaint();
         insertWrappedText(proposal.getDescription(), proposalProjectFullPanel);
         proposalProjectFullPanel.add(new JLabel("\n"));
 
-        proposalProjectFullPanel.add(new JLabel("MålgrushowFundppe: " + proposal.getProjectTargetAudience()));
+        proposalProjectFullPanel.add(new JLabel("Målgruppe: " + proposal.getProjectTargetAudience()));
         proposalProjectFullPanel.add(new JLabel("\n"));
 
         proposalProjectFullPanel.add(new JLabel("Budget: " + proposal.getProjectBudget()));
@@ -1525,8 +1537,15 @@ proposalProjectListPanel.repaint();
 
 
         // Display categories as a concatenated string
-        String categories = String.join(", ", proposal.getCategories());
-        proposalProjectFullPanel.add(new JLabel("Kategorier: " + categories));
+        proposalProjectFullPanel.add(new JLabel("Kategorier: "));
+        StringBuilder categoriesBuilder = new StringBuilder();
+        for (String category : proposal.getCategories()) {
+            categoriesBuilder.append(category);
+            categoriesBuilder.append(", ");
+        }
+        JLabel categoriesLabel = new JLabel("<html>" + categoriesBuilder.toString().replaceAll(", ", "<br>") + "</html>");
+        proposalProjectFullPanel.add(categoriesLabel);
+       
         proposalProjectFullPanel.add(new JLabel("\n"));
 
         JCheckBox onlyOneNeededBox = new JCheckBox("Kun en kategori kræves for match", true);
@@ -1582,14 +1601,19 @@ proposalProjectListPanel.repaint();
             matchingFundsPanel.repaint();
         };
 
-        onlyOneNeededBox.addActionListener(e -> updateMatchingFunds.run());
+        onlyOneNeededBox.addActionListener(e -> {
+            updateMatchingFunds.run();
+        });
 
         updateMatchingFunds.run();
 	
         if (userType == "user"){
 
             JButton approveButton = new JButton("Godkend Projektforslag");
-        approveButton.addActionListener(event -> {
+            approveButton.setPreferredSize(new Dimension(180, 20));
+            approveButton.setMaximumSize(new Dimension(180,28));
+            approveButton.setMinimumSize(new Dimension(180,28));
+            approveButton.addActionListener(event -> {
             JOptionPane.showMessageDialog(null, "Projektforslaget er blevet godkendt og ligger nu i projekt listen");
             approveProposal(proposal); // Approve the proposal and convert it to a project
             proposalProjectFullPanel.getParent().getParent().remove(proposalProjectFullPanel); // Close details
@@ -1602,11 +1626,11 @@ proposalProjectListPanel.repaint();
         });
 
         // Add buttons to the panel
-        proposalProjectFullPanel.add(approveButton);
 
         JButton archiveButton = new JButton("Afvis Projektforslag");
-        Dimension buttonSize = new Dimension(150, 50);
-        archiveButton.setPreferredSize(buttonSize);
+        archiveButton.setPreferredSize(new Dimension(180, 20));
+        archiveButton.setMaximumSize(new Dimension(180,28));
+        archiveButton.setMinimumSize(new Dimension(180,28));
 
         archiveButton.addActionListener(e -> {
             int confirmation = JOptionPane.showConfirmDialog(null, "Er du sikker på at du vil afvise dette Projektforslag?",
@@ -1625,10 +1649,12 @@ proposalProjectListPanel.repaint();
             }
         });
 
-        proposalProjectFullPanel.add(archiveButton);
 
 
         JButton editButton = new JButton("Rediger Projektforslag");
+        editButton.setPreferredSize(new Dimension(180, 20));
+        editButton.setMaximumSize(new Dimension(180,28));
+        editButton.setMinimumSize(new Dimension(180,28));
         editButton.addActionListener(e -> {
             editProjectProposal.openEditProjectPropDialog(proposal);
             proposalProjectFullPanel.removeAll();
@@ -1638,7 +1664,13 @@ proposalProjectListPanel.repaint();
             updateProposalProjectList();
             writeAll();
         });
+        proposalProjectFullPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        proposalProjectFullPanel.add(approveButton);
+        proposalProjectFullPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        proposalProjectFullPanel.add(archiveButton);
+        proposalProjectFullPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         proposalProjectFullPanel.add(editButton);
+        proposalProjectFullPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         }
 
         // Refresh the panel to reflect the changes
@@ -1712,14 +1744,16 @@ proposalProjectListPanel.repaint();
         writeAll();
     }
 
+
+
     public void insertWrappedText(String text, JPanel panel) {
         String newText = new String();
         List<String> strings = new ArrayList<String>();
         int index = 0;
         while (index < text.length()) {
             strings.add(text.substring(index,
-                    Math.min(index + 60, text.length())));
-            index += Math.min(index + 60, text.length());
+                    Math.min(index + 70, text.length())));
+            index += Math.min(index + 70, text.length());
         }
 
         for (int i = 0; i < strings.size(); i++) {
@@ -1778,7 +1812,15 @@ proposalProjectListPanel.repaint();
         projectFullPanel.add(new JLabel("Aktiviteter: " + project.getProjectActivities()));
         projectFullPanel.add(new JLabel("\n"));
 
-        projectFullPanel.add(new JLabel("Kategori: " + project.getCategories()));
+        projectFullPanel.add(new JLabel("Kategorier: "));
+        StringBuilder categoriesBuilder = new StringBuilder();
+        for (String category : project.getCategories()) {
+            categoriesBuilder.append(category);
+            categoriesBuilder.append(", ");
+        }
+        JLabel categoriesLabel = new JLabel("<html>" + categoriesBuilder.toString().replaceAll(", ", "<br>") + "</html>");
+        projectFullPanel.add(categoriesLabel);
+        
         if (project.getFund() != null) {
             projectFullPanel.add(new JLabel("Bevillieget fund: " + project.getFund().getTitle()));
         }
@@ -1828,17 +1870,25 @@ proposalProjectListPanel.repaint();
         };
 
         // Add listener to update the list when checkbox state changes
-        onlyOneNeededCheckBox.addActionListener(e -> updateMatchingFunds.run());
+        onlyOneNeededCheckBox.addActionListener(e -> {
+            updateMatchingFunds.run();
+        });
 
         // Initial update for matching funds
         updateMatchingFunds.run();
 
         if (userType == "user"){
 
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+        buttonPanel.setAlignmentX(LEFT_ALIGNMENT);
         // Archive button to archive the project
+        // Dimension buttonSize = new Dimension(150, 150);
         JButton archiveButton = new JButton("Arkivér");
-        Dimension buttonSize = new Dimension(150, 50);
-        archiveButton.setPreferredSize(buttonSize);
+        archiveButton.setPreferredSize(new Dimension(130, 20));
+        archiveButton.setMaximumSize(new Dimension(130,28));
+        archiveButton.setMinimumSize(new Dimension(130,28));
+        
 
         archiveButton.addActionListener(e -> {
             int confirmation = JOptionPane.showConfirmDialog(null, "Er du sikker på at du vil arkivere dette projekt?",
@@ -1856,20 +1906,26 @@ proposalProjectListPanel.repaint();
             }
         });
 
-        projectFullPanel.add(archiveButton);
+        //projectFullPanel.add(archiveButton);
 
         JButton editButton = new JButton("Rediger Projekt");
-        editButton.addActionListener(e -> {
-            editProjectButton.openEditProjectDialog(project);
-            projectFullPanel.removeAll();
-            projectFullPanel.revalidate();
-            projectFullPanel.repaint();
-            showProjectDetails(project);
-            updateProjectList();
-            writeAll();
+        editButton.setPreferredSize(new Dimension(130, 20));
+        editButton.setMaximumSize(new Dimension(130,28));
+        editButton.setMinimumSize(new Dimension(130,28));
+            editButton.addActionListener(e -> {
+        editProjectButton.openEditProjectDialog(project);
+        projectFullPanel.removeAll();
+        projectFullPanel.revalidate();
+        projectFullPanel.repaint();
+        showProjectDetails(project);
+        updateProjectList();
+        writeAll();
         });
 
-        JButton exportPDF = new JButton("Export to PDF");
+        JButton exportPDF = new JButton("Expoter til PDF");
+        exportPDF.setPreferredSize(new Dimension(130, 20));
+        exportPDF.setMaximumSize(new Dimension(130,28));
+        exportPDF.setMinimumSize(new Dimension(130,28));
         compareProjectCatsWithFundCats comparer = new compareProjectCatsWithFundCats();
         boolean onlyOneNeeded = onlyOneNeededCheckBox.isSelected();
         exportPDF.addActionListener(e -> {
@@ -1878,13 +1934,20 @@ proposalProjectListPanel.repaint();
             JOptionPane.showMessageDialog(null, "PDF er blevet eksporteret til din downloads mappe");
 
         });
+        projectFullPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         projectFullPanel.add(exportPDF);
+        projectFullPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         projectFullPanel.add(archiveButton);
-
+        projectFullPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         projectFullPanel.add(editButton);
+        projectFullPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        //projectFullPanel.add(buttonPanel);
+        // projectFullPanel.add(exportPDF);
+        // projectFullPanel.add(archiveButton);
+        // projectFullPanel.add(editButton);
         }
         projectFullPanel.revalidate();
-            projectFullPanel.repaint();
+        projectFullPanel.repaint();
     }
 
     public void showFundDetails(fundClass fund) {
@@ -1927,8 +1990,14 @@ proposalProjectListPanel.repaint();
 
     
         // Kategori
-        fundFullPanel.add(new JLabel("Kategori:"));
-        insertWrappedText(String.join(", ", fund.getCategories()), fundFullPanel);
+        fundFullPanel.add(new JLabel("Kategorier:"));
+        StringBuilder categoriesBuilder = new StringBuilder();
+        for (String category : fund.getCategories()) {
+            categoriesBuilder.append(category);
+            categoriesBuilder.append(", ");
+        }
+        JLabel categoriesLabel = new JLabel("<html>" + categoriesBuilder.toString().replaceAll(", ", "<br>") + "</html>");
+        fundFullPanel.add(categoriesLabel);
         fundFullPanel.add(new JLabel("\n"));
     
         // Tidligere samarbejde
@@ -1980,6 +2049,10 @@ proposalProjectListPanel.repaint();
         if (userType == "user"){
         // Arkivér-knap
         JButton archiveButton = new JButton("Arkivér");
+        archiveButton.setPreferredSize(new Dimension(180, 20));
+        archiveButton.setMaximumSize(new Dimension(180,28));
+        archiveButton.setMinimumSize(new Dimension(180,28));
+
      //   archiveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         archiveButton.addActionListener(e -> {
             int confirmation = JOptionPane.showConfirmDialog(null, "Er du sikker på at du vil arkivere denne fond?",
@@ -1994,9 +2067,12 @@ proposalProjectListPanel.repaint();
             }
         });
      //   fundFullPanel.add(Box.createVerticalStrut(10)); // Add some spacing
-        fundFullPanel.add(archiveButton);
 
         JButton changeFundButton = new JButton("Redigér denne fond");
+        changeFundButton.setPreferredSize(new Dimension(180, 20));
+        changeFundButton.setMaximumSize(new Dimension(180,28));
+        changeFundButton.setMinimumSize(new Dimension(180,28));
+
         changeFundButton.addActionListener(e -> {
             editFundButton.editFundDialog(fund);
             updateFundList();
@@ -2006,7 +2082,11 @@ proposalProjectListPanel.repaint();
             fundFullPanel.repaint();
             showFundDetails(fund);
         });
+        fundFullPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        fundFullPanel.add(archiveButton);
+        fundFullPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         fundFullPanel.add(changeFundButton);
+        fundFullPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         }
         // Refresh panel
         fundFullPanel.revalidate();

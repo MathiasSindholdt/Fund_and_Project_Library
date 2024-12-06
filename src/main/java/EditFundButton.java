@@ -66,6 +66,8 @@ public void editFundDialog() {
     JLabel descriptionLabel = new JLabel("Beskrivelse:*");
     JTextArea descriptionArea = new JTextArea(5, 20);
     JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
+    descriptionArea.setLineWrap(true);
+    descriptionArea.setWrapStyleWord(true);
 
     // Fond Beløb Fra og Til
     JLabel amountFromLabel = new JLabel("Beløb fra:*");
@@ -657,7 +659,9 @@ public void editFundDialog(fundClass loadedFund) {
     JLabel descriptionLabel = new JLabel("Beskrivelse:*");
     JTextArea descriptionArea = new JTextArea(5, 20);
     JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
-
+    descriptionArea.setLineWrap(true);
+    descriptionArea.setWrapStyleWord(true);
+    
     // Fond Beløb Fra og Til
     JLabel amountFromLabel = new JLabel("Beløb fra:*");
     JTextField amountFrom = new JTextField();

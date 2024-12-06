@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public class CsvStringReader {
     public static ArrayList<String> readStringCsv(String filePath) {
+        String tempFormattedString;
         ArrayList<String> categories = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8))) {
             String line;
@@ -15,6 +16,7 @@ public class CsvStringReader {
                 // Split the line by commas
                 String[] values = line.split(",");
                 for (String value : values) {
+                    value = value.replace("|", ","); // Replace pipes with commas
                     categories.add(value.trim());
                 }
             }

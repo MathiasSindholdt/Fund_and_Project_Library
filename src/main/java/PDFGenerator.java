@@ -27,19 +27,12 @@ public class PDFGenerator {
 
         TextStreamObject textStreamObject = new TextStreamObject("F1", 20, 30, pageTop, project.getTitle());
         textOffset += 20;
-
-        textStreamObject.add("F1", 11, 30, pageTop - textOffset, "Project Ejer: " + project.getProjectOwner());
-        textOffset += 14;
-        if (project.getCategories().toString().length() < 20) {
-            textStreamObject.add("F1", 11, 30, pageTop - textOffset,
-                    "Kategorier: " + project.getCategories().toString().replace("[", " ").replace("]", " "));
-        } else {
-            textStreamObject.add("F1", 11, 30, pageTop - textOffset,
-                    "Kategorier: "
-                            + project.getCategories().toString().replace("[", " ").replace("]", " ").substring(0, 17)
-                            + "...");
+        if (project.getSensitive()) {
+            textStreamObject.add("F1", 12, 30, pageTop - textOffset, "Dette projekt indeholder følsom information");
+            textOffset += 16;
         }
 
+        textStreamObject.add("F1", 11, 30, pageTop - textOffset, "Project Ejer: " + project.getProjectOwner());
         textOffset += 14;
         textStreamObject.add("F1", 11, 30 + 400, pageTop - textOffset + 28,
                 "Dato: " + project.getDateCreated().toString().split("T")[0]);
@@ -48,37 +41,58 @@ public class PDFGenerator {
         budget = formatNumber(project.getProjectBudget() + "");
 
         textStreamObject.add("F1", 11, 30 + 400, pageTop - textOffset + 14, "Budget: " + budget);
-        textOffset += 20;
+        textStreamObject.add("F1", 11, 30, pageTop - textOffset, "Kategorier: ");
+        List<String> categories = project.getCategories();
+        textOffset += 14;
+        for (int i = 0; i < categories.size(); i += 2) {
+            String line = categories.get(i);
+            if (i + 1 < categories.size()) {
+            line += ", " + categories.get(i + 1);
+            }
+            textStreamObject.add("F1", 11, 30, pageTop - textOffset, line);
+            textOffset += 14;
+        }
+
+        textOffset += 14;
+        // textStreamObject.add("F1", 11, 30 + 400, pageTop - textOffset + 28,
+        //         "Dato: " + project.getDateCreated().toString().split("T")[0]);
+        // String budget = new String();
+
+        // budget = formatNumber(project.getProjectBudget() + "");
+
+        // textStreamObject.add("F1", 11, 30 + 400, pageTop - textOffset + 14, "Budget: " + budget);
+        // textOffset += 20;
 
         textStreamObject.add("F1", 16, 30, pageTop - textOffset, "Beskrivelse");
         textOffset += 16;
         String text = project.getDescription();
         List<String> strings = new ArrayList<String>();
         int index = 0;
+        // Split the project description text into chunks of 50 characters
         while (index < text.length()) {
             strings.add(text.substring(index, Math.min(index + 100, text.length())));
-            index += Math.min(index + 100, text.length());
+            index += 100;
         }
 
         for (int i = 0; i < strings.size(); i++) {
             if (i + 1 < strings.size()) {
-                if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
-                        && Character.isLetter(strings.get(i + 1).charAt(0))) {
-                    textStreamObject.add("F1", 11, 30, pageTop - textOffset, strings.get(i).trim() + "-");
-                    textOffset += 14;
-                } else if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
-                        && !Character.isLetter(strings.get(i + 1).charAt(0))) {
-                    textStreamObject.add("F1", 11, 30, pageTop - textOffset,
-                            strings.get(i).trim() + strings.get(i + 1).charAt(0));
-                    strings.set(i + 1, strings.get(i + 1).substring(1));
-                    textOffset += 14;
-                } else {
-                    textStreamObject.add("F1", 11, 30, pageTop - textOffset, strings.get(i).trim());
-                    textOffset += 14;
-                }
+            if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
+                && Character.isLetter(strings.get(i + 1).charAt(0))) {
+                textStreamObject.add("F1", 11, 30, pageTop - textOffset, strings.get(i).trim() + "-");
+                textOffset += 14;
+            } else if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
+                && !Character.isLetter(strings.get(i + 1).charAt(0))) {
+                textStreamObject.add("F1", 11, 30, pageTop - textOffset,
+                    strings.get(i).trim() + strings.get(i + 1).charAt(0));
+                strings.set(i + 1, strings.get(i + 1).substring(1));
+                textOffset += 14;
             } else {
                 textStreamObject.add("F1", 11, 30, pageTop - textOffset, strings.get(i).trim());
                 textOffset += 14;
+            }
+            } else {
+            textStreamObject.add("F1", 11, 30, pageTop - textOffset, strings.get(i).trim());
+            textOffset += 14;
             }
         }
         textOffset += 10;
@@ -117,6 +131,44 @@ public class PDFGenerator {
         }
         textOffset += 10;
 
+        if(project.getFund() != null){
+            textStreamObject.add("F1", 16, 30, pageTop - textOffset, "Bevilling:");
+            textOffset += 16;
+        
+
+        strings.clear();
+        text = project.getFund().getTitle();
+        index = 0;
+        while (index < text.length()) {
+            strings.add(text.substring(index, Math.min(index + 80, text.length())));
+            index += 80;
+        }
+
+        for (int i = 0; i < strings.size(); i++) {
+            if (i + 1 < strings.size()) {
+                if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
+                        && Character.isLetter(strings.get(i + 1).charAt(0))) {
+                    textStreamObject.add("F1", 11, 30, pageTop - textOffset, strings.get(i).trim() + "-");
+                    textOffset += 14;
+                } else if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
+                        && !Character.isLetter(strings.get(i + 1).charAt(0))) {
+                    textStreamObject.add("F1", 11, 30, pageTop - textOffset,
+                            strings.get(i).trim() + strings.get(i + 1).charAt(0));
+                    strings.set(i + 1, strings.get(i + 1).substring(1));
+                    textOffset += 14;
+                } else {
+                    textStreamObject.add("F1", 11, 30, pageTop - textOffset, strings.get(i).trim());
+                    textOffset += 14;
+                }
+            } else {
+                textStreamObject.add("F1", 11, 30, pageTop - textOffset, strings.get(i).trim());
+                textOffset += 14;
+            }
+        }
+        textOffset += 10;
+    }
+
+
         PageObject page1 = new PageObject();
         page1.addAttribute("Resources", new FontObject("F1", "Times-Roman"));
         page1.addContent(textStreamObject);
@@ -136,6 +188,7 @@ public class PDFGenerator {
                 textOffset += 18;
             }
         }
+        
 
         PageObject page2 = new PageObject();
         page2.addAttribute("Resources", new FontObject("F1", "Times-Roman"));

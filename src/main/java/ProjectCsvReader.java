@@ -38,14 +38,27 @@ public class ProjectCsvReader {
                 LocalDateTime timeSpanTo = LocalDateTime.parse(values[8].replace("\"", ""), formatter);
                 String activities = values[9].replace("\"", "");
                 LocalDateTime dateCreated;
+                Boolean isSensitive = Boolean.parseBoolean(values[11].replace("\"", ""));
                 String assignedFund = null;
+
+
+                // replacement of | with , in the csv file after reading
+                description = description.replace("|", ",");
+                purpose = purpose.replace("|", ",");
+                owner = owner.replace("|", ",");
+                targetAudience = targetAudience.replace("|", ",");
+                activities = activities.replace("|", ",");
+                
+
+
+
                 try{
                     dateCreated = LocalDateTime.parse(values[10].replace("\"", ""), formatter);
                 } catch (Exception e) {
                     dateCreated = LocalDateTime.now().minusDays(lineCounter);
                 }
-                if (!(values.length < 12)){
-                    assignedFund = values[11];
+                if (!(values.length < 13)){
+                    assignedFund = values[12];
                 }
                 
                 project proj = new project();
@@ -59,6 +72,7 @@ public class ProjectCsvReader {
                 proj.setTimeSpan(timeSpanFrom, timeSpanTo);
                 proj.setProjectActivities(activities);
                 proj.setDateCreated(dateCreated);
+                proj.setSensitive(isSensitive);
                 proj.assignFundFromName(assignedFund);
 
                 projects.add(proj);

@@ -12,6 +12,7 @@ import java.util.List;
 
 public class ProjectCsvWriter {
     public static void writeProjectCsv (String filepath, List<project> projects){
+        String tempFormattedString;
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filepath), "UTF-8"))) {
             writer.write('\ufeff'); // Write BOM to support UTF-8 encoding
 
@@ -23,24 +24,31 @@ public class ProjectCsvWriter {
             writer.newLine();
             
             for (project myProject : projects) {
-                String[] rowData = new String[12];
+
+                String[] rowData = new String[13];
                 // Specific project
                 rowData[0] = myProject.getTitle();
                 List<String> categories = myProject.getCategories();
                 rowData[1] = categories != null ? "\"" + String.join(", ", categories) + "\"" : "N/A";
-                rowData[2] = myProject.getDescription();
-                rowData[3] = myProject.getProjectPurpose();
-                rowData[4] = myProject.getProjectOwner();
-                rowData[5] = myProject.getProjectTargetAudience();
+                tempFormattedString = myProject.getDescription().replace(",", "|");
+                rowData[2] = tempFormattedString;//myProject.getDescription();
+                tempFormattedString = myProject.getProjectPurpose().replace(",", "|");
+                rowData[3] = tempFormattedString;//myProject.getProjectPurpose();
+                tempFormattedString = myProject.getProjectOwner().replace(",", "|");
+                rowData[4] = tempFormattedString;//myProject.getProjectOwner();
+                tempFormattedString = myProject.getProjectTargetAudience().replace(",", "|");
+                rowData[5] = tempFormattedString; //myProject.getProjectTargetAudience();
                 rowData[6] = String.valueOf(myProject.getProjectBudget());
                 rowData[7] = formatDateTime(myProject.getProjectTimeSpanFrom());
                 rowData[8] = formatDateTime(myProject.getProjectTimeSpanTo());
-                rowData[9] = myProject.getProjectActivities();
+                tempFormattedString = myProject.getProjectActivities().replace(",", "|");
+                rowData[9] = tempFormattedString;//myProject.getProjectActivities();
                 rowData[10] = formatDateTime(myProject.getDateCreated());
+                rowData[11] = String.valueOf(myProject.getSensitive());
                 if (myProject.getFund() != null){
-                    rowData[11] = myProject.getFund().getTitle();
+                    rowData[12] = myProject.getFund().getTitle();
                 } else {
-                    rowData[11] = "Ingen Beviling";
+                    rowData[12] = "Ingen Beviling";
                 }
                 
                 
