@@ -1,3 +1,5 @@
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.time.LocalDateTime;
@@ -6,23 +8,13 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
 
-public class PDFGen_test extends testTemplate {
+import org.junit.jupiter.api.Test;
+
+public class PDFGen_Test extends testTemplate {
     public String ErrDump = new String();
 
-    public boolean test() {
-        this.TestName = "PDFgen Test";
-        if (!test_PDFGen()) {
-            this.ErrMessage += " Error in PDFGen test\n";
-            this.ErrMessage += ErrDump;
-
-            return false;
-        }
-
-        return true;
-
-    }
-
-    public boolean test_PDFGen() {
+    @Test
+    public void test_PDFGen() {
         boolean passed = true;
 
         String name = "Example project";
@@ -84,10 +76,11 @@ public class PDFGen_test extends testTemplate {
                 newStr = newPDF.nextLine();
                 expectedStr = expectedPDF.nextLine();
 
-                if (!Objects.equals(newStr, expectedStr)) {
+                assertEquals(newStr, expectedStr);
+                /*if (!Objects.equals(newStr, expectedStr)) {
                     ErrDump += "Error on line " + lineNumber + ": " + newStr + " != " + expectedStr;
                     passed = false;
-                }
+                }*/
 
             }
             newPDF.close();
@@ -95,7 +88,6 @@ public class PDFGen_test extends testTemplate {
         } catch (FileNotFoundException e) {
             ErrDump += "Unable to find file:\n" + e.toString();
         }
-        return passed;
 
     }
 
