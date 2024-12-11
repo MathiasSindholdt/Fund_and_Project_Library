@@ -25,6 +25,7 @@ public class Test_project extends testTemplate {
         String activites = "Example activites";
         ArrayList<fundClass> fundlist = new ArrayList<>();
         fundClass fc = new fundClass();
+        boolean isSensitive = false;
         fc.setTitle("Example fund");
         fc.setDateCreated(LocalDateTime.now());
         fc.setDeadlines(LocalDateTime.now().plusDays(3));
@@ -34,7 +35,7 @@ public class Test_project extends testTemplate {
         Boolean onlyone = true;
 
         project pro = new project(name, categories, description, purpose, owner, audience, budget, from, to, activites,
-                fundlist, onlyone);
+                fundlist, onlyone, isSensitive);
         assertTrue(name.equals(pro.getTitle()));
         assertTrue(description.equals(pro.getDescription()));
         for (int i = 0; i < categories.size(); i++) {

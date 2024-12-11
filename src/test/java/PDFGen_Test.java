@@ -29,6 +29,7 @@ public class PDFGen_Test extends testTemplate {
         LocalDateTime to = LocalDateTime.now().plusDays(2);
         String activites = "Example activites";
         ArrayList<fundClass> fundlist = new ArrayList<>();
+        boolean isSensitive = false;
 
         for (int i = 1; i <= 5; i++) {
             String tmp = "Fund" + i;
@@ -61,7 +62,7 @@ public class PDFGen_Test extends testTemplate {
         project project = new project(name, categories, description +
                 ": Lorem ipsum dolor sit amet, consectetuer adipiscing elit.",
                 purpose, owner, audience, budget, from, to, activites,
-                fundlist, onlyone);
+                fundlist, onlyone, isSensitive);
 
         PDFGenerator PDFGen = new PDFGenerator();
         PDFGen.GeneratePDF(project, fundlist);

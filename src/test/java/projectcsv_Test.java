@@ -28,6 +28,7 @@ public class projectcsv_Test extends testTemplate {
         String activites = "Example activites";
         ArrayList<fundClass> fundlist = new ArrayList<>();
         fundClass fc = new fundClass();
+        boolean isSensitive = false;
         fc.setTitle("Example fund");
         fc.setDateCreated(LocalDateTime.now());
         fc.setDeadlines(LocalDateTime.now().plusDays(3));
@@ -37,7 +38,7 @@ public class projectcsv_Test extends testTemplate {
         Boolean onlyone = true;
 
         project pro = new project(name, categories, description, purpose, owner, audience, budget, from, to, activites,
-                fundlist, onlyone);
+                fundlist, onlyone, isSensitive);
         ArrayList<project> projects = new ArrayList<>();
         projects.add(pro);
         ProjectCsvWriter.writeProjectCsv("testcsv.csv", projects);

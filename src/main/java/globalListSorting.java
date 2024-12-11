@@ -309,7 +309,7 @@ public class globalListSorting {
             fullList.addAll(sortedList);
             fundQSort.fundQuickSort(sortedList);
             for (fundClass fC : fullList){
-                if(!sortedList.contains(fC)){
+                if(!(sortedList.contains(fC))){
                     sortedList.add(fC);
                 }
             }
@@ -323,7 +323,7 @@ public class globalListSorting {
             fullList.addAll(sortedList);
             fundQSort.fundQuickSort(sortedList);
             for (fundClass fC : fullList){
-                if(!sortedList.contains(fC)){
+                if(!(sortedList.contains(fC))){
                     sortedList.add(fC);
                 }
             }
