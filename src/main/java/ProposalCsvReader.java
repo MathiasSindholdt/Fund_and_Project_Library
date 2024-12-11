@@ -41,11 +41,11 @@ public class ProposalCsvReader {
                 LocalDateTime dateCreated;
 
                 // replacement of | with , in the csv file after reading
-                description = description.replace("|", ",");
-                purpose = purpose.replace("|", ",");
-                owner = owner.replace("|", ",");
-                targetAudience = targetAudience.replace("|", ",");
-                activities = activities.replace("|", ",");
+                description = description.replace("|", ",").replace("™", "\n");
+                purpose = purpose.replace("|", ",").replace("™", "\n");
+                owner = owner.replace("|", ",").replace("™", "\n");
+                targetAudience = targetAudience.replace("|", ",").replace("™", "\n");
+                activities = activities.replace("|", ",").replace("™", "\n");
                 
 
                 try{

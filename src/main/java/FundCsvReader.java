@@ -84,7 +84,9 @@ public class FundCsvReader {
                 LocalDateTime dateCreated;
 
                 // replace | with , in the csv file after reading
-                description = description.replace("|", ",");
+                description = description.replace("|", ",").replace("™", "\n");
+                website = website.replace("|", ",").replace("™", "\n");
+                fundName = fundName.replace("|", ",").replace("™", "\n");
                 
 
                 try{

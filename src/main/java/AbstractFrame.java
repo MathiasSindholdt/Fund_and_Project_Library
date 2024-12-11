@@ -825,6 +825,15 @@ public abstract class AbstractFrame extends JFrame implements ActionListener{
                 return;
             }
 
+            if (selectedCatagories.isEmpty()) {
+                JPanel noCategories = UserFrameErrorHandling.displayNoCategory("projektForslag");
+                if (noCategories != null) {
+                    dialog.add(noCategories);
+                }else{
+                    return;
+                }
+            }
+
            
             // Create the proposal project instance with categories
             proposalProject proposal = new proposalProject(
@@ -1512,11 +1521,22 @@ proposalProjectListPanel.repaint();
 
         proposalProjectFullPanel.add(new JLabel("Idé: " + proposal.getProjectPurpose()));
         proposalProjectFullPanel.add(new JLabel("\n"));
-
-        proposalProjectFullPanel.add(new JLabel("Beskrivelse: "));
-
-        insertWrappedText(proposal.getDescription(), proposalProjectFullPanel);
-        proposalProjectFullPanel.add(new JLabel("\n"));
+        if(proposal.getDescription().length() > 560){
+            JButton showFullDescButton = new JButton("Vis fuld beskrivelse");
+            proposalProjectFullPanel.add(new JLabel("Beskrivelse: "));
+            insertWrappedText(proposal.getDescription(), proposalProjectFullPanel);
+            proposalProjectFullPanel.add(showFullDescButton);
+            proposalProjectFullPanel.add(new JLabel("\n"));    
+            
+            showFullDescButton.addActionListener(e->{
+                showFullDesc(proposal);
+            });
+        }else{
+            proposalProjectFullPanel.add(new JLabel("Beskrivelse: "));
+            insertWrappedText(proposal.getDescription(), proposalProjectFullPanel);
+            proposalProjectFullPanel.add(new JLabel("\n"));
+        }
+        
 
         proposalProjectFullPanel.add(new JLabel("Målgruppe: " + proposal.getProjectTargetAudience()));
         proposalProjectFullPanel.add(new JLabel("\n"));
@@ -1744,42 +1764,102 @@ proposalProjectListPanel.repaint();
         writeAll();
     }
 
-
-
     public void insertWrappedText(String text, JPanel panel) {
-        String newText = new String();
-        List<String> strings = new ArrayList<String>();
+        StringBuilder newText = new StringBuilder();
+        List<String> strings = new ArrayList<>();
         int index = 0;
-        while (index < text.length()) {
-            strings.add(text.substring(index,
-                    Math.min(index + 70, text.length())));
-            index += Math.min(index + 70, text.length());
+        int maxLength = 560; // Maximum length to display
+        int currentLength = 0;
+
+        while (index < text.length() && currentLength < maxLength) {
+            int endIndex = Math.min(index + 70, text.length());
+            if (endIndex < text.length() && !Character.isWhitespace(text.charAt(endIndex))) {
+                while (endIndex > index && !Character.isWhitespace(text.charAt(endIndex))) {
+                    endIndex--;
+                }
+            }
+            String substring = text.substring(index, endIndex).trim();
+            if (currentLength + substring.length() > maxLength) {
+                substring = substring.substring(0, maxLength - currentLength).trim();
+            }
+            strings.add(substring);
+            currentLength += substring.length();
+            index = endIndex;
         }
 
         for (int i = 0; i < strings.size(); i++) {
             if (i + 1 < strings.size()) {
                 if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
                         && Character.isLetter(strings.get(i + 1).charAt(0))) {
-                    newText += strings.get(i).trim() + "-";
-                    newText += "\n";
+                    newText.append(strings.get(i).trim()).append("-");
+                    newText.append("\n");
                 } else if (!Character.isWhitespace(strings.get(i + 1).charAt(0))
                         && !Character.isLetter(strings.get(i + 1).charAt(0))) {
-                    newText += strings.get(i).trim() + strings.get(i + 1).charAt(0);
+                    newText.append(strings.get(i).trim()).append(strings.get(i + 1).charAt(0));
                     strings.set(i + 1, strings.get(i + 1).substring(1));
-                    newText += "\n";
+                    newText.append("\n");
                 } else {
-                    newText += strings.get(i).trim();
-                    newText += "\n";
+                    newText.append(strings.get(i).trim());
+                    newText.append("\n");
                 }
             } else {
-                newText += strings.get(i).trim();
-                newText += "\n";
+                newText.append(strings.get(i).trim());
+                newText.append("\n");
             }
         }
-        for (String s : newText.split("\n")) {
+
+        for (String s : newText.toString().split("\n")) {
             panel.add(new JLabel(s));
         }
     }
+
+    public void showFullDesc(Object item) {
+        JDialog fullDescDialog = new JDialog(frame, "Fuld beskrivelse", true);
+        JPanel descJPanel = new JPanel();
+        fullDescDialog.setLayout(new GridLayout(0, 1));
+        descJPanel.setLayout(new BoxLayout(descJPanel, BoxLayout.Y_AXIS));
+        descJPanel.add(new JLabel("Beskrivelse: "));
+
+        JLabel descLabel = new JLabel();
+        if (item instanceof project) {
+            project proj = (project) item;
+            fullDescDialog.setTitle(proj.getTitle() + ": Fuld beskrivelse");
+            descLabel.setText("<html>" + proj.getDescription().replaceAll("\n", "<br>") + "</html>");
+        } else if (item instanceof proposalProject) {
+            proposalProject proposal = (proposalProject) item;
+            fullDescDialog.setTitle(proposal.getTitle() + ": Fuld beskrivelse");
+            descLabel.setText("<html>" + proposal.getDescription().replaceAll("\n", "<br>") + "</html>");
+        } else if (item instanceof fundClass) {
+            fundClass fund = (fundClass) item;
+            fullDescDialog.setTitle(fund.getTitle() + ": Fuld beskrivelse");
+            descLabel.setText("<html>" + fund.getDescription().replaceAll("\n", "<br>") + "</html>");
+        }
+
+        descJPanel.add(descLabel);
+        fullDescDialog.add(descJPanel);
+        fullDescDialog.pack();
+        fullDescDialog.setSize(new Dimension(960, 384));
+        fullDescDialog.setLocationRelativeTo(frame);
+        fullDescDialog.setVisible(true);
+        fullDescDialog.revalidate();
+        fullDescDialog.repaint();
+    }
+    //     JDialog fullDescDialog = new JDialog(frame, project.getTitle() +": Fuld beskrivelse", true);
+    //     JPanel descJPanel = new JPanel();
+    //     fullDescDialog.setLayout(new GridLayout(0, 1));
+    //     descJPanel.setLayout(new BoxLayout(descJPanel, BoxLayout.Y_AXIS));
+    //     descJPanel.add(new JLabel("Beskrivelse: " ));
+    //     JLabel descLabel = new JLabel();
+    //     descLabel.setText("<html>" + project.getDescription().replaceAll("\n", "<br>") + "</html>");
+    //     descJPanel.add(descLabel);
+    //     fullDescDialog.add(descJPanel);
+    //     fullDescDialog.pack();
+    //     fullDescDialog.setSize(new Dimension(960, 384));
+    //     fullDescDialog.setLocationRelativeTo(projectFullPanel);
+    //     fullDescDialog.setVisible(true);
+    //     fullDescDialog.revalidate();
+    //     fullDescDialog.repaint();
+    // }
 
     public void showProjectDetails(project project) {
         projectFullPanel.removeAll();
@@ -1794,9 +1874,22 @@ proposalProjectListPanel.repaint();
         projectFullPanel.add(new JLabel("Idé: " + project.getProjectPurpose()));
         projectFullPanel.add(new JLabel("\n"));
 
-        projectFullPanel.add(new JLabel("Beskrivelse: "));
-        insertWrappedText(project.getDescription(), projectFullPanel);
-        projectFullPanel.add(new JLabel("\n"));
+        if(project.getDescription().length() >= 560){
+
+            JButton showFullDescButton = new JButton("Vis fuld beskrivelse");
+            projectFullPanel.add(new JLabel("Beskrivelse: "));
+            insertWrappedText(project.getDescription(), projectFullPanel);
+            projectFullPanel.add(showFullDescButton);
+            projectFullPanel.add(new JLabel("\n"));
+
+            showFullDescButton.addActionListener(e -> {
+                showFullDesc(project);
+            });
+        }else{
+            projectFullPanel.add(new JLabel("Beskrivelse: "));
+            insertWrappedText(project.getDescription(), projectFullPanel);
+            projectFullPanel.add(new JLabel("\n"));
+        }
 
         projectFullPanel.add(new JLabel("Målgruppe: " + project.getProjectTargetAudience()));
         projectFullPanel.add(new JLabel("\n"));
@@ -1963,9 +2056,25 @@ proposalProjectListPanel.repaint();
 
     
         // Beskrivelse
-        fundFullPanel.add(new JLabel("Beskrivelse:" + "\n"));
-        insertWrappedText(fund.getDescription(), fundFullPanel);
-        fundFullPanel.add(new JLabel("\n"));
+        if(fund.getDescription().length() > 560){
+            JButton showFullDescButton = new JButton("Vis fuld beskrivelse");
+            fundFullPanel.add(new JLabel("Beskrivelse: "));
+            System.out.println("¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥" + fund.getDescription());
+            insertWrappedText(fund.getDescription(), fundFullPanel);
+            fundFullPanel.add(showFullDescButton);
+            fundFullPanel.add(new JLabel("\n"));
+    
+            showFullDescButton.addActionListener(e -> {
+                showFullDesc(fund);
+            });
+        }else{
+            System.out.println("¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥¥" + fund.getDescription());
+
+            fundFullPanel.add(new JLabel("Beskrivelse:"));
+            insertWrappedText(fund.getDescription(), fundFullPanel);
+            fundFullPanel.add(new JLabel("\n"));
+        }
+       
 
     
         // Budget
@@ -1985,7 +2094,7 @@ proposalProjectListPanel.repaint();
                 formattedDeadlines.add(deadline.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
             }
         }
-        insertWrappedText(String.join(", ", formattedDeadlines), fundFullPanel);
+        // insertWrappedText(String.join(", ", formattedDeadlines), fundFullPanel);
         fundFullPanel.add(new JLabel("\n"));
 
     

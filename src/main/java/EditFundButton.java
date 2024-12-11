@@ -485,6 +485,15 @@ public void editFundDialog() {
             }
             selectedFund.getCategories().clear();
             selectedFund.getCategories().addAll(selectedCategories);
+            if(selectedCategories.isEmpty()){
+                JPanel noCategories = UserFrameErrorHandling.displayEditNoCategory("Fond");
+                if (noCategories != null) {
+                    dialog.add(noCategories);
+                    selectedFund.getCategories().clear();
+                }else{
+                    return;
+                }
+            }
 
             if(websiteCheckBox.isSelected()){
                 if(!validationUtils.isValidUrl(websiteField.getText())){
@@ -546,6 +555,7 @@ public void editFundDialog() {
                 System.out.println("---------------------");
                 //UserFrame.updateFundList();
                 //Remove the fund currently being edited from the fundlist
+                
                 JOptionPane.showMessageDialog(dialog, "Fonden er blevet opdateret");
                 FundCsvWriter.writeCsv("data/funds.csv", fundList);
                 dialog.dispose();
@@ -553,7 +563,7 @@ public void editFundDialog() {
         }
     }
     
-        });
+ });
 
 
 
@@ -1031,6 +1041,15 @@ public void editFundDialog(fundClass loadedFund) {
         }
         loadedFund.getCategories().clear();
         loadedFund.getCategories().addAll(selectedCategories);
+        if(selectedCategories.isEmpty()){
+            JPanel noCategories = UserFrameErrorHandling.displayEditNoCategory("Fond");
+            if (noCategories != null) {
+                dialog.add(noCategories);
+                loadedFund.getCategories().clear();
+            }else{
+                return;
+            }
+        }
 
         if(websiteCheckBox.isSelected()){
             if(!validationUtils.isValidUrl(websiteField.getText())){

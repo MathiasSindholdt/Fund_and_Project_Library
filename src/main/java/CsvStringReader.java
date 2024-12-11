@@ -16,7 +16,7 @@ public class CsvStringReader {
                 // Split the line by commas
                 String[] values = line.split(",");
                 for (String value : values) {
-                    value = value.replace("|", ","); // Replace pipes with commas
+                    value = value.replace("|", ",").replace("﻿", "").replace("™", "\n   "); // Replace pipes with commas
                     categories.add(value.trim());
                 }
             }

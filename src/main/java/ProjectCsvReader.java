@@ -42,8 +42,8 @@ public class ProjectCsvReader {
                 String assignedFund = null;
 
 
-                // replacement of | with , in the csv file after reading
-                description = description.replace("|", ",");
+                // replacement of placeholders in the csv before reading
+                description = description.replace("|", ",").replace("™", "\n");
                 purpose = purpose.replace("|", ",");
                 owner = owner.replace("|", ",");
                 targetAudience = targetAudience.replace("|", ",");
