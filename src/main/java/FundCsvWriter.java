@@ -29,9 +29,11 @@ public class FundCsvWriter {
             //     }
                 // Extract data from the fundClass object
                 String[] fundData = new String[10];
-                fundData[0] = escapeCsvField(fund.getTitle());  
-                fundData[1] = escapeCsvField(fund.getFundWebsite());  
-                tempFormattedString = fund.getDescription().replace(",", "|");
+                tempFormattedString = fund.getTitle().replace(",", "|").replace("\n", "™");
+                fundData[0] = tempFormattedString;  //fund.getTitle();
+                tempFormattedString = fund.getFundWebsite().replace(",", "|").replace("\n", "™");
+                fundData[1] = tempFormattedString;  //fund.getFundWebsite();
+                tempFormattedString = fund.getDescription().replace(",", "|").replace("\n", "™");
                 fundData[2] = tempFormattedString; //fund.getDescription();
                 fundData[3] = formatApplicationDeadline(fund.getDeadlines());
                 fundData[4] = String.valueOf(fund.getBudgetMin()); 

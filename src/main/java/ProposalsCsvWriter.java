@@ -26,18 +26,18 @@ public class ProposalsCsvWriter {
 
                 List<String> categories = proposal.getCategories();
                 proposalData[1] = categories != null ? "\"" + String.join(", ", categories) + "\"" : "N/A";
-                tempFormattedString = proposal.getDescription().replace(",", "|");
+                tempFormattedString = proposal.getDescription().replace(",", "|").replace("\n", "™");
                 proposalData[2] = tempFormattedString; //proposal.getDescription();
-                tempFormattedString = proposal.getProjectPurpose().replace(",", "|");
+                tempFormattedString = proposal.getProjectPurpose().replace(",", "|").replace("\n", "™");
                 proposalData[3] = tempFormattedString; //proposal.getProjectPurpose();
-                tempFormattedString = proposal.getProjectOwner().replace(",", "|");
+                tempFormattedString = proposal.getProjectOwner().replace(",", "|").replace("\n", "™");
                 proposalData[4] = tempFormattedString; //proposal.getProjectOwner();
-                tempFormattedString = proposal.getProjectTargetAudience().replace(",", "|");
+                tempFormattedString = proposal.getProjectTargetAudience().replace(",", "|").replace("\n", "™");
                 proposalData[5] = tempFormattedString; //proposal.getProjectTargetAudience();
                 proposalData[6] = String.valueOf(proposal.getProjectBudget());
                 proposalData[7] = formatDateTime(proposal.getProjectTimeSpanFrom());
                 proposalData[8] = formatDateTime(proposal.getProjectTimeSpanTo());
-                tempFormattedString = proposal.getProjectActivities().replace(",", "|");
+                tempFormattedString = proposal.getProjectActivities().replace(",", "|").replace("\n", "™");
                 proposalData[9] = tempFormattedString; //proposal.getProjectActivities();
                 proposalData[10] = formatDateTime(proposal.getDateCreated());
 

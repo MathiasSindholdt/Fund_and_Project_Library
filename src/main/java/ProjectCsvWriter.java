@@ -30,7 +30,7 @@ public class ProjectCsvWriter {
                 rowData[0] = myProject.getTitle();
                 List<String> categories = myProject.getCategories();
                 rowData[1] = categories != null ? "\"" + String.join(", ", categories) + "\"" : "N/A";
-                tempFormattedString = myProject.getDescription().replace(",", "|");
+                tempFormattedString = myProject.getDescription().replace(",", "|").replace("\n", "™");
                 rowData[2] = tempFormattedString;//myProject.getDescription();
                 tempFormattedString = myProject.getProjectPurpose().replace(",", "|");
                 rowData[3] = tempFormattedString;//myProject.getProjectPurpose();

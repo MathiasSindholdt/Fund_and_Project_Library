@@ -99,6 +99,8 @@ public class EditProjectButton {
             tagPanel.add(tagCheckBox);
         }
 
+        JCheckBox sensitiveInfo = new JCheckBox("Projektet indeholder følsomme oplysninger");
+
         // Populate fields based on selected project
         projectSelector.addActionListener(e -> {
             int selectedIndex = projectSelector.getSelectedIndex();
@@ -124,6 +126,7 @@ public class EditProjectButton {
                         checkBox.setSelected(selectedProject.getCategories().contains(checkBox.getText()));
                     }
                 }
+                sensitiveInfo.setSelected(selectedProject.getSensitive());
             }
         });
 
@@ -209,8 +212,13 @@ public class EditProjectButton {
                     LocalDate toDate = ((Date) toDateSpinner.getValue()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                     selectedProject.setTimeSpan(fromDate.atStartOfDay(), toDate.atStartOfDay());
 
+                    if(!validationUtils.isWithinLowerCharLimit(activitiesField.getText())){
+                        isInvalidLenght = true;
+                        UserFrameErrorHandling.displayActivityError(isInvalidLenght);
+                        hasError = true;
+                    }else{
                     selectedProject.setProjectActivities(activitiesField.getText());
-
+                    }   
                     // Update categories
                     ArrayList<String> selectedCategories = new ArrayList<>();
                     for (Component comp : tagPanel.getComponents()) {
@@ -221,9 +229,18 @@ public class EditProjectButton {
                             }
                         }
                     }
+                    selectedProject.setSensitive(sensitiveInfo.isSelected());
                     selectedProject.getCategories().clear();
                     selectedProject.getCategories().addAll(selectedCategories);
-
+                    if (selectedCategories.isEmpty()) {
+                        JPanel noCategories = UserFrameErrorHandling.displayEditNoCategory("Projekt");
+                        if (noCategories != null) {
+                            dialog.add(noCategories);
+                            selectedProject.getCategories().clear();
+                        }else{
+                            return;
+                        }
+                    }
                     JOptionPane.showMessageDialog(dialog, "Projekt opdateret!");
                     dialog.dispose();
                 } catch (Exception ex) {
@@ -247,7 +264,7 @@ public class EditProjectButton {
             .addComponent(toDateLabel).addComponent(toDateSpinner)
             .addComponent(activitiesLabel).addComponent(activitiesField)
             .addComponent(selectTagLabel).addComponent(tagScrollPane)
-            .addComponent(submitButton)
+            .addComponent(sensitiveInfo).addComponent(submitButton)
         );
 
         layout.setVerticalGroup(layout.createSequentialGroup()
@@ -262,7 +279,7 @@ public class EditProjectButton {
             .addComponent(toDateLabel).addComponent(toDateSpinner)
             .addComponent(activitiesLabel).addComponent(activitiesField)
             .addComponent(selectTagLabel).addComponent(tagScrollPane)
-            .addComponent(submitButton)
+            .addComponent(sensitiveInfo).addComponent(submitButton)
         );
 
         dialog.setLocationRelativeTo(frame);
@@ -336,6 +353,9 @@ public class EditProjectButton {
             tagPanel.add(tagCheckBox);
         }
 
+        JCheckBox sensitiveInfo = new JCheckBox("Projektet indeholder følsomme oplysninger");
+        sensitiveInfo.setSelected(project.getSensitive());
+
 
         nameField.setText(project.getTitle());
         purposeField.setText(project.getProjectPurpose());
@@ -353,8 +373,8 @@ public class EditProjectButton {
 
         for (Component comp : tagPanel.getComponents()) {
             if (comp instanceof JCheckBox) {
-                JCheckBox checkBox = (JCheckBox) comp;
-                checkBox.setSelected(project.getCategories().contains(checkBox.getText()));
+            JCheckBox checkBox = (JCheckBox) comp;
+            checkBox.setSelected(project.getCategories().contains(checkBox.getText()));
             }
         }
         
@@ -435,7 +455,13 @@ public class EditProjectButton {
                     LocalDate toDate = ((Date) toDateSpinner.getValue()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                     project.setTimeSpan(fromDate.atStartOfDay(), toDate.atStartOfDay());
 
+                    if(!validationUtils.isWithinLowerCharLimit(activitiesField.getText())){
+                        isInvalidLenght = true;
+                        UserFrameErrorHandling.displayActivityError(isInvalidLenght);
+                        hasError = true;
+                    }else{
                     project.setProjectActivities(activitiesField.getText());
+                    }
 
                     // Update categories
                     ArrayList<String> selectedCategories = new ArrayList<>();
@@ -447,8 +473,19 @@ public class EditProjectButton {
                             }
                         }
                     }
+                    project.setSensitive(sensitiveInfo.isSelected());
                     project.getCategories().clear();
                     project.getCategories().addAll(selectedCategories);
+                    
+                    if (selectedCategories.isEmpty()) {
+                        JPanel noCategories = UserFrameErrorHandling.displayEditNoCategory("Projekt");
+                        if (noCategories != null) {
+                            dialog.add(noCategories);
+                            project.getCategories().clear();
+                        }else{
+                            return;
+                        }
+                    }
 
                     JOptionPane.showMessageDialog(dialog, "Projekt opdateret!");
                     dialog.dispose();
@@ -472,7 +509,7 @@ public class EditProjectButton {
             .addComponent(toDateLabel).addComponent(toDateSpinner)
             .addComponent(activitiesLabel).addComponent(activitiesField)
             .addComponent(selectTagLabel).addComponent(tagScrollPane)
-            .addComponent(submitButton)
+            .addComponent(sensitiveInfo).addComponent(submitButton)
         );
 
         layout.setVerticalGroup(layout.createSequentialGroup()
@@ -486,7 +523,7 @@ public class EditProjectButton {
             .addComponent(toDateLabel).addComponent(toDateSpinner)
             .addComponent(activitiesLabel).addComponent(activitiesField)
             .addComponent(selectTagLabel).addComponent(tagScrollPane)
-            .addComponent(submitButton)
+            .addComponent(sensitiveInfo).addComponent(submitButton)
         );
 
         dialog.setLocationRelativeTo(frame);

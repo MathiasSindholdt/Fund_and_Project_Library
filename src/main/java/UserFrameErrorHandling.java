@@ -1,6 +1,47 @@
-import javax.swing.*;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 public class UserFrameErrorHandling{
+    public static JPanel displayNoCategory(String type){
+        int confirmation = 0;
+        if(type == "Projekt"){
+            confirmation = JOptionPane.showConfirmDialog(null, "Du er ved at lave et projekt uden kategori. Dette vil have inflydelse på fonde-forslag under projektet, er du sikker på at du vil fortsætte?",
+            "Advarsel", JOptionPane.YES_NO_OPTION);
+        }
+        if(type == "projektForslag"){
+            confirmation = JOptionPane.showConfirmDialog(null, "Du er ved at lave et projekt forslag uden kategori. Dette vil have inflydelse på fonde-forslag under projekt forslaget, er du sikker på at du vil fortsætte?",
+            "Advarsel", JOptionPane.YES_NO_OPTION);
+        }
+        if(type == "Fond"){
+            confirmation = JOptionPane.showConfirmDialog(null, "Du er ved at lave en fond uden kategori. Dette vil have inflydelse på fonde-forslag under projekter og projekt forslag, er du sikker på at du vil fortsætte?",
+            "Advarsel", JOptionPane.YES_NO_OPTION);
+        }
+        if(confirmation == JOptionPane.YES_OPTION){
+            return new JPanel();
+        } else {
+            return null;
+        }
+    }
+    public static JPanel displayEditNoCategory(String type){
+        int confirmation = 0;
+        if(type == "Projekt"){
+            confirmation = JOptionPane.showConfirmDialog(null, "Du er ved at ændre et projekt til ikke at have nogle kategorier. Dette vil have inflydelse på fonde-forslag under projektet, er du sikker på at du vil fortsætte?",
+            "Advarsel", JOptionPane.YES_NO_OPTION);
+        }
+        if(type == "projektForslag"){
+            confirmation = JOptionPane.showConfirmDialog(null, "Du er ved at ændre et projekt forslag til ikke at have nogle kategorier. Dette vil have inflydelse på fonde-forslag under projekt forslaget, er du sikker på at du vil fortsætte?",
+            "Advarsel", JOptionPane.YES_NO_OPTION);
+        }
+        if(type == "Fond"){
+            confirmation = JOptionPane.showConfirmDialog(null, "Du er ved at ændre en fond til ikke at have nogle kategorier. Dette vil have inflydelse på fonde-forslag under projekter og projekt forslag, er du sikker på at du vil fortsætte?",
+            "Advarsel", JOptionPane.YES_NO_OPTION);
+        }
+        if(confirmation == JOptionPane.YES_OPTION){
+            return new JPanel();
+        } else {
+            return null;
+        }
+    }
     public static JPanel displayTitleError(boolean isInvalidLenght){
         if (isInvalidLenght){
             JOptionPane.showMessageDialog(null, "Titlen skal være mellem 1 og 200 tegn");

@@ -824,21 +824,31 @@ public class UserFrame extends AbstractFrame{
                 addedDeadlines.clear();
                 addedDeadlines.add(LocalDateTime.of(3000, 1, 1, 0, 0));
             }
-
-            if (!hasError) {
-                JOptionPane.showMessageDialog(dialog, "Fonden er blevet tilføjet", "Fonden tilføjet", JOptionPane.INFORMATION_MESSAGE);
-
-                fundClass fund = new fundClass(tempTitle, tempDescription, tempAmountFrom, tempAmountTo,
-                        addedDeadlines, selectedCatagories, selectedCollabortion, contacts, tempWebsite,
-                        isCollaborated, running, noUrl);
-                contacts.clear();
-                main.fundList.add(fund);
-                updateFundList();
-
-                writeAll();
-
-                dialog.dispose();
+            if(hasError){
+                return;
             }
+
+
+            if (selectedCatagories.isEmpty()) {
+                JPanel noCategories = UserFrameErrorHandling.displayNoCategory("Fond");
+                if (noCategories != null) {
+                    dialog.add(noCategories);
+                }else{
+                    return;
+                }
+            }
+            
+            JOptionPane.showMessageDialog(dialog, "Fonden er blevet tilføjet", "Fonden tilføjet", JOptionPane.INFORMATION_MESSAGE);
+            fundClass fund = new fundClass(tempTitle, tempDescription, tempAmountFrom, tempAmountTo,
+                    addedDeadlines, selectedCatagories, selectedCollabortion, contacts, tempWebsite,
+                    isCollaborated, running, noUrl);
+            contacts.clear();
+            main.fundList.add(fund);
+            updateFundList();
+
+            writeAll();
+
+            dialog.dispose();
         });
 
         // GroupLayout struktur
@@ -1072,14 +1082,16 @@ public class UserFrame extends AbstractFrame{
             tagPanel.add(tagCheckBox);
         }
 
-        JCheckBox sensitiveInfo = new JCheckBox("Indeholder projektet følsomme oplysninger");
+        JCheckBox sensitiveInfo = new JCheckBox("Projektet indeholder følsomme oplysninger");
         
 
         JButton submitButton = new JButton("Tilføj");
         submitButton.addActionListener((ActionEvent ae) -> {
             try {
+                boolean hasError = false;
                 // Get the values from the input fields
                 if (!validationUtils.isWithinLowerCharLimit(nameField.getText())) {
+                    hasError = true;
                     isInvalidLenght = true;
                     dialog.add(UserFrameErrorHandling.displayTitleError(isInvalidLenght));
                 } else {
@@ -1087,6 +1099,7 @@ public class UserFrame extends AbstractFrame{
                 }
 
                 if (!validationUtils.isWithinLowerCharLimit(purposeField.getText())) {
+                    hasError = true;
                     isInvalidLenght = true;
                     dialog.add(UserFrameErrorHandling.displayPurposeError(isInvalidLenght));
                 } else {
@@ -1094,6 +1107,7 @@ public class UserFrame extends AbstractFrame{
                 }
 
                 if (!validationUtils.isWithinUpperCharLimit(descriptionArea.getText())) {
+                    hasError = true;
                     isInvalidLenght = true;
                     dialog.add(UserFrameErrorHandling.displayDescriptionError(isInvalidLenght));
                 } else {
@@ -1101,6 +1115,7 @@ public class UserFrame extends AbstractFrame{
                 }
 
                 if (!validationUtils.isWithinLowerCharLimit(ownerField.getText())) {
+                    hasError = true;
                     isInvalidLenght = true;
                     dialog.add(UserFrameErrorHandling.displayOwnerError(isInvalidLenght));
                 } else {
@@ -1108,6 +1123,7 @@ public class UserFrame extends AbstractFrame{
                 }
 
                 if (!validationUtils.isWithinLowerCharLimit(targetField.getText())) {
+                    hasError = true;
                     isInvalidLenght = true;
                     dialog.add(UserFrameErrorHandling.displayTargetAudienceError(isInvalidLenght));
                 } else {
@@ -1116,6 +1132,7 @@ public class UserFrame extends AbstractFrame{
 
                 String trimmedBudget = budgetField.getText().trim().replace(".", "").replace(",", "");
                 if (!validationUtils.isNumericInput(trimmedBudget)) {
+                    hasError = true;
                     dialog.add(UserFrameErrorHandling.displayBudgetError());
                 } else {
                     tempBudget = Long.parseLong(trimmedBudget);
@@ -1129,6 +1146,7 @@ public class UserFrame extends AbstractFrame{
                 LocalDateTime projectToDate = toDate.atStartOfDay();
 
                 if (!validationUtils.isWithinLowerCharLimit(activitiesField.getText())) {
+                    hasError = true;
                     isInvalidLenght = true;
                     dialog.add(UserFrameErrorHandling.displayActivityError(isInvalidLenght));
                 } else {
@@ -1145,6 +1163,8 @@ public class UserFrame extends AbstractFrame{
                         }
                     }
                 }
+               
+                
                 boolean isSensitive = sensitiveInfo.isSelected();
                 System.out.println("------------");
                 System.out.println(isSensitive);
@@ -1152,7 +1172,20 @@ public class UserFrame extends AbstractFrame{
                 System.out.println(projectFromDate);
                 System.out.println(projectToDate);
                 // Create a new project proposal and add it to the list
+                if(hasError){
+                    return;
+                }
 
+                if (selectedCatagories.isEmpty()) {
+                    JPanel noCategories = UserFrameErrorHandling.displayNoCategory("Projekt");
+                    if (noCategories != null) {
+                        dialog.add(noCategories);
+                    }else{
+                        return;
+                    }
+                }
+                   
+                    
                 project project = new project(tempTitle, selectedCatagories, tempDescription, tempPurpose, tempOwner,
                         tempTargetAudience, tempBudget, projectFromDate, projectToDate, tempActivities,
                         main.getFundList(), main.getCatagoryBoolean(), isSensitive);
