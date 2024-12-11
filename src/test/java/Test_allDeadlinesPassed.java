@@ -37,11 +37,8 @@ public class Test_allDeadlinesPassed {
 
         assertTrue(fundQSort.allDeadlinesPassed(fc));
 
-        deadlines.add(LocalDateTime.now().plusDays(2));
-        fundClass fc2 = new fundClass(title, description, amountFrom, amountTo,
-                deadlines, categories, collaborationHistory, contacts,
-                website, collaborated, running, false);
+        fc.setDeadlines(LocalDateTime.now().plusDays(2));
 
-        assertTrue(!(fundQSort.allDeadlinesPassed(fc2)));
+        assertTrue(!(fundQSort.allDeadlinesPassed(fc)));
     }
 }
